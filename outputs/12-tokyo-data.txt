@@ -1,0 +1,9 @@
+# A tibble: 5 × 6
+   year prefecture population population_under15 population_15to64
+  <dbl> <chr>           <dbl>              <dbl>             <dbl>
+1  2000 東京都       12064101            1420919           8685878
+2  2005 東京都       12576601            1424667           8695592
+3  2010 東京都       13159388            1477371           8850225
+4  2015 東京都       13515271            1518130           8734155
+5  2020 東京都       14047594            1566840           8944193
+# ℹ 1 more variable: population_over65 <dbl>

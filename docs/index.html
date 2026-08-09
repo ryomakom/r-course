@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>記者のためのR講座 | 記者のためのR講座</title>
+<meta name="description" content="表計算ソフトではもう手が回らない大きさのデータを、自分の手で確かめられるようになるための教科書です。社内の勉強会で使ったものをまとめました。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li class="here"><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part">はじめに</p><ul>
+<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
+<li><a href="02-install.html">RとRStudioを入れる</a></li>
+<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+</ul>
+<p class="nav-part">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part">第3部　データを集める</p><ul>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+</ul>
+<p class="nav-part">第4部　詰まったときに</p><ul>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+</ul>
+<p class="nav-part">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page home">
+    <article>
+      <p class="kicker"></p>
+      <h1>記者のためのR講座</h1>
+      <p class="lead">表計算ソフトではもう手が回らない大きさのデータを、自分の手で確かめられるようになるための教科書です。社内の勉強会で使ったものをまとめました。</p>
+      
+      <h2 id="この講座について" data-src="index:8">この講座について</h2>
+<p data-src="index:10">役所や企業が出すデータは、年々大きく、そして複雑になっています。何万行もある表、シートが47枚に分かれたExcelファイル、ページをめくらないと全部は見えない一覧表。こういうものを前にして「見たいけど、手作業ではとても無理だ」とあきらめた経験は、たぶん誰にでもあると思います。</p>
+<p data-src="index:12">Rを覚えると、そこを越えられます。何百万行あっても平気ですし、何より、<strong>自分がデータに何をしたのかがコードとして残る</strong>。だから後から検証できるし、他の人に見てもらうこともできます。<span class="review" title="要検討：書いた人の意見が入っています">デスクに「この数字、大丈夫なの？」と聞かれたときに、手順を全部見せられる。これは記者にとって、かなり大きいことです。<span class="review-tag">要検討</span></span></p>
+<p data-src="index:14"><span class="review" title="要検討：書いた人の意見が入っています">この講座は、Rをまったく触ったことのない記者を想定して書いています。<span class="review-tag">要検討</span></span>統計の知識も、プログラミングの経験もいりません。使うのは国勢調査の人口データや選挙の得票データ、裁判所の一覧表といった、記者にとってなじみのあるものばかりです。</p>
+<aside class="box box-note" data-src="index:16"><p class="box-title">この講座の進み方</p><p data-src="index:17">第1部でデータを読み込んで加工し、第2部でグラフにして眺め、第3部でウェブから自分でデータを集めてきます。第4部は、詰まったときにどうするか。付録には記号の意味や関数の早見表、宿題の作例を置いています。</p></aside>
+<h2 id="どこから読むか" data-src="index:20">どこから読むか</h2>
+<ul class="cards">
+<li><a href="01-hajimeni.html"><strong>はじめて触る人</strong><br>まずは「はじめに」から順番に。第1部の最後まで来れば、たいていのデータは加工できるようになります。</a></li>
+<li><a href="12-line.html"><strong>グラフを描きたい人</strong><br>第2部から。折れ線・棒・散布図の3種類だけで、記者の仕事はほぼ足ります。</a></li>
+<li><a href="16-scraping.html"><strong>データを集めたい人</strong><br>第3部から。1ページから始めて、50ページ、ファイルの一括取得へ。</a></li>
+<li><a href="a2-functions.html"><strong>関数の名前を思い出したい人</strong><br>付録の早見表へ。「あれ、何だっけ」の8割はここで済みます。</a></li>
+</ul>
+<h2 id="この講座で使うもの" data-src="index:29">この講座で使うもの</h2>
+<ul data-src="index:31">
+<li><strong>R</strong>と<strong>RStudio</strong>（どちらも無料）。入れ方は<a href="02-install.html">RとRStudioを入れる</a>で説明します。</li>
+<li><strong>tidyverse</strong>というパッケージ。データ加工とグラフはほぼこれで済みます。</li>
+<li>データは国勢調査（政府統計の総合窓口 e-Stat）から取ってきたものを使います。<strong>この講座で使うファイルは全部ダウンロードできます</strong>ので、手元にデータがなくても始められます。</li>
+</ul>
+<p data-src="index:35"><a class="dl" href="files/r-course-data.zip" download>データ一式（zip）<span class="dl-size">1.2 MB</span></a></p>
+<p data-src="index:37">1つずつ落としたい人、もとの入手先を知りたい人は<a href="a4-data.html">付録D</a>へ。各章にも、その章で使うファイルへのリンクを置いてあります。</p>
+<h2 id="書いた人から" data-src="index:39">書いた人から</h2>
+<p data-src="index:41">私自身、Rを使いはじめたときは何がなんだかわからず、エラーが出るたびに固まっていました。いまでもpivotの向きを間違えますし、<code>==</code> を書くべきところで <code>=</code> を書いてはエラーに叱られています。</p>
+<p data-src="index:43">だからこの講座では、「なぜそう書くのか」と「どこでつまずくのか」をできるだけ書き残すようにしました。うまくいくコードだけを並べた教科書は読んでいて気持ちがいいのですが、実際の作業は、エラーを読んで直す時間のほうがずっと長いからです。</p>
+<p data-src="index:45">わからないところは、飛ばして先に進んでかまいません。手を動かしているうちに、あとから腑に落ちることのほうが多いです。</p>
+    </article>
+    <nav class="pager"><a class="next" href="01-hajimeni.html"><span>次へ</span>はじめに——Rとは何か</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>

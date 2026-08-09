@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>棒グラフ | 記者のためのR講座</title>
+<meta name="description" content="geom_colに変えるだけ。ただし色分けはcolorではなくfillで、そのために縦長への変形が必要になります。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part">はじめに</p><ul>
+<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
+<li><a href="02-install.html">RとRStudioを入れる</a></li>
+<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+</ul>
+<p class="nav-part">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li class="here"><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part">第3部　データを集める</p><ul>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+</ul>
+<p class="nav-part">第4部　詰まったときに</p><ul>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+</ul>
+<p class="nav-part">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">第2部　データを見る</p>
+      <h1>棒グラフ</h1>
+      <p class="lead">geom_colに変えるだけ。ただし色分けはcolorではなくfillで、そのために縦長への変形が必要になります。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#geom_colに変えるだけ">geom_colに変えるだけ</a></li><li><a href="#積み上げ棒グラフ">積み上げ棒グラフ</a></li><li><a href="#colorとfillの違い">colorとfillの違い</a></li><li><a href="#横に並べる棒グラフ">横に並べる棒グラフ</a></li><li><a href="#積み上げか横並びか100積み上げか">積み上げか、横並びか、100%積み上げか</a></li><li><a href="#5都府県の子どもの数">5都府県の子どもの数</a></li></ul></nav>
+      <h2 id="geom_colに変えるだけ" data-src="13-col:8">geom_colに変えるだけ</h2>
+<p data-src="13-col:10">ではつぎに、棒グラフを作っていきます。折れ線グラフと同じように、東京都の人口データを可視化してみましょう。コードは折れ線グラフのときと、ほとんど変わりません。</p>
+<div class="code" data-lang="R" data-src="13-col:12"><button class="copy" type="button">コピー</button><pre><code>tokyo %&gt;%
+  ggplot() +
+  geom_col(aes(x = year, y = population))</code></pre></div>
+<figure class="fig" data-src="13-col:18"><img src="images/13-col-tokyo.png" alt="東京都の人口の推移を棒グラフで示したもの" loading="lazy"><figcaption>geom_colに変えるだけで棒グラフになる</figcaption></figure>
+<p data-src="13-col:20">コードは、折れ線グラフで <code>geom_line</code> としていたところを <code>geom_col</code> としただけです。colはたぶん、「柱」を意味するcolumnの略。これで東京都の人口が増え続けていることを示す棒グラフができたはずです。</p>
+<aside class="box box-note" data-src="13-col:22"><p class="box-title">geom_colとgeom_barの違い</p><p data-src="13-col:23">ggplotには <code>geom_bar()</code> という、名前がいかにも棒グラフっぽい関数もあります。ただしこれは<strong>行数を勝手に数えて</strong>棒の高さにするものです。「都道府県ごとの件数」みたいな数え上げのときには便利ですが、手元にすでに集計済みの数字があるときに使うと、思った高さになりません。</p>
+<p data-src="13-col:25"><strong>すでに数字がある → <code>geom_col()</code>。数えてほしい → <code>geom_bar()</code>。</strong> ふだんの仕事では <code>geom_col()</code> のほうが圧倒的に多いはずです。</p></aside>
+<h2 id="積み上げ棒グラフ" data-src="13-col:28">積み上げ棒グラフ</h2>
+<p data-src="13-col:30">ただ、これも1色しかないので少し寂しい気もします。年代別に色分けして、各年代でどんな増減があったかを可視化してみましょう。</p>
+<div class="code" data-lang="R" data-src="13-col:32"><button class="copy" type="button">コピー</button><pre><code>tokyo %&gt;%
+  select(-population) %&gt;%
+  pivot_longer(cols = -c(year, prefecture),
+               names_to = "category",
+               values_to = "value") %&gt;%
+  ggplot() +
+  geom_col(aes(x = year, y = value, fill = category))</code></pre></div>
+<figure class="fig" data-src="13-col:42"><img src="images/13-col-stack.png" alt="東京都の人口を3つの年齢層に分けて積み上げた棒グラフ" loading="lazy"><figcaption>年齢層ごとに色分けした積み上げ棒グラフ</figcaption></figure>
+<p data-src="13-col:44">はじめに <code>select</code> 関数で <code>population</code> の列を除外しているのは、年代別の人口を積みあげた棒グラフにしたいのに、全体の人口を示すこのデータが残っていると二重計上になってしまうからです。</p>
+<p data-src="13-col:46">そのうえで <code>pivot_longer</code> 関数をかけて、人口の数値はすべて <code>value</code> 列に入るように加工しています。なぜなら、これをやらない状態だと人口は <code>population_under15</code> と <code>population_15to64</code>、<code>population_over65</code> という三つの列に分かれてしまっていますが、<strong>ggplotで「縦軸にこれを使いなさい」と指定できるのは一つの列だけ</strong>だからです。縦軸上に（あるいは横軸上に）表現したいデータは、すべて一つの列に格納する必要があるのです。</p>
+<p data-src="13-col:48">そのうえで、<code>fill = category</code> というところで「categoryごとに色分けしなさいね」と指示しています。</p>
+<h2 id="colorとfillの違い" data-src="13-col:50">colorとfillの違い</h2>
+<p data-src="13-col:52">折れ線グラフのときは、色分けは <code>color = ●●</code> とやっていたのに、今回は <code>fill = ●●</code> です。ややこしいですが、折れ線のときは色つきの線を描いていたのに対し、今回は四角い形で表現された棒の中身を色で「埋めて」いますよね。だからfillになるんだ、と私は解釈しています（この解釈が正しいか、裏は取っていませんが）。</p>
+<p data-src="13-col:54">ともあれ、縦軸と横軸にそれぞれ、可視化したい列の名前を指定するというggplotの基本は、折れ線のときと変わりません。</p>
+<aside class="box box-tips box-review" data-src="13-col:56"><p class="box-title">面には fill、線には color<span class="review-tag">要検討</span></p><p data-src="13-col:57">実用的には、こう覚えておけば足ります。</p>
+<div class="table-wrap" data-src="13-col:59"><table><thead><tr><th>描くもの</th><th>中身の色</th><th>輪郭の色</th></tr></thead><tbody><tr><td>折れ線 <code>geom_line</code></td><td>—</td><td><code>color</code></td></tr><tr><td>棒 <code>geom_col</code></td><td><code>fill</code></td><td><code>color</code>（縁取り）</td></tr><tr><td>点 <code>geom_point</code></td><td><code>color</code>（<code>shape</code>次第で<code>fill</code>も）</td><td>—</td></tr></tbody></table></div>
+<p data-src="13-col:65">棒グラフで <code>color</code> を指定すると、棒の<strong>縁</strong>だけが色づいて中は灰色のまま、という残念な絵ができます。「色分けしたのに変わらない」と思ったら、この2つを取り違えていないか確かめてください。</p></aside>
+<h2 id="横に並べる棒グラフ" data-src="13-col:68">横に並べる棒グラフ</h2>
+<p data-src="13-col:70">今回は「積み上げ型」の棒グラフになりましたが、つぎに各年代の人口を示す棒が横に並んだグラフにしてみましょう。こんなコードです。</p>
+<div class="code" data-lang="R" data-src="13-col:72"><button class="copy" type="button">コピー</button><pre><code>tokyo %&gt;%
+  select(-population) %&gt;%
+  pivot_longer(cols = -c(year, prefecture),
+               names_to = "category",
+               values_to = "value") %&gt;%
+  ggplot() +
+  geom_col(aes(x = year,
+               y = value,
+               fill = category),   # ここまでは同じ
+           position = "dodge")</code></pre></div>
+<figure class="fig" data-src="13-col:85"><img src="images/13-col-dodge.png" alt="3つの年齢層の棒が横に並んだ棒グラフ。65歳以上だけが増えている" loading="lazy"><figcaption>横に並べると、増えているのが65歳以上だけだと分かる</figcaption></figure>
+<p data-src="13-col:87">といっても、先ほどのコードとほぼ同じ。<code>geom_col()</code> の丸括弧の中で <code>position = "dodge"</code> と指定したのが唯一のちがいです。dodgeというのはドッジボールのドッジで、「かわす」という意味があります。できあがったグラフをみると、増えているのはほぼ65歳以上の人口だけなのだな、ということがわかりますね。</p>
+<p data-src="13-col:89">ここで気をつけたほうがいいのは、<code>position = "dodge"</code> という記述が <strong><code>aes()</code> の丸括弧の外側</strong>にあるということです。コンマでつなぐことによって、階層構造的にみて <code>aes()</code> と同じレベルのところにあるのです。丸括弧の中に入れてしまうと、エラーが出ます。これまで見てきた <code>color</code> とか <code>fill</code> は、横軸と縦軸を示すxとyの二つと同じレベルにありましたが、<code>position</code> はその一つ上のレベルにあるのです。</p>
+<p data-src="13-col:91">前の章で書いた「aes()の中と外」の話が、ここでも効いてきます。<code>position</code> は都道府県ごとに変わるものではなく、グラフ全体の並べ方の指定だから、外側に書くわけです。</p>
+<h2 id="積み上げか横並びか100積み上げか" data-src="13-col:93">積み上げか、横並びか、100%積み上げか</h2>
+<p data-src="13-col:95"><code>position</code> に何を指定するかで、同じデータがだいぶ違う顔になります。</p>
+<div class="code" data-lang="R" data-src="13-col:97"><button class="copy" type="button">コピー</button><pre><code>position = "stack"    # 積み上げ（何も書かないときはこれ）
+position = "dodge"    # 横に並べる
+position = "fill"     # 高さを100%にそろえて、割合を見せる</code></pre></div>
+<p data-src="13-col:103">![棒の高さを100%にそろえ、年齢層の構成比の変化を示した棒グラフ](images/13-col-fill.png "position=\"fill\" にすると、割合の変化だけが見える")</p>
+<p data-src="13-col:105"><code>position = "fill"</code> はけっこう便利です。棒の高さがすべて100%にそろうので、「全体の中で何が何割か」の変化だけを見せられます。ただし実数の大小は消えるので、これを記事に使うときは実数も別に示すか、注記を添えるのが誠実だと思います。</p>
+<h2 id="5都府県の子どもの数" data-src="13-col:107">5都府県の子どもの数</h2>
+<p data-src="13-col:109">ではつぎに主な5都府県の子どもの数を、積み上げ式ではなくて横にずれた棒グラフで表現してみましょう。コードはこうなります。</p>
+<div class="code" data-lang="R" data-src="13-col:111"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+  ggplot() +
+  geom_col(aes(x = year, y = population_under15, fill = prefecture),
+           position = "dodge")</code></pre></div>
+<figure class="fig" data-src="13-col:118"><img src="images/13-col-five.png" alt="5都府県の15歳未満人口を横並びの棒グラフで比較したもの。東京都だけが増えている" loading="lazy"><figcaption>東京都だけ、子どもの数が増え続けている</figcaption></figure>
+<p data-src="13-col:120">東京都でのみ、子どもの数がわずかながら増え続けていることがわかりますね。</p>
+<p data-src="13-col:122"><span class="review" title="要検討：書いた人の意見が入っています"><strong>これは記事になる話です。</strong><span class="review-tag">要検討</span></span> 全国的に子どもが減っているというのは誰でも知っていますが、東京だけは増えている。なぜか。他の県から人が移ってきているのか、それとも都内で生まれる子が多いのか。データはそこまで答えてくれませんが、「どこを取材すべきか」を教えてくれます。散布図を扱う次の章では、この話をもう少し先まで追いかけます。</p>
+<aside class="box box-homework" data-src="13-col:124"><p class="box-title">宿題</p><p data-src="13-col:125"><code>data/主な都道府県の人口.csv</code> のファイルを読み込んで作ったtibbleをもとに、<strong>宮城県</strong>の年齢層別人口の推移を示すグラフを作ってください。</p>
+<p data-src="13-col:127">この章で出てきた東京都のグラフと同じ形（積み上げ棒グラフ）で、タイトルと軸の名前も日本語で入れること。作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
+    </article>
+    <nav class="pager"><a class="prev" href="12-line.html"><span>前へ</span>12 折れ線グラフ</a><a class="next" href="14-point.html"><span>次へ</span>14 散布図</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>

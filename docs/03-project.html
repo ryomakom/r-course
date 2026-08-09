@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プロジェクトとパッケージ | 記者のためのR講座</title>
+<meta name="description" content="作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この2つを用意すれば準備は終わりです。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part">はじめに</p><ul>
+<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
+<li><a href="02-install.html">RとRStudioを入れる</a></li>
+<li class="here"><a href="03-project.html">プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+</ul>
+<p class="nav-part">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part">第3部　データを集める</p><ul>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+</ul>
+<p class="nav-part">第4部　詰まったときに</p><ul>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+</ul>
+<p class="nav-part">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">はじめに</p>
+      <h1>プロジェクトとパッケージ</h1>
+      <p class="lead">作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この2つを用意すれば準備は終わりです。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#プロジェクトをつくる">プロジェクトをつくる</a></li><li><a href="#フォルダの分け方">フォルダの分け方</a></li><li><a href="#Tidyverseを入れる">Tidyverseを入れる</a></li><li><a href="#そもそもパッケージとは何か">そもそもパッケージとは何か</a></li></ul></nav>
+      <h2 id="プロジェクトをつくる" data-src="03-project:8">プロジェクトをつくる</h2>
+<p data-src="03-project:10">次に「プロジェクト」を立ち上げましょう。</p>
+<p data-src="03-project:12">RStudioの「プロジェクト」は、ファイルやフォルダを整理し、作業環境を管理しやすくするための機能です。データ分析や可視化を進めるとき、分析のためのコードや文書があちこちに散らばってしまうと、どこで何を編集すればいいか分からなくなりがちです。そこで役立つのが「プロジェクト」で、関連するファイルや設定をひとまとめにして管理できます。</p>
+<p data-src="03-project:14">プロジェクトを使う最大のメリットは、分析環境の再現性が高まる点です。たとえば「テーマ別」「月ごと」など、記事の枠組みに合わせてプロジェクトを切り分ければ、それぞれのフォルダ内だけでコードやデータをやり取りすることになるため、混乱を防ぐことができます。さらに、プロジェクトごとに作業スペースが独立しているので、一つのプロジェクトを閉じて別のプロジェクトを開けば、作業環境がきれいに切り替わるのも便利です。</p>
+<figure class="fig" data-src="03-project:16"><div class="fig-todo"><p>ここに画像を入れる</p><p class="fig-todo-alt">RStudioのNew Projectダイアログ。New Directory、Existing Directory、Version Controlの3つが並んでいる</p><p class="fig-todo-path">images/03-new-project.png</p></div><figcaption>New Project の選択画面。ふだんはNew DirectoryかExisting Directory</figcaption></figure>
+<p data-src="03-project:18">新しくプロジェクトをつくるときには、RStudioの画面左上にある「File」から「New Project」→「New Directory」と進み、また「New Project」を選べば、新しいフォルダでそのプロジェクトを始めることができます。既存のフォルダでプロジェクトを始めたい場合には、「New Directory」ではなく「Existing Directory」を選びましょう。「Version Control」はGitHubと連携するためのものらしいのですが、ここではひとまず忘れてください（実は私自身が使いこなせていません……）。</p>
+<p data-src="03-project:20">また、すでに作ったプロジェクトは、当該フォルダの中にある <code>.Rproj</code> という拡張子のファイルをダブルクリックすれば開くことができます。</p>
+<aside class="box box-tips" data-src="03-project:22"><p class="box-title">なぜプロジェクトだと「data/人口データ2020.csv」で足りるのか</p><p data-src="03-project:23">プロジェクトを開くと、Rはそのフォルダを「いま自分がいる場所」とみなします。だからファイルの場所を書くときも、<code>C:/Users/…</code> みたいな長い住所ではなく、そのフォルダから見た短い住所（<code>data/人口データ2020.csv</code>）で済むわけです。</p>
+<p data-src="03-project:25">これは地味ですが大事なことで、コードを同僚に渡したときにもそのまま動きます。長い住所を書いていると、自分のパソコンでしか動かないコードになってしまいます。</p></aside>
+<h2 id="フォルダの分け方" data-src="03-project:28">フォルダの分け方</h2>
+<p data-src="03-project:30">プロジェクトのフォルダの中は、こんなふうに分けておくと後で自分が助かります。この講座もこの前提で進めます。</p>
+<div class="code" data-lang="画面に出るもの" data-src="03-project:32"><button class="copy" type="button">コピー</button><pre><code>人口分析/                     ← プロジェクトのフォルダ
+├── 人口分析.Rproj            ← これをダブルクリックすると開く
+├── 分析.Rmd                  ← 書いたコード
+├── data/                     ← もとのデータ（絶対に手で書き換えない）
+│   ├── 人口データ2020.csv
+│   └── 人口データ2015.csv
+├── download/                 ← ウェブから落としてきたファイル
+└── output/                   ← 出力したcsvやグラフ</code></pre></div>
+<p data-src="03-project:43">大事なのは、<strong><code>data</code> のなかのファイルは手で触らない</strong>ということです。もとのデータには一切手をつけず、加工はすべてコードのなかでやる。こうしておけば、あとで「この数字、元データではどうなってたっけ」と確かめたいときに、いつでも出発点に戻れます。</p>
+<h2 id="Tidyverseを入れる" data-src="03-project:45">Tidyverseを入れる</h2>
+<p data-src="03-project:47">では、いよいよ作業に入りましょう……と言いたいところなのですが、その前にもうひとつだけ。データの基本的な処理に使われるtidyverseと呼ばれるパッケージをインストールします。</p>
+<div class="code" data-lang="R" data-src="03-project:49"><button class="copy" type="button">コピー</button><pre><code>install.packages("tidyverse")</code></pre></div>
+<p data-src="03-project:53">いちどインストールすると、次にRStudioを開いたときからはやらなくて済むようになります。また、実際に使うときには、そのパッケージを呼び出してやる必要があります。</p>
+<div class="code" data-lang="R" data-src="03-project:55"><button class="copy" type="button">コピー</button><pre><code>library(tidyverse)</code></pre></div>
+<p data-src="03-project:59">こちらの命令は、次にRStudioを開いたときにも、改めてやり直さなくてはいけません。</p>
+<aside class="box box-warn" data-src="03-project:61"><p class="box-title">install.packages と library の違い</p><ul data-src="03-project:62">
+<li><code>install.packages("tidyverse")</code> は「道具を買ってきて棚に置く」。<strong>一度やれば二度目はいらない</strong>（というか、やると時間の無駄です）。</li>
+<li><code>library(tidyverse)</code> は「棚から道具を取り出して机に置く」。<strong>RStudioを開くたびに毎回必要</strong>。</li>
+</ul>
+<p data-src="03-project:65">「昨日は動いたコードが今日はエラーになる」というときの原因は、たいていこれです。<code>Error: object 'read_csv' not found</code> とか <code>関数 "%&gt;%" を見つけることができませんでした</code> みたいなエラーが出たら、まず <code>library(tidyverse)</code> を実行し忘れていないか確かめてください。</p></aside>
+<h2 id="そもそもパッケージとは何か" data-src="03-project:68">そもそもパッケージとは何か</h2>
+<p data-src="03-project:70">Rには基本機能のほかに、有志たちが開発したさまざまな道具があります。その道具を束ねたものがパッケージと呼ばれるもので、きれいな表を出力したり、行政機関が持っているデータを呼び出したり、地図データを読み込んで加工したりといった、多種多様な専門的用途に合わせて開発されています。「こんなことがやりたいな」と思ってググってみたら、そのためのパッケージが見つかった、なんてことがよくあります。</p>
+<p data-src="03-project:72">tidyverseはあまたあるパッケージの中でも、データ分析をする人たちの間でとくによく使われているものです。dplyrやggplot2など、分析によく使われるパッケージを集めた「パッケージの詰め合わせ」のようなパッケージで、開発者のハドリー・ウィッカムさんはその界隈で神とあがめられています。</p>
+<p data-src="03-project:74">RStudioでデータ分析をするときは、まずはじめに <code>library(tidyverse)</code> を実行する、と覚えておいてください。</p>
+<h3 id="詰め合わせの中身" data-src="03-project:76">詰め合わせの中身</h3>
+<p data-src="03-project:78">tidyverseを呼び出すと、実はこれだけの道具が一度に机の上に並びます。名前は覚えなくていいのですが、「あの機能はこの箱に入っている」という地図があると、あとで調べるときに便利です。</p>
+<div class="table-wrap" data-src="03-project:80"><table><thead><tr><th>パッケージ</th><th>何をするもの</th><th>この講座で出てくる場所</th></tr></thead><tbody><tr><td>readr</td><td>csvなどを読み書きする</td><td><code>read_csv</code> <code>write_excel_csv</code></td></tr><tr><td>dplyr</td><td>データを加工する主力</td><td><code>select</code> <code>mutate</code> <code>filter</code> <code>group_by</code> <code>left_join</code></td></tr><tr><td>tidyr</td><td>縦長・横長を入れ替える</td><td><code>pivot_longer</code> <code>pivot_wider</code></td></tr><tr><td>stringr</td><td>文字を切ったり貼ったりする</td><td><code>str_split_i</code> <code>str_sub</code> <code>str_detect</code></td></tr><tr><td>ggplot2</td><td>グラフを描く</td><td><code>ggplot</code> <code>geom_line</code> <code>geom_col</code> <code>geom_point</code></td></tr><tr><td>lubridate</td><td>日付を扱う</td><td><a href="a2-functions.html">付録B</a></td></tr><tr><td>purrr</td><td>繰り返しをすっきり書く</td><td>この講座では扱いません</td></tr></tbody></table></div>
+<p data-src="03-project:90">この講座ではほかに、Excelを読む <code>readxl</code>、ウェブを読む <code>rvest</code>、ファイルを落とす <code>httr</code>、いわゆる神エクセルを解体する <code>tidyxl</code> と <code>unpivotr</code> を使います。必要になったところでその都度インストールしていきます。</p>
+<p data-src="03-project:92">準備は以上です。次からはいよいよデータを触ります。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="02-install.html"><span>前へ</span>RとRStudioを入れる</a><a class="next" href="04-import.html"><span>次へ</span>04 データを読み込む</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>

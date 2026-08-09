@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ウェブのページから表を取る | 記者のためのR講座</title>
+<meta name="description" content="役所のサイトに貼られている表を、手で写さずにそのままtibbleにします。使うのはrvestというパッケージです。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part">はじめに</p><ul>
+<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
+<li><a href="02-install.html">RとRStudioを入れる</a></li>
+<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+</ul>
+<p class="nav-part">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part">第3部　データを集める</p><ul>
+<li class="here"><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+</ul>
+<p class="nav-part">第4部　詰まったときに</p><ul>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+</ul>
+<p class="nav-part">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">第3部　データを集める</p>
+      <h1>ウェブのページから表を取る</h1>
+      <div class="page-review"><p class="page-review-title">この章について</p><p>コードは勉強会のものですが、説明文は私（Claude）が意図を推測して書いた下書きです。</p></div><p class="lead">役所のサイトに貼られている表を、手で写さずにそのままtibbleにします。使うのはrvestというパッケージです。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#お題">お題</a></li><li><a href="#読み込んで表にする">読み込んで、表にする</a></li><li><a href="#取れた表がちょっと変">取れた表が、ちょっと変</a></li><li><a href="#ソースを見る">ソースを見る</a></li><li><a href="#場所を指定する">場所を指定する</a></li><li><a href="#取れたものを確かめる">取れたものを確かめる</a></li></ul></nav>
+      <p data-src="16-scraping:9">役所のサイトを見ていると、csvもExcelも置いていないのに、表だけがページに貼ってあることがよくあります。数字はそこに見えているのに、手で写すしかない。めんどくさ。</p>
+<p data-src="16-scraping:11">でも、あれをそのまま持ってくることもできます。</p>
+<h2 id="お題" data-src="16-scraping:13">お題</h2>
+<p data-src="16-scraping:15">全国各地にある裁判所の連絡先や住所などのリストを作りましょう。裁判所のサイトには、高裁ごと・地裁ごとに「所在地」のページがあって、支部や簡裁の住所と電話番号が表になって並んでいます。まずは札幌高裁のページを開いて、あの表を手元のtibbleにしてみます。</p>
+<p data-src="16-scraping:17">HTMLを読むのに便利なのがrvestというパッケージです。tidyverseには含まれていないので、最初にインストールしておきましょう。</p>
+<div class="code" data-lang="R" data-src="16-scraping:19"><button class="copy" type="button">コピー</button><pre><code>library(tidyverse)
+
+# install.packages("rvest")
+library(rvest)</code></pre></div>
+<h2 id="読み込んで表にする" data-src="16-scraping:26">読み込んで、表にする</h2>
+<p data-src="16-scraping:28">やることは二つだけです。ページを読み込んで、表に変える。</p>
+<div class="code" data-lang="R" data-src="16-scraping:30"><button class="copy" type="button">コピー</button><pre><code>"https://www.courts.go.jp/sapporo-h/about/syozai/index.html" %&gt;%
+  read_html() %&gt;%
+  html_table()</code></pre></div>
+<p data-src="16-scraping:36"><code>read_html()</code> はそのページのHTMLを丸ごと読み込みなさい、<code>html_table()</code> はそのなかにある表をtibbleに変えなさい、という命令です。ダブルクオーテーションで囲ったURLからパイプ演算子でつないでいるのは、<a href="04-import.html">04章</a>でcsvを読んだときと同じ形ですね。</p>
+<p data-src="16-scraping:38">返ってくるのは、tibbleがいくつか入った「リスト」です。一つのページに表がいくつあるかはページによって違いますから、何個返ってきたかを確かめておきましょう。</p>
+<div class="code" data-lang="R" data-src="16-scraping:40"><button class="copy" type="button">コピー</button><pre><code>sapporo &lt;- "https://www.courts.go.jp/sapporo-h/about/syozai/index.html" %&gt;%
+  read_html() %&gt;%
+  html_table()
+
+length(sapporo)   # 全部でいくつあるか</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="16-scraping:48"><button class="copy" type="button">コピー</button><pre><code>[1] 1</code></pre></div>
+<p data-src="16-scraping:51">一つでした。リストのなかの何番目かを取り出すには、二重の角括弧を使います。表が一つしかないので、<code>sapporo[[1]]</code> が目当てのものです。</p>
+<p data-src="16-scraping:53">なぜこれで取れるのかというと、HTMLでは表が <code>&lt;table&gt;</code> という部品で作られていて、<code>html_table()</code> がそれを全部探してきてくれるからです。逆にいえば、見た目が表なのに <code>&lt;table&gt;</code> で作られていないページ——画像になっている、レイアウトで並べているだけ、PDFが貼ってあるだけ——からは取れません。そういうときは別の手を考えることになります。</p>
+<h2 id="取れた表がちょっと変" data-src="16-scraping:55">取れた表が、ちょっと変</h2>
+<p data-src="16-scraping:57">さて、<code>sapporo[[1]]</code> の中身を見てみましょう。</p>
+<div class="code" data-lang="実行結果" data-src="16-scraping:59"><button class="copy" type="button">コピー</button><pre><code># A tibble: 2 × 5
+  裁判所名       郵便番号 所在地            電話番号...4        電話番号...5
+  &lt;chr&gt;          &lt;chr&gt;    &lt;chr&gt;             &lt;chr&gt;               &lt;chr&gt;       
+1 裁判所名       郵便番号 所在地            担当                番号        
+2 札幌高等裁判所 060-0042 札幌市中央区大... 代表各種問い合わせ（窓口案内）…… 011-231-420…</code></pre></div>
+<p data-src="16-scraping:62">あれ? 二つ、おかしなところがあります。</p>
+<p data-src="16-scraping:64">まず、1行目に「裁判所名」「郵便番号」「所在地」「担当」「番号」という、見出しみたいな文字が入っています。データではなくて見出しのはずのものが、1行目に紛れ込んでいるわけです。</p>
+<p data-src="16-scraping:66">もう一つ、列の名前が <code>電話番号...4</code> と <code>電話番号...5</code> になっています。「...4」なんて、もとのページには書いてありません。</p>
+<p data-src="16-scraping:68">こういうときは、ソースを見れば理由が分かります。</p>
+<h2 id="ソースを見る" data-src="16-scraping:70">ソースを見る</h2>
+<p data-src="16-scraping:72">ブラウザでページの中身を覗いてみましょう。</p>
+<ol data-src="16-scraping:74">
+<li>ブラウザでそのページを開きます。</li>
+<li>調べたい表の上で右クリックして「検証」を選びます（Chromeなら「Inspect」、Firefoxは「調査」）。</li>
+<li>画面の横にHTMLのコードが出てきます。いま選んだ場所が青く光っているので、その周辺を見ます。</li>
+</ol>
+<p data-src="16-scraping:78">光っているあたりは、こうなっています。長い部分は「……」で省いて、読みやすいように改行を入れてありますが、あとは本物のソースです。</p>
+<div class="code" data-lang="ページのソース" data-src="16-scraping:80"><button class="copy" type="button">コピー</button><pre><code>&lt;div class="module-sub-page-parts-table"&gt;
+&lt;table&gt;
+  &lt;caption&gt;管内の裁判所所在地一覧&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th rowspan="2" scope="col" style="width:16%;"&gt;裁判所名&lt;/th&gt;
+      &lt;th rowspan="2" scope="col" style="width:12%;"&gt;郵便番号&lt;/th&gt;
+      &lt;th rowspan="2" scope="col" style="width:40%;"&gt;所在地&lt;/th&gt;
+      &lt;th colspan="2" rowspan="1" scope="col" style="width:32%;"&gt;電話番号&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"&gt;担当&lt;/th&gt;
+      &lt;th scope="col"&gt;番号&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href="./sapporomain/index.html"&gt;札幌高等裁判所&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;060-0042&lt;/td&gt;
+      &lt;td&gt;札幌市中央区大通西11丁目&lt;br&gt;(1)地下鉄東西線……&lt;/td&gt;
+      &lt;td&gt;代表&lt;br&gt;各種問い合わせ（窓口案内）&lt;/td&gt;
+      &lt;td&gt;011-231-4200&lt;br&gt;&lt;a href="./../../saiban/madoguti/index.html"&gt;ダイヤルイン&lt;/a&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;</code></pre></div>
+<p data-src="16-scraping:109">HTMLは、こういう入れ子の構造になっています。<code>&lt;table&gt;</code> で始まって <code>&lt;/table&gt;</code> で終わるのが表ぜんたい、<code>&lt;tr&gt;</code> が1行、<code>&lt;th&gt;</code> が見出しのマス、<code>&lt;td&gt;</code> が中身のマス。スラッシュのついたほうが「ここで終わり」の合図です。エクセルのマス目が、括弧で入れ子にされて並んでいるようなものだと思ってください。</p>
+<p data-src="16-scraping:111">さっきの二つの謎も、これで解けます。</p>
+<p data-src="16-scraping:113"><code>&lt;thead&gt;</code> のなかに <code>&lt;tr&gt;</code> が二つありますね。つまり、この表の見出しは2段になっているわけです。1段目に「裁判所名」「郵便番号」「所在地」「電話番号」が並び、2段目に「担当」「番号」が並ぶ。<code>html_table()</code> は1段目だけを見出しとして扱ったので、2段目のほうがデータの1行目に入ってしまった、というわけです。</p>
+<p data-src="16-scraping:115">そして1段目の最後、電話番号のところに <code>colspan="2"</code> と書いてあります。これは「このマスは横に2つ分の幅を占めます」という指定で、だからRのほうでは電話番号という名前の列が二つできてしまう。同じ名前が二つあると区別できないので、Rが後ろに「...4」「...5」と番号をつけて区別した、というわけです。</p>
+<aside class="box box-note" data-src="16-scraping:117"><p class="box-title">2段の見出しは、あとで自分で片づける</p><p data-src="16-scraping:118"><code>rowspan</code> は縦の結合、<code>colspan</code> は横の結合です。人が紙で見るぶんには親切なのですが、機械で読むとこうなります。</p>
+<p data-src="16-scraping:120">このさき<a href="17-loop.html">17章</a>で全国分を集めてから、まぎれ込んだ見出し行を <code>filter()</code> で捨て、<code>電話番号...4</code> を <code>contact_point</code> に、<code>電話番号...5</code> を <code>phone</code> に改名します。あのクリーニングは、いまここで見た2段見出しの後片づけをしているわけです。</p></aside>
+<h2 id="場所を指定する" data-src="16-scraping:123">場所を指定する</h2>
+<p data-src="16-scraping:125">ソースを見たついでに、もう一つ収穫があります。表を囲んでいる区画に、名前がついていました。</p>
+<div class="code" data-lang="ページのソース" data-src="16-scraping:127"><button class="copy" type="button">コピー</button><pre><code>&lt;div class="module-sub-page-parts-table"&gt;
+&lt;table&gt;
+  ……</code></pre></div>
+<p data-src="16-scraping:133"><code>html_table()</code> はページにある表を全部拾ってくるので、表が一つしかないこのページでは何も指定しなくても済みました。でも、飾りやナビゲーションが <code>&lt;table&gt;</code> で作られていて、余計な表まで拾ってしまうページもあります。<code>[[2]]</code> のように番号で選べばその場はしのげますが、ページが更新されて表が一つ増えると番号がずれて別の表を取ってくることになる。しかもエラーが出るわけではないので気づけません。</p>
+<p data-src="16-scraping:135">なので、いま見つけた名前を使って、ページのどこを取るのかを指定してやります。</p>
+<div class="code" data-lang="R" data-src="16-scraping:137"><button class="copy" type="button">コピー</button><pre><code>sapporo &lt;- "https://www.courts.go.jp/sapporo-h/about/syozai/index.html" %&gt;%
+  read_html() %&gt;%                                    # HTMLを読み込む
+  html_nodes("div.module-sub-page-parts-table") %&gt;%  # 読み込みたいノードを指定する
+  html_table()                                       # 表に変換する</code></pre></div>
+<p data-src="16-scraping:144">さっきとの違いは、真ん中の1行が増えただけです。これで「ページ全体の表」ではなく「この区画のなかの表」に絞られました。</p>
+<div class="code" data-lang="R" data-src="16-scraping:146"><button class="copy" type="button">コピー</button><pre><code>length(sapporo)</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="16-scraping:150"><button class="copy" type="button">コピー</button><pre><code>[1] 1</code></pre></div>
+<p data-src="16-scraping:153">取れた数は同じ一つですが、意味が違います。「たまたま一つしかなかったから取れた」のではなく、「この区画のなかの表を取った」ことになったわけです。ページが多少変わっても、この名前が同じなら同じ場所を取ってきてくれます。</p>
+<aside class="box box-warn" data-src="16-scraping:155"><p class="box-title">div.module-sub-page-parts-table って何ですか</p><p data-src="16-scraping:156">呪文のように見えますが、二つに分かれているだけです。前半の <code>div</code> はHTMLの部品の種類で、divは「区画」を表すいちばんありふれた部品。後半の <code>.module-sub-page-parts-table</code> は、その区画につけられた名前で、classと呼ばれます。頭のピリオドが「これはclassだよ」という合図です。</p>
+<p data-src="16-scraping:158">つまり全体で「module-sub-page-parts-tableというclassのついた区画」を指しているわけです。こういう書き方はCSSセレクタと呼ばれるもので、ほかにもいろいろな指定ができます。</p>
+<div class="table-wrap" data-src="16-scraping:160"><table><thead><tr><th>書き方</th><th>意味</th></tr></thead><tbody><tr><td><code>table</code></td><td>すべての表</td></tr><tr><td><code>table.tableList</code></td><td>tableListというclassのついた表</td></tr><tr><td><code>div.foo</code></td><td>fooというclassのついた区画</td></tr><tr><td><code>#main</code></td><td>mainというID（<code>id="main"</code>）がついた部品</td></tr><tr><td><code>div.foo table</code></td><td>fooという区画のなかにある表</td></tr><tr><td><code>a</code></td><td>すべてのリンク</td></tr></tbody></table></div>
+<p data-src="16-scraping:169">classはサイトを作った人が付けたものなので、サイトごとに全部違います。だから毎回自分で調べることになります。慣れないうちは、ここでいちばん時間を食います。</p>
+<p data-src="16-scraping:171">classが付いていない、あるいは同じclassが10個あって絞れない、ということもあります。そういうときは目当てのものを囲んでいる一つ上の区画を見るか、検証画面で右クリックして「Copy」→「Copy selector」を選ぶと、ブラウザがCSSセレクタを作ってくれます。長ったらしいものが出てきますが、そのまま貼れば動きます。AIに聞くのも早いです（<a href="21-ai.html">21章</a>）。</p></aside>
+<p data-src="16-scraping:174">ちなみに <code>html_nodes()</code> とよく似た <code>html_elements()</code> という関数もあって、こちらのほうが新しい正式な名前らしいのですが、どちらでも同じように動きます。この講座では勉強会で書いたコードに合わせて <code>html_nodes()</code> のほうを使っています。</p>
+<h2 id="取れたものを確かめる" data-src="16-scraping:176">取れたものを確かめる</h2>
+<p data-src="16-scraping:178">新しいページを相手にするときは、いつもここで手を止めて中身を見ることになります。</p>
+<div class="code" data-lang="R" data-src="16-scraping:180"><button class="copy" type="button">コピー</button><pre><code>length(sapporo)               # 表がいくつ取れたか
+sapporo[[1]] %&gt;% colnames()   # 列の名前
+sapporo[[1]] %&gt;% nrow()       # 行数</code></pre></div>
+<p data-src="16-scraping:186">ブラウザで見えている表と行数が合っているか、列の名前がちゃんと入っているか、さっきのように見出しがデータの1行目として読まれてしまっていないか。<span class="review" title="要検討：書いた人の意見が入っています">ここを飛ばして先へ進むと、あとで必ず戻ってくることになります。<span class="review-tag">要検討</span></span></p>
+<p data-src="16-scraping:188">うまく取れていたら、ファイルに書き出しておきましょう。次に必要になったときは、また取りに行かずにこれを読めば済みます。</p>
+<div class="code" data-lang="R" data-src="16-scraping:190"><button class="copy" type="button">コピー</button><pre><code>sapporo[[1]] %&gt;%
+  write_excel_csv("output/裁判所連絡先_札幌.csv")</code></pre></div>
+<aside class="box box-warn box-review" data-src="16-scraping:195"><p class="box-title">取る前に、そのサイトを見ておく<span class="review-tag">要検討</span></p><p data-src="16-scraping:196">機械でページを読むというのは、相手のサーバーにアクセスするということです。1ページならブラウザで開くのと変わりませんが、いずれ何十ページも続けて読むことになります。</p>
+<p data-src="16-scraping:198">その前に、そのサイトが機械的な取得を禁じていないかどうかを確かめて下さい。禁止と書いてあれば、担当課に電話して事情を説明してデータをもらったほうが早い場合もあります。そのほうが元データがきれいなことも多いです。それから、同じデータがcsvで公開されていないかどうかも見ておきましょう。あるならスクレイピングする必要はありません。</p>
+<p data-src="16-scraping:200">社内のルールがある場合は、それに従って下さい。ここは技術の問題ではないので、迷ったら先に相談したほうが早いと思います。</p></aside>
+<aside class="box box-homework" data-src="16-scraping:203"><p class="box-title">宿題</p><p data-src="16-scraping:204">自分の担当分野の役所のサイトから、表が貼られているページを一つ探して、<code>html_table()</code> だけで取れるかどうか試して下さい。取れなかった場合は「検証」でソースを見て、classを調べて <code>html_nodes()</code> で指定してみましょう。</p></aside>
+<p data-src="16-scraping:207">ところで、いま取れたのは札幌高裁のぶんだけです。同じようなページが、仙台にも東京にも、全国にあります。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="15-finish.html"><span>前へ</span>15 仕上げて外に出す</a><a class="next" href="17-loop.html"><span>次へ</span>17 まとめて集める（for文）</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>

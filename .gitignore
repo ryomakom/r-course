@@ -1,0 +1,21 @@
+# site/ も履歴に入れています。クローンしただけで
+# site/index.html を開いてメモ機能が使えるようにするためです。
+# （build.py を実行すれば、いつでも作り直せます）
+
+# Rの作業ファイル
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# OSが作るゴミ
+Thumbs.db
+.DS_Store
+
+# 一時ファイル
+*.tmp
+~$*
+
+# Claudeの作業メモ（公開しない）
+_私の追記一覧.txt
+メモ.md

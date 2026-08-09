@@ -1,0 +1,6 @@
+# A tibble: 3 × 3
+  year     primary     n
+  <chr>    <chr>   <int>
+1 2000年度 -          47
+2 2005年度 -          34
+3 2010年度 -           5

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>はじめに——Rとは何か | 記者のためのR講座</title>
+<meta name="description" content="Excelでもできるのに、なぜわざわざコードを書くのか。まずはそこから。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part">はじめに</p><ul>
+<li class="here"><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
+<li><a href="02-install.html">RとRStudioを入れる</a></li>
+<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+</ul>
+<p class="nav-part">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part">第3部　データを集める</p><ul>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+</ul>
+<p class="nav-part">第4部　詰まったときに</p><ul>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+</ul>
+<p class="nav-part">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">はじめに</p>
+      <h1>はじめに——Rとは何か</h1>
+      <p class="lead">Excelでもできるのに、なぜわざわざコードを書くのか。まずはそこから。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#Rってなんですか">Rってなんですか</a></li><li><a href="#記者にとってのほんとうの利点">記者にとっての、ほんとうの利点</a></li><li><a href="#RStudioというソフト">RStudioというソフト</a></li></ul></nav>
+      <h2 id="Rってなんですか" data-src="01-hajimeni:8">Rってなんですか</h2>
+<p data-src="01-hajimeni:10">Rは統計解析やデータ処理のために使えるプログラミング言語です。1990年代に開発され、いまでは世界中の研究者やデータアナリスト、そしてデータジャーナリストたちが使っています。無料で使えるうえ、さまざまな専門的な用途に合わせて有志が開発した多種多様な道具がそろっているため、高度な分析や複雑な可視化もかんたんにできます。</p>
+<p data-src="01-hajimeni:12">分析や可視化ならExcelでもできるでしょ？　はい、確かにできます。でもExcelのような表計算ソフトに巨大なファイルを読み込ませると、動作が極端に遅くなってしまいます。さらに表計算ソフト上でデータを手作業で加工していくと、途中で人為的なミスがまぎれ込むことがよくあります。で、つじつまが合わなくなって「おかしい」と気づいても、どこでミスしたかが分からない。結果、いちからやり直す羽目になったりします。めんどくさ。</p>
+<p data-src="01-hajimeni:14">一方でRを使えば、何百万行もあるような巨大なデータでもスムーズに処理できます。また、分析の過程でどんな操作をしたのかをコードとして正確に残せるため、後から見返したり、他の人と共有して誤りがないかどうか検証したりもできます。</p>
+<h2 id="記者にとってのほんとうの利点" data-src="01-hajimeni:16">記者にとっての、ほんとうの利点</h2>
+<p data-src="01-hajimeni:18"><span class="review" title="要検討：書いた人の意見が入っています">速い、大きいデータが扱える、というのはもちろんそうなのですが、記者の仕事という観点でいちばんありがたいのは、<strong>やったことが全部残る</strong>という点だと思っています。<span class="review-tag">要検討</span></span></p>
+<p data-src="01-hajimeni:20">たとえば、締め切り前日にデスクから「この数字、もう一度確かめて」と言われたとしましょう。Excelでちくちく手作業をしていた場合、自分がどのセルをどう触ったかは記憶のなかにしかありません。一方、Rでやっていれば、読み込みから計算までの手順がぜんぶコードとして残っています。上から順に実行し直せば、同じ結果が同じように出てくる。どこが間違っていたかも追える。</p>
+<p data-src="01-hajimeni:22">しかも、次の年に同じ統計が発表されたとき、ファイル名の「2020」を「2025」に書き換えるだけで、同じ分析がもう一度できてしまいます。毎年同じ手作業を繰り返している統計モノの記事があるなら、それを一度Rで書いておくだけで、来年の自分がだいぶ助かります。</p>
+<aside class="box box-note box-review" data-src="01-hajimeni:24"><p class="box-title">「再現できる」ということ<span class="review-tag">要検討</span></p><p data-src="01-hajimeni:25">海外のデータジャーナリズムの現場では、分析に使ったコードを記事と一緒にGitHubで公開することが珍しくありません。読者や研究者が同じ手順をたどって検証できるようにしているわけです。ここまでやるかどうかは別として、「聞かれたら手順を全部見せられる」状態でいることは、記事の強さにつながります。</p></aside>
+<h2 id="RStudioというソフト" data-src="01-hajimeni:28">RStudioというソフト</h2>
+<p data-src="01-hajimeni:30">そのRを快適に使うためのソフトがRStudioです。データ処理の手順を「コード」と呼ばれる文章のようなものにして保存しておく場所、そのコードを実行する場所、実行した結果得られるグラフなどを確認する場所などが、一つの画面にまとまっているため、コードを書く→実行する→結果を確認する→またコードを書く……という作業をスムーズに進められます。</p>
+<p data-src="01-hajimeni:32">ただ、Rはボタンをクリックして操作するのではなく、自分でコードを書くことで命令を与える必要があります。コンピューターは人間の意図をくみ取ってはくれないので、そのコードはR独特の「文法」にしたがって明確に書かなくてはいけません。</p>
+<p data-src="01-hajimeni:34">というわけで最初はとっつきにくく感じるかもしれませんが、その壁を乗り越えれば、大量のデータを自由自在に扱えるようになります。データジャーナリストにとって、大変役立つ道具です。その基本的な扱い方を学んでいただくことをめざして、この資料を作りました。</p>
+<p data-src="01-hajimeni:36">ひとつ安心してほしいのは、<strong>覚える命令の数はそれほど多くない</strong>ということです。読み込む、いらない列を捨てる、計算した列を足す、条件で絞る、並べ替える、集計する。同じ十数個の命令を、組み合わせを変えて何度も使うことになります。</p>
+<p data-src="01-hajimeni:38">では、道具をそろえるところから始めましょう。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="index.html"><span>前へ</span>トップ</a><a class="next" href="02-install.html"><span>次へ</span>RとRStudioを入れる</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>データを読み込む | 記者のためのR講座</title>
+<meta name="description" content="read_csvでファイルを読み、オブジェクトに入れて、中身を見る。ついでにR最大の発明「パイプ演算子」を覚えます。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part">はじめに</p><ul>
+<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
+<li><a href="02-install.html">RとRStudioを入れる</a></li>
+<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<li class="here"><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+</ul>
+<p class="nav-part">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part">第3部　データを集める</p><ul>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+</ul>
+<p class="nav-part">第4部　詰まったときに</p><ul>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+</ul>
+<p class="nav-part">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">第1部　データを読む・加工する</p>
+      <h1>データを読み込む</h1>
+      <p class="lead">read_csvでファイルを読み、オブジェクトに入れて、中身を見る。ついでにR最大の発明「パイプ演算子」を覚えます。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#まずは読み込む命令">まずは読み込む命令</a></li><li><a href="#読み込んだものをどこかに置いておく">読み込んだものを、どこかに置いておく</a></li><li><a href="#実際に読んでみる">実際に読んでみる</a></li><li><a href="#中身を見る">中身を見る</a></li><li><a href="#パイプ演算子">パイプ演算子</a></li></ul></nav>
+      <h2 id="まずは読み込む命令" data-src="04-import:8">まずは読み込む命令</h2>
+<p data-src="04-import:10">さて、いよいよデータ分析に入っていきましょう。とはいえ分析をするには、まず対象となるデータが必要になります。RStudioの中でデータを「つくる」こともできますが、大量のデータを手入力するのは大変なので、どこか他のところから持ってくるほうがふつうです。このため、データをRStudioで読み込んでやるわけです。いろいろなファイル形式のデータがありますが、まずはcsv形式のものから始めてみましょう。</p>
+<p data-src="04-import:12">ただしRStudioでデータを読み込むときは、Excelファイルのアイコンをダブルクリックするときのようにはいきません。読み込みのための命令を出してやる必要があります。tidyverseのパッケージでは、読み込みのためにこんな命令を使うと、「tibble」という形式に変えてくれます（Rのなかでのデータ形式にもいろいろありますが、ひとまずはtibbleからはじめることにします）。</p>
+<div class="code" data-lang="R" data-src="04-import:14"><button class="copy" type="button">コピー</button><pre><code>read_csv()</code></pre></div>
+<p data-src="04-import:18">この丸括弧の中に、読み込みたいファイルのありかを書き込んだうえで、命令を出してやります。ファイルは使っているパソコンの中に保存されているものでもいいですし、ウェブ上に置いてあるものでもかまいません。</p>
+<p data-src="04-import:20">パソコンの中なら、たとえば</p>
+<div class="code" data-lang="R" data-src="04-import:22"><button class="copy" type="button">コピー</button><pre><code>read_csv("data/xxx.csv")</code></pre></div>
+<p data-src="04-import:26">となりますし、ウェブ上なら</p>
+<div class="code" data-lang="R" data-src="04-import:28"><button class="copy" type="button">コピー</button><pre><code>read_csv("https://xxx.xxx/xxx.csv")</code></pre></div>
+<p data-src="04-import:32">となります。このとき、ファイルのありかをダブルクオーテーション（<code>"</code>）で囲うのを忘れないようにしましょう。</p>
+<h2 id="読み込んだものをどこかに置いておく" data-src="04-import:34">読み込んだものを、どこかに置いておく</h2>
+<p data-src="04-import:36">また、読み込むだけでなく、それをRStudioの中に保存するには、「代入」するための命令（<a href="a1-kigou.html">付録A</a>で触れています）を使って以下のようなコードを書く必要があります。</p>
+<div class="code" data-lang="R" data-src="04-import:38"><button class="copy" type="button">コピー</button><pre><code>df &lt;- read_csv("data/xxx.csv")</code></pre></div>
+<p data-src="04-import:42"><code>read_csv("data/xxx.csv")</code> という命令（つまり「data」というフォルダのなかにおいてある「xxx.csv」というファイルを読み込んでくださいね、という命令）によって読みこんだtibble形式のデータが、<code>df</code> という「オブジェクト」に左向きの矢印で注入された、みたいな感じでイメージしてください（dfというのは、この手の教科書的なものによく出てきますが、「データフレーム」の頭文字です）。</p>
+<p data-src="04-import:44">オブジェクトというのもプログラミング業界の専門用語で、なんだかとっつきにくいですが、データとか数字とかのかたまりのようなものだと考えてください。</p>
+<aside class="box box-tips" data-src="04-import:46"><p class="box-title">名前のつけかた</p><p data-src="04-import:47"><code>df</code> でもいいのですが、いくつもデータを扱いはじめると「dfってどっちのデータだっけ」と必ず混乱します。<code>jinko2020</code>、<code>kaigo_pref</code> のように、中身が想像できる名前をつけたほうが後で自分が助かります。</p>
+<p data-src="04-import:49">ただし名前は<strong>半角英数字とアンダースコア</strong>で。日本語も一応使えますが、後々おかしなことが起きるので避けましょう。数字から始める名前（<code>2020data</code> など）も使えません。</p></aside>
+<h2 id="実際に読んでみる" data-src="04-import:52">実際に読んでみる</h2>
+<p data-src="04-import:54">はい、というわけで実践です。</p>
+<aside class="box box-data" data-src="04-import:56"><p class="box-title">使うデータ</p><p data-src="04-import:57">2020年時点での全国の各自治体における人口のデータ（国勢調査）を使います。</p>
+<p data-src="04-import:59"><a class="dl" href="files/人口データ2020.csv" download>人口データ2020.csv<span class="dl-size">288 KB</span></a></p>
+<p data-src="04-import:61">プロジェクトのフォルダ内に <code>data</code> というフォルダを新しくつくって、その中にファイルを移しましょう。つまりファイルは <code>data/人口データ2020.csv</code> という住所に引っ越したことになります。この住所を指定して、読み込んでやるわけです。</p>
+<p data-src="04-import:63">（この先の章で使うファイルも<a href="a4-data.html">付録D</a>にまとめて置いてあります。先に全部落としておきたい人はそちらから。もとの入手先はe-Statで、その手順も付録Dに書きました）</p></aside>
+<p data-src="04-import:66">と、RStudioで読み込む前に、中身がどんななのかExcelを使ってチェックしてみましょうか。ここでは、ファイルの頭から10行を、そのまま貼りつけます。</p>
+<div class="code" data-lang="ファイルの中身" data-src="04-import:68"><button class="copy" type="button">コピー</button><pre><code>表題：,都道府県・市区町村のすがた（社会・人口統計体系）,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+公開日：,2024年6月21日,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+***,調査又は集計していないもの,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+-,データが得られないもの,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+X,数値が秘匿されているもの,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,/項目 コード,A1101,,A110101,,A110102,,A1102,,A110201,,A110202,,A1231,,A1301,,A130101,,A130102,,A1302,,A130201,,A130202...
+調査年 コード,調査年,地域 コード,地域,/項目,A1101_総人口【人】,注釈,A110101_総人口（男）【人】,注釈,A110102_総人口（女）【人】,注釈,A1102_日本人人口【人】,注釈,A110201_日本人人口（男...
+2020100000,2020年度,01100,北海道 札幌市,,1973395,,918682,,1054713,,1933094,,897727,,1035367,,48.5,,215366,,110196,,105170,,11...</code></pre></div>
+<p data-src="04-import:71">（1行が長いので、120字を超えたところは <code>...</code> で切ってあります）</p>
+<p data-src="04-import:73">どうも、8行目まではいろんな説明文とか能書きとかが書かれていて、必要なデータは9行目からのようです。つまり、8行目までは飛ばしてしまったほうがよさそうです。なので、読み込むコードはこんな感じになります。</p>
+<div class="code" data-lang="R" data-src="04-import:75"><button class="copy" type="button">コピー</button><pre><code>df2020 &lt;- read_csv("data/人口データ2020.csv", skip = 8)</code></pre></div>
+<aside class="box box-warn box-review" data-src="04-import:79"><p class="box-title">読み飛ばした8行に、記事の材料が書いてある<span class="review-tag">要検討</span></p><p data-src="04-import:80">上の4〜6行目に注目してください。</p>
+<div class="code" data-lang="画面に出るもの" data-src="04-import:82"><button class="copy" type="button">コピー</button><pre><code>***,調査又は集計していないもの
+-,データが得られないもの
+X,数値が秘匿されているもの</code></pre></div>
+<p data-src="04-import:88">これは凡例です。表のなかに <code>***</code> や <code>-</code> や <code>X</code> が入っていたら、それぞれ意味が違うということが書いてあります。「調べていない」のと「秘匿した」のと「データが取れなかった」のは、まったく別の話です。</p>
+<p data-src="04-import:90"><code>skip = 8</code> で読み飛ばすのは、あくまで<strong>Rに読ませない</strong>という意味であって、<strong>自分が読まなくていい</strong>という意味ではありません。ここを読まずに集計すると、記事に書く注記を間違えます。<a href="10-datatype.html">10章</a>でこの話に戻ってきます。</p></aside>
+<p data-src="04-import:93"><code>skip=</code> というのの後に、飛ばしたい行数分の数字を入力するわけです（skipの行数を指定しなければ、最初の行からすべて読み込みます）。これで最初の8行を無視した形でcsvファイルを読み込み、さらにそれを <code>df2020</code> というオブジェクトに入れることができました。</p>
+<aside class="box box-warn" data-src="04-import:95"><p class="box-title">読み込む前に、必ず中身を見る</p><p data-src="04-import:96">これは最初に身につけてほしい癖です。<strong>Rで読む前に、Excelかメモ帳でファイルを開いて中を見る。</strong> 上に何行のゴミがあるか、列の名前はどうなっているか、数字のなかに「－」や「※」が混じっていないか。ここを見ないでいきなり読み込むと、あとで原因不明の変な結果に悩まされます。</p>
+<p data-src="04-import:98">役所のcsvは、上に何行も説明書きが入っているのが当たり前です。しかも同じ統計なのに、年によって行数が違ったりします（<a href="08-bind.html">08章</a>でその実例に出会います）。</p></aside>
+<p data-src="04-import:101">ファイルをパソコン内に保存することなく、ウェブ上にあるものを直接読み込むというやり方でも、同じことができます。ウェブ上にあるファイルのありかを括弧内に入力して、</p>
+<div class="code" data-lang="R" data-src="04-import:103"><button class="copy" type="button">コピー</button><pre><code>df2020 &lt;- read_csv("http://www.xxxxxxxxx", skip = 8)</code></pre></div>
+<p data-src="04-import:107">とすればいいわけです。</p>
+<h2 id="中身を見る" data-src="04-import:109">中身を見る</h2>
+<p data-src="04-import:111">さて、<code>df2020</code> にはどんなデータが入ったんでしょうか。それを見るためにはシンプルに</p>
+<div class="code" data-lang="R" data-src="04-import:113"><button class="copy" type="button">コピー</button><pre><code>df2020</code></pre></div>
+<p data-src="04-import:117">と入力すればいいわけですが、こんなふうに表示されます（列が多いので、はじめの6列だけにしてあります）。</p>
+<div class="code" data-lang="実行結果" data-src="04-import:119"><button class="copy" type="button">コピー</button><pre><code># A tibble: 1,916 × 6
+  `調査年 コード` 調査年   `地域 コード` 地域   `/項目` `A1101_総人口【人】`
+            &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;chr&gt;  &lt;lgl&gt;                  &lt;dbl&gt;
+1      2020100000 2020年度 01100         北海道 札… NA                   1973395
+2      2020100000 2020年度 01101         北海道 札… NA                    248680
+3      2020100000 2020年度 01102         北海道 札… NA                    289323
+4      2020100000 2020年度 01103         北海道 札… NA                    265379
+5      2020100000 2020年度 01104         北海道 札… NA                    211835
+6      2020100000 2020年度 01105         北海道 札… NA                    225298
+# ℹ 1,910 more rows</code></pre></div>
+<p data-src="04-import:122">でもこれだと、はじめの方にある数列分、数行分しかチェックできません。全体をみてみたいと思ったら、こんなふうに入力してください。</p>
+<div class="code" data-lang="R" data-src="04-import:124"><button class="copy" type="button">コピー</button><pre><code>df2020 %&gt;% view()</code></pre></div>
+<figure class="fig" data-src="04-import:128"><div class="fig-todo"><p>ここに画像を入れる</p><p class="fig-todo-alt">RStudioでview()を実行し、左上の枠に表形式でデータが表示された画面</p><p class="fig-todo-path">images/04-view.png</p></div><figcaption>view()を実行すると、左上の枠にこんな表が出てきます</figcaption></figure>
+<p data-src="04-import:130">すると、左上の枠のところに、エクセルみたいなものが出てきて、そこに <code>df2020</code> の中身が表示されたのではないでしょうか。<code>view()</code> というのは、こうやってエクセルみたいなものでデータの中身を表示させるための関数で、<code>df2020 %&gt;% view()</code> という文章は、<code>df2020</code> というオブジェクトに <code>view()</code> という関数を適用しなさい、という意味です。</p>
+<aside class="box box-tips" data-src="04-import:132"><p class="box-title">中身を確かめるための関数</p><p data-src="04-import:133"><code>view()</code> のほかにも、状況に応じて使えるものがあります。</p>
+<div class="code" data-lang="R" data-src="04-import:135"><button class="copy" type="button">コピー</button><pre><code>df2020                 # 最初の10行だけ、ざっと見る
+df2020 %&gt;% view()      # 表形式で全部見る
+df2020 %&gt;% glimpse()   # 列の名前とデータ型を縦に並べて見る
+df2020 %&gt;% nrow()      # 何行あるか数える
+df2020 %&gt;% colnames()  # 列の名前だけ一覧にする</code></pre></div>
+<p data-src="04-import:143">列がやたら多いデータでは <code>glimpse()</code> がとても便利です。「どんな列があるんだっけ」を確かめるとき、私はまずこれを打ちます。</p></aside>
+<h2 id="パイプ演算子" data-src="04-import:146">パイプ演算子</h2>
+<p data-src="04-import:148"><code>df2020</code> と <code>view()</code> の間にある <code>%&gt;%</code> という記号は、「パイプ演算子」と呼びます。<code>df2020</code> というオブジェクトを <code>view()</code> という関数に手渡しする仲立ちのような役割をしています。右向きの矢印みたいなものだと考えると、直感的にわかりやすいかもしれません。</p>
+<p data-src="04-import:150"><code>view()</code> という関数になぜ丸括弧がついているのか、気になった人もたぶんいると思いますが、それもこのパイプ演算子と間接的に関係しています。実はひとむかし前は、パイプ演算子というものは使われていなかったのです。さっきのと同じ命令を、パイプ演算子を使わないで書くとこんなふうになります。</p>
+<div class="code" data-lang="R" data-src="04-import:152"><button class="copy" type="button">コピー</button><pre><code>view(df2020)</code></pre></div>
+<p data-src="04-import:156">数学で f(x) みたいな数式？を書いたのを覚えている方もいらっしゃるでしょう。xという変数にfという関数を適用したよ、という意味ですね。これと同じで、<code>df2020</code> に <code>view</code> という関数をかけたものが <code>view(df2020)</code> と表現されるわけです。</p>
+<p data-src="04-import:158">ただ、関数が一つだけならまだいいんですが、いくつもいくつも関数を適用していくと、こんな感じになってしまいます。</p>
+<div class="code" data-lang="R" data-src="04-import:160"><button class="copy" type="button">コピー</button><pre><code>D(C(B(A(x))))</code></pre></div>
+<p data-src="04-import:164">これはxという変数に関数Aを適用し、さらにそれに関数Bを適用し、さらに関数Cを、最後に関数Dを、というふうに、何重もの入れ子構造になっているわけです。非常に読みにくい、と思いませんか。一方で、パイプ演算子を使えば、同じ命令をこんなふうに書き表すことができます。</p>
+<div class="code" data-lang="R" data-src="04-import:166"><button class="copy" type="button">コピー</button><pre><code>x %&gt;% A() %&gt;% B() %&gt;% C() %&gt;% D()</code></pre></div>
+<p data-src="04-import:170">これだと、左から右に字を読んでいくのと、関数をかけていく処理の流れが一致しているので、読みやすく、理解しやすい。だからパイプ演算子が人気になったわけです。</p>
+<p data-src="04-import:172">また、関数はもともと、適用する対象の変数などを丸括弧の中身に入れ込んでいくという書き方だったので、パイプ演算子を使えば丸括弧の中身が空っぽになる場合でも、丸括弧じたいは残すのが基本的なお作法とされているわけです。ま、<code>view()</code> とかのシンプルな関数なら、実際には丸括弧がなくてもちゃんと動いちゃうんですけどね。</p>
+<p data-src="04-import:174">それから、より新しいバージョンのRでは、<code>|&gt;</code> という記号でパイプ演算子を表すこともあります。詳しくいうと動作に少し違いがあるらしいんですが、私はよく分かりません。この講座では <code>%&gt;%</code> で通します。</p>
+<p data-src="04-import:176">あと、いちいち3文字打ち込むのがめんどくさいよ、というときには、<strong>コントロールキーとシフトキー、「M」のキーのみっつを同時に打つ</strong>と、パイプ演算子が出てきます。これを使うとだいぶラクになります。</p>
+<aside class="box box-note" data-src="04-import:178"><p class="box-title">改行の位置</p><p data-src="04-import:179">長いコードは、パイプ演算子のところで改行して書くのがお作法です。</p>
+<div class="code" data-lang="R" data-src="04-import:181"><button class="copy" type="button">コピー</button><pre><code>df2020 %&gt;%
+  select(地域) %&gt;%
+  view()</code></pre></div>
+<p data-src="04-import:187">改行するときは、<strong><code>%&gt;%</code> を行の末尾に置いて、次の行を書く</strong>。逆に <code>%&gt;%</code> を行の頭に置くと、Rは前の行で命令が終わったと判断してしまい、うまく動きません。</p>
+<p data-src="04-import:189">この形で書いておくと、上から1行ずつ足したり削ったりして「ここまでの段階でデータはどうなっているか」を確かめられます。これは実際の作業でものすごく多用する技です。</p></aside>
+<p data-src="04-import:192">次の章から、この形でデータを加工していきます。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="03-project.html"><span>前へ</span>プロジェクトとパッケージ</a><a class="next" href="05-select-mutate.html"><span>次へ</span>05 選ぶ・名前を変える・計算する</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>

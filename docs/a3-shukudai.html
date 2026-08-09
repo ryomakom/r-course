@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>付録C　宿題と作例 | 記者のためのR講座</title>
+<meta name="description" content="各章の宿題と、その作例です。答えは一つではないので、自分のコードが違っていても、同じ結果が出ていれば正解です。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part">はじめに</p><ul>
+<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
+<li><a href="02-install.html">RとRStudioを入れる</a></li>
+<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+</ul>
+<p class="nav-part">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part">第3部　データを集める</p><ul>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+</ul>
+<p class="nav-part">第4部　詰まったときに</p><ul>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+</ul>
+<p class="nav-part">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li class="here"><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">付録</p>
+      <h1>付録C　宿題と作例</h1>
+      <div class="page-review"><p class="page-review-title">この章について</p><p>宿題そのものは勉強会のものです。作例と解説は私（Claude）が書き、実際にRで走らせて確かめたものです。</p></div><p class="lead">各章の宿題と、その作例です。答えは一つではないので、自分のコードが違っていても、同じ結果が出ていれば正解です。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#1若者率のランキング05章05-select-mutatehtml">1．若者率のランキング（[05章](05-select-mutate.html)）</a></li><li><a href="#2都道府県別の高齢化率ランキング07章07-grouphtml">2．都道府県別の高齢化率ランキング（[07章](07-group.html)）</a></li><li><a href="#3ExcelファイルもふくめてまとめてbindRowsする10章10-datatypehtml">3．ExcelファイルもふくめてまとめてbindRowsする（[10章](10-datatype.html)）</a></li><li><a href="#4pivotで往復する09章09-pivothtml">4．pivotで往復する（[09章](09-pivot.html)）</a></li><li><a href="#5年と自治体の両方で突合する11章11-joinhtml">5．年と自治体の両方で突合する（[11章](11-join.html)）</a></li><li><a href="#6宮城県の年齢層別人口13章13-colhtml">6．宮城県の年齢層別人口（[13章](13-col.html)）</a></li><li><a href="#7東京の子どもが減っていないを可視化する14章14-pointhtml">7．東京の子どもが減っていない、を可視化する（[14章](14-point.html)）</a></li><li><a href="#81つのファイルの全シートを処理する19章19-kami-excelhtml">8．1つのファイルの全シートを処理する（[19章](19-kami-excel.html)）</a></li></ul></nav>
+      <aside class="box box-warn box-review" data-src="a3-shukudai:9"><p class="box-title">先に自分で書いてください<span class="review-tag">要検討</span></p><p data-src="a3-shukudai:10">コードを写しても手は覚えません。<strong>うまくいかなくても、エラーを見ながら20分は粘る。</strong> そのうえで見てください。エラーと格闘した時間が、そのまま実力になります。</p></aside>
+<h2 id="1若者率のランキング05章05-select-mutatehtml" data-src="a3-shukudai:13">1．若者率のランキング（<a href="05-select-mutate.html">05章</a>）</h2>
+<blockquote data-src="a3-shukudai:15">人口に占める若者の割合を示す列を作って、「若者率が高い自治体」「低い自治体」それぞれのランキングを作りなさい。</blockquote>
+<div class="code" data-lang="R" data-src="a3-shukudai:17"><button class="copy" type="button">コピー</button><pre><code>df2020 %&gt;%
+  select(地域,
+         `A1101_総人口【人】`,
+         `A1301_15歳未満人口【人】`) %&gt;%
+  rename(region = 地域,
+         population = `A1101_総人口【人】`,
+         population_under15 = `A1301_15歳未満人口【人】`) %&gt;%
+  mutate(rate_young = population_under15 * 100 / population) %&gt;%
+  arrange(desc(rate_young))</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="a3-shukudai:29"><button class="copy" type="button">コピー</button><pre><code># A tibble: 1,916 × 3
+   region          population rate_young
+   &lt;chr&gt;                &lt;dbl&gt;      &lt;dbl&gt;
+ 1 鹿児島県 三島村        405       23.5
+ 2 福岡県 新宮町        32927       20.7
+ 3 沖縄県 南風原町      40440       20.2
+ 4 沖縄県 宜野座村       5833       19.8
+ 5 沖縄県 豊見城市      64612       19.4
+ 6 鹿児島県 十島村        740       19.3
+ 7 沖縄県 八重瀬町      30941       19.3
+ 8 沖縄県 渡嘉敷村        718       19.2
+ 9 沖縄県 与那原町      19695       19.0
+10 三重県 朝日町        11021       18.8
+# ℹ 1,906 more rows</code></pre></div>
+<p data-src="a3-shukudai:32">低い順に見たければ、最後の行を <code>arrange(rate_young)</code> に変えるだけです。</p>
+<p data-src="a3-shukudai:34">トップは鹿児島県三島村（人口405人）。2位が福岡県新宮町で、そのあとは沖縄県の町村がずらりと並びます。<strong>沖縄が強いのは予想どおりでも、三島村と新宮町はなぜなのか。</strong> ここが記者の出発点です。人口405人の村で若者率が23.5％というのは、実数でいえば95人ほど。分母が小さいところは、ちょっとした変化で率が跳ねます。<strong>率のランキングを作ったら、必ず実数も並べて見る。</strong> 上のコードで <code>population</code> を残しているのは、そのためです。</p>
+<p data-src="a3-shukudai:36">低いほうは、高齢化率のランキングとほぼ裏返しになるはずです。<strong>なぜ裏返しにならない自治体があるのか</strong>——そこに目をつけると面白いかもしれません。生産年齢人口の比率が極端に高い、つまり働く人だけがいる場所、ということです。</p>
+<h2 id="2都道府県別の高齢化率ランキング07章07-grouphtml" data-src="a3-shukudai:38">2．都道府県別の高齢化率ランキング（<a href="07-group.html">07章</a>）</h2>
+<blockquote data-src="a3-shukudai:40">都道府県別に高齢化率を計算し、ランキングを作りなさい。</blockquote>
+<div class="code" data-lang="R" data-src="a3-shukudai:42"><button class="copy" type="button">コピー</button><pre><code>df2020_pref %&gt;%
+  mutate(rate_aged = pref_population_over65 * 100 / pref_population) %&gt;%
+  arrange(desc(rate_aged))</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="a3-shukudai:48"><button class="copy" type="button">コピー</button><pre><code># A tibble: 47 × 3
+   prefecture pref_population rate_aged
+   &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;
+ 1 秋田県              959502      37.3
+ 2 高知県              691527      35.0
+ 3 山口県             1342059      34.3
+ 4 島根県              671126      34.0
+ 5 山形県             1068027      33.7
+ 6 岩手県             1210534      33.4
+ 7 青森県             1237984      33.4
+ 8 徳島県              719559      33.1
+ 9 和歌山県            922584      33.1
+10 大分県             1123852      32.9
+# ℹ 37 more rows</code></pre></div>
+<p data-src="a3-shukudai:51">秋田県が37.3％で1位。高知、山口、島根と続きます。</p>
+<p data-src="a3-shukudai:53"><code>group_by</code> と <code>summarize</code> で足し上げてから、<code>mutate</code> で割り算する。<strong>この順番が大事です。</strong> 先に市区町村ごとの高齢化率を出して、それを都道府県ごとに平均してしまうと、答えが変わります（人口1000人の村と人口100万人の市が、同じ重みで平均されてしまうからです）。</p>
+<p data-src="a3-shukudai:55">いわゆる「平均の平均」問題です。比率を集計するときは、<strong>分子と分母をそれぞれ足し上げてから割る</strong>。これは覚えておいてください。</p>
+<h2 id="3ExcelファイルもふくめてまとめてbindRowsする10章10-datatypehtml" data-src="a3-shukudai:57">3．ExcelファイルもふくめてまとめてbindRowsする（<a href="10-datatype.html">10章</a>）</h2>
+<blockquote data-src="a3-shukudai:59">2000年と2005年の人口データも読み込んでください。csvじゃなくてexcelファイルだったりするので、これまでに使っていない関数を使って読み込む必要があります。また、<code>bind_rows()</code> 関数で合体させようとしても、ふつうにやるとエラーが出ます。原因を考えて、できれば解決してみてください。</blockquote>
+<p data-src="a3-shukudai:61">答えは<a href="10-datatype.html">10章</a>の本文にあります。読み込みは <code>read_excel()</code>（readxlパッケージ）、エラーの原因はデータ型の不一致、解決は全部いったん文字列として読み込むこと。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:63"><button class="copy" type="button">コピー</button><pre><code>library(readxl)
+
+df &lt;- bind_rows(read_csv("data/人口データ2020.csv", skip = 8) %&gt;%
+                  mutate(across(everything(), as.character)),
+                read_csv("data/人口データ2015.csv", skip = 2) %&gt;%
+                  mutate(across(everything(), as.character)),
+                read_csv("data/人口データ2010.csv", skip = 5,
+                         locale = locale(encoding = "CP932")) %&gt;%
+                  mutate(across(everything(), as.character)),
+                read_excel("data/人口データ2005.xls", skip = 8) %&gt;%
+                  mutate(across(everything(), as.character)),
+                read_excel("data/人口データ2000.xlsx", skip = 8) %&gt;%
+                  mutate(across(everything(), as.character)))</code></pre></div>
+<h2 id="4pivotで往復する09章09-pivothtml" data-src="a3-shukudai:79">4．pivotで往復する（<a href="09-pivot.html">09章</a>）</h2>
+<blockquote data-src="a3-shukudai:81"><code>df_simple</code> のデータフレームについて、<code>region</code> の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず <code>pivot_wider</code> をかけ、それをまた <code>pivot_longer</code> で元に戻してください。</blockquote>
+<div class="code" data-lang="R" data-src="a3-shukudai:83"><button class="copy" type="button">コピー</button><pre><code># まず3つの列に分ける
+df_split &lt;- df_simple %&gt;%
+  mutate(prefecture = str_split_i(region, " ", 1),
+         municipality = str_split_i(region, " ", 2),
+         ward = str_split_i(region, " ", 3)) %&gt;%
+  select(-region)
+
+# 横長にする
+df_split_wide &lt;- df_split %&gt;%
+  pivot_wider(names_from = year,
+              values_from = population)
+
+# 縦長に戻す
+df_split_wide %&gt;%
+  pivot_longer(cols = -c(prefecture, municipality, ward),
+               names_to = "year",
+               values_to = "population")</code></pre></div>
+<p data-src="a3-shukudai:103"><code>cols = -c(...)</code> のところで、縦長にしたくない列（＝地名の列）を3つとも除くのがポイントです。ここを間違えると、地名まで縦長にされて意味不明なデータになります。</p>
+<aside class="box box-tips" data-src="a3-shukudai:105"><p class="box-title">戻したものと元のものを比べる</p><p data-src="a3-shukudai:106">往復して元に戻ったかどうかは、目で見なくても確かめられます。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:108"><button class="copy" type="button">コピー</button><pre><code>modotta &lt;- df_split_wide %&gt;%
+  pivot_longer(cols = -c(prefecture, municipality, ward),
+               names_to = "year", values_to = "population")
+
+nrow(df_split)
+nrow(modotta)</code></pre></div>
+<p data-src="a3-shukudai:117">行数が違っていたら、往復の途中で何かが起きています。よくあるのは、<code>pivot_wider</code> のときに同じ地名が複数の行にあって（政令市の区など）、値がリストにまとめられてしまうケースです。警告が出ていないか確かめてください。</p></aside>
+<h2 id="5年と自治体の両方で突合する11章11-joinhtml" data-src="a3-shukudai:120">5．年と自治体の両方で突合する（<a href="11-join.html">11章</a>）</h2>
+<blockquote data-src="a3-shukudai:122">複数の年のデータを含んだ労働力人口のcsvを読み込んで、<code>df_simple</code> と「年度」「自治体」に基づいて突合してください。</blockquote>
+<aside class="box box-data" data-src="a3-shukudai:124"><p class="box-title">使うデータ</p><p data-src="a3-shukudai:125"><a class="dl" href="files/労働人口データ.csv" download>労働人口データ.csv<span class="dl-size">673 KB</span></a>　5年分がまとめて入ったもの</p>
+<p data-src="a3-shukudai:127"><a href="11-join.html">11章</a>で使った <code>労働人口データ2020.csv</code> とは別のファイルです。この2つを見比べるのが、この宿題のいちばん面白いところです。</p></aside>
+<p data-src="a3-shukudai:130">まず読み込んで、中身を見てみます。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:132"><button class="copy" type="button">コピー</button><pre><code>working_population &lt;- read_csv("data/労働人口データ.csv", skip = 8) %&gt;%
+  rename(year = 調査年,
+         code = `地域 コード`,
+         primary = `F2201_第1次産業就業者数【人】`,
+         secondary = `F2211_第2次産業就業者数【人】`,
+         tertiary = `F2221_第3次産業就業者数【人】`)
+
+working_population %&gt;%
+  select(year, code, primary, secondary)</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="a3-shukudai:144"><button class="copy" type="button">コピー</button><pre><code># A tibble: 9,580 × 4
+  year     code  primary secondary
+  <mark>&lt;chr&gt;</mark>    <mark>&lt;chr&gt;</mark> <mark>&lt;chr&gt;</mark>   <mark>&lt;chr&gt;</mark>    
+1 2020年度 01100 3,983   115,924  
+2 2020年度 01101 303     8,534    
+3 2020年度 01102 674     19,376   
+4 2020年度 01103 545     18,169   
+# ℹ 9,576 more rows</code></pre></div>
+<p data-src="a3-shukudai:147">ここで手が止まってほしいところです。<code>primary</code> が <code>&lt;chr&gt;</code>、つまり<strong>文字列</strong>になっています。中身を見ると <code>3,983</code> と、<strong>桁区切りのカンマが入っている</strong>。</p>
+<aside class="box box-warn" data-src="a3-shukudai:149"><p class="box-title">同じ統計なのに、ファイルによって型が違う</p><p data-src="a3-shukudai:150"><a href="11-join.html">11章</a>で使った2020年だけの <code>労働人口データ2020.csv</code> では、同じ列が <code>&lt;dbl&gt;</code>（数値）で読めていました。カンマは入っているのに、です。<code>read_csv()</code> は桁区切りのカンマくらいなら見抜いて数値にしてくれるからです。</p>
+<p data-src="a3-shukudai:152">ではなぜ5年分のファイルでは文字列になるのか。数字ではないものが混じっているからです。数えてみましょう。</p>
+<div class="code" data-lang="実行結果" data-src="a3-shukudai:154"><button class="copy" type="button">コピー</button><pre><code># A tibble: 3 × 3
+  year     primary     n
+  &lt;chr&gt;    &lt;chr&gt;   &lt;int&gt;
+1 2000年度 -          47
+2 2005年度 -          34
+3 2010年度 -           5</code></pre></div>
+<p data-src="a3-shukudai:157"><code>-</code> が86件。<a href="04-import.html">04章</a>で見た凡例によれば「データが得られないもの」です。これが1つでも入っていると、<code>read_csv()</code> はその列を「文字列」と判断します。</p>
+<p data-src="a3-shukudai:159"><strong>同じ統計、同じ列名なのに、切り出す年の範囲を変えるとデータ型が変わる。</strong> これはこの講座で扱ったデータで実際に起きていることで、役所のデータを扱うかぎり避けられません。だから読み込んだら必ず型を見る、という話に戻ってきます。</p></aside>
+<p data-src="a3-shukudai:162">というわけで、数値に直します。ここで <code>as.double()</code> を使ってはいけません。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:164"><button class="copy" type="button">コピー</button><pre><code>working_population &lt;- working_population %&gt;%
+  select(year, code, primary, secondary, tertiary) %&gt;%
+  mutate(year = as.double(str_sub(year, 1, 4)),
+         across(c(primary, secondary, tertiary), parse_number))
+
+df_simple %&gt;%
+  left_join(working_population,
+            by = join_by(year, code))</code></pre></div>
+<p data-src="a3-shukudai:175"><code>parse_number()</code> は、カンマや単位のような余計な文字を捨てて数字だけを取り出してくれる関数です（readrパッケージに入っています）。<code>as.double("3,983")</code> はNAになりますが、<code>parse_number("3,983")</code> はちゃんと3983になります。</p>
+<aside class="box box-warn" data-src="a3-shukudai:177"><p class="box-title">as.double を使うと4072件が消えます</p><p data-src="a3-shukudai:178">このデータで試すと、はっきり分かります。</p>
+<ul data-src="a3-shukudai:180">
+<li><code>as.double()</code> を使う → 9580行のうち <strong>4072行がNA</strong>（カンマが入っている大きな数字が全滅）</li>
+<li><code>parse_number()</code> を使う → NAは <strong>86件</strong>だけ（さきほどの <code>-</code> の分）</li>
+</ul>
+<p data-src="a3-shukudai:183">しかも <code>as.double()</code> のほうは、警告は出ますがエラーにはなりません。<strong>そのまま集計すると、全国の就業者数が半分以下になった数字が出てきます。</strong> 気づかなければ、それで記事を書いてしまいます。</p>
+<p data-src="a3-shukudai:185">数字に見えない文字が混じっているデータを数値にするときは、<code>parse_number()</code>。これは覚えておいてください。</p></aside>
+<p data-src="a3-shukudai:188">とっかかりにする列が2つになるので、<code>join_by(year, code)</code> とコンマで並べます。「年が同じで、かつ自治体コードも同じ行」をくっつける、という意味です。</p>
+<div class="code" data-lang="実行結果" data-src="a3-shukudai:190"><button class="copy" type="button">コピー</button><pre><code># A tibble: 9,580 × 5
+   year region               population primary tertiary
+  &lt;dbl&gt; &lt;chr&gt;                     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+1  2020 北海道 札幌市           1973395    3983   697967
+2  2020 北海道 札幌市 中央区     248680     303    91594
+3  2020 北海道 札幌市 北区       289323     674    99453
+4  2020 北海道 札幌市 東区       265379     545    91495
+5  2020 北海道 札幌市 白石区     211835     344    75576
+# ℹ 9,575 more rows</code></pre></div>
+<aside class="box box-warn box-review" data-src="a3-shukudai:193"><p class="box-title">ここでいちばんつまずくところ<span class="review-tag">要検討</span></p><p data-src="a3-shukudai:194"><code>year</code> の中身が、片方は <code>2020</code>（数値）、もう片方は <code>"2020年度"</code>（文字列）になっていると、<strong>突合は1件も成功しません</strong>。しかもエラーは出ません。全部NAになるだけです。</p>
+<p data-src="a3-shukudai:196">だから、突合の前に両方の <code>year</code> の形をそろえます。上のコードで <code>as.double(str_sub(year, 1, 4))</code> としているのがそれです。</p>
+<p data-src="a3-shukudai:198">突合したら、必ず確かめてください。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:200"><button class="copy" type="button">コピー</button><pre><code>df_simple %&gt;%
+  left_join(working_population, by = join_by(year, code)) %&gt;%
+  filter(is.na(primary)) %&gt;%
+  count(year)</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="a3-shukudai:207"><button class="copy" type="button">コピー</button><pre><code># A tibble: 3 × 2
+   year     n
+  &lt;dbl&gt; &lt;int&gt;
+1  2000    47
+2  2005    34
+3  2010     5</code></pre></div>
+<p data-src="a3-shukudai:210">特定の年だけ全部NAになっていたら、その年の形がそろっていません。ここでは2000年に47件、2005年に34件、2010年に5件。<strong>これは<a href="10-datatype.html">10章</a>で人口データを数値に直したときに出たNAの数と、ぴったり同じです。</strong> つまり同じ自治体が、人口も就業者数も集計されていない。合併の直前だったのか、それとも別の理由か。データはそこまで教えてくれませんが、<strong>2つの統計で同じ穴があいている</strong>という事実は、それ自体が確かめる価値のあることです。</p></aside>
+<h2 id="6宮城県の年齢層別人口13章13-colhtml" data-src="a3-shukudai:213">6．宮城県の年齢層別人口（<a href="13-col.html">13章</a>）</h2>
+<blockquote data-src="a3-shukudai:215"><code>data/主な都道府県の人口.csv</code> をもとに、宮城県の年齢層別人口の推移を示すグラフを作ってください。</blockquote>
+<div class="code" data-lang="R" data-src="a3-shukudai:217"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+  filter(prefecture == "宮城県") %&gt;%
+  select(-population) %&gt;%
+  pivot_longer(cols = -c(year, prefecture),
+               names_to = "category",
+               values_to = "value") %&gt;%
+  ggplot() +
+  geom_col(aes(year, value, fill = category)) +
+  labs(title = "宮城県の年齢層別人口の推移",
+       x = "年",
+       y = "人口",
+       fill = "年齢層")</code></pre></div>
+<figure class="fig" data-src="a3-shukudai:232"><img src="images/13-shukudai-miyagi.png" alt="宮城県の年齢層別人口の推移を積み上げ棒グラフで示したもの" loading="lazy"><figcaption>作例。65歳以上が増え、ほかが減っている</figcaption></figure>
+<p data-src="a3-shukudai:234">手順は3つです。</p>
+<ol data-src="a3-shukudai:236">
+<li><code>filter()</code> で宮城県だけに絞る</li>
+<li><code>select(-population)</code> で総人口の列を捨てる（二重計上を防ぐ）</li>
+<li><code>pivot_longer()</code> で年齢層を1つの列にまとめる</li>
+</ol>
+<p data-src="a3-shukudai:240"><code>geom_col(aes(year, value, fill = category))</code> のように <code>x =</code> <code>y =</code> を省いても動きます。<code>aes()</code> は最初の2つを自動的にxとyとして受け取るからです。ただ、慣れないうちは省かないほうが読み間違えません。</p>
+<p data-src="a3-shukudai:242"><strong>発展。</strong> 凡例が <code>population_15to64</code> のような英語のままだと不親切です。日本語に直したければ、pivotのあとに変換します。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:244"><button class="copy" type="button">コピー</button><pre><code>  mutate(category = case_when(category == "population_under15" ~ "15歳未満",
+                              category == "population_15to64" ~ "15〜64歳",
+                              category == "population_over65" ~ "65歳以上")) %&gt;%</code></pre></div>
+<p data-src="a3-shukudai:250">さらに、積み上げの順番を上から「65歳以上」にしたければ、<code>factor()</code> で順番を指定します。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:252"><button class="copy" type="button">コピー</button><pre><code>  mutate(category = factor(category,
+                           levels = c("65歳以上", "15〜64歳", "15歳未満"))) %&gt;%</code></pre></div>
+<p data-src="a3-shukudai:257"><code>factor</code> は「決まった選択肢のどれか」を表すデータ型で、ここで指定した <code>levels</code> の順番が、そのままグラフの並び順になります。ggplotで「並び順を思い通りにしたい」と思ったら、これを思い出してください。</p>
+<h2 id="7東京の子どもが減っていないを可視化する14章14-pointhtml" data-src="a3-shukudai:259">7．東京の子どもが減っていない、を可視化する（<a href="14-point.html">14章</a>）</h2>
+<blockquote data-src="a3-shukudai:261">東京とかでは子どもは減っていないっぽい。そこに注目して、全市町村について可視化してみましょう。アイデア求む。</blockquote>
+<div class="code" data-lang="R" data-src="a3-shukudai:263"><button class="copy" type="button">コピー</button><pre><code>all_municipality %&gt;%
+  filter(year %in% c(2020, 2000)) %&gt;%
+  select(year, code, prefecture, municipality, population_under15, population) %&gt;%
+  pivot_longer(cols = c(population_under15, population),   # いったんlongに変換
+               names_to = "category",
+               values_to = "value") %&gt;%
+  pivot_wider(names_from = c(category, year),              # 再びwideに変換
+              values_from = value) %&gt;%
+  mutate(change_under15 = (population_under15_2020 * 100 / population_under15_2000) - 100) %&gt;%
+  mutate(area = ifelse(prefecture == "東京都",
+                       "東京都の自治体",
+                       "その他")) %&gt;%
+  ggplot() +
+  geom_point(aes(x = population_2020,
+                 y = change_under15,
+                 color = area),
+             alpha = .3) +
+  scale_x_log10()</code></pre></div>
+<p data-src="a3-shukudai:284">これは<a href="14-point.html">14章</a>で扱ったものと同じです。ほかにもアイデアはいくらでもあります。</p>
+<ul data-src="a3-shukudai:286">
+<li>東京都以外に、政令指定都市だけを色分けしてみる（<code>case_when()</code> で3つに分ける）</li>
+<li>都心からの距離を横軸にとる（住所から緯度経度を出す必要があります）</li>
+<li>増えている自治体だけを抽出して、一覧にする（<code>filter(change_under15 &gt; 0)</code>）</li>
+</ul>
+<p data-src="a3-shukudai:290">3つ目がいちばん記者らしいやり方かもしれません。「全国で子どもが増えた自治体は◯◯しかない」という一覧は、それ自体が記事の骨になります。そして、そのリストに載った自治体に電話をかけるのが、次の仕事です。</p>
+<h2 id="81つのファイルの全シートを処理する19章19-kami-excelhtml" data-src="a3-shukudai:292">8．1つのファイルの全シートを処理する（<a href="19-kami-excel.html">19章</a>）</h2>
+<blockquote data-src="a3-shukudai:294">一つのファイルにある複数のシートに同じ処理を連続的にほどこすコードを、for文を使ってつくりましょう。</blockquote>
+<div class="code" data-lang="R" data-src="a3-shukudai:296"><button class="copy" type="button">コピー</button><pre><code>sheet_names &lt;- "download/000979538.xlsx" %&gt;%
+  excel_sheets()
+
+vote_data &lt;- tibble()
+
+for (i in sheet_names) {
+  vote_data_temporaly &lt;- "download/000979538.xlsx" %&gt;%
+    xlsx_cells() %&gt;%
+    filter(row &gt; 3, sheet == i) %&gt;%
+    behead("left", "municipality") %&gt;%
+    behead("up", "name") %&gt;%
+    behead("up", "party") %&gt;%
+    mutate(district = i) %&gt;%
+    rename(vote = content) %&gt;%
+    select(district, municipality, name, party, vote) %&gt;%
+    filter(!is.na(municipality))
+
+  vote_data &lt;- bind_rows(vote_data, vote_data_temporaly)
+}</code></pre></div>
+<p data-src="a3-shukudai:318">ポイントは3つ。空っぽの <code>tibble()</code> を先に用意すること、<code>filter(sheet == i)</code> でそのシートだけに絞ること、<code>mutate(district = i)</code> でシート名を情報として持ち込むこと。</p>
+<p data-src="a3-shukudai:320"><strong>発展。</strong> 同じファイルを何度も <code>xlsx_cells()</code> で読み直しているので、シートが多いと遅くなります。先に1回だけ読んでおくと速くなります。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:322"><button class="copy" type="button">コピー</button><pre><code>all_cells &lt;- xlsx_cells("download/000979538.xlsx")   # 1回だけ読む
+
+vote_data &lt;- tibble()
+
+for (i in sheet_names) {
+  temp &lt;- all_cells %&gt;%
+    filter(row &gt; 3, sheet == i) %&gt;%
+    behead("left", "municipality") %&gt;%
+    behead("up", "name") %&gt;%
+    behead("up", "party") %&gt;%
+    mutate(district = i) %&gt;%
+    rename(vote = content) %&gt;%
+    select(district, municipality, name, party, vote) %&gt;%
+    filter(!is.na(municipality))
+
+  vote_data &lt;- bind_rows(vote_data, temp)
+}</code></pre></div>
+<p data-src="a3-shukudai:342">「同じ作業を繰り返さない」というのは、for文を書くときの基本です。ループの中に入れなくていいものは、外に出す。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="a2-functions.html"><span>前へ</span>B 関数早見表</a><a class="next" href="a4-data.html"><span>次へ</span>D データの準備</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>

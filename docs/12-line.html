@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>折れ線グラフ | 記者のためのR講座</title>
+<meta name="description" content="ggplotの基本はここで全部出てきます。キャンバスを用意して、どのデータをどう描くかを指示する。それだけです。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part">はじめに</p><ul>
+<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
+<li><a href="02-install.html">RとRStudioを入れる</a></li>
+<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+</ul>
+<p class="nav-part">第2部　データを見る</p><ul>
+<li class="here"><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part">第3部　データを集める</p><ul>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+</ul>
+<p class="nav-part">第4部　詰まったときに</p><ul>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+</ul>
+<p class="nav-part">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">第2部　データを見る</p>
+      <h1>折れ線グラフ</h1>
+      <p class="lead">ggplotの基本はここで全部出てきます。キャンバスを用意して、どのデータをどう描くかを指示する。それだけです。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#まずはキャンバスを用意する">まずはキャンバスを用意する</a></li><li><a href="#何をどう描くかを指示する">何をどう描くかを指示する</a></li><li><a href="#線を増やす">線を増やす</a></li><li><a href="#色分けする">色分けする</a></li><li><a href="#比率にして眺めてみる">比率にして眺めてみる</a></li><li><a href="#aesの中に書くもの外に書くもの">aes()の中に書くもの、外に書くもの</a></li></ul></nav>
+      <p data-src="12-line:8">さていよいよ、グラフをつくることによるデータの可視化をしていきましょう。グラフはデータに何が隠されていたのか、そこからどんなメッセージを引き出しどんな記事が書けそうなのかを知るための大切な道具であり、また分析や集計の結果を同僚に伝えるための媒体でもあります。</p>
+<p data-src="12-line:10">グラフには円グラフやヒートマップなどさまざまなものがありますが、ここでは基本となる折れ線グラフと棒グラフ、散布図についてやっていきます。たった3種類？　そう思われるかもしれませんが、この三つさえできるようになれば大半の用途には足りてしまいますので、問題ありません。</p>
+<aside class="box box-data" data-src="12-line:12"><p class="box-title">使うデータ</p><p data-src="12-line:13">ここからは、第1部で加工した人口データを整えたものを使います。自分で作ってみたい人は<a href="a4-data.html">付録D</a>にコードがありますが、先に進みたい人はここから落としてください。</p>
+<p data-src="12-line:15"><a class="dl" href="files/東京都の人口.csv" download>東京都の人口.csv<span class="dl-size">347 バイト</span></a>　東京都の年齢層別人口の推移</p>
+<p data-src="12-line:17"><a class="dl" href="files/主な都道府県の人口.csv" download>主な都道府県の人口.csv<span class="dl-size">1 KB</span></a>　宮城・東京・愛知・大阪・福岡の5都府県分</p>
+<p data-src="12-line:19"><a class="dl" href="files/都道府県別人口.csv" download>都道府県別人口.csv<span class="dl-size">11 KB</span></a>　47都道府県分</p>
+<p data-src="12-line:21"><a class="dl" href="files/市町村別人口.csv" download>市町村別人口.csv<span class="dl-size">509 KB</span></a>　全市町村分</p>
+<p data-src="12-line:23">4つとも <code>data</code> フォルダへ。年が数値になっていて、余計な列もないので、そのまま <code>read_csv()</code> で読めます。</p></aside>
+<h2 id="まずはキャンバスを用意する" data-src="12-line:26">まずはキャンバスを用意する</h2>
+<p data-src="12-line:28">ではまずデータの読み込みから。東京都の人口データを <code>tokyo</code> というtibbleに格納しましょう。</p>
+<div class="code" data-lang="R" data-src="12-line:30"><button class="copy" type="button">コピー</button><pre><code>tokyo &lt;- read_csv("data/東京都の人口.csv")</code></pre></div>
+<p data-src="12-line:34">ではこれを、グラフを描くための <code>ggplot</code> という関数にかけていきます。こんなふうにやります。</p>
+<div class="code" data-lang="R" data-src="12-line:36"><button class="copy" type="button">コピー</button><pre><code>tokyo %&gt;%
+  ggplot()</code></pre></div>
+<figure class="fig" data-src="12-line:41"><img src="images/12-canvas.png" alt="何も指定していない空のggplotの出力。灰色の四角が表示されているだけ" loading="lazy"><figcaption>ggplot()だけを実行すると、灰色のキャンバスが出てくる</figcaption></figure>
+<p data-src="12-line:43">おっ、右下のPlotsというタブに、何か出てきましたね。でも灰色に塗りつぶされただけで、グラフは描かれていません。というのも、<code>tokyo</code> というtibbleをもとにグラフを描く準備はできたのですが、どのデータをどんなふうに可視化しなさいという具体的な指示がないからです。今のところはグラフを描くためのキャンバスができただけ、と考えてください。</p>
+<h2 id="何をどう描くかを指示する" data-src="12-line:45">何をどう描くかを指示する</h2>
+<p data-src="12-line:47">では、具体的な指示とはどんなものか。こんなのです。</p>
+<div class="code" data-lang="R" data-src="12-line:49"><button class="copy" type="button">コピー</button><pre><code>tokyo %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = population))</code></pre></div>
+<figure class="fig" data-src="12-line:55"><img src="images/12-line-tokyo.png" alt="東京都の人口が2000年から2020年まで右肩上がりに増えていることを示す折れ線グラフ" loading="lazy"><figcaption>東京都の人口の推移</figcaption></figure>
+<p data-src="12-line:57">はい、これでグラフが描けました。横軸に年、縦軸に人口をとった折れ線グラフです。なぜこういうグラフになるのでしょうか。</p>
+<p data-src="12-line:59"><code>ggplot</code> という関数のあとに、<code>geom_line</code> というのが来ていますね。これはline、つまり折れ線グラフを描きなさいという指示で、丸括弧のなかにはさらに <code>aes()</code> というのがあって、その丸括弧のなかでxとyがそれぞれ指定されています。xに <code>year</code> が指示されているので横軸に年がとられ、yに <code>population</code> が指示されているので縦軸に人口がとられている、というわけです。</p>
+<p data-src="12-line:61">geomとかaesとか、いろいろややこしいと思われるかもしれませんが、これは我慢して覚えてください。でもggplotではいつもこれを使うので、慣れれば手が覚えてしまいます。</p>
+<p data-src="12-line:63">ちなみにgeomはgeometry、つまり「幾何的な」の略で、aesはaesthetic、つまり「美的な」とか「視覚的な」とかを意味することばの略、らしいです。でもまあ、繰り返しになりますが、これは難しく考えずに覚えてしまってください。</p>
+<aside class="box box-warn" data-src="12-line:65"><p class="box-title">ggplotだけは「+」でつなぐ</p><p data-src="12-line:66">ここまでずっとパイプ演算子 <code>%&gt;%</code> でつないできましたが、<strong>ggplotの中身だけはプラス記号 <code>+</code> でつなぎます</strong>。理由は歴史的なもので、ggplot2がパイプ演算子より前に生まれたからです。</p>
+<ul data-src="12-line:68">
+<li>データを加工するところまで → <code>%&gt;%</code></li>
+<li><code>ggplot()</code> から先のグラフの指示 → <code>+</code></li>
+</ul>
+<p data-src="12-line:71">ここを間違えると、こんなエラーが出ます。</p>
+<div class="code" data-lang="画面に出るもの" data-src="12-line:73"><button class="copy" type="button">コピー</button><pre><code>Error in geom_line(...) : 
+  ggplot2 doesn't know how to deal with data of class ...</code></pre></div>
+<p data-src="12-line:78"><span class="review" title="要検討：書いた人の意見が入っています">もしくは「<code>+</code> を使いなさい」と教えてくれることもあります。私はいまでも週に一回はこれをやっています。<span class="review-tag">要検討</span></span></p></aside>
+<h2 id="線を増やす" data-src="12-line:81">線を増やす</h2>
+<p data-src="12-line:83">ところで、折れ線グラフが描けたのはいいんですが、線が一本だとなんだか寂しいですね。せっかくなので、もうちょっと増やしてみましょう。というわけで、主な5都府県のデータを読み込んで、<code>five_pref</code> というオブジェクトに保存します。</p>
+<div class="code" data-lang="R" data-src="12-line:85"><button class="copy" type="button">コピー</button><pre><code>five_pref &lt;- read_csv("data/主な都道府県の人口.csv")</code></pre></div>
+<p data-src="12-line:89">これをさっきと同じコードにかけてみると、どうなるでしょうか。</p>
+<div class="code" data-lang="R" data-src="12-line:91"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = population))</code></pre></div>
+<figure class="fig" data-src="12-line:97"><img src="images/12-line-ng.png" alt="5都府県のデータが1本の線でジグザグにつながってしまったグラフ" loading="lazy"><figcaption>全部のデータが1本の線でつながってしまった</figcaption></figure>
+<p data-src="12-line:99">5都府県あるので、線が5本の折れ線グラフにしたかったのですが、そうはなってくれませんでした。すべてのデータが1本の線でつなげられてしまったからです。ジグザグの、意味のよくわからない図になったはずです。</p>
+<p data-src="12-line:101">それぞれのデータを都府県ごとにグループ化したうえで折れ線として表示してもらうためには、こんなコードを書きます。</p>
+<div class="code" data-lang="R" data-src="12-line:103"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = population, group = prefecture))</code></pre></div>
+<figure class="fig" data-src="12-line:109"><img src="images/12-line-group.png" alt="5本の線に分かれたが、すべて同じ色の折れ線グラフ" loading="lazy"><figcaption>group=prefectureで5本に分かれた。でも色が同じ</figcaption></figure>
+<p data-src="12-line:111">うまく行きました。<code>group = prefecture</code> という部分で、都府県ごとにグループ化してくださいね、と指示しているわけです。</p>
+<aside class="box box-note" data-src="12-line:113"><p class="box-title">ggplotは「1本の線」しか知らない</p><p data-src="12-line:114">なぜ最初のコードでジグザグになったのか。ggplotから見ると、渡されたのは「年と人口の組み合わせが並んだ表」でしかありません。そのなかで、どこからどこまでが1本の線なのかは、こちらが教えないと分からないのです。</p>
+<p data-src="12-line:116">だから <code>group=</code> で「この列の値が同じもの同士をつなげてね」と指示する。折れ線グラフでデータが増えたときは、まずこれを疑ってください。</p></aside>
+<h2 id="色分けする" data-src="12-line:119">色分けする</h2>
+<p data-src="12-line:121">ただ、全部同じ色なので、どの線がどの都府県に対応しているのか、分かりません。色分けしてみましょう。こんなコードです。</p>
+<div class="code" data-lang="R" data-src="12-line:123"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = population, color = prefecture))</code></pre></div>
+<figure class="fig" data-src="12-line:129"><img src="images/12-line-color.png" alt="5都府県が色分けされ、右側に凡例が表示された折れ線グラフ" loading="lazy"><figcaption>color=prefectureにすると、色分けと凡例が同時にできる</figcaption></figure>
+<p data-src="12-line:131">うまく色分けできました。右側に凡例も表示されていますね。このコードでは <code>color = prefecture</code> という部分で、都府県ごとに色分けしてくださいね、という指示を出しています。こうすれば、グループの分け方を別途指示する必要はなくなります。</p>
+<h2 id="比率にして眺めてみる" data-src="12-line:133">比率にして眺めてみる</h2>
+<p data-src="12-line:135">で、色分けできたのはいいですが、それぞれの人口を表示しているだけで、あまりダイナミックな感じがしません。せっかくなので、各都府県の子どもの割合を出してから、これを折れ線グラフにしてみましょう。こんなコードです。</p>
+<div class="code" data-lang="R" data-src="12-line:137"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+  mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = rate_under15, color = prefecture))</code></pre></div>
+<figure class="fig" data-src="12-line:144"><img src="images/12-line-rate.png" alt="5都府県の15歳未満人口の割合が、いずれも右肩下がりで推移していることを示す折れ線グラフ" loading="lazy"><figcaption>子どもの割合にすると、規模の違う5都府県を並べて比べられる</figcaption></figure>
+<p data-src="12-line:146"><code>mutate</code> 関数を使って子どもの割合を示す列を作ってから、そのままパイプ演算子でつないでggplotになだれ込んでいます。これまでは縦軸に人口をとっていましたが、今回は <code>y = rate_under15</code> というところで子どもの割合を縦軸にとるように指示しています。こういうやり方なら、もととなるtibbleを変えないままでいろいろなグラフを作ることができます。</p>
+<aside class="box box-tips box-review" data-src="12-line:148"><p class="box-title">実数か、比率か<span class="review-tag">要検討</span></p><p data-src="12-line:149"><span class="review" title="要検討：書いた人の意見が入っています">これは記者としての判断の話です。<span class="review-tag">要検討</span></span></p>
+<ul data-src="12-line:151">
+<li><strong>実数</strong>（人口そのもの）……規模の大小が分かる。東京と宮城を並べると、東京の線しか目に入らない。</li>
+<li><strong>比率</strong>（子どもの割合）……規模の違う地域を並べて比べられる。ただし「分母が減っただけ」なのに割合が上がることがある。</li>
+</ul>
+<p data-src="12-line:154">どちらが正しいということはなく、両方描いて見比べるのが正解です。Rならコードを1行変えるだけなので、両方見ないほうが損です。</p>
+<p data-src="12-line:156">そして記事では、比率だけを見せて済ませないこと。「割合は上がったが、実数は減っている」という現象は、人口が減っている日本ではあちこちで起きています。</p></aside>
+<h2 id="aesの中に書くもの外に書くもの" data-src="12-line:159">aes()の中に書くもの、外に書くもの</h2>
+<p data-src="12-line:161">もう一つだけ、ここで覚えておくと後がラクになる話をします。</p>
+<div class="code" data-lang="R" data-src="12-line:163"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = population, color = prefecture),
+            linewidth = 1.2)</code></pre></div>
+<p data-src="12-line:170"><code>color = prefecture</code> は <code>aes()</code> の<strong>中</strong>にありますが、<code>linewidth = 1.2</code> は <code>aes()</code> の<strong>外</strong>にあります。この違いは、</p>
+<ul data-src="12-line:172">
+<li><code>aes()</code> の中……<strong>データの列によって</strong>見た目を変える（都府県ごとに色を変える）</li>
+<li><code>aes()</code> の外……<strong>全体を一律に</strong>指定する（線の太さは全部1.2）</li>
+</ul>
+<p data-src="12-line:175">ということです。だから、全部の線を青くしたいだけなら <code>aes()</code> の外に <code>color = "blue"</code> と書きます。逆に <code>aes(color = "blue")</code> と書くと、Rは「"blue"という値を持つ列」だと解釈して、へんな凡例が出てきます。これは定番のつまずきポイントです。</p>
+<p data-src="12-line:177">次は棒グラフです。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="11-join.html"><span>前へ</span>11 横にくっつける（join）</a><a class="next" href="13-col.html"><span>次へ</span>13 棒グラフ</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>

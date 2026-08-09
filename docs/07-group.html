@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>集計する | 記者のためのR講座</title>
+<meta name="description" content="group_byとsummarize。市区町村のデータを都道府県ごとに足し上げます。二重計上をどう防ぐかも一緒に。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part">はじめに</p><ul>
+<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
+<li><a href="02-install.html">RとRStudioを入れる</a></li>
+<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li class="here"><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+</ul>
+<p class="nav-part">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part">第3部　データを集める</p><ul>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+</ul>
+<p class="nav-part">第4部　詰まったときに</p><ul>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+</ul>
+<p class="nav-part">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">第1部　データを読む・加工する</p>
+      <h1>集計する</h1>
+      <p class="lead">group_byとsummarize。市区町村のデータを都道府県ごとに足し上げます。二重計上をどう防ぐかも一緒に。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#group_byとsummarize">group_byとsummarize</a></li><li><a href="#二重計上に気をつける">二重計上に気をつける</a></li><li><a href="#summarizeで使えるもの">summarizeで使えるもの</a></li><li><a href="#group_byを解除する">group_byを解除する</a></li></ul></nav>
+      <p data-src="07-group:8">では次に、都道府県別の高齢化率を見ていきましょう。</p>
+<p data-src="07-group:10">ただ、今のデータでは市区町村ごとの人口データはありますが、都道府県別にまとまってはいません。各市区町村を都道府県別に割り振り、人口を足し上げてやる必要があるわけです。</p>
+<h2 id="group_byとsummarize" data-src="07-group:12">group_byとsummarize</h2>
+<p data-src="07-group:14">そのために使えるのが <code>group_by</code> と <code>summarize</code> という関数です。こんなふうに使います。</p>
+<div class="code" data-lang="R" data-src="07-group:16"><button class="copy" type="button">コピー</button><pre><code>df2020_pref &lt;- df2020_simple %&gt;%
+  filter(is.na(ward)) %&gt;%
+  group_by(prefecture) %&gt;%
+  summarize(pref_population = sum(population),
+            pref_population_over65 = sum(population_over65))</code></pre></div>
+<p data-src="07-group:24"><code>group_by</code> 関数を使ってデータを <code>prefecture</code> によってグループ化したうえで、それぞれのグループについて <code>summarize</code> 関数を使って総人口と65歳以上人口を足しあげ、それぞれ <code>pref_population</code> と <code>pref_population_over65</code> という列に格納しています。<code>sum(population)</code> という部分は <code>population</code> を足し算するという意味で、<code>sum(population_over65)</code> はもちろん <code>population_over65</code> を足し算するという意味です。</p>
+<div class="code" data-lang="実行結果" data-src="07-group:26"><button class="copy" type="button">コピー</button><pre><code># A tibble: 47 × 3
+  prefecture pref_population pref_population_over65
+  &lt;chr&gt;                &lt;dbl&gt;                  &lt;dbl&gt;
+1 三重県             1770254                 522073
+2 京都府             2578087                 734493
+3 佐賀県              811442                 246061
+4 兵庫県             5465002                1546543
+5 北海道             5224614                1664023
+6 千葉県             6284480                1699991
+# ℹ 41 more rows</code></pre></div>
+<p data-src="07-group:29">47行になりました。Excelのピボットテーブルを使ったことがあれば、あの「行に都道府県、値に人口の合計」という操作とまったく同じことをしていると考えてください。</p>
+<p data-src="07-group:31">なお、並び順が五十音でも人口順でもなく妙に見えるのは、<code>group_by</code> が文字コードの順番で並べているからです。気になるなら <code>arrange()</code> で並べ直してください。</p>
+<h2 id="二重計上に気をつける" data-src="07-group:33">二重計上に気をつける</h2>
+<p data-src="07-group:35">また、ちょっと話がそれますが、2行目で <code>filter(is.na(ward))</code> という操作をしているのは、<strong>二重計上を防ぐため</strong>です。政令指定都市のデータは市のデータと区のデータの両方があるからです。</p>
+<p data-src="07-group:37"><code>is.na(ward)</code> というのは、「<code>ward</code> という列がNAつまり欠損値（Not Available）である」という意味です。この条件に合う行だけを抽出することによって、政令指定都市の区を除外しているわけです。</p>
+<p data-src="07-group:39">そうして作った都道府県別の人口データを、<code>df2020_pref</code> というデータフレームに格納する。上記のコードは、そういう命令を書き記したものです。</p>
+<aside class="box box-warn box-review" data-src="07-group:41"><p class="box-title">合計は必ず答え合わせする<span class="review-tag">要検討</span></p><p data-src="07-group:42">足し算をしたら、答えが合っているかを外の数字と照らし合わせる。これは絶対にやってください。</p>
+<div class="code" data-lang="R" data-src="07-group:44"><button class="copy" type="button">コピー</button><pre><code>df2020_pref %&gt;%
+  summarize(zenkoku = sum(pref_population))</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="07-group:49"><button class="copy" type="button">コピー</button><pre><code># A tibble: 1 × 1
+    zenkoku
+      &lt;dbl&gt;
+1 <mark>126146099</mark></code></pre></div>
+<p data-src="07-group:52">2020年国勢調査の総人口は1億2614万6099人。ぴったり合いました。合っていなければ、どこかで二重に数えているか、どこかを落としています。</p>
+<p data-src="07-group:54">もし <code>filter(is.na(ward))</code> を忘れていたら、政令指定都市の人口（20市で2800万人ほど）が2回数えられて、答えは1億5千万人あたりまでふくらみます。2割以上ずれるので、答え合わせをすれば必ず気づけます。逆にいえば、答え合わせをしないと気づけません。</p></aside>
+<h2 id="summarizeで使えるもの" data-src="07-group:57">summarizeで使えるもの</h2>
+<p data-src="07-group:59"><code>sum()</code> のほかにも、いろいろな集計ができます。</p>
+<div class="code" data-lang="R" data-src="07-group:61"><button class="copy" type="button">コピー</button><pre><code>df2020_simple %&gt;%
+  filter(is.na(ward)) %&gt;%
+  group_by(prefecture) %&gt;%
+  summarize(jichitai_su = n(),                    # 自治体の数を数える
+            gokei = sum(population),              # 合計
+            heikin = mean(population),            # 平均
+            chuuou = median(population),          # 中央値
+            saidai = max(population),             # 最大
+            saishou = min(population))            # 最小</code></pre></div>
+<p data-src="07-group:73"><code>n()</code> は「このグループに何行あるか」を数える関数です。丸括弧のなかに何も入れないのが特徴で、自治体の数、事件の件数、企業の数といった「件数」を出すときに大活躍します。</p>
+<aside class="box box-tips box-review" data-src="07-group:75"><p class="box-title">平均と中央値は並べて出す<span class="review-tag">要検討</span></p><p data-src="07-group:76">人口や所得のように、極端に大きい値が少しだけあるデータでは、平均が実感からずれます。全国の市区町村の人口を平均すると7万人あたりになりますが、中央値は2万人台。「平均的な自治体」と書くときにどちらの数字を指しているのか、記事にする前に自分で確かめておきたいところです。</p>
+<p data-src="07-group:78">だから私は、<code>mean()</code> と <code>median()</code> はいつも並べて出すようにしています。ずれが大きければ、それ自体が記事の切り口になります。</p></aside>
+<aside class="box box-warn box-review" data-src="07-group:81"><p class="box-title">NAがあると合計がNAになる<span class="review-tag">要検討</span></p><p data-src="07-group:82"><code>sum()</code> は、足す数字のなかに一つでもNA（欠損値）があると、答えもNAになります。「何も出てこないぞ」というときは、まずこれを疑ってください。</p>
+<div class="code" data-lang="R" data-src="07-group:84"><button class="copy" type="button">コピー</button><pre><code>sum(population, na.rm = TRUE)</code></pre></div>
+<p data-src="07-group:88"><code>na.rm = TRUE</code> を足すと、NAを飛ばして計算してくれます。ただし、<strong>気軽に付けないでください</strong>。NAを飛ばすというのは「そこは無かったことにする」という判断なので、なぜNAなのかを確かめないまま付けると、集計の意味が変わってしまいます。</p>
+<p data-src="07-group:90">たとえば秘匿処理でNAになっているなら「集計できていない自治体がある」と注記すべきですし、そもそも読み込みの失敗でNAになっているなら、直すべきなのは読み込みのほうです。まずNAがどこにいくつあるかを見る。</p>
+<div class="code" data-lang="R" data-src="07-group:92"><button class="copy" type="button">コピー</button><pre><code>df2020_simple %&gt;% filter(is.na(population))</code></pre></div></aside>
+<h2 id="group_byを解除する" data-src="07-group:97">group_byを解除する</h2>
+<p data-src="07-group:99"><code>group_by</code> したあとのtibbleは、グループ化された状態のまま残ることがあります。<code>summarize</code> を使うとふつうは解除されますが、<code>mutate</code> などを続けて使うときには、そのままだと思わぬ計算結果になることがあります。</p>
+<div class="code" data-lang="R" data-src="07-group:101"><button class="copy" type="button">コピー</button><pre><code>df2020_simple %&gt;%
+  group_by(prefecture) %&gt;%
+  mutate(kensu = n()) %&gt;%
+  ungroup()            # グループ化を解除する</code></pre></div>
+<p data-src="07-group:108">上のコードは、都道府県ごとの自治体数を、行を減らさずに新しい列として足すというものです（<code>summarize</code> は行をまとめてしまいますが、<code>mutate</code> なら元の行がそのまま残ります）。この使い方は「全体に対する比率」を出すときに便利です。</p>
+<p data-src="07-group:110">最後に <code>ungroup()</code> を付ける癖をつけておくと、後々の事故が減ります。</p>
+<aside class="box box-homework" data-src="07-group:112"><p class="box-title">宿題</p><p data-src="07-group:113">都道府県別に高齢化率を計算し、ランキングを作りなさい（ヒント：前回使った関数を活用）。</p>
+<p data-src="07-group:115">作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
+    </article>
+    <nav class="pager"><a class="prev" href="06-strings-filter.html"><span>前へ</span>06 文字を切る・行を絞る</a><a class="next" href="08-bind.html"><span>次へ</span>08 縦にくっつける</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js"></script>
+<script src="assets/notes.js"></script>
+</body>
+</html>
