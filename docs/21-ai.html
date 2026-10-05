@@ -4,8 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AIと一緒にコードを書く | 記者のためのR講座</title>
-<meta name="description" content="いまRを覚えるなら、AIを使わない理由はありません。ただし、記者が使うときにだけ気をつけるべきことがあります。">
+<meta name="description" content="">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li class="here"><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="here wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -60,72 +69,13 @@
     <article>
       <p class="kicker">第4部　詰まったときに</p>
       <h1>AIと一緒にコードを書く</h1>
-      <div class="page-review"><p class="page-review-title">この章について</p><p>この章はもとになるテキストがなく、まるごと私（Claude）の書きおろしです。<strong>AIに渡してはいけないものの範囲は、社内規定と照らしていません。</strong></p></div><p class="lead">いまRを覚えるなら、AIを使わない理由はありません。ただし、記者が使うときにだけ気をつけるべきことがあります。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#AIは覚えなくてよくする道具ではない">AIは、覚えなくてよくする道具ではない</a></li><li><a href="#効く頼み方">効く頼み方</a></li><li><a href="#記者として越えてはいけない線">記者として、越えてはいけない線</a></li><li><a href="#AIが間違えるところ">AIが間違えるところ</a></li><li><a href="#それでもAIはいちばんいい先生になる">それでもAIは、いちばんいい先生になる</a></li></ul></nav>
-      <h2 id="AIは覚えなくてよくする道具ではない" data-src="21-ai:9">AIは、覚えなくてよくする道具ではない</h2>
-<p data-src="21-ai:11">正直に書きます。この講座に出てくるコードは、AIに頼めばほぼ書いてもらえます。「国勢調査のcsvを読み込んで、都道府県別の高齢化率ランキングを作るRのコードを書いて」と頼めば、それらしいものが返ってきます。</p>
-<p data-src="21-ai:13">では、覚える必要はないのか。あります。理由は2つです。</p>
-<ol data-src="21-ai:15">
-<li><strong>返ってきたコードが正しいか、自分で判断できないと使えない。</strong> AIは平気で、存在しない関数を書いてきます。動くけれど意図と違うことをするコードも書いてきます。読めなければ、それに気づけません。</li>
-<li><strong>何をしたいかを言葉にできないと、頼めない。</strong> 「縦長のデータを、年を列名にして横に広げたい」と言えれば一発ですが、その言い方を知らないと、延々とすれ違います。</li>
-</ol>
-<p data-src="21-ai:18">つまりAIは、覚える手間を消す道具ではなく、<strong>覚えるまでの時間を短くする道具</strong>です。<span class="review" title="要検討：書いた人の意見が入っています">だから私は、初心者にこそAIを使ってほしいと思っています。<span class="review-tag">要検討</span></span></p>
-<h2 id="効く頼み方" data-src="21-ai:20">効く頼み方</h2>
-<h3 id="エラーを貼る" data-src="21-ai:22">エラーを貼る</h3>
-<p data-src="21-ai:24">これがいちばん効きます。うまくいかないコードとエラーメッセージを、両方そのまま貼りつけて「なぜ動かないか教えて」と聞く。だいたい一発で分かります。</p>
-<p data-src="21-ai:26">このとき、<strong>コードだけでなくエラーの全文を貼る</strong>こと。そして、できればデータの形も添える。</p>
-<div class="code" data-lang="R" data-src="21-ai:28"><button class="copy" type="button">コピー</button><pre><code>df %&gt;% glimpse()</code></pre></div>
-<p data-src="21-ai:32">の結果を一緒に貼ると、精度が跳ね上がります。「列名は何ですか」というやりとりが省けるからです。</p>
-<h3 id="やりたいことを日本語で細かく書く" data-src="21-ai:34">やりたいことを、日本語で細かく書く</h3>
-<p data-src="21-ai:36">雑に頼むと、雑なものが返ってきます。</p>
-<blockquote data-src="21-ai:38">❌ 人口のグラフを作りたい</blockquote>
-<blockquote data-src="21-ai:40">⭕ year、prefecture、population、population_under15 の4つの列があるtibbleがあります。都道府県ごとに、人口に占める15歳未満の割合を計算して、年を横軸にした折れ線グラフをggplotで描きたい。宮城、東京、愛知、大阪、福岡の5つだけを表示して、日本語のタイトルと軸名を入れてください。</blockquote>
-<p data-src="21-ai:42">長いほうが早く終わります。取材の依頼と同じで、こちらが何を求めているかを具体的に伝えたほうが、いいものが返ってきます。</p>
-<h3 id="tidyverseでと付ける" data-src="21-ai:44">「tidyverseで」と付ける</h3>
-<p data-src="21-ai:46">Rには、同じことをするやり方が何通りもあります。指定しないと、この講座で説明していない書き方（<code>$</code> や <code>[ ]</code> を多用する昔ながらの書き方、いわゆるbase R）が返ってくることがあります。</p>
-<p data-src="21-ai:48">「tidyverseのやり方で、パイプ演算子を使って書いてください」と付けておくと、この講座で覚えたコードとつながる形で返ってきます。</p>
-<h3 id="なぜそう書くのか説明してと付ける" data-src="21-ai:50">「なぜそう書くのか説明して」と付ける</h3>
-<p data-src="21-ai:52">これを付ける癖をつけてください。コードだけもらうと、コピーして貼るだけになり、次に同じことをするときにまた聞くことになります。</p>
-<p data-src="21-ai:54">説明つきでもらえば、それが1回分の勉強になります。私はこれを繰り返して、<code>pivot_wider</code> の引数の意味をようやく覚えました。</p>
-<h3 id="CSVの中身の一部を見せて相談する" data-src="21-ai:56">CSVの中身の一部を見せて相談する</h3>
-<p data-src="21-ai:58">「このデータをこう加工したい」という相談は、実際のデータの冒頭を見せるといちばん早く伝わります。</p>
-<p data-src="21-ai:60">ただし、ここには注意が必要です。次の節を読んでください。</p>
-<h2 id="記者として越えてはいけない線" data-src="21-ai:62">記者として、越えてはいけない線</h2>
-<p data-src="21-ai:64"><span class="review" title="要検討：書いた人の意見が入っています">ここがこの章のいちばん大事なところです。<span class="review-tag">要検討</span></span></p>
-<p data-src="21-ai:66">AIサービスに文字を貼りつけるというのは、<strong>社外に情報を送っている</strong>ということです。多くのサービスでは、送った内容が学習に使われる可能性があり、事業者側で保存もされます。設定で学習をオフにできるものもありますが、「送った」という事実は変わりません。</p>
-<p data-src="21-ai:68">だから、次のものは絶対に貼らない。</p>
-<aside class="box box-warn box-review" data-src="21-ai:70"><p class="box-title">貼ってはいけないもの<span class="review-tag">要検討</span></p><ul data-src="21-ai:71">
-<li><strong>取材源が分かるもの。</strong> 名前、連絡先、所属、日程。取材メモそのもの。</li>
-<li><strong>未公表の資料。</strong> 入手した内部文書、開示前の行政文書、発表前の統計。</li>
-<li><strong>社内のデータベースから取ってきたもの。</strong> 記事本文、契約情報、購読者データ。</li>
-<li><strong>他社に先んじて掴んだネタの中身。</strong> 「こういうデータからこういう傾向が出ました。これは記事になりますか」という相談は、ネタそのものを外に出しています。</li>
-</ul>
-<p data-src="21-ai:76">社内の規定で認められた環境がある場合は、その範囲で使ってください。会社が認めた環境かどうかを確かめるのは、使う側の責任です。</p></aside>
-<p data-src="21-ai:79">では、公表済みの統計ならいいのか。基本的には問題ありません。国勢調査のcsvは誰でも手に入るものです。ただ、私は次のように使い分けています。</p>
-<ul data-src="21-ai:81">
-<li><strong>データの中身は見せず、形だけ見せる。</strong> 列名とデータ型（<code>glimpse()</code> の結果）だけで、加工の相談はほぼ済みます。中身の数字までは必要ありません。</li>
-<li><strong>どうしても中身が必要なら、自分で作った架空のデータで聞く。</strong> 数行だけ、それらしい形の偽データを作って渡す。これで再現できる問題なら、本物を出す必要はありません。</li>
-<li><span class="review" title="要検討：書いた人の意見が入っています"><strong>分析の方針は自分で決める。</strong> 「このデータから何が言えますか」とAIに聞くのは、記者の仕事を渡してしまうことです。<span class="review-tag">要検討</span></span>何が新しいか、何がニュースかを判断するのは、こちらの仕事です。</li>
-</ul>
-<aside class="box box-note box-review" data-src="21-ai:85"><p class="box-title">「これは記事になりますか」と聞かないほうがいい理由<span class="review-tag">要検討</span></p><p data-src="21-ai:86">情報が外に出るという実務的な問題のほかに、もう一つあります。</p>
-<p data-src="21-ai:88">AIは、それらしい答えを返します。「高齢化が進む地方の実情を示す興味深いデータですね」みたいなことを言ってくれます。でもそれは、誰にとって、なぜニュースなのかを判断したものではありません。読者が何を知らないか、他社が何を書いていないか、この数字が誰の生活にどう関わるか。それを知っているのは記者だけです。</p>
-<p data-src="21-ai:90">コードは頼んでいい。判断は渡さない。この線を引いておくのがいいと思います。</p></aside>
-<h2 id="AIが間違えるところ" data-src="21-ai:93">AIが間違えるところ</h2>
-<p data-src="21-ai:95">具体的に、どこで間違えるか。よく見るパターンを挙げておきます。</p>
-<div class="table-wrap" data-src="21-ai:97"><table><thead><tr><th>間違い</th><th>見分け方</th></tr></thead><tbody><tr><td>存在しない関数を書く</td><td>実行すると <code>could not find function</code> が出る。あるいは、それらしい名前なのに動かない</td></tr><tr><td>古い書き方を混ぜる</td><td><code>spread()</code> <code>gather()</code>（<code>pivot_wider</code> <code>pivot_longer</code> の古い名前）や <code>summarise_each()</code> などが出てきたら古い</td></tr><tr><td>列名を勝手に決める</td><td>実際のデータにない列名でコードを書いてくる。<code>glimpse()</code> を見せていないときに起きがち</td></tr><tr><td>数字を作る</td><td>「この計算をすると15.3％になります」と、実行していない結果を書いてくる。<strong>これは絶対に信じないでください</strong></td></tr><tr><td>突合の漏れを無視する</td><td><code>left_join()</code> を提案するが、突合できなかった行の確認は入っていない</td></tr></tbody></table></div>
-<p data-src="21-ai:105">いちばん危ないのは、上から4番目です。AIは計算を実行していません。それらしい数字を書いているだけです。<strong>数字は必ず自分のRStudioで出す。</strong> AIが書いた数字を記事に使うことは、絶対にありません。</p>
-<h2 id="それでもAIはいちばんいい先生になる" data-src="21-ai:107">それでもAIは、いちばんいい先生になる</h2>
-<p data-src="21-ai:109">ここまで注意ばかり書きましたが、私はAIを毎日使っています。とくにありがたいのは、この3つです。</p>
-<ol data-src="21-ai:111">
-<li><strong>CSSセレクタを教えてくれる。</strong> <a href="16-scraping.html">16章</a>のスクレイピングで、HTMLの構造を貼って「この表を取り出すコードを書いて」と頼むと、一発です。ここは自力でやると本当に時間がかかります。</li>
-<li><strong>エラーの意味を教えてくれる。</strong> 英語のエラーを読み解く時間が、ほぼゼロになりました。</li>
-<li><strong>「こういうことはできますか」に答えてくれる。</strong> 「Rで住所から緯度経度を出せますか」「PDFの表をRで読めますか」といった、パッケージの存在自体を知らない領域を教えてくれます。ググるより早い。</li>
-</ol>
-<p data-src="21-ai:115">要するに、<strong>分からないことを分からないまま放置しなくて済む</strong>のが、いちばんの効き目です。私がRを覚えるのに何年もかかったのは、聞ける相手がいなかったからです。いまから始める人は、その分だけ得をしています。</p>
-<hr>
-<p data-src="21-ai:119">第4部は以上です。あとは実際の仕事のなかで、手を動かしてみてください。</p>
-<p data-src="21-ai:121">最初の1本は必ず時間がかかります。手作業なら30分で終わることに、半日かかるかもしれません。でも2本目は1時間で終わり、3本目は10分で終わります。そして来年、同じ統計が出たときには、ファイル名を書き換えるだけで済みます。</p>
-<p data-src="21-ai:123">そこまで来れば、いままで手が出せなかった大きなデータに、自分で挑めるようになっているはずです。</p>
+      
+      
+      <div class="wip-notice">
+<p class="wip-notice-title">工事中</p>
+<p>この章はいま書いているところです。公開まで、もうしばらくお待ちください。</p>
+<p>先に<a href="index.html">第1部・第2部</a>を進めておくと、この章もすっと読めるはずです。</p>
+</div>
     </article>
     <nav class="pager"><a class="prev" href="20-error.html"><span>前へ</span>20 エラーとの付き合い方</a><a class="next" href="a1-kigou.html"><span>次へ</span>A 記号と用語の辞典</a></nav>
     <footer class="site-foot">

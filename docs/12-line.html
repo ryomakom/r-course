@@ -6,6 +6,15 @@
 <title>折れ線グラフ | 記者のためのR講座</title>
 <meta name="description" content="ggplotの基本はここで全部出てきます。キャンバスを用意して、どのデータをどう描くかを指示する。それだけです。">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -72,15 +81,15 @@
 <p data-src="12-line:23">4つとも <code>data</code> フォルダへ。年が数値になっていて、余計な列もないので、そのまま <code>read_csv()</code> で読めます。</p></aside>
 <h2 id="まずはキャンバスを用意する" data-src="12-line:26">まずはキャンバスを用意する</h2>
 <p data-src="12-line:28">ではまずデータの読み込みから。東京都の人口データを <code>tokyo</code> というtibbleに格納しましょう。</p>
-<div class="code" data-lang="R" data-src="12-line:30"><button class="copy" type="button">コピー</button><pre><code>tokyo &lt;- read_csv("data/東京都の人口.csv")</code></pre></div>
+<div class="code" data-lang="R" data-src="12-line:30"><pre><code>tokyo &lt;- read_csv("data/東京都の人口.csv")</code></pre></div>
 <p data-src="12-line:34">ではこれを、グラフを描くための <code>ggplot</code> という関数にかけていきます。こんなふうにやります。</p>
-<div class="code" data-lang="R" data-src="12-line:36"><button class="copy" type="button">コピー</button><pre><code>tokyo %&gt;%
+<div class="code" data-lang="R" data-src="12-line:36"><pre><code>tokyo %&gt;%
   ggplot()</code></pre></div>
 <figure class="fig" data-src="12-line:41"><img src="images/12-canvas.png" alt="何も指定していない空のggplotの出力。灰色の四角が表示されているだけ" loading="lazy"><figcaption>ggplot()だけを実行すると、灰色のキャンバスが出てくる</figcaption></figure>
 <p data-src="12-line:43">おっ、右下のPlotsというタブに、何か出てきましたね。でも灰色に塗りつぶされただけで、グラフは描かれていません。というのも、<code>tokyo</code> というtibbleをもとにグラフを描く準備はできたのですが、どのデータをどんなふうに可視化しなさいという具体的な指示がないからです。今のところはグラフを描くためのキャンバスができただけ、と考えてください。</p>
 <h2 id="何をどう描くかを指示する" data-src="12-line:45">何をどう描くかを指示する</h2>
 <p data-src="12-line:47">では、具体的な指示とはどんなものか。こんなのです。</p>
-<div class="code" data-lang="R" data-src="12-line:49"><button class="copy" type="button">コピー</button><pre><code>tokyo %&gt;%
+<div class="code" data-lang="R" data-src="12-line:49"><pre><code>tokyo %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = population))</code></pre></div>
 <figure class="fig" data-src="12-line:55"><img src="images/12-line-tokyo.png" alt="東京都の人口が2000年から2020年まで右肩上がりに増えていることを示す折れ線グラフ" loading="lazy"><figcaption>東京都の人口の推移</figcaption></figure>
@@ -94,20 +103,20 @@
 <li><code>ggplot()</code> から先のグラフの指示 → <code>+</code></li>
 </ul>
 <p data-src="12-line:71">ここを間違えると、こんなエラーが出ます。</p>
-<div class="code" data-lang="画面に出るもの" data-src="12-line:73"><button class="copy" type="button">コピー</button><pre><code>Error in geom_line(...) : 
+<div class="code" data-lang="画面に出るもの" data-src="12-line:73"><pre><code>Error in geom_line(...) : 
   ggplot2 doesn't know how to deal with data of class ...</code></pre></div>
-<p data-src="12-line:78"><span class="review" title="要検討：書いた人の意見が入っています">もしくは「<code>+</code> を使いなさい」と教えてくれることもあります。私はいまでも週に一回はこれをやっています。<span class="review-tag">要検討</span></span></p></aside>
+<p data-src="12-line:78">もしくは「<code>+</code> を使いなさい」と教えてくれることもあります。私はいまでも週に一回はこれをやっています。</p></aside>
 <h2 id="線を増やす" data-src="12-line:81">線を増やす</h2>
 <p data-src="12-line:83">ところで、折れ線グラフが描けたのはいいんですが、線が一本だとなんだか寂しいですね。せっかくなので、もうちょっと増やしてみましょう。というわけで、主な5都府県のデータを読み込んで、<code>five_pref</code> というオブジェクトに保存します。</p>
-<div class="code" data-lang="R" data-src="12-line:85"><button class="copy" type="button">コピー</button><pre><code>five_pref &lt;- read_csv("data/主な都道府県の人口.csv")</code></pre></div>
+<div class="code" data-lang="R" data-src="12-line:85"><pre><code>five_pref &lt;- read_csv("data/主な都道府県の人口.csv")</code></pre></div>
 <p data-src="12-line:89">これをさっきと同じコードにかけてみると、どうなるでしょうか。</p>
-<div class="code" data-lang="R" data-src="12-line:91"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+<div class="code" data-lang="R" data-src="12-line:91"><pre><code>five_pref %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = population))</code></pre></div>
 <figure class="fig" data-src="12-line:97"><img src="images/12-line-ng.png" alt="5都府県のデータが1本の線でジグザグにつながってしまったグラフ" loading="lazy"><figcaption>全部のデータが1本の線でつながってしまった</figcaption></figure>
 <p data-src="12-line:99">5都府県あるので、線が5本の折れ線グラフにしたかったのですが、そうはなってくれませんでした。すべてのデータが1本の線でつなげられてしまったからです。ジグザグの、意味のよくわからない図になったはずです。</p>
 <p data-src="12-line:101">それぞれのデータを都府県ごとにグループ化したうえで折れ線として表示してもらうためには、こんなコードを書きます。</p>
-<div class="code" data-lang="R" data-src="12-line:103"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+<div class="code" data-lang="R" data-src="12-line:103"><pre><code>five_pref %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = population, group = prefecture))</code></pre></div>
 <figure class="fig" data-src="12-line:109"><img src="images/12-line-group.png" alt="5本の線に分かれたが、すべて同じ色の折れ線グラフ" loading="lazy"><figcaption>group=prefectureで5本に分かれた。でも色が同じ</figcaption></figure>
@@ -116,20 +125,20 @@
 <p data-src="12-line:116">だから <code>group=</code> で「この列の値が同じもの同士をつなげてね」と指示する。折れ線グラフでデータが増えたときは、まずこれを疑ってください。</p></aside>
 <h2 id="色分けする" data-src="12-line:119">色分けする</h2>
 <p data-src="12-line:121">ただ、全部同じ色なので、どの線がどの都府県に対応しているのか、分かりません。色分けしてみましょう。こんなコードです。</p>
-<div class="code" data-lang="R" data-src="12-line:123"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+<div class="code" data-lang="R" data-src="12-line:123"><pre><code>five_pref %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = population, color = prefecture))</code></pre></div>
 <figure class="fig" data-src="12-line:129"><img src="images/12-line-color.png" alt="5都府県が色分けされ、右側に凡例が表示された折れ線グラフ" loading="lazy"><figcaption>color=prefectureにすると、色分けと凡例が同時にできる</figcaption></figure>
 <p data-src="12-line:131">うまく色分けできました。右側に凡例も表示されていますね。このコードでは <code>color = prefecture</code> という部分で、都府県ごとに色分けしてくださいね、という指示を出しています。こうすれば、グループの分け方を別途指示する必要はなくなります。</p>
 <h2 id="比率にして眺めてみる" data-src="12-line:133">比率にして眺めてみる</h2>
 <p data-src="12-line:135">で、色分けできたのはいいですが、それぞれの人口を表示しているだけで、あまりダイナミックな感じがしません。せっかくなので、各都府県の子どもの割合を出してから、これを折れ線グラフにしてみましょう。こんなコードです。</p>
-<div class="code" data-lang="R" data-src="12-line:137"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+<div class="code" data-lang="R" data-src="12-line:137"><pre><code>five_pref %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = rate_under15, color = prefecture))</code></pre></div>
 <figure class="fig" data-src="12-line:144"><img src="images/12-line-rate.png" alt="5都府県の15歳未満人口の割合が、いずれも右肩下がりで推移していることを示す折れ線グラフ" loading="lazy"><figcaption>子どもの割合にすると、規模の違う5都府県を並べて比べられる</figcaption></figure>
 <p data-src="12-line:146"><code>mutate</code> 関数を使って子どもの割合を示す列を作ってから、そのままパイプ演算子でつないでggplotになだれ込んでいます。これまでは縦軸に人口をとっていましたが、今回は <code>y = rate_under15</code> というところで子どもの割合を縦軸にとるように指示しています。こういうやり方なら、もととなるtibbleを変えないままでいろいろなグラフを作ることができます。</p>
-<aside class="box box-tips box-review" data-src="12-line:148"><p class="box-title">実数か、比率か<span class="review-tag">要検討</span></p><p data-src="12-line:149"><span class="review" title="要検討：書いた人の意見が入っています">これは記者としての判断の話です。<span class="review-tag">要検討</span></span></p>
+<aside class="box box-tips" data-src="12-line:148"><p class="box-title">実数か、比率か</p><p data-src="12-line:149">これは記者としての判断の話です。</p>
 <ul data-src="12-line:151">
 <li><strong>実数</strong>（人口そのもの）……規模の大小が分かる。東京と宮城を並べると、東京の線しか目に入らない。</li>
 <li><strong>比率</strong>（子どもの割合）……規模の違う地域を並べて比べられる。ただし「分母が減っただけ」なのに割合が上がることがある。</li>
@@ -138,7 +147,7 @@
 <p data-src="12-line:156">そして記事では、比率だけを見せて済ませないこと。「割合は上がったが、実数は減っている」という現象は、人口が減っている日本ではあちこちで起きています。</p></aside>
 <h2 id="aesの中に書くもの外に書くもの" data-src="12-line:159">aes()の中に書くもの、外に書くもの</h2>
 <p data-src="12-line:161">もう一つだけ、ここで覚えておくと後がラクになる話をします。</p>
-<div class="code" data-lang="R" data-src="12-line:163"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+<div class="code" data-lang="R" data-src="12-line:163"><pre><code>five_pref %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = population, color = prefecture),
             linewidth = 1.2)</code></pre></div>

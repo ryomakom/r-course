@@ -6,6 +6,15 @@
 <title>グラフを仕上げて、外に出す | 記者のためのR講座</title>
 <meta name="description" content="日本語が四角に化ける問題、画像として保存する方法、デザイナーに渡すcsvの作り方、ついでにマウスで触れるグラフ。">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li class="here"><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -66,18 +75,18 @@
 <p data-src="15-finish:10">グラフに日本語のタイトルを入れたら、文字が全部豆腐みたいな四角になった。あるいは警告がずらずら出てきた。Macを使っている人は、ほぼ確実にこれに出会います。</p>
 <p data-src="15-finish:12">（このページのグラフはWindowsで作っていて、そちらでは何も指定しなくても日本語が出ました。Rが勝手に代わりのフォントを探してくれる場合があるからです。つまり<strong>出る人と出ない人がいる</strong>ので、勉強会では必ず両方の説明が必要になります）</p>
 <p data-src="15-finish:14">原因は、ggplotが使おうとしている標準のフォントに日本語が入っていないことです。使うフォントを指定してやれば直ります。</p>
-<div class="code" data-lang="R" data-src="15-finish:16"><button class="copy" type="button">コピー</button><pre><code>theme_set(theme_gray(base_family = "HiraKakuProN-W3"))   # Mac
+<div class="code" data-lang="R" data-src="15-finish:16"><pre><code>theme_set(theme_gray(base_family = "HiraKakuProN-W3"))   # Mac
 theme_set(theme_gray(base_family = "Yu Gothic"))         # Windows</code></pre></div>
 <p data-src="15-finish:21"><code>theme_set()</code> は「これからつくるグラフ全部にこの設定を使ってね」という命令です。R Markdownのいちばん上、<code>library(tidyverse)</code> の次の行あたりに書いておくのがおすすめです。</p>
 <aside class="box box-tips" data-src="15-finish:23"><p class="box-title">使えるフォントの名前を調べる</p><p data-src="15-finish:24">フォント名は環境によって違うので、手元で使えるものを確かめるのが確実です。</p>
-<div class="code" data-lang="R" data-src="15-finish:26"><button class="copy" type="button">コピー</button><pre><code>library(systemfonts)
+<div class="code" data-lang="R" data-src="15-finish:26"><pre><code>library(systemfonts)
 system_fonts() %&gt;%
   filter(str_detect(family, "Gothic|Mincho|Hira|Noto")) %&gt;%
   distinct(family)</code></pre></div>
 <p data-src="15-finish:33">Windowsなら「Yu Gothic」「Meiryo」「MS Gothic」、Macなら「Hiragino Sans」あたりが使えるはずです。どうしてもうまくいかないときは、グラフの文字は英語のままにして、あとで画像編集ソフトかデザイナーの手で日本語を入れる、という割り切り方もあります。</p></aside>
 <h2 id="テーマで見た目を変える" data-src="15-finish:36">テーマで見た目を変える</h2>
 <p data-src="15-finish:38">ggplotの初期設定は背景が灰色ですが、これは好みが分かれるところです。テーマを変えると、雰囲気がかなり変わります。</p>
-<div class="code" data-lang="R" data-src="15-finish:40"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+<div class="code" data-lang="R" data-src="15-finish:40"><pre><code>five_pref %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = population, color = prefecture)) +
   theme_minimal(base_family = "Yu Gothic")</code></pre></div>
@@ -85,14 +94,14 @@ system_fonts() %&gt;%
 <figure class="fig" data-src="15-finish:49"><img src="images/15-theme-minimal.png" alt="theme_minimalで描いた折れ線グラフ。白地に薄い格子" loading="lazy"><figcaption>theme_minimal。白地ですっきり</figcaption></figure>
 <div class="table-wrap" data-src="15-finish:51"><table><thead><tr><th>テーマ</th><th>見た目</th></tr></thead><tbody><tr><td><code>theme_gray()</code></td><td>初期設定。灰色の背景に白い格子</td></tr><tr><td><code>theme_minimal()</code></td><td>白地に薄い格子。すっきり</td></tr><tr><td><code>theme_classic()</code></td><td>白地に軸の線だけ。論文っぽい</td></tr><tr><td><code>theme_bw()</code></td><td>白地に黒枠</td></tr></tbody></table></div>
 <p data-src="15-finish:58">細かい調整もできます。よく使うのは凡例の位置と、文字の大きさくらいでしょうか。</p>
-<div class="code" data-lang="R" data-src="15-finish:60"><button class="copy" type="button">コピー</button><pre><code>  theme(legend.position = "bottom",           # 凡例を下に
+<div class="code" data-lang="R" data-src="15-finish:60"><pre><code>  theme(legend.position = "bottom",           # 凡例を下に
         plot.title = element_text(size = 16)) # タイトルを大きく</code></pre></div>
 <p data-src="15-finish:65">ここは凝りだすとキリがなく、しかも凝ったところで社内のデザイナーが作り直すことになるので、私はあまり深追いしないことにしています。</p>
 <h2 id="グラフを画像として保存する" data-src="15-finish:67">グラフを画像として保存する</h2>
 <p data-src="15-finish:69">同僚にチャットで送りたい、企画書に貼りたい。そういうときは <code>ggsave()</code> を使います。</p>
-<div class="code" data-lang="R" data-src="15-finish:71"><button class="copy" type="button">コピー</button><pre><code>ggsave("output/kodomo.png", width = 8, height = 5, dpi = 200)</code></pre></div>
+<div class="code" data-lang="R" data-src="15-finish:71"><pre><code>ggsave("output/kodomo.png", width = 8, height = 5, dpi = 200)</code></pre></div>
 <p data-src="15-finish:75"><strong>直前に描いたグラフ</strong>が保存されます。オブジェクトに入れてから保存することもできます。</p>
-<div class="code" data-lang="R" data-src="15-finish:77"><button class="copy" type="button">コピー</button><pre><code>g &lt;- five_pref %&gt;%
+<div class="code" data-lang="R" data-src="15-finish:77"><pre><code>g &lt;- five_pref %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = population, color = prefecture))
 
@@ -100,17 +109,17 @@ ggsave("output/jinko.png", plot = g, width = 8, height = 5, dpi = 200)</code></p
 <p data-src="15-finish:85"><code>width</code> と <code>height</code> はインチ、<code>dpi</code> は解像度です。紙面用の相談に使うなら <code>dpi = 300</code> くらいにしておくと、印刷しても粗く見えません。拡張子を <code>.pdf</code> や <code>.svg</code> にすると、拡大しても劣化しない形式で保存できます。デザイナーに渡すならこちらのほうが喜ばれます。</p>
 <h2 id="デザイナーに渡すデータを書き出す" data-src="15-finish:87">デザイナーに渡すデータを書き出す</h2>
 <p data-src="15-finish:89">とはいえ、このグラフを記事に使って読者様にお見せするのは、さすがにちょっとキツイ。社内にいるプロのデザイナーに頼んで、もっとかっこいいグラフにしたいですよね。あるいはFlourishとかを使って、ウェブで使えるインタラクティブなグラフにしてもいいでしょう。いずれにしても、データを何らかの形で出力して保存する必要があります。そのときにはこんなコードを書きます。</p>
-<div class="code" data-lang="R" data-src="15-finish:91"><button class="copy" type="button">コピー</button><pre><code>all_municipality_change %&gt;%
+<div class="code" data-lang="R" data-src="15-finish:91"><pre><code>all_municipality_change %&gt;%
   write_excel_csv("デザイナー用.csv")</code></pre></div>
 <p data-src="15-finish:96"><code>write_excel_csv</code> というのが、そのための関数です。同じようなことができる関数はいくつかあります。たとえば <code>write_csv</code> なんていうものもありますが、これで出力したファイルをエクセルでそのまま開くと文字化けしてしまいます。<code>write_excel_csv</code> ならエクセルでも文字化けしませんので、私はこちらをよく使っています。</p>
 <aside class="box box-note" data-src="15-finish:98"><p class="box-title">なぜwrite_excel_csvだと化けないのか</p><p data-src="15-finish:99"><code>write_excel_csv()</code> は、ファイルの先頭にBOM（Byte Order Mark）という短い目印を付けてくれます。「このファイルはUTF-8ですよ」という札です。Excelはこの札を見てから開くので、化けません。</p>
 <p data-src="15-finish:101">つまり、あの文字化けはExcelが悪いというより、「札がないと判断を間違える」という仕様なわけです。ともあれ、<strong>人に渡すcsvは <code>write_excel_csv()</code></strong>。これだけ覚えておけば平和に暮らせます。</p></aside>
 <p data-src="15-finish:104">渡す前に、必要な列だけに絞っておくのも親切です。</p>
-<div class="code" data-lang="R" data-src="15-finish:106"><button class="copy" type="button">コピー</button><pre><code>five_pref %&gt;%
+<div class="code" data-lang="R" data-src="15-finish:106"><pre><code>five_pref %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   select(year, prefecture, rate_under15) %&gt;%
   write_excel_csv("output/デザイナー用.csv")</code></pre></div>
-<aside class="box box-tips box-review" data-src="15-finish:113"><p class="box-title">渡すときに一緒に伝えること<span class="review-tag">要検討</span></p><p data-src="15-finish:114">デザイナーや校閲に渡すとき、csvだけをぽんと渡すと必ず往復が発生します。私は次のことを添えるようにしています。</p>
+<aside class="box box-tips" data-src="15-finish:113"><p class="box-title">渡すときに一緒に伝えること</p><p data-src="15-finish:114">デザイナーや校閲に渡すとき、csvだけをぽんと渡すと必ず往復が発生します。私は次のことを添えるようにしています。</p>
 <ul data-src="15-finish:116">
 <li>出典（統計の名前と調査年、公表機関）</li>
 <li>単位（人か％か、千人単位ではないか）</li>
@@ -121,10 +130,10 @@ ggsave("output/jinko.png", plot = g, width = 8, height = 5, dpi = 200)</code></p
 <p data-src="15-finish:122">これを書いたテキストファイルを同じフォルダに置いておくと、あとで自分が見返すときにも役立ちます。</p></aside>
 <h2 id="マウスで触れるグラフにする" data-src="15-finish:125">マウスで触れるグラフにする</h2>
 <p data-src="15-finish:127">もうひとつ、自分がデータを探るときに便利な技を紹介します。plotlyというパッケージを使うと、ggplotで描いたグラフをそのままマウスで触れるものに変えてくれます。</p>
-<div class="code" data-lang="R" data-src="15-finish:129"><button class="copy" type="button">コピー</button><pre><code>install.packages("plotly")
+<div class="code" data-lang="R" data-src="15-finish:129"><pre><code>install.packages("plotly")
 library(plotly)</code></pre></div>
 <p data-src="15-finish:134"><code>ggplotly()</code> という関数の丸括弧のなかに、インタラクティブ化したいグラフを入れるだけです。</p>
-<div class="code" data-lang="R" data-src="15-finish:136"><button class="copy" type="button">コピー</button><pre><code>ggplotly(all_pref %&gt;%
+<div class="code" data-lang="R" data-src="15-finish:136"><pre><code>ggplotly(all_pref %&gt;%
            mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
            ggplot() +
            geom_point(aes(x = year,
@@ -136,7 +145,7 @@ library(plotly)</code></pre></div>
 <p data-src="15-finish:152">読者に見せるインタラクティブなグラフを作るなら、FlourishやDatawrapperのようなサービスにcsvを渡すか、社内のデザイナーに頼むのが現実的です。</p></aside>
 <hr>
 <p data-src="15-finish:157">これで第2部は終わりです。データを読み込んで、加工して、グラフで眺めて、外に出すところまでできるようになりました。</p>
-<p data-src="15-finish:159">ただ、ここまでのすべては「データがすでに手元にある」ことを前提にしていました。次の第3部では、そのデータを自分で集めてくる方法を扱います。<span class="review" title="要検討：書いた人の意見が入っています">ここからが、記者にとって一番おいしいところだと思っています。<span class="review-tag">要検討</span></span></p>
+<p data-src="15-finish:159">ただ、ここまでのすべては「データがすでに手元にある」ことを前提にしていました。次の第3部では、そのデータを自分で集めてくる方法を扱います。ここからが、記者にとって一番おいしいところだと思っています。</p>
     </article>
     <nav class="pager"><a class="prev" href="14-point.html"><span>前へ</span>14 散布図</a><a class="next" href="16-scraping.html"><span>次へ</span>16 ウェブから表を取る</a></nav>
     <footer class="site-foot">

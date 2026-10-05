@@ -6,6 +6,15 @@
 <title>列を選ぶ、名前を変える、計算する | 記者のためのR講座</title>
 <meta name="description" content="select、rename、mutate、arrange。この4つで「高齢化率の高い自治体ランキング」がもうできます。">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -67,7 +76,7 @@
 <p data-src="05-select-mutate:12"><code>df2020</code> の中身をみると、それぞれの列には各市区町村について、さまざまな年齢層ごとの人口が入っています。また「注釈」のための列もあります。これを元にして、たとえば市区町村ごとの「高齢化率」を知りたかったとしましょう。高齢化率は65歳以上の人口が総人口に占める割合です。なのでさしあたって必要なのは、各市区町村の名前と総人口、65歳以上人口の列だけです。そのほかは不要なうえ、邪魔くさいので、消えてもらうことにしましょうか。</p>
 <h2 id="select列を選ぶ" data-src="05-select-mutate:14">select——列を選ぶ</h2>
 <p data-src="05-select-mutate:16">そのときに使えるのが <code>select</code> という関数です。具体的には、こうやります。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:18"><button class="copy" type="button">コピー</button><pre><code>df2020 %&gt;%
+<div class="code" data-lang="R" data-src="05-select-mutate:18"><pre><code>df2020 %&gt;%
   select(地域,
          `A1101_総人口【人】`,
          `A1303_65歳以上人口【人】`)</code></pre></div>
@@ -79,7 +88,7 @@
 <p data-src="05-select-mutate:37">ところで、「<code>A1101_総人口【人】</code>」とか「<code>A1303_65歳以上人口【人】</code>」とか、何だか鬱陶しいですね。これはもとのcsvファイルに原因があるんですが、単に「総人口」「人口_65歳以上」とかなっていればいいのに、余計なかざりがいろいろとくっついています。邪魔くさいので、取り除いてしまいましょう。</p>
 <p data-src="05-select-mutate:39">そのために使えるのが <code>rename</code> という関数です。「地域」という列名はまだ分かりやすくはあるんですが、コードは常に半角英数字で書かれるものなので、いちいち日本語入力と切り替えてやるのはめんどくさいし、ミスのもとです。これも変えてしまいましょう。</p>
 <p data-src="05-select-mutate:41">具体的にはこうやります。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:43"><button class="copy" type="button">コピー</button><pre><code>df2020 %&gt;%
+<div class="code" data-lang="R" data-src="05-select-mutate:43"><pre><code>df2020 %&gt;%
   select(地域,
          `A1101_総人口【人】`,
          `A1303_65歳以上人口【人】`) %&gt;%
@@ -88,7 +97,7 @@
          population_over65 = `A1303_65歳以上人口【人】`)</code></pre></div>
 <p data-src="05-select-mutate:53">だいぶすっきりしましたね。<code>rename</code> は <strong>新しい名前 ＝ 古い名前</strong> の順で書きます。逆に書きたくなるので、ここは注意してください。</p>
 <p data-src="05-select-mutate:55">このデータを <code>df2020_simple</code> という新しいデータフレームに格納しましょう。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:57"><button class="copy" type="button">コピー</button><pre><code>df2020_simple &lt;- df2020 %&gt;%
+<div class="code" data-lang="R" data-src="05-select-mutate:57"><pre><code>df2020_simple &lt;- df2020 %&gt;%
   select(地域,
          `A1101_総人口【人】`,
          `A1303_65歳以上人口【人】`) %&gt;%
@@ -96,15 +105,15 @@
          population = `A1101_総人口【人】`,
          population_over65 = `A1303_65歳以上人口【人】`)</code></pre></div>
 <aside class="box box-tips" data-src="05-select-mutate:67"><p class="box-title">selectで名前も変える</p><p data-src="05-select-mutate:68">実は <code>select</code> のなかで名前を変えてしまうこともできます。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:70"><button class="copy" type="button">コピー</button><pre><code>df2020 %&gt;%
+<div class="code" data-lang="R" data-src="05-select-mutate:70"><pre><code>df2020 %&gt;%
   select(region = 地域,
          population = `A1101_総人口【人】`,
          population_over65 = `A1303_65歳以上人口【人】`)</code></pre></div>
 <p data-src="05-select-mutate:77">短く書けるので私はよく使いますが、最初のうちは「選ぶ」と「名前を変える」を分けて書いたほうが、自分が何をしているのかを見失いにくいと思います。</p></aside>
 <h2 id="その前にデータ型をちらっと見る" data-src="05-select-mutate:80">その前に——データ型をちらっと見る</h2>
 <p data-src="05-select-mutate:82">では次に、高齢化率を計算してみましょう。ただ、その前に。<code>df2020_simple</code> をもう一度見てみましょう。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:84"><button class="copy" type="button">コピー</button><pre><code>df2020_simple</code></pre></div>
-<div class="code" data-lang="実行結果" data-src="05-select-mutate:88"><button class="copy" type="button">コピー</button><pre><code># A tibble: 1,916 × 3
+<div class="code" data-lang="R" data-src="05-select-mutate:84"><pre><code>df2020_simple</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="05-select-mutate:88"><pre><code># A tibble: 1,916 × 3
   region               population population_over65
   <mark>&lt;chr&gt;</mark>                     <mark>&lt;dbl&gt;</mark>             <mark>&lt;dbl&gt;</mark>
 1 北海道 札幌市           1973395            541242
@@ -119,7 +128,7 @@
 <h2 id="mutate新しい列をつくる" data-src="05-select-mutate:95">mutate——新しい列をつくる</h2>
 <p data-src="05-select-mutate:97">では、本筋に戻ります。</p>
 <p data-src="05-select-mutate:99">高齢化率というのは、人口に占める65歳以上の人の割合です。ということは、<code>population_over65</code> を <code>population</code> で割り算してやればいいわけです。パーセントで表示したければ、さらに100をかけることになります。ここではパーセント表示を選んでみましょう。<code>mutate</code> という関数を使って、こうやります。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:101"><button class="copy" type="button">コピー</button><pre><code>df2020_simple %&gt;%
+<div class="code" data-lang="R" data-src="05-select-mutate:101"><pre><code>df2020_simple %&gt;%
   mutate(rate_aged = population_over65 * 100 / population)</code></pre></div>
 <p data-src="05-select-mutate:106"><code>mutate</code> というのは、新しい列をつくるための関数です。ここでは、<code>population_over65</code> に100をかけ算し、それを <code>population</code> で割り算して得られる数値を、<code>rate_aged</code> と名付けた列に入力する、という操作をしているわけです。</p>
 <p data-src="05-select-mutate:108">いちばん右の列に <code>rate_aged</code> が増えているはずです。列がたくさんあって見えないときは <code>view()</code> するか、<code>select(region, rate_aged)</code> で必要な列だけ表示してみてください。</p>
@@ -127,11 +136,11 @@
 <p data-src="05-select-mutate:113">これがExcelとの決定的な違いです。Excelでは1行目に数式を書いて、下方向にコピーして……という作業が必要で、そのコピーが1行足りなかったせいで数字が狂う、というのがよくある事故です。Rでは列に対して一度書くだけなので、そもそもその事故が起きません。</p></aside>
 <h2 id="arrange並べ替える" data-src="05-select-mutate:116">arrange——並べ替える</h2>
 <p data-src="05-select-mutate:118">では、少しだけ分析っぽいことをしてみましょう。高齢化率が最も低い自治体は、どこでしょう？　それを計算するには、<code>arrange</code> という関数を使います。こんな感じです。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:120"><button class="copy" type="button">コピー</button><pre><code>df2020_simple %&gt;%
+<div class="code" data-lang="R" data-src="05-select-mutate:120"><pre><code>df2020_simple %&gt;%
   mutate(rate_aged = population_over65 * 100 / population) %&gt;%
   arrange(rate_aged)</code></pre></div>
 <p data-src="05-select-mutate:126"><code>mutate</code> によって作った <code>rate_aged</code> という列のデータを見て、この数字の小さい順番にarrange（並べ替え）しなさい、という命令です。</p>
-<div class="code" data-lang="実行結果" data-src="05-select-mutate:128"><button class="copy" type="button">コピー</button><pre><code># A tibble: 1,916 × 3
+<div class="code" data-lang="実行結果" data-src="05-select-mutate:128"><pre><code># A tibble: 1,916 × 3
    region                 population rate_aged
    &lt;chr&gt;                       &lt;dbl&gt;     &lt;dbl&gt;
  1 福島県 大熊町                 847      10.3
@@ -147,11 +156,11 @@
 # ℹ 1,906 more rows</code></pre></div>
 <p data-src="05-select-mutate:131">トップは福島県大熊町。おそらく住んでいる人の大半は、原発事故処理のための作業員なのでしょう。そのほか上位にランクインしているのは、東京都中央区など都会の自治体が目立ちます。東京都小笠原村が2位に入っているのは、個人的にはへぇ～と感じました。</p>
 <p data-src="05-select-mutate:133">では逆に、高齢化率が高い自治体のランキングをつくってみましょう。やはり <code>arrange</code> の関数を使いますが、ちょっと変化をつけます。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:135"><button class="copy" type="button">コピー</button><pre><code>df2020_simple %&gt;%
+<div class="code" data-lang="R" data-src="05-select-mutate:135"><pre><code>df2020_simple %&gt;%
   mutate(rate_aged = population_over65 * 100 / population) %&gt;%
   arrange(desc(rate_aged))</code></pre></div>
 <p data-src="05-select-mutate:141"><code>rate_aged</code> の数字をみて、今度は大きい順番＝降順（Descending order）に並べ替えなさい、という命令です。</p>
-<div class="code" data-lang="実行結果" data-src="05-select-mutate:143"><button class="copy" type="button">コピー</button><pre><code># A tibble: 1,916 × 3
+<div class="code" data-lang="実行結果" data-src="05-select-mutate:143"><pre><code># A tibble: 1,916 × 3
    region          population rate_aged
    &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;
  1 群馬県 南牧村         1611      65.2
@@ -166,10 +175,8 @@
 10 徳島県 上勝町         1380      55.9
 # ℹ 1,906 more rows</code></pre></div>
 <p data-src="05-select-mutate:146">結果は、やはりというべきか、町村部がトップを占めています。都会から離れた場所にお年寄りが残されているという現状が、一目瞭然になりました。</p>
-<aside class="box box-tips box-review" data-src="05-select-mutate:148"><p class="box-title">記者としての目のつけどころ<span class="review-tag">要検討</span></p><p data-src="05-select-mutate:149">ランキングを出したら、上位と下位の両方を見る。これは紙に印刷された統計表を眺めるときと同じですが、Rだと <code>arrange</code> と <code>desc()</code> を入れ替えるだけなので、両方見ないのはもったいない。</p>
-<p data-src="05-select-mutate:151"><span class="review" title="要検討：書いた人の意見が入っています">そして「なんでここが1位なんだ？」と引っかかったところが、たいてい記事の入り口になります。<span class="review-tag">要検討</span></span>大熊町がトップに来た理由は、データのなかを探しても書いてありません。それを知っているのは記者の側です。<span class="review" title="要検討：書いた人の意見が入っています">ここがデータ分析でいちばん面白いところで、かつ、記者にしかできないところだと思っています。<span class="review-tag">要検討</span></span></p></aside>
-<aside class="box box-homework" data-src="05-select-mutate:154"><p class="box-title">宿題</p><p data-src="05-select-mutate:155">人口に占める若者の割合を示す列を作って、「若者率が高い自治体」「低い自治体」それぞれのランキングを作りなさい。</p>
-<p data-src="05-select-mutate:157">（15歳未満人口の列は <code>`A1301_15歳未満人口【人】`</code> です。作例は<a href="a3-shukudai.html">付録C</a>にあります）</p></aside>
+<aside class="box box-homework" data-src="05-select-mutate:148"><p class="box-title">宿題</p><p data-src="05-select-mutate:149">人口に占める若者の割合を示す列を作って、「若者率が高い自治体」「低い自治体」それぞれのランキングを作りなさい。</p>
+<p data-src="05-select-mutate:151">（15歳未満人口の列は <code>`A1301_15歳未満人口【人】`</code> です。作例は<a href="a3-shukudai.html">付録C</a>にあります）</p></aside>
     </article>
     <nav class="pager"><a class="prev" href="04-import.html"><span>前へ</span>04 データを読み込む</a><a class="next" href="06-strings-filter.html"><span>次へ</span>06 文字を切る・行を絞る</a></nav>
     <footer class="site-foot">

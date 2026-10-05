@@ -6,6 +6,15 @@
 <title>散布図 | 記者のためのR講座</title>
 <meta name="description" content="点が多いほど強いグラフ。1700余の市町村をいちどに眺めて、「東京だけ子どもが減っていない」の中身を確かめます。">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -65,9 +74,9 @@
       <h2 id="点をばらまく" data-src="14-point:8">点をばらまく</h2>
 <p data-src="14-point:10">つぎに散布図です。これは点が平面上にばらばらと散らばったかたちのグラフで、点がたくさんあっても（というか、あればあるほどむしろ）分かりやすいというところが、折れ線グラフと棒グラフに比べて優れています。</p>
 <p data-src="14-point:12">というわけで、全都道府県の人口データを可視化していきます。まずはデータを読み込んで、<code>all_pref</code> というオブジェクトに保存しましょう。</p>
-<div class="code" data-lang="R" data-src="14-point:14"><button class="copy" type="button">コピー</button><pre><code>all_pref &lt;- read_csv("data/都道府県別人口.csv")</code></pre></div>
+<div class="code" data-lang="R" data-src="14-point:14"><pre><code>all_pref &lt;- read_csv("data/都道府県別人口.csv")</code></pre></div>
 <p data-src="14-point:18">このデータから各都道府県の子どもの割合を計算して、それを散布図で表現してみます。</p>
-<div class="code" data-lang="R" data-src="14-point:20"><button class="copy" type="button">コピー</button><pre><code>all_pref %&gt;%
+<div class="code" data-lang="R" data-src="14-point:20"><pre><code>all_pref %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   ggplot() +
   geom_point(aes(x = year, y = rate_under15))   # ここで散布図を指定</code></pre></div>
@@ -75,7 +84,7 @@
 <p data-src="14-point:29"><code>geom_line</code> や <code>geom_col</code> ではなく、<code>geom_point</code> と書くことで散布図を書くように命令しています。横軸に年、縦軸に子どもの割合を表示させると、全体として右肩下がりになっていることが読み取れるグラフになりました。</p>
 <h2 id="色大きさ透明度" data-src="14-point:31">色、大きさ、透明度</h2>
 <p data-src="14-point:33">ただ、点がすべて色も形も大きさも同じなので、見分けがつきません。試しに都道府県ごとに違う色をつけてみましょう。</p>
-<div class="code" data-lang="R" data-src="14-point:35"><button class="copy" type="button">コピー</button><pre><code>all_pref %&gt;%
+<div class="code" data-lang="R" data-src="14-point:35"><pre><code>all_pref %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   ggplot() +
   geom_point(aes(x = year,
@@ -91,7 +100,7 @@
 <li>グラフを小さく分割して並べる（<code>facet_wrap()</code> という関数があります）</li>
 </ul></aside>
 <p data-src="14-point:58">つぎに、人口によって点の大きさを変えてみましょう。</p>
-<div class="code" data-lang="R" data-src="14-point:60"><button class="copy" type="button">コピー</button><pre><code>all_pref %&gt;%
+<div class="code" data-lang="R" data-src="14-point:60"><pre><code>all_pref %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   ggplot() +
   geom_point(aes(x = year,
@@ -100,7 +109,7 @@
 <figure class="fig" data-src="14-point:69"><img src="images/14-point-size.png" alt="人口の多さを点の大きさで表した散布図。大きな点が下のほうにある" loading="lazy"><figcaption>点の大きさが人口。大きい点は下＝子どもの割合が低い</figcaption></figure>
 <p data-src="14-point:71"><code>size = population</code> と指定することで、人口によって点のサイズを変えるようにしました。このグラフをみると、2010年ごろまで子どもの割合が群を抜いて少なかったところがありますが、これは人口の多い都道府県なんだなということが読み取れますね。おそらく東京都でしょう。</p>
 <p data-src="14-point:73">ただ、点と点が重なり合ってしまっているところが、グチャグチャ〜ッとなっているのでちょっと分かりにくい。ここを解決するため、点を半透明にしてみましょう。</p>
-<div class="code" data-lang="R" data-src="14-point:75"><button class="copy" type="button">コピー</button><pre><code>all_pref %&gt;%
+<div class="code" data-lang="R" data-src="14-point:75"><pre><code>all_pref %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   ggplot() +
   geom_point(aes(x = year,
@@ -112,9 +121,9 @@
 <p data-src="14-point:89"><code>alpha</code> が <code>aes()</code> の外に書かれていることにも注目してください。データによって透明度を変えたいわけではなく、全部の点を一律に薄くしたいので、外側です。</p>
 <h2 id="全市町村を眺める" data-src="14-point:91">全市町村を眺める</h2>
 <p data-src="14-point:93">散布図は点がたくさんあっても分かりやすい、というのを最初に書きましたが、せっかくなので都道府県別ではなく、全市町村のデータを表示してみましょうか。まずはデータを読み込んで、<code>all_municipality</code> というオブジェクトに保存します。</p>
-<div class="code" data-lang="R" data-src="14-point:95"><button class="copy" type="button">コピー</button><pre><code>all_municipality &lt;- read_csv("data/市町村別人口.csv")</code></pre></div>
+<div class="code" data-lang="R" data-src="14-point:95"><pre><code>all_municipality &lt;- read_csv("data/市町村別人口.csv")</code></pre></div>
 <p data-src="14-point:99">横軸に年、縦軸に子どもの比率をとったグラフにしてみましょう。先ほどと同じように、人口の多さを点の大きさで表現して、さらに半透明にします。</p>
-<div class="code" data-lang="R" data-src="14-point:101"><button class="copy" type="button">コピー</button><pre><code>all_municipality %&gt;%
+<div class="code" data-lang="R" data-src="14-point:101"><pre><code>all_municipality %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   ggplot() +
   geom_point(aes(x = year,
@@ -126,7 +135,7 @@
 <h2 id="なんとなくを確かめる" data-src="14-point:115">「なんとなく」を確かめる</h2>
 <p data-src="14-point:117">本当にそうでしょうか。確かめるため、2000年から2020年にかけて子どもの数がどう変化したか、自治体ごとに示したデータをつくっていきます。</p>
 <p data-src="14-point:119">以下のようなコードです。<code>pivot_longer</code> にしたと思ったら今度は <code>pivot_wider</code> にしたりしていて、やたら複雑に見えますが、そうしなければならない理由があります。もし興味があれば、パイプ演算子で区切られたところでデータがどんな形をしているか確かめることで、どんなふうに加工されていっているのかを確認してみてください。</p>
-<div class="code" data-lang="R" data-src="14-point:121"><button class="copy" type="button">コピー</button><pre><code>all_municipality_change &lt;- all_municipality %&gt;%
+<div class="code" data-lang="R" data-src="14-point:121"><pre><code>all_municipality_change &lt;- all_municipality %&gt;%
   filter(year %in% c(2020, 2000)) %&gt;%
   select(year, code, prefecture, municipality, population_under15, population) %&gt;%
   pivot_longer(cols = c(population_under15, population),
@@ -139,30 +148,30 @@
 <p data-src="14-point:136">でも <code>pivot_wider</code> は、列名のもとになる列と、中身のもとになる列を1つずつしか受け取れません。いま横に広げたいのは「年」と「人口の種類」の掛け算（2000年の総人口、2000年の15歳未満、2020年の総人口、2020年の15歳未満の4つ）です。</p>
 <p data-src="14-point:138">そこでいったん <code>pivot_longer</code> で「人口の種類」を <code>category</code> という1つの列にまとめてしまい、そのうえで <code>names_from = c(category, year)</code> として、2つの列を組み合わせた名前で横に広げているわけです。だから <code>population_under15_2020</code> のような列名ができます。</p>
 <p data-src="14-point:140">面倒に見えますが、この「いったん縦にしてから横にする」は実務でよく出てくる形です。困ったら思い出してください。</p></aside>
-<aside class="box box-warn box-review" data-src="14-point:143"><p class="box-title">「割合の変化」と「数の変化」は別物<span class="review-tag">要検討</span></p><p data-src="14-point:144">いま作った <code>change_under15</code> の中身をよく見てください。2020年の15歳未満人口を2000年の15歳未満人口で割っているので、これは<strong>子どもの数が何％増えたか減ったか</strong>です。子どもの「割合」の変化ではありません。</p>
+<aside class="box box-warn" data-src="14-point:143"><p class="box-title">「割合の変化」と「数の変化」は別物</p><p data-src="14-point:144">いま作った <code>change_under15</code> の中身をよく見てください。2020年の15歳未満人口を2000年の15歳未満人口で割っているので、これは<strong>子どもの数が何％増えたか減ったか</strong>です。子どもの「割合」の変化ではありません。</p>
 <p data-src="14-point:146">割合の変化を見たいなら、それぞれの年の割合を出してから引き算します。</p>
-<div class="code" data-lang="R" data-src="14-point:148"><button class="copy" type="button">コピー</button><pre><code>mutate(rate_2000 = population_under15_2000 * 100 / population_2000,
+<div class="code" data-lang="R" data-src="14-point:148"><pre><code>mutate(rate_2000 = population_under15_2000 * 100 / population_2000,
        rate_2020 = population_under15_2020 * 100 / population_2020,
        change_rate = rate_2020 - rate_2000)</code></pre></div>
 <p data-src="14-point:154">この2つは似ているようで、まったく違う話をします。人口全体が3割減った町で子どもが3割減れば、<strong>数は3割減ったのに割合は変わっていない</strong>。逆に子どもが2割減っただけなら、数は減っているのに割合は上がります。</p>
 <p data-src="14-point:156">グラフの軸に何と書くか、記事に何と書くか。ここを取り違えると、事実と違うことを書いてしまいます。私はこの手の混同を何度もやりかけました。<strong>分子と分母が何なのかを、口に出して確かめる。</strong> これが唯一の予防法だと思っています。</p>
 <p data-src="14-point:158">以下の作例では、<code>change_under15</code>（数の変化率）をそのまま使います。軸のラベルも「数」で書きます。</p></aside>
 <p data-src="14-point:161">横軸に2020年の人口、縦軸に子どもの数の変化率をとったグラフにしてみましょう。</p>
-<div class="code" data-lang="R" data-src="14-point:163"><button class="copy" type="button">コピー</button><pre><code>all_municipality_change %&gt;%
+<div class="code" data-lang="R" data-src="14-point:163"><pre><code>all_municipality_change %&gt;%
   ggplot() +
   geom_point(aes(x = population_2020, y = change_under15))</code></pre></div>
 <figure class="fig" data-src="14-point:169"><img src="images/14-change-plain.png" alt="横軸を人口、縦軸を子どもの数の変化率にした散布図。点が左端に密集している" loading="lazy"><figcaption>人口の少ない自治体が多いので、左に固まってしまう</figcaption></figure>
 <p data-src="14-point:171">うーん、左の方にやたら点が集中していて、右の方には少ない。何だかよく分かりませんね。これは人口の少ない自治体の数は多くて、人口が多い自治体は珍しいからです。</p>
 <h2 id="対数の目盛りにする" data-src="14-point:173">対数の目盛りにする</h2>
 <p data-src="14-point:175">こういうパターンはよくあって、そういうときには「対数グラフ」にしてみると分かりやすくなることがあります。こんな感じです。</p>
-<div class="code" data-lang="R" data-src="14-point:177"><button class="copy" type="button">コピー</button><pre><code>all_municipality_change %&gt;%
+<div class="code" data-lang="R" data-src="14-point:177"><pre><code>all_municipality_change %&gt;%
   ggplot() +
   geom_point(aes(x = population_2020, y = change_under15)) +
   scale_x_log10()</code></pre></div>
 <figure class="fig" data-src="14-point:184"><img src="images/14-change-log.png" alt="横軸を対数目盛りにしたことで、点が横に広がって右肩上がりの傾向が見えるようになった散布図" loading="lazy"><figcaption>横軸を対数にすると、傾向が見える</figcaption></figure>
 <p data-src="14-point:186"><code>scale_x_log10()</code> というのを最後に付け加えることで、横軸が対数表示に変わりました。対数というのは高校数学で習うはずですが、目盛りがひとつ変わるごとに数字が「倍々ゲーム」で増えるものです。たとえば、目盛りが一つ増えると10倍に、二つ増えると100倍に、三つ増えると1000倍になるというものです。</p>
 <p data-src="14-point:188">このグラフだと、子どもの数の変化率が人口規模に対して右肩上がりになっている、つまり<strong>人口の多い自治体ほど子どもの減り方が小さい</strong>傾向にあることがはっきりしました。</p>
-<aside class="box box-warn box-review" data-src="14-point:190"><p class="box-title">対数グラフを記事に使うときは<span class="review-tag">要検討</span></p><p data-src="14-point:191">自分がデータを探るときには、対数の目盛りはとても役に立ちます。でも読者に見せるときは慎重に。目盛りが等間隔に増えていない図は、慣れていない人にはまず誤読されます。</p>
+<aside class="box box-warn" data-src="14-point:190"><p class="box-title">対数グラフを記事に使うときは</p><p data-src="14-point:191">自分がデータを探るときには、対数の目盛りはとても役に立ちます。でも読者に見せるときは慎重に。目盛りが等間隔に増えていない図は、慣れていない人にはまず誤読されます。</p>
 <p data-src="14-point:193">紙面やウェブで出すなら、</p>
 <ul data-src="14-point:194">
 <li>「1目盛りで10倍」であることを図中にはっきり書く</li>
@@ -171,7 +180,7 @@
 <p data-src="14-point:197">くらいの気配りが必要です。取材のための図と、読者に見せる図は別物だと考えたほうがいいと思います。</p></aside>
 <h2 id="注目したいものだけ色をつける" data-src="14-point:200">注目したいものだけ色をつける</h2>
 <p data-src="14-point:202">また、先ほどつくってみたグラフの中で、東京都は子どもの割合が下げ止まっていそうだなぁ、ということが見えていました。その要素をこのグラフに盛り込んでみましょう。そのためにはまず、各自治体を「東京都の自治体」と「その他」に分類し、その分類にもとづいて色分けしてやればよさそうです。コードはこんな感じです。</p>
-<div class="code" data-lang="R" data-src="14-point:204"><button class="copy" type="button">コピー</button><pre><code>all_municipality_change %&gt;%
+<div class="code" data-lang="R" data-src="14-point:204"><pre><code>all_municipality_change %&gt;%
   mutate(area = ifelse(prefecture == "東京都",
                        "東京都の自治体",
                        "その他")) %&gt;%
@@ -182,17 +191,17 @@
   scale_x_log10()</code></pre></div>
 <figure class="fig" data-src="14-point:216"><img src="images/14-change-tokyo.png" alt="東京都の自治体だけ色を変えた散布図。規模が小さくても減り方が小さいことが分かる" loading="lazy"><figcaption>東京都の自治体（青）は、規模が小さくても減り方が小さい</figcaption></figure>
 <p data-src="14-point:218">点の重なり合いによって見にくくなるのを防ぐため、半透明にする指示も加えました。東京都の自治体は、規模が小さめでも子どもの減り方がかなり小さいことがみてとれますね。</p>
-<aside class="box box-tips box-review" data-src="14-point:220"><p class="box-title">ifelseは3つセットで覚える<span class="review-tag">要検討</span></p><p data-src="14-point:221"><code>ifelse()</code> は、条件によって値を振り分ける関数です。丸括弧のなかは必ず3つ。</p>
-<div class="code" data-lang="R" data-src="14-point:223"><button class="copy" type="button">コピー</button><pre><code>ifelse(条件, 条件に合うとき, 合わないとき)</code></pre></div>
-<p data-src="14-point:227"><span class="review" title="要検討：書いた人の意見が入っています">これは記者の仕事でめちゃくちゃ使います。<span class="review-tag">要検討</span></span>「政令市かどうか」「過疎地域かどうか」「与党系か野党系か」といった、自分の頭のなかにある分類をデータに持ち込むための道具です。</p>
+<aside class="box box-tips" data-src="14-point:220"><p class="box-title">ifelseは3つセットで覚える</p><p data-src="14-point:221"><code>ifelse()</code> は、条件によって値を振り分ける関数です。丸括弧のなかは必ず3つ。</p>
+<div class="code" data-lang="R" data-src="14-point:223"><pre><code>ifelse(条件, 条件に合うとき, 合わないとき)</code></pre></div>
+<p data-src="14-point:227">これは記者の仕事でめちゃくちゃ使います。「政令市かどうか」「過疎地域かどうか」「与党系か野党系か」といった、自分の頭のなかにある分類をデータに持ち込むための道具です。</p>
 <p data-src="14-point:229">3つ以上に分けたいときは <code>case_when()</code> を使います。</p>
-<div class="code" data-lang="R" data-src="14-point:231"><button class="copy" type="button">コピー</button><pre><code>mutate(kibo = case_when(population &gt;= 500000 ~ "大都市",
+<div class="code" data-lang="R" data-src="14-point:231"><pre><code>mutate(kibo = case_when(population &gt;= 500000 ~ "大都市",
                         population &gt;= 100000 ~ "中規模",
                         .default = "小規模"))</code></pre></div>
 <p data-src="14-point:237">上から順に条件を確かめて、最初に当てはまったところで止まります。だから<strong>条件を書く順番が大事</strong>です。</p></aside>
 <h2 id="見栄えを整える" data-src="14-point:240">見栄えを整える</h2>
 <p data-src="14-point:242">さて、このグラフを同僚に共有して、記事化の可能性について相談したい。でもグラフにはタイトルがないし、縦軸の表示も <code>change_under15</code> とか英語なのでちょっと分かりにくいし、全体的に少し不親切ですね。というわけで、見栄えにも気をつかってみましょう。こんなコードです。</p>
-<div class="code" data-lang="R" data-src="14-point:244"><button class="copy" type="button">コピー</button><pre><code>all_municipality_change %&gt;%
+<div class="code" data-lang="R" data-src="14-point:244"><pre><code>all_municipality_change %&gt;%
   mutate(area = ifelse(prefecture == "東京都",
                        "東京都の自治体",
                        "その他")) %&gt;%

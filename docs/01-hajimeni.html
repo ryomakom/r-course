@@ -6,6 +6,15 @@
 <title>はじめに——Rとは何か | 記者のためのR講座</title>
 <meta name="description" content="Excelでもできるのに、なぜわざわざコードを書くのか。まずはそこから。">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -67,15 +76,15 @@
 <p data-src="01-hajimeni:12">分析や可視化ならExcelでもできるでしょ？　はい、確かにできます。でもExcelのような表計算ソフトに巨大なファイルを読み込ませると、動作が極端に遅くなってしまいます。さらに表計算ソフト上でデータを手作業で加工していくと、途中で人為的なミスがまぎれ込むことがよくあります。で、つじつまが合わなくなって「おかしい」と気づいても、どこでミスしたかが分からない。結果、いちからやり直す羽目になったりします。めんどくさ。</p>
 <p data-src="01-hajimeni:14">一方でRを使えば、何百万行もあるような巨大なデータでもスムーズに処理できます。また、分析の過程でどんな操作をしたのかをコードとして正確に残せるため、後から見返したり、他の人と共有して誤りがないかどうか検証したりもできます。</p>
 <h2 id="記者にとってのほんとうの利点" data-src="01-hajimeni:16">記者にとっての、ほんとうの利点</h2>
-<p data-src="01-hajimeni:18"><span class="review" title="要検討：書いた人の意見が入っています">速い、大きいデータが扱える、というのはもちろんそうなのですが、記者の仕事という観点でいちばんありがたいのは、<strong>やったことが全部残る</strong>という点だと思っています。<span class="review-tag">要検討</span></span></p>
+<p data-src="01-hajimeni:18">速い、大きいデータが扱える、というのはもちろんそうなのですが、記者の仕事という観点でいちばんありがたいのは、<strong>やったことが全部残る</strong>という点だと思っています。</p>
 <p data-src="01-hajimeni:20">たとえば、締め切り前日にデスクから「この数字、もう一度確かめて」と言われたとしましょう。Excelでちくちく手作業をしていた場合、自分がどのセルをどう触ったかは記憶のなかにしかありません。一方、Rでやっていれば、読み込みから計算までの手順がぜんぶコードとして残っています。上から順に実行し直せば、同じ結果が同じように出てくる。どこが間違っていたかも追える。</p>
 <p data-src="01-hajimeni:22">しかも、次の年に同じ統計が発表されたとき、ファイル名の「2020」を「2025」に書き換えるだけで、同じ分析がもう一度できてしまいます。毎年同じ手作業を繰り返している統計モノの記事があるなら、それを一度Rで書いておくだけで、来年の自分がだいぶ助かります。</p>
-<aside class="box box-note box-review" data-src="01-hajimeni:24"><p class="box-title">「再現できる」ということ<span class="review-tag">要検討</span></p><p data-src="01-hajimeni:25">海外のデータジャーナリズムの現場では、分析に使ったコードを記事と一緒にGitHubで公開することが珍しくありません。読者や研究者が同じ手順をたどって検証できるようにしているわけです。ここまでやるかどうかは別として、「聞かれたら手順を全部見せられる」状態でいることは、記事の強さにつながります。</p></aside>
+<aside class="box box-note" data-src="01-hajimeni:24"><p class="box-title">「再現できる」ということ</p><p data-src="01-hajimeni:25">海外のデータジャーナリズムの現場では、分析に使ったコードを記事と一緒にGitHubで公開することが珍しくありません。読者や研究者が同じ手順をたどって検証できるようにしているわけです。ここまでやるかどうかは別として、「聞かれたら手順を全部見せられる」状態でいることは、記事への信頼を高めます。</p></aside>
 <h2 id="RStudioというソフト" data-src="01-hajimeni:28">RStudioというソフト</h2>
 <p data-src="01-hajimeni:30">そのRを快適に使うためのソフトがRStudioです。データ処理の手順を「コード」と呼ばれる文章のようなものにして保存しておく場所、そのコードを実行する場所、実行した結果得られるグラフなどを確認する場所などが、一つの画面にまとまっているため、コードを書く→実行する→結果を確認する→またコードを書く……という作業をスムーズに進められます。</p>
 <p data-src="01-hajimeni:32">ただ、Rはボタンをクリックして操作するのではなく、自分でコードを書くことで命令を与える必要があります。コンピューターは人間の意図をくみ取ってはくれないので、そのコードはR独特の「文法」にしたがって明確に書かなくてはいけません。</p>
 <p data-src="01-hajimeni:34">というわけで最初はとっつきにくく感じるかもしれませんが、その壁を乗り越えれば、大量のデータを自由自在に扱えるようになります。データジャーナリストにとって、大変役立つ道具です。その基本的な扱い方を学んでいただくことをめざして、この資料を作りました。</p>
-<p data-src="01-hajimeni:36">ひとつ安心してほしいのは、<strong>覚える命令の数はそれほど多くない</strong>ということです。読み込む、いらない列を捨てる、計算した列を足す、条件で絞る、並べ替える、集計する。同じ十数個の命令を、組み合わせを変えて何度も使うことになります。</p>
+<p data-src="01-hajimeni:36">ひとつ安心してほしいのは、<strong>覚えなくてはいけない命令の数はそれほど多くない</strong>ということです。読み込む、いらない列を捨てる、計算した列を足す、条件で絞る、並べ替える、集計する。同じ十数個の命令を、組み合わせを変えて何度も使うことになります。</p>
 <p data-src="01-hajimeni:38">では、道具をそろえるところから始めましょう。</p>
     </article>
     <nav class="pager"><a class="prev" href="index.html"><span>前へ</span>トップ</a><a class="next" href="02-install.html"><span>次へ</span>RとRStudioを入れる</a></nav>

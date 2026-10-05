@@ -6,6 +6,15 @@
 <title>RとRStudioを入れる | 記者のためのR講座</title>
 <meta name="description" content="どちらも無料です。入れたら、4つに区切られた画面の見方をおさえましょう。">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -61,23 +70,23 @@
       <p class="kicker">はじめに</p>
       <h1>RとRStudioを入れる</h1>
       <p class="lead">どちらも無料です。入れたら、4つに区切られた画面の見方をおさえましょう。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#Rを入れる">Rを入れる</a></li><li><a href="#RStudioを入れる">RStudioを入れる</a></li><li><a href="#RStudioの画面">RStudioの画面</a></li><li><a href="#覚えておくと効くキー操作">覚えておくと効くキー操作</a></li></ul></nav>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#Rを入れる">Rを入れる</a></li><li><a href="#RStudioを入れる">RStudioを入れる</a></li><li><a href="#RStudioの画面">RStudioの画面</a></li><li><a href="#その他覚えておくと楽になるキー操作">その他、覚えておくと楽になるキー操作</a></li></ul></nav>
       <h2 id="Rを入れる" data-src="02-install:8">Rを入れる</h2>
 <ol data-src="02-install:10">
-<li>まず、Rの公式サイト（CRAN＝シーラン）にアクセスします。</li>
+<li>まず、Rの公式サイト（<a href="https://cran.r-project.org/">CRAN</a>＝シーラン）にアクセスします。</li>
 <li>自分のコンピューターのOS（WindowsやMacなど）に合ったインストーラーをダウンロードします。</li>
 <li>ダウンロードしたファイルをダブルクリックして、画面の指示に従ってインストールを進めます（ほとんどの場合、特別な設定は必要ありません）。</li>
 </ol>
 <h2 id="RStudioを入れる" data-src="02-install:14">RStudioを入れる</h2>
 <ol data-src="02-install:16">
-<li>RStudioの公式サイトにアクセスし、無料の「RStudio Desktop」版をダウンロードします。</li>
+<li><a href="https://posit.co/download/rstudio-desktop/">RStudioのダウンロードページ</a>にアクセスし、無料の「RStudio Desktop」版をダウンロードします。</li>
 <li>ダウンロードしたファイルをダブルクリックして、画面の指示に従ってインストールを進めます。</li>
 <li>インストールが完了すると、RStudioが起動します。すでにインストールされているRを自動的に認識してくれます。</li>
 </ol>
 <p data-src="02-install:20">これで準備は完了です。</p>
 <aside class="box box-warn" data-src="02-install:22"><p class="box-title">会社のパソコンで入れられないとき</p><p data-src="02-install:23">社内のパソコンだと、勝手にソフトを入れられない設定になっていることがあります。その場合はシステム担当に相談してください。R本体とRStudioの2本立てだという点、どちらも無料で商用利用も可能だという点を伝えると話が早いと思います。</p></aside>
 <h2 id="RStudioの画面" data-src="02-install:26">RStudioの画面</h2>
-<figure class="fig" data-src="02-install:28"><div class="fig-todo"><p>ここに画像を入れる</p><p class="fig-todo-alt">RStudioを起動した直後の画面。左にコンソール、右上にEnvironment、右下にFilesの区画がある</p><p class="fig-todo-path">images/02-rstudio.png</p></div><figcaption>起動直後のRStudio。区画の役割を覚えてしまえば、あとは慣れです</figcaption></figure>
+<figure class="fig" data-src="02-install:28"><img src="images/02-rstudio.png" alt="RStudioを起動した直後の画面。左にコンソール、右上にEnvironment、右下にFilesの区画がある" loading="lazy"><figcaption>起動直後のRStudio。区画の役割を覚えてしまえば、あとは慣れです</figcaption></figure>
 <p data-src="02-install:30">インストールできたRStudioを開いてみましょう。最初の画面は3区画に分かれています。</p>
 <h3 id="左側Consoleコンソール" data-src="02-install:32">左側——Console（コンソール）</h3>
 <p data-src="02-install:34">コンピューターに実行させたい命令を「コード」と呼ばれる文章にして、ここに打ち込みます。画面に <code>&gt;</code> という記号が出ているときは、命令を聞く準備がととのっていますよ、さあどうぞ命令してください、という合図です。</p>
@@ -89,18 +98,18 @@
 <p data-src="02-install:46">「Files」では、作業中のフォルダの構造やファイルが確認できます。「Plots」ではデータから作成したグラフや表などが、「Packages」では、インストール済みで利用可能なパッケージの一覧が見られます（パッケージとは何かというのは<a href="03-project.html">次の章</a>で説明しますので、ひとまず忘れてください）。</p>
 <h3 id="もう一つ必要な区画コードを書き残す場所" data-src="02-install:48">もう一つ必要な区画——コードを書き残す場所</h3>
 <p data-src="02-install:50">作業にはもう一つの区画が必要になります。データ処理や分析の手順を一連のコードとして書き残し、保存するための場所です。R MarkdownやR Scriptなどの形で保存しておくことができますが、ここではR Markdownでのやり方を書いていきます。</p>
-<figure class="fig" data-src="02-install:52"><div class="fig-todo"><p>ここに画像を入れる</p><p class="fig-todo-alt">RStudioのFileメニューからNew File→R Markdownを選ぶ操作を示した画面</p><p class="fig-todo-path">images/02-new-rmd.png</p></div><figcaption>File → New File → R Markdown</figcaption></figure>
+<figure class="fig" data-src="02-install:52"><img src="images/02-new-rmd.png" alt="RStudioのFileメニューからNew File→R Markdownを選ぶ操作を示した画面" loading="lazy"><figcaption>File → New File → R Markdown</figcaption></figure>
 <p data-src="02-install:54">左上にある「File」をクリックし、さらに「New File」→「R Markdown」と進んでいくと、ファイル名の最後の部分（拡張子）が <code>.Rmd</code> となっているR Markdownの新しいファイルを開くことができます。</p>
 <p data-src="02-install:56">この区画は、コードを保存しておくための場所です。データ分析の過程は試行錯誤の連続ですので、コンソールの区画を使っていろいろなコードを実行して、結果がどうなるかをみてみる必要がありますが、試した結果うまくいって、後に残しておきたくなったコードをR Markdownのほうに書いておくわけです。</p>
 <p data-src="02-install:58">R Markdownは、コンピューターに実行させる命令を書いておくコードの部分と、人間のための（コンピューターには読ませない）メモを書いておくMarkdown部分に分かれています。保存したうえで、htmlやPDFなどの形式で出力することもできます。</p>
 <aside class="box box-note" data-src="02-install:60"><p class="box-title">コードの部分の作り方</p><p data-src="02-install:61">R Markdownのなかで、コードを書く場所（チャンクと呼びます）はこんな形をしています。</p>
-<div class="code" data-lang="画面に出るもの" data-src="02-install:63"><button class="copy" type="button">コピー</button><pre><code>```{r}
+<div class="code" data-lang="画面に出るもの" data-src="02-install:63"><pre><code>```{r}
 library(tidyverse)
 ```</code></pre></div>
 <p data-src="02-install:69">この3つのバッククオートで挟まれた中に書いたものだけが、Rの命令として実行されます。外側に書いた文字は、ぜんぶ人間向けのメモとして扱われます。チャンクを作るのは <strong>Ctrl＋Alt＋I</strong>（MacはCmd＋Option＋I）が早いです。</p></aside>
-<h2 id="覚えておくと効くキー操作" data-src="02-install:72">覚えておくと効くキー操作</h2>
-<p data-src="02-install:74">最初のうちはマウスでちまちま実行してもいいのですが、この3つだけは早めに手に入れておくと作業がラクになります。</p>
-<div class="table-wrap" data-src="02-install:76"><table><thead><tr><th>キー</th><th>何が起きるか</th></tr></thead><tbody><tr><td>Ctrl＋Enter</td><td>カーソルがある行（または選択した範囲）のコードを実行する</td></tr><tr><td>Ctrl＋Shift＋M</td><td>パイプ演算子 <code>%&gt;%</code> が出てくる</td></tr><tr><td>Ctrl＋Shift＋Enter</td><td>いま書いているチャンクを丸ごと実行する</td></tr></tbody></table></div>
+<h2 id="その他覚えておくと楽になるキー操作" data-src="02-install:72">その他、覚えておくと楽になるキー操作</h2>
+<p data-src="02-install:74">最初のうちはマウスでちまちま実行してもいいのですが、この3つだけは早めに覚えると作業がラクになります。</p>
+<div class="table-wrap" data-src="02-install:76"><table><thead><tr><th>キー</th><th>何が起きるか</th></tr></thead><tbody><tr><td>Ctrl＋Enter</td><td>カーソルがある行（または選択した範囲）のコードを実行する</td></tr><tr><td>Ctrl＋Shift＋M</td><td>パイプ演算子 <code>%&gt;%</code> が出てくる（これが何をするものかはまた後ほど）</td></tr><tr><td>Ctrl＋Shift＋Enter</td><td>いま書いているチャンクを丸ごと実行する</td></tr></tbody></table></div>
 <p data-src="02-install:82">MacではCtrlをCmdに読み替えてください。とくに <strong>Ctrl＋Enter</strong> は、これから何千回と押すことになります。</p>
     </article>
     <nav class="pager"><a class="prev" href="01-hajimeni.html"><span>前へ</span>はじめに——Rとは何か</a><a class="next" href="03-project.html"><span>次へ</span>プロジェクトとパッケージ</a></nav>

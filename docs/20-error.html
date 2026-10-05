@@ -4,8 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>エラーとの付き合い方 | 記者のためのR講座</title>
-<meta name="description" content="実際の作業時間の半分は、エラーを読んで直す時間です。だから、ここが上手くなるといちばん効きます。">
+<meta name="description" content="">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li class="here"><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="here wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -60,83 +69,13 @@
     <article>
       <p class="kicker">第4部　詰まったときに</p>
       <h1>エラーとの付き合い方</h1>
-      <div class="page-review"><p class="page-review-title">この章について</p><p>この章はもとになるテキストがなく、まるごと私（Claude）の書きおろしです。エラーの頻度も私の経験によるものです。</p></div><p class="lead">実際の作業時間の半分は、エラーを読んで直す時間です。だから、ここが上手くなるといちばん効きます。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#エラーは怒られているのではない">エラーは、怒られているのではない</a></li><li><a href="#8割はこの5つ">8割はこの5つ</a></li><li><a href="#直し方の手順">直し方の手順</a></li><li><a href="#エラーが出ないのに答えが変なとき">エラーが出ないのに、答えが変なとき</a></li><li><a href="#最後の手段">最後の手段</a></li></ul></nav>
-      <h2 id="エラーは怒られているのではない" data-src="20-error:9">エラーは、怒られているのではない</h2>
-<p data-src="20-error:11">Rを使いはじめて最初にくじけるのは、たいてい赤い文字です。何か悪いことをした気分になりますが、あれは怒っているのではなく、<strong>どこで何が分からなかったかを報告している</strong>だけです。</p>
-<p data-src="20-error:13">エラーメッセージには、たいてい答えが書いてあります。英語なので読み飛ばしたくなりますが、そこをこらえて読むのがいちばんの近道です。日本語で読みたければ、そのままコピーして翻訳にかけるか、AIに貼りつけて聞けばいいのです（<a href="21-ai.html">次の章</a>）。</p>
-<p data-src="20-error:15">まず、2種類あるのを区別してください。</p>
-<ul data-src="20-error:17">
-<li><strong>Error</strong>……処理が止まった。何も実行されていない。</li>
-<li><strong>Warning</strong>……処理は進んだが、気にしたほうがいいことがある。</li>
-</ul>
-<p data-src="20-error:20">Warningのほうが厄介です。<strong>動いてしまうから</strong>です。「NAが生まれました」「グループ化を解除しました」といった警告は、たいてい後で数字の狂いになって返ってきます。赤い字が出たら、Errorなのか Warningなのかを最初に見てください。</p>
-<h2 id="8割はこの5つ" data-src="20-error:22">8割はこの5つ</h2>
-<p data-src="20-error:24">私が出すエラーの大半は、この5つのどれかです。</p>
-<h3 id="1-object-xxx-not-found" data-src="20-error:26">1. object 'xxx' not found</h3>
-<div class="code" data-lang="画面に出るもの" data-src="20-error:28"><button class="copy" type="button">コピー</button><pre><code>Error: object 'df2020' not found</code></pre></div>
-<p data-src="20-error:32">「df2020なんてものは知りません」。原因はほぼ2つです。</p>
-<ul data-src="20-error:34">
-<li>そのオブジェクトを作るコードを、まだ実行していない（R Markdownを上から順に流し直せば直ります）</li>
-<li>名前を打ち間違えている（<code>df_2020</code> と <code>df2020</code>、<code>population</code> と <code>poplation</code>）</li>
-</ul>
-<p data-src="20-error:37">Environmentタブを見て、そこに目当ての名前があるか確かめるのが早いです。</p>
-<h3 id="2-could-not-find-function-xxx" data-src="20-error:39">2. could not find function "xxx"</h3>
-<div class="code" data-lang="画面に出るもの" data-src="20-error:41"><button class="copy" type="button">コピー</button><pre><code>Error in read_csv(...) : could not find function "read_csv"</code></pre></div>
-<p data-src="20-error:45">「read_csvなんて関数は知りません」。<strong><code>library(tidyverse)</code> を実行し忘れています。</strong> RStudioを開き直したあとにいちばんよく出ます。</p>
-<p data-src="20-error:47"><code>read_excel</code> なら <code>library(readxl)</code>、<code>read_html</code> なら <code>library(rvest)</code>。関数の名前でググれば、どのパッケージのものかはすぐ分かります。</p>
-<h3 id="3-括弧やコンマの不足" data-src="20-error:49">3. 括弧やコンマの不足</h3>
-<div class="code" data-lang="画面に出るもの" data-src="20-error:51"><button class="copy" type="button">コピー</button><pre><code>Error in ... : unexpected ')' </code></pre></div>
-<p data-src="20-error:55">コンソールに <code>+</code> が出たまま止まっている場合も、これです。閉じ括弧が足りていません。</p>
-<p data-src="20-error:57">RStudioは括弧の対応を色で教えてくれます。閉じ括弧にカーソルを合わせると、対応する開き括弧が光ります。長いコードで迷ったら、一度全部選んで <strong>Ctrl＋Shift＋A</strong>（コードを整形する）を押すと、階層のずれが見えて原因が分かることがあります。</p>
-<h3 id="4-列の名前が違う" data-src="20-error:59">4. 列の名前が違う</h3>
-<div class="code" data-lang="画面に出るもの" data-src="20-error:61"><button class="copy" type="button">コピー</button><pre><code>Error in `select()`: ! Can't select columns that don't exist.
-✖ Column `poplation` doesn't exist.</code></pre></div>
-<p data-src="20-error:66">これは親切なエラーで、どの列がないかまで書いてくれます。<code>colnames()</code> で正しい名前を確かめてください。</p>
-<p data-src="20-error:68">日本語の列名では、<strong>全角スペースと半角スペースの違い</strong>が犯人であることがよくあります。<code>`地域 コード`</code> の空白が半角なのか全角なのか、目では判別できません。<code>colnames()</code> の出力からコピーして貼りつけるのが確実です。</p>
-<h3 id="5-データ型が合っていない" data-src="20-error:70">5. データ型が合っていない</h3>
-<div class="code" data-lang="画面に出るもの" data-src="20-error:72"><button class="copy" type="button">コピー</button><pre><code>Error in `bind_rows()`: ! Can't combine `..1$x` &lt;double&gt; and `..2$x` &lt;character&gt;.</code></pre></div>
-<p data-src="20-error:76"><a href="10-datatype.html">10章</a>でやったやつです。同じ名前の列なのに、片方が数値、片方が文字列。</p>
-<h2 id="直し方の手順" data-src="20-error:78">直し方の手順</h2>
-<p data-src="20-error:80">エラーが出たときの手順を決めておくと、パニックにならずに済みます。私はこうしています。</p>
-<ol data-src="20-error:82">
-<li><strong>メッセージの1行目を読む。</strong> どの関数で起きたかが書いてあります。</li>
-<li><strong>その関数のところまでで、いったん止めて実行する。</strong> パイプを途中で切って、そこまでのデータがどうなっているかを見る。</li>
-<li><strong>データの形を確かめる。</strong> <code>glimpse()</code> で列名と型を見る。<code>nrow()</code> で行数を見る。<code>filter(is.na(...))</code> でNAを探す。</li>
-<li><strong>それでも分からなければ、メッセージをそのまま検索する。</strong> 自分のファイル名や列名は消して、汎用的な部分だけを貼る。</li>
-<li><strong>AIに聞く。</strong> コードとエラーメッセージを両方貼るのがコツです。</li>
-</ol>
-<aside class="box box-tips" data-src="20-error:88"><p class="box-title">パイプを途中で切って確かめる</p><p data-src="20-error:89">これが最強のデバッグ方法です。長いコードが動かないとき、上から少しずつ実行します。</p>
-<div class="code" data-lang="R" data-src="20-error:91"><button class="copy" type="button">コピー</button><pre><code>df2020 %&gt;%
-  select(地域, `A1101_総人口【人】`) %&gt;%
-  # rename(region = 地域) %&gt;%      ← ここから下をコメントアウトして実行
-  # mutate(rate = ...) %&gt;%
-  view()</code></pre></div>
-<p data-src="20-error:99">行の頭に <code>#</code> をつけると、その行は無効になります（コメントアウト）。RStudioなら <strong>Ctrl＋Shift＋C</strong> で、選んだ範囲をまとめてコメントアウトできます。</p>
-<p data-src="20-error:101">上から1段ずつ足していって、どこで壊れるかを見つける。「ここまでは意図した形になっている」を確かめながら進むので、原因が必ず特定できます。</p></aside>
-<h2 id="エラーが出ないのに答えが変なとき" data-src="20-error:104">エラーが出ないのに、答えが変なとき</h2>
-<p data-src="20-error:106">こちらのほうが、実は怖いです。<span class="review" title="要検討：書いた人の意見が入っています">コードは動いた。数字も出てきた。でも間違っている。記者にとっては、これが最悪の事故です。<span class="review-tag">要検討</span></span></p>
-<p data-src="20-error:108">予防するための確認を並べておきます。この講座でも各章で繰り返してきたことです。</p>
-<div class="table-wrap" data-src="20-error:110"><table><thead><tr><th>確かめること</th><th>コード</th></tr></thead><tbody><tr><td>行数が想定と合っているか</td><td><code>nrow()</code></td></tr><tr><td>合計が公表値と合っているか</td><td><code>summarize(sum(x))</code></td></tr><tr><td>種類の数が合っているか（47都道府県、289選挙区…）</td><td><code>distinct(x) %&gt;% nrow()</code></td></tr><tr><td>NAがいくつあるか</td><td><code>filter(is.na(x)) %&gt;% nrow()</code></td></tr><tr><td>重複した行がないか</td><td><code>count(code) %&gt;% filter(n &gt; 1)</code></td></tr><tr><td>突合できなかったものはないか</td><td><code>anti_join()</code></td></tr><tr><td>最大値・最小値がおかしくないか</td><td><code>arrange(x)</code> と <code>arrange(desc(x))</code></td></tr></tbody></table></div>
-<p data-src="20-error:120">とくに大事なのは、いちばん下の<strong>両端を見る</strong>という習慣です。人口がマイナスの自治体、100％を超える比率、1900年の日付。ありえない値は、たいてい端っこに出てきます。並べ替えて上下を見るだけで、多くの間違いに気づけます。</p>
-<aside class="box box-warn box-review" data-src="20-error:122"><p class="box-title">いちばん効く確認は、外の数字と突き合わせること<span class="review-tag">要検討</span></p><p data-src="20-error:123">Rのなかだけで完結する確認には限界があります。いちばん強いのは、<strong>自分の集計を、公表されている数字と照らし合わせる</strong>ことです。</p>
-<ul data-src="20-error:125">
-<li>都道府県別に集計したら、総務省が発表している都道府県の人口と比べる</li>
-<li>政党別に得票を集計したら、報道されている得票数と比べる</li>
-<li>年度別の件数を出したら、白書に載っている件数と比べる</li>
-</ul>
-<p data-src="20-error:129">合わなければ、必ず理由を突き止める。「四捨五入の差だろう」で済ませないこと。私の経験では、合わない理由の9割は自分のミスで、1割は公表値のほうの注記を読んでいないことでした。どちらにしても、<strong>理由が分かるまでは記事にしない</strong>。</p></aside>
-<h2 id="最後の手段" data-src="20-error:132">最後の手段</h2>
-<p data-src="20-error:134">どうしても分からないときは、いったん離れます。</p>
-<p data-src="20-error:136">私は、30分たっても進まなければ席を立つことにしています。翌朝コードを読んだら、<code>==</code> を <code>=</code> と書いていただけ、ということが本当によくあります。締め切りがあると難しいですが、詰まったまま粘るより早いことが多いです。</p>
-<p data-src="20-error:138">それでもダメなら、詳しい人に聞く。そのときは、</p>
-<ul data-src="20-error:140">
-<li>やろうとしていること（何を知りたいのか）</li>
-<li>書いたコード</li>
-<li>出たエラーメッセージ</li>
-<li>データの形（<code>glimpse()</code> の結果）</li>
-</ul>
-<p data-src="20-error:145">の4点セットを渡すと、話が早く進みます。逆に「Rが動きません」だけでは、聞かれた側は何も答えられません。これは取材で相手に質問するときと同じですね。</p>
+      
+      
+      <div class="wip-notice">
+<p class="wip-notice-title">工事中</p>
+<p>この章はいま書いているところです。公開まで、もうしばらくお待ちください。</p>
+<p>先に<a href="index.html">第1部・第2部</a>を進めておくと、この章もすっと読めるはずです。</p>
+</div>
     </article>
     <nav class="pager"><a class="prev" href="19-kami-excel.html"><span>前へ</span>19 神エクセルを解体する</a><a class="next" href="21-ai.html"><span>次へ</span>21 AIと一緒に書く</a></nav>
     <footer class="site-foot">

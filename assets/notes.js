@@ -5,8 +5,12 @@
 // ・メモはこのブラウザのなかに保存されます（サーバーには送りません）。
 // ・「書き出す」を押すと、メモをまとめたテキストファイルが手に入ります。
 //   そのファイルをClaudeに渡せば、場所（ファイル名と行番号）つきでまとめて直せます。
+// ・公開しているサイトでは動きません。手元でファイルを直接開いたとき（file:）と
+//   localhost で開いたときだけ使えます（判定は各ページの<head>で html に付ける local）。
 
 (function () {
+  if (!document.documentElement.classList.contains('local')) return;
+
   var KEY = 'r-course-notes-v1';
   var SEL = '[data-src]';
 

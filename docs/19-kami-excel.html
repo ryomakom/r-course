@@ -4,8 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>神エクセルを解体する | 記者のためのR講座</title>
-<meta name="description" content="見出しが2段になっていて、セルが結合されていて、シートが47枚ある。あのExcelを、tidyxlとunpivotrで機械が読める形に組み替えます。">
+<meta name="description" content="">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li class="here"><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="here wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -60,167 +69,13 @@
     <article>
       <p class="kicker">第3部　データを集める</p>
       <h1>神エクセルを解体する</h1>
-      <div class="page-review"><p class="page-review-title">この章について</p><p>コードは勉強会のものですが、説明文は私（Claude）が意図を推測して書いた下書きです。見出しの例は架空のものに置き換えてあります。</p></div><p class="lead">見出しが2段になっていて、セルが結合されていて、シートが47枚ある。あのExcelを、tidyxlとunpivotrで機械が読める形に組み替えます。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#神エクセルとは">神エクセルとは</a></li><li><a href="#考え方をひっくり返す">考え方をひっくり返す</a></li><li><a href="#beheadで見出しを剥がす">beheadで見出しを剥がす</a></li><li><a href="#シートを全部処理する">シートを全部処理する</a></li><li><a href="#ファイルもシートも全部処理する">ファイルもシートも全部処理する</a></li><li><a href="#数え上げて確かめる">数え上げて確かめる</a></li></ul></nav>
-      <h2 id="神エクセルとは" data-src="19-kami-excel:9">神エクセルとは</h2>
-<p data-src="19-kami-excel:11">役所が公表するExcelファイルには、独特の様式があります。上のほうに表題や日付や注記が入っていて、見出しが2段や3段になっていて、セルが結合されていて一つの見出しが複数の列にまたがっている。途中に小計の行が挟まっていたりもしますし、一つのファイルに同じ形のシートが47枚入っていることもあります。</p>
-<p data-src="19-kami-excel:13">紙に印刷して人が見るために作られているので、これはこれで理にかなっているわけです。でも <code>read_excel()</code> で読むと悲惨なことになります。列名が <code>...4</code> <code>...5</code> になり、結合されたセルの二つ目以降はNAになり、見出しの2段目はデータの1行目として読まれる。こういうファイルは、しばしば「神エクセル」と呼ばれます。</p>
-<p data-src="19-kami-excel:15">これを力技で直そうとすると、<code>rename</code> と <code>mutate</code> と <code>filter</code> を延々と書くことになります。しかもシートが47枚あれば、シートごとに微妙に形が違って、その全部に対応しなくてはいけません。めんどくさ。</p>
-<p data-src="19-kami-excel:17">でも、もっとましなやり方があります。</p>
-<h2 id="考え方をひっくり返す" data-src="19-kami-excel:19">考え方をひっくり返す</h2>
-<p data-src="19-kami-excel:21">使うのはtidyxlとunpivotrという2つのパッケージです。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:23"><button class="copy" type="button">コピー</button><pre><code>install.packages("tidyxl")
-install.packages("unpivotr")
-library(tidyxl)
-library(unpivotr)</code></pre></div>
-<aside class="box box-data" data-src="19-kami-excel:30"><p class="box-title">この章で使うデータ</p><p data-src="19-kami-excel:31"><a href="18-download.html">18章</a>の手順でダウンロードしたファイルを使いますが、うまく落ちてこなかった人は、北海道のぶんをここから取って下さい。</p>
-<p data-src="19-kami-excel:33"><a class="dl" href="files/000979538.xlsx" download>000979538.xlsx<span class="dl-size">46 KB</span></a>　衆院選の市区町村別得票（北海道）</p>
-<p data-src="19-kami-excel:35"><code>download</code> フォルダに入れると、この章のコードがそのまま動きます。総務省が公表しているファイルの写しです。</p></aside>
-<p data-src="19-kami-excel:38"><code>read_excel()</code> は、Excelのシートを「表」として読み込もうとします。だから表の形が崩れていると困るわけです。</p>
-<p data-src="19-kami-excel:40">一方、tidyxlの <code>xlsx_cells()</code> は、セルを一つずつ、バラバラの部品として読み込みます。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:42"><button class="copy" type="button">コピー</button><pre><code>"download/000979538.xlsx" %&gt;%
-  xlsx_cells()</code></pre></div>
-<p data-src="19-kami-excel:47">返ってくるのは、こんな形のtibbleです。</p>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:49"><button class="copy" type="button">コピー</button><pre><code># A tibble: 40,000 × 21
-   sheet         address   row   col is_blank data_type content     numeric ...
-   &lt;chr&gt;         &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;lgl&gt;    &lt;chr&gt;     &lt;chr&gt;         &lt;dbl&gt;
- 1 北海道第１区  A1          1     1 FALSE    character 〇年〇月…        NA
- 2 北海道第１区  B3          3     2 FALSE    character 候補者A          NA
- 3 北海道第１区  C5          5     3 FALSE    numeric   45231         45231</code></pre></div>
-<p data-src="19-kami-excel:58">1行が一つのセルです。何シートの何行目の何列目に、何が入っているか。それがすべて記録されているだけなので、表の形が崩れていようが関係ありません。セルは常にセルであって、崩れようがないからです。</p>
-<p data-src="19-kami-excel:60">ここから、どのセルが見出しでどのセルが中身なのかをこちらが指定して、整然データに組み直していきます。それをやるのがunpivotrというパッケージです。</p>
-<h2 id="beheadで見出しを剥がす" data-src="19-kami-excel:62">beheadで見出しを剥がす</h2>
-<p data-src="19-kami-excel:64">unpivotrの主役は <code>behead()</code> という関数です。beheadは「首を切り落とす」という意味で、要するに見出しを1段ずつ剥がして、それをデータの列に変えなさい、という命令です。</p>
-<p data-src="19-kami-excel:66">たとえば、こんなシートを考えてみます。</p>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:68"><button class="copy" type="button">コピー</button><pre><code>      A            B           C
-1  〇年〇月〇日執行
-2  〇〇県第1区
-3               候補者A      候補者B      ← 候補者名（見出し1段目）
-4               ○○党       △△党       ← 政党（見出し2段目）
-5  〇〇市中央区   45,231      38,102
-6  〇〇市北区     52,882      41,993
-     ↑
-   市区町村名（左の見出し）</code></pre></div>
-<p data-src="19-kami-excel:80">（名前と数字は説明のための架空のものです）</p>
-<p data-src="19-kami-excel:82">ほしいのは、こういう形です。</p>
-<div class="table-wrap" data-src="19-kami-excel:84"><table><thead><tr><th>市区町村</th><th>候補者</th><th>政党</th><th>得票</th></tr></thead><tbody><tr><td>〇〇市中央区</td><td>候補者A</td><td>○○党</td><td>45231</td></tr><tr><td>〇〇市中央区</td><td>候補者B</td><td>△△党</td><td>38102</td></tr><tr><td>〇〇市北区</td><td>候補者A</td><td>○○党</td><td>52882</td></tr></tbody></table></div>
-<p data-src="19-kami-excel:90"><code>behead()</code> を使うと、こう書けます。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:92"><button class="copy" type="button">コピー</button><pre><code>"download/000979538.xlsx" %&gt;%
-  xlsx_cells() %&gt;%
-  filter(sheet == "北海道第１区") %&gt;%
-  behead("up-left", "day") %&gt;%
-  behead("up-left", "garbage") %&gt;%
-  behead("up-left", "district") %&gt;%
-  behead("up", "name") %&gt;%
-  behead("up", "party") %&gt;%
-  behead("left", "municipality") %&gt;%
-  select(day, district, municipality, name, party, numeric) %&gt;%
-  filter(!is.na(name), !is.na(numeric), !is.na(municipality))</code></pre></div>
-<p data-src="19-kami-excel:106"><code>behead()</code> の丸括弧には二つ入っています。一つ目がその見出しの方向、つまりデータから見てどの向きにあるか。二つ目が、剥がした見出しを入れる列の名前です。</p>
-<p data-src="19-kami-excel:108">方向にはこんなものがあります。</p>
-<div class="table-wrap" data-src="19-kami-excel:110"><table><thead><tr><th>指定</th><th>意味</th></tr></thead><tbody><tr><td><code>"up"</code></td><td>真上にある見出し（列の見出し）</td></tr><tr><td><code>"left"</code></td><td>真横（左）にある見出し（行の見出し）</td></tr><tr><td><code>"up-left"</code></td><td>上にあって、左に寄っている見出し（結合セルや、左端だけに書かれた見出し）</td></tr><tr><td><code>"left-up"</code></td><td>左にあって、上に寄っている見出し</td></tr></tbody></table></div>
-<p data-src="19-kami-excel:117">このうち <code>"up-left"</code> が神エクセル攻略の鍵になります。セルが結合されていたり、グループの先頭にだけ名前が書かれていたりする場合、真上を見ても何もありません。だから「上のほう、左に寄ったところ」を探してもらう必要があるわけです。</p>
-<p data-src="19-kami-excel:119">上のコードでは、<code>up-left</code> を3回続けて使って、1行目の日付、2行目の余計なもの、3行目の選挙区名を順に剥がしています。1枚ずつ皮をむくように、上から順番に剥がしていくイメージです。剥がす順番が大事です。</p>
-<aside class="box box-tips" data-src="19-kami-excel:121"><p class="box-title">1段ずつ実行して確かめる</p><p data-src="19-kami-excel:122">このコードは、パイプを1本ずつ足しながら実行するのが正解です。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:124"><button class="copy" type="button">コピー</button><pre><code>"download/000979538.xlsx" %&gt;%
-  xlsx_cells() %&gt;%
-  filter(sheet == "北海道第１区") %&gt;%
-  behead("up-left", "day") %&gt;%
-  select(row, col, day, content) %&gt;%      # ここで確かめる
-  view()</code></pre></div>
-<p data-src="19-kami-excel:133"><code>day</code> という列に、日付が全部のセルに配られていますか。配られていれば成功です。1つ剥がすたびに、こうやって目で確かめる。これがいちばん早い。</p>
-<p data-src="19-kami-excel:135"><code>select(row, col, ...)</code> で行番号と列番号を残しておくと、元のシートのどこの話なのかが分かって理解しやすくなります。</p></aside>
-<p data-src="19-kami-excel:138">最後の2行も大事です。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:140"><button class="copy" type="button">コピー</button><pre><code>select(day, district, municipality, name, party, numeric) %&gt;%
-filter(!is.na(name), !is.na(numeric), !is.na(municipality))</code></pre></div>
-<p data-src="19-kami-excel:145"><code>numeric</code> というのは、そのセルの数値としての中身が入った列です。tidyxlはセルの中身を型ごとに別の列に入れてくれるので、文字なら <code>character</code>、数値なら <code>numeric</code>、日付なら <code>date</code> を見ればいい、という具合です。最後の <code>filter(!is.na(...))</code> は、見出しでもなく数字でもない余計なセル、たとえば注記のようなものを落としています。</p>
-<aside class="box box-warn" data-src="19-kami-excel:147"><p class="box-title">tidyxlは.xlsを読めません</p><p data-src="19-kami-excel:148"><code>xlsx_cells()</code> が読めるのは、拡張子が <code>.xlsx</code> と <code>.xlsm</code> のファイルだけです。古い <code>.xls</code> は読めません。</p>
-<p data-src="19-kami-excel:150">古い形式のファイルにぶつかったら、Excelで開いて <code>.xlsx</code> として保存し直すのが手っ取り早いです。「元データは手で触らない」原則と矛盾しますが、元ファイルは残したまま別名で保存すればいいので、実務上は問題になりません。</p></aside>
-<h2 id="シートを全部処理する" data-src="19-kami-excel:153">シートを全部処理する</h2>
-<p data-src="19-kami-excel:155">さて、このファイルには北海道の小選挙区の数だけシートがあります。全部に同じ処理をしたい。<a href="17-loop.html">17章</a>で覚えたfor文の出番です。今回は「ページの一覧」ではなく「シートの一覧」に対して回します。</p>
-<p data-src="19-kami-excel:157">まずシート名の一覧を取ります。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:159"><button class="copy" type="button">コピー</button><pre><code>sheet_names &lt;- "download/000979538.xlsx" %&gt;%
-  excel_sheets()
-
-sheet_names</code></pre></div>
-<p data-src="19-kami-excel:166"><code>excel_sheets()</code> はreadxlの関数です（<code>library(readxl)</code> を忘れずに）。</p>
-<p data-src="19-kami-excel:168">そして回します。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:170"><button class="copy" type="button">コピー</button><pre><code>vote_data &lt;- tibble()
-
-for (i in sheet_names) {
-  vote_data_temporaly &lt;- "download/000979538.xlsx" %&gt;%
-    xlsx_cells() %&gt;%
-    filter(row &gt; 3, sheet == i) %&gt;%
-    behead("left", "municipality") %&gt;%
-    behead("up", "name") %&gt;%
-    behead("up", "party") %&gt;%
-    mutate(district = i) %&gt;%
-    rename(vote = content) %&gt;%
-    select(district, municipality, name, party, vote) %&gt;%
-    filter(!is.na(municipality))
-
-  vote_data &lt;- bind_rows(vote_data, vote_data_temporaly)
-}</code></pre></div>
-<p data-src="19-kami-excel:189">さっきと少し違うところが三つあります。</p>
-<p data-src="19-kami-excel:191">一つは <code>filter(row &gt; 3)</code> で、上の3行、つまり日付や選挙区名が書かれた部分を最初に切り捨てていること。<code>behead("up-left", ...)</code> で剥がす代わりに、いらないものを先に落としてしまうわけです。こちらのほうが単純で、シートごとの形の違いにも強いです。</p>
-<p data-src="19-kami-excel:193">二つ目は <code>mutate(district = i)</code> のところ。シート名そのものが選挙区名なので、ループの変数 <code>i</code> をデータの一部として持ち込んでいます。これは覚えておくと便利な技です。</p>
-<p data-src="19-kami-excel:195">三つ目は <code>rename(vote = content)</code> で、セルの中身の列を <code>vote</code> という名前に変えていることです。</p>
-<aside class="box box-note" data-src="19-kami-excel:197"><p class="box-title">シート名が情報になっている</p><p data-src="19-kami-excel:198">役所のExcelでは、「シート名」や「ファイル名」そのものが重要な情報を持っていることがよくあります。北海道第1区、第2区……というシート名は、まさにそれです。</p>
-<p data-src="19-kami-excel:200"><code>read_excel()</code> で1枚ずつ読んでいると、この情報はどこにも残りません。だから <code>mutate(district = i)</code> のように、明示的にデータの中へ入れてやる必要があります。</p>
-<p data-src="19-kami-excel:202">同じことは、ファイル名についてもいえます。都道府県ごとに分かれたファイルなら、ファイル名から都道府県が分かる。次のコードでは、それも一緒に持ち込んでいます。</p></aside>
-<h2 id="ファイルもシートも全部処理する" data-src="19-kami-excel:205">ファイルもシートも全部処理する</h2>
-<p data-src="19-kami-excel:207">47都道府県分のファイルがあり、それぞれにシートが複数ある。というわけで、for文を二重にします。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:209"><button class="copy" type="button">コピー</button><pre><code>excel_files &lt;- list.files("download/") %&gt;%
-  str_c("download/", .)
-
-# 空のtibbleを初期化
-vote_data &lt;- tibble()
-
-# 各ファイルをループ
-for (i in excel_files) {
-  sheet_names &lt;- excel_sheets(i)
-
-  for (j in sheet_names) {
-    vote_data_temp &lt;- i %&gt;%
-      xlsx_cells() %&gt;%
-      filter(row &gt; 3, sheet == j) %&gt;%
-      behead("left", "municipality") %&gt;%
-      behead("up", "name") %&gt;%
-      behead("up", "party") %&gt;%
-      mutate(
-        district = j,
-        file = basename(i)
-      ) %&gt;%
-      rename(vote = content) %&gt;%
-      select(district, municipality, name, party, vote, file) %&gt;%
-      filter(!is.na(municipality))
-
-    vote_data &lt;- bind_rows(vote_data, vote_data_temp)
-  }
-}</code></pre></div>
-<p data-src="19-kami-excel:240">外側のループがファイルを1つずつ、内側のループがそのファイルのシートを1つずつ処理します。ファイルが47個、シートが平均6枚なら、内側の処理は280回ほど回ることになります。</p>
-<p data-src="19-kami-excel:242"><code>file = basename(i)</code> で、どのファイルから来たデータなのかを記録しています。これがないと、あとで「この行はどこから来たんだ」が追えなくなります。</p>
-<aside class="box box-warn box-review" data-src="19-kami-excel:244"><p class="box-title">全部同じ形だとは限らない<span class="review-tag">要検討</span></p><p data-src="19-kami-excel:245">これだけ大量に処理すると、必ず例外が出てきます。比例代表のファイルは形が違う、一つだけ見出しが3段になっている、シートの中に凡例だけのものが混ざっている……。</p>
-<p data-src="19-kami-excel:247">対処のしかたはいくつかあります。<a href="17-loop.html">17章</a>でやったように <code>tryCatch()</code> で囲んで、失敗したものを後から個別に処理する。あるいは形が同じファイルだけを先に処理して、残りは別のコードを書く（<code>excel_files[c(1:46, 58)]</code> のように番号を指定して選ぶ手もあります）。数が少なければ、例外のほうは手で入力してしまうのがいちばん早いこともあります。</p>
-<p data-src="19-kami-excel:249">どれを選んでもいいのですが、どのファイルを処理して、どのファイルを除いたのかは記録しておいて下さい。黙って除くと、あとで「全国のデータ」と言えなくなります。なぜ除いたのかも、メモに残しておきましょう。</p></aside>
-<h2 id="数え上げて確かめる" data-src="19-kami-excel:252">数え上げて確かめる</h2>
-<p data-src="19-kami-excel:254">集まったら、必ず確かめます。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:256"><button class="copy" type="button">コピー</button><pre><code># 選挙区の数
-vote_data %&gt;% distinct(district) %&gt;% nrow()
-
-# 候補者の数
-vote_data %&gt;% distinct(district, name) %&gt;% nrow()
-
-# 政党別の得票
-vote_data %&gt;%
-  mutate(vote = as.double(vote)) %&gt;%
-  group_by(party) %&gt;%
-  summarize(gokei = sum(vote, na.rm = TRUE)) %&gt;%
-  arrange(desc(gokei))</code></pre></div>
-<p data-src="19-kami-excel:271"><code>distinct()</code> は、重複を除いて種類を数えるための関数です。選挙区の数は289になっていますか。政党別の合計は、公表されている数字と合っていますか。</p>
-<p data-src="19-kami-excel:273">合わなければ、どこかを取りこぼしているということですから、合うまで直します。逆にいえば、合ったときには、公表されていない切り口——市区町村別、候補者別、党派別の組み合わせ——で自由に分析できる材料が手に入ったことになるわけです。</p>
-<aside class="box box-homework" data-src="19-kami-excel:275"><p class="box-title">宿題</p><p data-src="19-kami-excel:276">一つのファイルにある複数のシートに同じ処理を連続的にほどこすコードを、for文を使ってつくりましょう。</p>
-<p data-src="19-kami-excel:278">作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
+      
+      
+      <div class="wip-notice">
+<p class="wip-notice-title">工事中</p>
+<p>この章はいま書いているところです。公開まで、もうしばらくお待ちください。</p>
+<p>先に<a href="index.html">第1部・第2部</a>を進めておくと、この章もすっと読めるはずです。</p>
+</div>
     </article>
     <nav class="pager"><a class="prev" href="18-download.html"><span>前へ</span>18 一括ダウンロード</a><a class="next" href="20-error.html"><span>次へ</span>20 エラーとの付き合い方</a></nav>
     <footer class="site-foot">

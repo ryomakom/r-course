@@ -69,6 +69,20 @@ PARTS = [
 
 ORDER = [slug for _, slugs in PARTS for slug in slugs]
 
+# 工事中の部。ここに書いた部の章は、本文を出さずに「工事中」のページだけを書き出す。
+# 公開してよくなったら、この集合から部の名前を消すだけでよい。
+WIP_PARTS = {
+    "第3部　データを集める",
+    "第4部　詰まったときに",
+}
+WIP = {slug for part, slugs in PARTS if part in WIP_PARTS for slug in slugs}
+
+WIP_BODY = """<div class="wip-notice">
+<p class="wip-notice-title">工事中</p>
+<p>この章はいま書いているところです。公開まで、もうしばらくお待ちください。</p>
+<p>先に<a href="index.html">第1部・第2部</a>を進めておくと、この章もすっと読めるはずです。</p>
+</div>"""
+
 # 足りない画像・出力ファイルの控え（ビルドの最後に一覧を出す）
 MISSING = []
 
@@ -133,6 +147,12 @@ def mark_memo(m):
             '<span class="memo-inline-tag">メモ</span>%s</span>' % body)
 
 
+def math(m):
+    r"""\(f(x)\) を教科書の数式ふうにする。文字は斜体、かっこや数字は立体のまま。"""
+    body = re.sub(r"([A-Za-z])", r"<var>\1</var>", m.group(1))
+    return '<span class="math">%s</span>' % body
+
+
 def inline(text):
     """段落のなかの記法（`コード` **太字** [リンク](url)）を変換する。"""
     codes = []
@@ -149,6 +169,7 @@ def inline(text):
     text = re.sub(r"``(.+?)``", stash_double, text)
     text = re.sub(r"`([^`]+)`", stash, text)
     text = esc(text)
+    text = re.sub(r"\\\((.+?)\\\)", math, text)
     text = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", link, text)
     text = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"\{\{\?\s*(.+?)\s*\}\}", mark_review, text)
@@ -228,7 +249,7 @@ def render(md, headings, base_line=1):
             for word in marks:
                 code = code.replace(esc(word), "<mark>%s</mark>" % esc(word))
             out.append(
-                '<div class="code" data-lang="%s"%s><button class="copy" type="button">コピー</button>'
+                '<div class="code" data-lang="%s"%s>'
                 '<pre><code>%s</code></pre></div>' % (esc(label), loc(here), code)
             )
             continue
@@ -412,9 +433,15 @@ def nav_html(current):
         for slug in slugs:
             meta = PAGES[slug][0]
             label = meta.get("nav") or meta.get("title", slug)
-            cls = ' class="here"' if slug == current else ""
+            classes = []
+            if slug == current:
+                classes.append("here")
+            if slug in WIP:
+                classes.append("wip")
+            cls = ' class="%s"' % " ".join(classes) if classes else ""
             href = "index.html" if slug == "index" else slug + ".html"
-            rows.append('<li%s><a href="%s">%s</a></li>' % (cls, href, esc(label)))
+            tag = '<span class="wip-tag">工事中</span>' if slug in WIP else ""
+            rows.append('<li%s><a href="%s">%s%s</a></li>' % (cls, href, esc(label), tag))
         rows.append("</ul>")
     return "\n".join(rows)
 
@@ -427,6 +454,15 @@ PAGE = """<!DOCTYPE html>
 <title>{title} | {site}</title>
 <meta name="description" content="{desc}">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {{
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {{
+    document.documentElement.classList.add("local");
+  }}
+}})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -498,10 +534,12 @@ def build():
         meta, raw, offset = PAGES[slug]
         CURRENT[0] = slug
         headings = []
-        body = render(raw, headings, base_line=offset)
-
-        for m in re.finditer(r"TODO[^\n<]*", raw):
-            todos.append((slug, m.group(0)))
+        if slug in WIP:
+            body = WIP_BODY
+        else:
+            body = render(raw, headings, base_line=offset)
+            for m in re.finditer(r"TODO[^\n<]*", raw):
+                todos.append((slug, m.group(0)))
 
         inpage = ""
         if len(headings) >= 3 and slug != "index":
@@ -519,11 +557,13 @@ def build():
                 nx, esc(PAGES[nx][0].get("nav") or PAGES[nx][0].get("title", nx)))
 
         banner = ""
-        if meta.get("memo"):
+        if slug in WIP:
+            meta = dict(meta, lead="")
+        if meta.get("memo") and slug not in WIP:
             MEMO.append(("page", slug, meta["memo"]))
             banner += ('<div class="page-memo"><p class="page-memo-title">'
                        'この章へのメモ</p><p>%s</p></div>' % inline(meta["memo"]))
-        if meta.get("review"):
+        if meta.get("review") and slug not in WIP:
             REVIEW.append(("page", slug, meta["review"]))
             banner = ('<div class="page-review"><p class="page-review-title">'
                       'この章について</p><p>%s</p></div>' % inline(meta["review"]))
@@ -547,6 +587,9 @@ def build():
             f.write(html_out)
 
     print("%d ページを %s に書き出しました。" % (len(ORDER), OUT))
+    if WIP:
+        print("（うち %d ページは「工事中」として本文を出していません：%s）"
+              % (len(WIP), "、".join(sorted(WIP_PARTS))))
     if MISSING:
         print("\n--- まだ用意されていない画像・出力ファイルが %d 件あります ---"
               % len(set(MISSING)))

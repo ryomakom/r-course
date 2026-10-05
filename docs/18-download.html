@@ -4,8 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ファイルを一括ダウンロードする | 記者のためのR講座</title>
-<meta name="description" content="総務省が出している衆院選の市区町村別得票データ。47都道府県分のExcelを、リンクを拾って全部落としてきます。">
+<meta name="description" content="">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li class="here"><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="here wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -60,113 +69,13 @@
     <article>
       <p class="kicker">第3部　データを集める</p>
       <h1>ファイルを一括ダウンロードする</h1>
-      <div class="page-review"><p class="page-review-title">この章について</p><p>コードは勉強会のものですが、説明文は私（Claude）が意図を推測して書いた下書きです。</p></div><p class="lead">総務省が出している衆院選の市区町村別得票データ。47都道府県分のExcelを、リンクを拾って全部落としてきます。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#お題">お題</a></li><li><a href="#httrでファイルを落とす">httrでファイルを落とす</a></li><li><a href="#リンクの一覧をつくる">リンクの一覧をつくる</a></li><li><a href="#全部落とす">全部落とす</a></li><li><a href="#途中で止まらないようにする">途中で止まらないようにする</a></li><li><a href="#直接読めないページもある">直接読めないページもある</a></li></ul></nav>
-      <h2 id="お題" data-src="18-download:9">お題</h2>
-<p data-src="18-download:11">選挙のデータを扱おうとすると、必ずこの壁にぶつかります。総務省は衆院選の市区町村別得票数を公表していますが、ファイルは都道府県ごとに分かれていて、リンクが一覧ページにずらっと並んでいます。</p>
-<p data-src="18-download:13">1つずつクリックして保存する。47回。しかも保存先を間違えたり、同じファイルを2回落としたりする。やりたくないですね。</p>
-<p data-src="18-download:15">ページに貼られているのが表ではなくファイルになっただけなので、やることはあまり変わりません。リンクの一覧を作って、1つずつ処理する。違うのは、tibbleに変える代わりにファイルとして保存する、という点です。</p>
-<h2 id="httrでファイルを落とす" data-src="18-download:17">httrでファイルを落とす</h2>
-<p data-src="18-download:19">ファイルのダウンロードには、httrというパッケージが便利です。</p>
-<div class="code" data-lang="R" data-src="18-download:21"><button class="copy" type="button">コピー</button><pre><code># install.packages("httr")
-library(httr)</code></pre></div>
-<p data-src="18-download:26">使い方はこうです。</p>
-<div class="code" data-lang="R" data-src="18-download:28"><button class="copy" type="button">コピー</button><pre><code>GET("https://www.soumu.go.jp/main_content/000979538.xlsx",
-    write_disk("download/hokkaido.xlsx",
-               overwrite = TRUE))</code></pre></div>
-<p data-src="18-download:34"><code>GET()</code> は、そのURLに「このファイルを下さい」とお願いしなさい、という命令です。ブラウザがふだんやっているのと同じことですね。そして <code>write_disk()</code> が、返ってきたものをファイルとして保存する場所の指定。<code>overwrite = TRUE</code> は、同じ名前のファイルがすでにあったら上書きしていいですよ、という意味です。</p>
-<p data-src="18-download:36">パイプ演算子でつなぐこともできます。</p>
-<div class="code" data-lang="R" data-src="18-download:38"><button class="copy" type="button">コピー</button><pre><code>"https://www.soumu.go.jp/main_content/000979538.xlsx" %&gt;%
-  GET(write_disk("download/hokkaido.xlsx",
-                 overwrite = TRUE))</code></pre></div>
-<aside class="box box-warn" data-src="18-download:44"><p class="box-title">保存先のフォルダは先に作る</p><p data-src="18-download:45"><code>download/</code> というフォルダが存在しないと、エラーになります。Rが勝手にフォルダを作ってはくれません。</p>
-<p data-src="18-download:47">RStudioの右下「Files」タブの「New Folder」で作ってもいいですが、コードで書いておくと、他の人が同じコードを動かすときにも困りません。</p>
-<div class="code" data-lang="R" data-src="18-download:49"><button class="copy" type="button">コピー</button><pre><code>dir.create("download", showWarnings = FALSE)</code></pre></div>
-<p data-src="18-download:53"><code>showWarnings = FALSE</code> は「すでにあっても文句を言うな」という指定です。</p></aside>
-<aside class="box box-note box-review" data-src="18-download:56"><p class="box-title">read_csvで直接読むのとの違い<span class="review-tag">要検討</span></p><p data-src="18-download:57"><a href="04-import.html">04章</a>で、<code>read_csv("https://……")</code> と書けばウェブ上のファイルを直接読めると書きました。それでいい場面も多いのですが、いったんファイルとして手元に落としたほうがいいこともあります。</p>
-<p data-src="18-download:59">まずExcelファイルの場合、<code>read_excel()</code> はURLを直接読めないので、落とすしかありません。それに何度も試行錯誤するなら、落としておけば、そのたびに相手のサーバーを叩かずに済みます。</p>
-<p data-src="18-download:61">でも、いちばん大きいのは元データの証拠が残ることでしょう。役所のサイトのファイルは、しれっと差し替えられることがあります。数字が訂正されたのに、公表日はそのままだったりする。落とした日付をファイル名に入れて保存しておけば、記事を書いた時点で公表されていた数字はこれだ、と示せるわけです。私は <code>download/20250610_hokkaido.xlsx</code> のように日付を頭につけて保存しています。</p></aside>
-<h2 id="リンクの一覧をつくる" data-src="18-download:64">リンクの一覧をつくる</h2>
-<p data-src="18-download:66">さて、ここから本番です。一覧ページに並んだリンクを、全部拾ってきます。<a href="17-loop.html">前章</a>と同じで、rvestで <code>html_attr("href")</code> を取ります。</p>
-<div class="code" data-lang="R" data-src="18-download:68"><button class="copy" type="button">コピー</button><pre><code>excel_urls &lt;- "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html" %&gt;%
-  read_html() %&gt;%                    # そのページのHTMLのコードを読み込む
-  html_node("table.tableList") %&gt;%   # 最初にある &lt;table class="tableList"&gt; 要素を取得
-  html_elements("a") %&gt;%             # その中にあるすべての &lt;a&gt; 要素を取得
-  html_attr("href") %&gt;%              # 各リンクの href 属性（URL部分）を抽出
-  str_c("https://www.soumu.go.jp", .)</code></pre></div>
-<p data-src="18-download:77"><code>html_node()</code>（単数形）は最初に見つかった1つだけを、<code>html_nodes()</code>（複数形）は該当するもの全部を返します。ここでは表が1つだけなので単数形を使っています。</p>
-<p data-src="18-download:79">取れたら、必ず中身を目で確かめて下さい。</p>
-<div class="code" data-lang="R" data-src="18-download:81"><button class="copy" type="button">コピー</button><pre><code>excel_urls
-length(excel_urls)</code></pre></div>
-<p data-src="18-download:86">47都道府県分（＋比例代表など）のURLが、ちゃんとした形で並んでいますか。ここで <code>NA</code> が混ざっていたり、<code>https://www.soumu.go.jphttps://...</code> のような妙な形になっていたら、次に進んでもうまくいきません。</p>
-<aside class="box box-tips" data-src="18-download:88"><p class="box-title">相対パスの落とし穴</p><p data-src="18-download:89"><code>str_c("https://www.soumu.go.jp", .)</code> は、リンクが <code>/senkyo/...</code> のような形（頭にスラッシュがある相対パス）であることを前提にしています。</p>
-<p data-src="18-download:91">でも、ページによってはリンクが最初から <code>https://</code> で始まっていたり、<code>../data/...</code> のような形だったりします。前者にドメイン名をくっつけると、当然おかしなURLになります。</p>
-<p data-src="18-download:93">安全に書くなら、rvestの <code>url_absolute()</code> を使う手があります。</p>
-<div class="code" data-lang="R" data-src="18-download:95"><button class="copy" type="button">コピー</button><pre><code>html_attr("href") %&gt;%
-  url_absolute("https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html")</code></pre></div>
-<p data-src="18-download:100">もとのページのURLを教えると、相対パスでも絶対パスでも、正しい完全なURLに直してくれます。</p></aside>
-<h2 id="全部落とす" data-src="18-download:103">全部落とす</h2>
-<p data-src="18-download:105">あとはfor文に入れるだけです。今回はtibbleにためるのではなく、1周ごとにファイルを保存します。</p>
-<div class="code" data-lang="R" data-src="18-download:107"><button class="copy" type="button">コピー</button><pre><code>for (i in seq_along(excel_urls)) {
-  # ファイル名をリンクの末尾から取得
-  filename &lt;- excel_urls[i] %&gt;%
-    basename() %&gt;%
-    str_c("download/", .)
-
-  # ローカルに保存
-  excel_urls[i] %&gt;%
-    GET(write_disk(filename,
-                   overwrite = TRUE))
-
-  Sys.sleep(2)   # アクセス先に過剰な負荷をかけないため、次の動作までちょっとだけ待つ
-}</code></pre></div>
-<p data-src="18-download:123"><code>basename()</code> は、URLやファイルパスから最後の部分（＝ファイル名）だけを取り出す関数です。<code>https://www.soumu.go.jp/main_content/000979538.xlsx</code> なら <code>000979538.xlsx</code> が返ってきます。それに <code>download/</code> をくっつけて、保存先のパスにしています。</p>
-<h2 id="途中で止まらないようにする" data-src="18-download:125">途中で止まらないようにする</h2>
-<p data-src="18-download:127">47回のうち1回でもエラーが出ると、for文はそこで止まります。リンク切れが1つあるだけで最後まで走らないのは困るので、前章と同じように <code>tryCatch()</code> で囲みましょう。</p>
-<div class="code" data-lang="R" data-src="18-download:129"><button class="copy" type="button">コピー</button><pre><code>for (i in seq_along(excel_urls)) {
-  tryCatch({
-    # ファイル名をリンクの末尾から取得
-    filename &lt;- excel_urls[i] %&gt;%
-      basename() %&gt;%
-      str_c("download/", .)
-
-    # ローカルに保存
-    GET(excel_urls[i], write_disk(filename, overwrite = TRUE))
-
-    message(sprintf("✅ %s をダウンロードしました。", filename))
-
-  }, error = function(e) {
-    message(sprintf("⚠️ %s のダウンロード中にエラーが発生しました: %s",
-                    excel_urls[i], e$message))
-  })
-
-  Sys.sleep(2)   # サーバーへの負荷軽減のため待機
-}</code></pre></div>
-<p data-src="18-download:151"><code>sprintf()</code> は文字を組み立てる関数で、<code>%s</code> のところに後ろで指定したものが入ります。<code>str_c()</code> でも同じことができますが、こういう「メッセージのひな型」を書くときは <code>sprintf()</code> のほうが読みやすいと思います。</p>
-<p data-src="18-download:153">全部終わったら、落ちてきたファイルを数えて確かめます。</p>
-<div class="code" data-lang="R" data-src="18-download:155"><button class="copy" type="button">コピー</button><pre><code>list.files("download")
-length(list.files("download"))</code></pre></div>
-<p data-src="18-download:160">リンクの数と、落ちてきたファイルの数は合っていますか。合っていなければ、<code>⚠️</code> が出た行を探して下さい。</p>
-<aside class="box box-warn" data-src="18-download:162"><p class="box-title">ダウンロードできたのに、中身がHTMLのとき</p><p data-src="18-download:163">たまに、<code>GET()</code> は成功したのにファイルを開けない、ということが起きます。中身をメモ帳で開いてみると、Excelではなく「お探しのページは見つかりません」というHTMLが入っている。</p>
-<p data-src="18-download:165">これは、リンク切れや、URLの組み立てを間違えたときに起きます。サーバーは「そんなファイルはない」というページを返し、httrはそれをそのまま保存しただけなのです。</p>
-<p data-src="18-download:167">ファイルサイズを見ると分かります。</p>
-<div class="code" data-lang="R" data-src="18-download:169"><button class="copy" type="button">コピー</button><pre><code>list.files("download", full.names = TRUE) %&gt;%
-  file.info() %&gt;%
-  arrange(size)</code></pre></div>
-<p data-src="18-download:175">やたら小さいファイル（数キロバイト）があったら、それが犯人です。</p></aside>
-<h2 id="直接読めないページもある" data-src="18-download:178">直接読めないページもある</h2>
-<p data-src="18-download:180">ここでもう一つ、実務でよく出会う話をしておきます。</p>
-<p data-src="18-download:182">たとえば防衛装備庁が公表している契約実績のページ。ここからExcelファイルを落とそうとして、同じコードを書いてもうまくいかないことがあります。ページを直接読もうとするとなぜかうまく行かないのです。</p>
-<p data-src="18-download:184">そういうときは、あきらめて手作業を1回だけ挟みます。ブラウザでそのページを開いて、「名前を付けて保存」でHTMLファイルとして手元に保存する。そして、そのファイルを読むのです。</p>
-<div class="code" data-lang="R" data-src="18-download:186"><button class="copy" type="button">コピー</button><pre><code>atla_files &lt;- "atla.html" %&gt;%
-  read_html() %&gt;%
-  html_nodes("div.article-main__group") %&gt;%
-  html_elements("a") %&gt;%
-  html_attr("href")</code></pre></div>
-<p data-src="18-download:194"><code>read_html()</code> は、URLでもローカルのファイルでも同じように読めます。あとの処理はまったく同じです。</p>
-<aside class="box box-note" data-src="18-download:196"><p class="box-title">なぜ直接読めないのか</p><p data-src="18-download:197">理由はいくつか考えられます。ページの中身がJavaScriptで後から作られていて、<code>read_html()</code> はJavaScriptを動かさないので空っぽのページを読んでしまう、というのがよくあるパターンです。サーバーがブラウザ以外からのアクセスをはじいていることもありますし、認証やCookieが必要な場合もあります。</p>
-<p data-src="18-download:199">きちんと対処する方法もあるらしいのですが（<code>httr</code> でブラウザのふりをする、<code>chromote</code> でブラウザごと動かす、など）、1回だけの作業なら、手で保存するのがいちばん早いです。自動化にこだわって半日つぶすくらいなら、手で3分やって次に進みましょう。毎月やる作業になったら、そのときに考えればいいわけです。</p></aside>
-<p data-src="18-download:202">落としたファイルを読み込む段になると、次の壁が待っています。役所のExcelは、そのままでは読めない形をしていることが多いのです。次の章では、その「神エクセル」に立ち向かいます。</p>
+      
+      
+      <div class="wip-notice">
+<p class="wip-notice-title">工事中</p>
+<p>この章はいま書いているところです。公開まで、もうしばらくお待ちください。</p>
+<p>先に<a href="index.html">第1部・第2部</a>を進めておくと、この章もすっと読めるはずです。</p>
+</div>
     </article>
     <nav class="pager"><a class="prev" href="17-loop.html"><span>前へ</span>17 まとめて集める（for文）</a><a class="next" href="19-kami-excel.html"><span>次へ</span>19 神エクセルを解体する</a></nav>
     <footer class="site-foot">

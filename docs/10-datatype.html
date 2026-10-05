@@ -6,6 +6,15 @@
 <title>データ型でつまずく | 記者のためのR講座</title>
 <meta name="description" content="Excelファイルを読み込み、ついでに「数値のはずなのに文字列」という定番の落とし穴に落ちます。">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -68,39 +77,39 @@
 <p data-src="10-datatype:15"><a class="dl" href="files/人口データ2000.xlsx" download>人口データ2000.xlsx<span class="dl-size">268 KB</span></a></p>
 <p data-src="10-datatype:17">拡張子が違うことに注目してください。古い形式（xls）と新しい形式（xlsx）が混ざっています。</p></aside>
 <p data-src="10-datatype:20">便利なのはreadxlパッケージのなかにある、<code>read_excel()</code> 関数です。まずはreadxlパッケージをインストールし、さらに呼び出しましょう。</p>
-<div class="code" data-lang="R" data-src="10-datatype:22"><button class="copy" type="button">コピー</button><pre><code>install.packages("readxl")
+<div class="code" data-lang="R" data-src="10-datatype:22"><pre><code>install.packages("readxl")
 library(readxl)</code></pre></div>
 <p data-src="10-datatype:27">この関数だと、<code>read_csv()</code> とほとんど同じかたちでExcelファイルを読み込めます。あとうれしいのは、Excelファイルにも拡張子がxlsのやつとxlsxのやつがありますが、どちらでも同じように読み込んでくれることです。</p>
-<div class="code" data-lang="R" data-src="10-datatype:29"><button class="copy" type="button">コピー</button><pre><code>read_excel("data/人口データ2005.xls", skip = 8)
+<div class="code" data-lang="R" data-src="10-datatype:29"><pre><code>read_excel("data/人口データ2005.xls", skip = 8)
 read_excel("data/人口データ2000.xlsx", skip = 8)</code></pre></div>
 <p data-src="10-datatype:34">よしよし、うまく読めましたね。</p>
 <aside class="box box-tips" data-src="10-datatype:36"><p class="box-title">シートが複数あるとき</p><p data-src="10-datatype:37">Excelファイルは、1つのファイルの中に何枚もシートを持てます。何も指定しないと、<code>read_excel()</code> は<strong>いちばん左のシート</strong>だけを読みます。</p>
-<div class="code" data-lang="R" data-src="10-datatype:39"><button class="copy" type="button">コピー</button><pre><code>excel_sheets("data/人口データ2000.xlsx")            # シート名の一覧を見る
+<div class="code" data-lang="R" data-src="10-datatype:39"><pre><code>excel_sheets("data/人口データ2000.xlsx")            # シート名の一覧を見る
 read_excel("data/人口データ2000.xlsx", sheet = 2)    # 2枚目を読む
 read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指定する</code></pre></div>
 <p data-src="10-datatype:45">シートが47枚あるファイルを全部まとめて読む、というのは<a href="19-kami-excel.html">19章</a>でやります。</p>
 <p data-src="10-datatype:47">なお、<code>read_excel()</code> には <code>locale</code> の指定はいりません。文字コードの問題はExcelファイルには起きないので、そこだけはcsvよりラクです。</p></aside>
 <h2 id="エラーが出る" data-src="10-datatype:50">エラーが出る</h2>
 <p data-src="10-datatype:52">というわけで、ほかの年のデータと合体してみましょう。</p>
-<div class="code" data-lang="R" data-src="10-datatype:54"><button class="copy" type="button">コピー</button><pre><code>df &lt;- bind_rows(df2020,
+<div class="code" data-lang="R" data-src="10-datatype:54"><pre><code>df &lt;- bind_rows(df2020,
                 read_csv("data/人口データ2015.csv", skip = 2),
                 read_csv("data/人口データ2010.csv", skip = 5,
                          locale = locale(encoding = "CP932")),
                 read_excel("data/人口データ2005.xls", skip = 8),
                 read_excel("data/人口データ2000.xlsx", skip = 8))</code></pre></div>
 <p data-src="10-datatype:63">あらら、エラーが出てしまいました。なぜでしょうか。Rはこんなふうに理由を告げています。</p>
-<div class="code" data-lang="実行結果" data-src="10-datatype:65"><button class="copy" type="button">コピー</button><pre><code>Can't combine `..1$A1101_総人口【人】` <mark>&lt;double&gt;</mark> and `..2$A1101_総人口【人】` <mark>&lt;character&gt;</mark>.</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="10-datatype:65"><pre><code>Can't combine `..1$A1101_総人口【人】` <mark>&lt;double&gt;</mark> and `..2$A1101_総人口【人】` <mark>&lt;character&gt;</mark>.</code></pre></div>
 <p data-src="10-datatype:68">合体しようとしたところ、名前が同じ列なのに、あるものはデータ型がdouble、つまり数値として認識されていて、でも別のものはcharacter、つまり文字列として認識されている。だから合体できないよ、と言っているのです。</p>
 <p data-src="10-datatype:70">データ型って何じゃいと思いますよね。</p>
 <aside class="box box-note" data-src="10-datatype:72"><p class="box-title">データ型の一覧</p><p data-src="10-datatype:73">tibbleを表示したとき、列名の下に出てくる記号がデータ型です。</p>
 <div class="table-wrap" data-src="10-datatype:75"><table><thead><tr><th>記号</th><th>名前</th><th>中身</th></tr></thead><tbody><tr><td><code>&lt;chr&gt;</code></td><td>character</td><td>文字列。計算はできない</td></tr><tr><td><code>&lt;dbl&gt;</code></td><td>double</td><td>小数を含みうる数値</td></tr><tr><td><code>&lt;int&gt;</code></td><td>integer</td><td>整数</td></tr><tr><td><code>&lt;lgl&gt;</code></td><td>logical</td><td>TRUE か FALSE</td></tr><tr><td><code>&lt;date&gt;</code></td><td>Date</td><td>日付</td></tr><tr><td><code>&lt;fct&gt;</code></td><td>factor</td><td>決まった選択肢のどれか（グラフの並び順を決めるときに使う）</td></tr></tbody></table></div>
-<p data-src="10-datatype:84"><span class="review" title="要検討：書いた人の意見が入っています">数値と文字列の区別がいちばん大事です。<span class="review-tag">要検討</span></span><code>"100"</code> と <code>100</code> は、人間の目には同じでもRには別物で、文字列のままでは足し算もできませんし、並べ替えをすると「1、10、100、2、20」のように辞書順に並んでしまいます。</p></aside>
+<p data-src="10-datatype:84">数値と文字列の区別がいちばん大事です。<code>"100"</code> と <code>100</code> は、人間の目には同じでもRには別物で、文字列のままでは足し算もできませんし、並べ替えをすると「1、10、100、2、20」のように辞書順に並んでしまいます。</p></aside>
 <h2 id="なぜ数値が文字列として読まれたのか" data-src="10-datatype:87">なぜ数値が文字列として読まれたのか</h2>
 <p data-src="10-datatype:89">同じ名前の列なのに、数値として読まれたり文字列として読まれたりするのはなぜなのか。ファイルを開くとわかります。2010年以降の3つのファイルでは、人口データが入った列には数字しか入っていません。だから数値として認識されました。でも2000年と2005年のファイルでは、一部の自治体で数値以外にハイフン（-）とかアスタリスク（*）が入っていたりするのです。</p>
 <p data-src="10-datatype:91">ファイルの冒頭（読み込むときにskipしてすっ飛ばした部分）に書かれている凡例を思い出してください。<a href="04-import.html">04章</a>で見たあの3行です。</p>
 <div class="table-wrap" data-src="10-datatype:93"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>***</code></td><td>調査又は集計していないもの</td></tr><tr><td><code>-</code></td><td>データが得られないもの</td></tr><tr><td><code>X</code></td><td>数値が秘匿されているもの</td></tr></tbody></table></div>
 <p data-src="10-datatype:99">つまり、人口をそもそも集計していなかったり、データが得られなかったり、秘匿されていたりした場合に、この記号が入っているわけです。このように、数値以外の余計な文字が入っているから、Rには「ああ、これは数値じゃなくて、ひとまずただの文字列として読みこんどこうか」と判断されてしまったわけです。</p>
-<aside class="box box-warn box-review" data-src="10-datatype:101"><p class="box-title">記者としてはここで立ち止まる<span class="review-tag">要検討</span></p><p data-src="10-datatype:102"><span class="review" title="要検討：書いた人の意見が入っています">技術的には「文字列として読まれた」という話ですが、記者にとってはそれ以上の意味があります。<span class="review-tag">要検討</span></span><strong>そのマスに数字がないのはなぜか</strong>、という問題です。</p>
+<aside class="box box-warn" data-src="10-datatype:101"><p class="box-title">記者としてはここで立ち止まる</p><p data-src="10-datatype:102">技術的には「文字列として読まれた」という話ですが、記者にとってはそれ以上の意味があります。<strong>そのマスに数字がないのはなぜか</strong>、という問題です。</p>
 <ul data-src="10-datatype:104">
 <li>集計していない（<code>***</code>）</li>
 <li>データが得られない（<code>-</code>）</li>
@@ -112,7 +121,7 @@ read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指
 <p data-src="10-datatype:112">そして記事にするときは、ここを注記に書く必要があります。「◯◯町については集計されていないため、全国の集計から除いた」と書けるかどうかで、記事の信頼度は変わります。ファイルの冒頭に書かれている凡例は、skipして読み飛ばす前に必ず目を通してください。<strong>あそこには、記事に必要な注記の材料が書いてあります。</strong></p></aside>
 <h2 id="全部文字列として読み込んでしまう" data-src="10-datatype:115">全部文字列として読み込んでしまう</h2>
 <p data-src="10-datatype:117">この問題を解決するには、いくつかのやり方がありますが、もっとも簡単なのは、データ型が数値になっている列についても、ここはいったん文字列として読み込むことにして、そのうえですべてを合体させる、というアプローチでしょう。たとえば、こんなふうに書けます。</p>
-<div class="code" data-lang="R" data-src="10-datatype:119"><button class="copy" type="button">コピー</button><pre><code>df &lt;- bind_rows(read_csv("data/人口データ2020.csv", skip = 8,
+<div class="code" data-lang="R" data-src="10-datatype:119"><pre><code>df &lt;- bind_rows(read_csv("data/人口データ2020.csv", skip = 8,
                          col_types = cols(.default = "c")),
                 read_csv("data/人口データ2015.csv", skip = 2,
                          col_types = cols(.default = "c")),
@@ -126,13 +135,13 @@ read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指
 <p data-src="10-datatype:133"><code>read_csv()</code> 関数の場合だと、丸括弧のなかで <code>col_types = cols(.default = "c")</code> と書くことで、すべての列はデフォルトで文字列として読み込んでくださいね、と宣言できます。2020年度、2015年度、2010年度のデータについてはこのように処理しています。</p>
 <p data-src="10-datatype:135">一方で2005年度と2000年度のファイルは <code>read_excel()</code> 関数を使わなければいけませんが、この関数では「デフォルト」となるデータ型を指定することができません。37個あるすべての列について、文字列で読み込んでくださいね、と明示的に指示しているのが <code>col_types = rep("text", 37)</code> という部分です。</p>
 <p data-src="10-datatype:137"><code>rep("text", 37)</code> というのが何なのか、不思議に思うかもしれませんが、要するに「text」というのを37回繰り返しなさいよ、といっているだけです。repはrepeatの最初の3文字です。</p>
-<div class="code" data-lang="コンソール" data-src="10-datatype:139"><button class="copy" type="button">コピー</button><pre><code>&gt; rep("text", 37)
+<div class="code" data-lang="コンソール" data-src="10-datatype:139"><pre><code>&gt; rep("text", 37)
  [1] "text" "text" "text" "text" "text" "text" "text" "text" "text" "text"
 [11] "text" "text" "text" "text" "text" "text" "text" "text" "text" "text"
 [21] "text" "text" "text" "text" "text" "text" "text" "text" "text" "text"
 [31] "text" "text" "text" "text" "text" "text" "text"</code></pre></div>
 <p data-src="10-datatype:147">でも、何だかややこしいですね。こんなアプローチもあります。</p>
-<div class="code" data-lang="R" data-src="10-datatype:149"><button class="copy" type="button">コピー</button><pre><code>df &lt;- bind_rows(read_csv("data/人口データ2020.csv", skip = 8) %&gt;%
+<div class="code" data-lang="R" data-src="10-datatype:149"><pre><code>df &lt;- bind_rows(read_csv("data/人口データ2020.csv", skip = 8) %&gt;%
                   mutate(across(everything(), as.character)),
 
                 read_csv("data/人口データ2015.csv", skip = 2) %&gt;%
@@ -148,12 +157,12 @@ read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指
                 read_excel("data/人口データ2000.xlsx", skip = 8) %&gt;%
                   mutate(across(everything(), as.character)))</code></pre></div>
 <p data-src="10-datatype:167">これは5つのデータに対して基本的に同じことをしています。パイプ演算子でつないでから</p>
-<div class="code" data-lang="R" data-src="10-datatype:169"><button class="copy" type="button">コピー</button><pre><code>mutate(across(everything(), as.character))</code></pre></div>
+<div class="code" data-lang="R" data-src="10-datatype:169"><pre><code>mutate(across(everything(), as.character))</code></pre></div>
 <p data-src="10-datatype:173">という関数をかけています。これは、すべて（everything）の列にわたって（across）、文字列として（as.character）変換してくださいね、という命令です。</p>
 <p data-src="10-datatype:175">どちらでも同じ結果が得られます。私は後者のほうが好みですが、やり方は他にもいろいろあるはずです。</p>
 <p data-src="10-datatype:177">どんなアプローチを選ぶかは趣味の問題でもありますが、だいじなのは手間を省きつつ、得たい結果を正しく得られるようなコードを書くことです。元となるデータの特徴をよく観察して、どういう手順をふむべきかを考えましょう。ぐぐったりAIに聞いたりすることも大いに役立ちます。</p>
 <p data-src="10-datatype:179">5年分を合体できたか、確かめておきましょう。</p>
-<div class="code" data-lang="実行結果" data-src="10-datatype:181"><button class="copy" type="button">コピー</button><pre><code># A tibble: 5 × 2
+<div class="code" data-lang="実行結果" data-src="10-datatype:181"><pre><code># A tibble: 5 × 2
   調査年       n
   &lt;chr&gt;    &lt;int&gt;
 1 2000年度  1916
@@ -164,20 +173,20 @@ read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指
 <p data-src="10-datatype:184">5つの年が1916行ずつ。うまくいっています。</p>
 <h2 id="文字列を数値に戻す" data-src="10-datatype:186">文字列を数値に戻す</h2>
 <p data-src="10-datatype:188">さて、全部を文字列として読み込んで合体させたわけですが、このままでは計算ができません。必要な列だけ、数値に戻してやります。</p>
-<div class="code" data-lang="R" data-src="10-datatype:190"><button class="copy" type="button">コピー</button><pre><code>df_simple &lt;- df %&gt;%
+<div class="code" data-lang="R" data-src="10-datatype:190"><pre><code>df_simple &lt;- df %&gt;%
   rename(year = 調査年,
          region = 地域,
          population = `A1101_総人口【人】`) %&gt;%
   select(year, region, population) %&gt;%
   mutate(population = as.double(population))</code></pre></div>
 <p data-src="10-datatype:199"><code>as.double()</code> が、文字列を数値に変換する関数です。ここで、こんな警告が出ることがあります。</p>
-<div class="code" data-lang="画面に出るもの" data-src="10-datatype:201"><button class="copy" type="button">コピー</button><pre><code>Warning: NAs introduced by coercion</code></pre></div>
+<div class="code" data-lang="画面に出るもの" data-src="10-datatype:201"><pre><code>Warning: NAs introduced by coercion</code></pre></div>
 <p data-src="10-datatype:205">「変換の過程でNAが生まれました」という意味です。さっき出てきたハイフンやアスタリスクは数値にできないので、NAに置き換えられたわけです。</p>
 <p data-src="10-datatype:207"><strong>これは、それでいいのです。</strong> 「集計していない」という情報を「数値ではない」というかたちで持ち越したことになります。ただし、いくつNAになったかは必ず確かめてください。</p>
-<div class="code" data-lang="R" data-src="10-datatype:209"><button class="copy" type="button">コピー</button><pre><code>df_simple %&gt;%
+<div class="code" data-lang="R" data-src="10-datatype:209"><pre><code>df_simple %&gt;%
   filter(is.na(population)) %&gt;%
   count(year)</code></pre></div>
-<div class="code" data-lang="実行結果" data-src="10-datatype:215"><button class="copy" type="button">コピー</button><pre><code># A tibble: 3 × 2
+<div class="code" data-lang="実行結果" data-src="10-datatype:215"><pre><code># A tibble: 3 × 2
   year         n
   &lt;chr&gt;    &lt;int&gt;
 1 2000年度    47
@@ -186,15 +195,15 @@ read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指
 <p data-src="10-datatype:218">2000年度は47、2005年度は34、2010年度は5。<strong>この数字自体が、記事の材料になりえます。</strong> 2000年の時点では集計されていなかった自治体が47もあった、ということですから。</p>
 <p data-src="10-datatype:220">思っていたより多ければ、変換の指定が間違っているか、そもそも読み込み方がおかしい可能性があります。</p>
 <aside class="box box-tips" data-src="10-datatype:222"><p class="box-title">数字に混ざったカンマや単位を落とす</p><p data-src="10-datatype:223">役所のデータでは、数字が <code>"1,234"</code> や <code>"1,234人"</code> のような文字列で入っていることがよくあります。これは <code>as.double()</code> ではNAになってしまうので、先に余計な文字を取り除きます。</p>
-<div class="code" data-lang="R" data-src="10-datatype:225"><button class="copy" type="button">コピー</button><pre><code>mutate(population = parse_number(population))</code></pre></div>
+<div class="code" data-lang="R" data-src="10-datatype:225"><pre><code>mutate(population = parse_number(population))</code></pre></div>
 <p data-src="10-datatype:229"><code>parse_number()</code> は、カンマや単位のような余計な文字を捨てて数字だけを取り出してくれる関数です。<code>as.double("1,234")</code> はNAになりますが、<code>parse_number("1,234")</code> は1234になります。</p>
 <p data-src="10-datatype:231">自分で取り除くこともできます。</p>
-<div class="code" data-lang="R" data-src="10-datatype:233"><button class="copy" type="button">コピー</button><pre><code>mutate(population = as.double(str_remove_all(population, "[,人 ]")))</code></pre></div>
+<div class="code" data-lang="R" data-src="10-datatype:233"><pre><code>mutate(population = as.double(str_remove_all(population, "[,人 ]")))</code></pre></div>
 <p data-src="10-datatype:237"><code>str_remove_all()</code> は、指定した文字を全部取り除く関数です。角括弧のなかに並べた文字（ここではカンマ、「人」、半角スペース）のどれかに当てはまるものが、すべて消えます。ただし、ふだんは <code>parse_number()</code> のほうが早くて安全です。<strong>この違いで実際に4072件を溶かしかけた例が<a href="a3-shukudai.html">付録C</a>にあります。</strong></p>
 <p data-src="10-datatype:239">△や※を「ゼロ扱い」にするか「NA扱い」にするかは、注記を読んで判断してください。ここは技術ではなく取材の問題です。</p></aside>
 <h2 id="年も数値にしておく" data-src="10-datatype:242">年も数値にしておく</h2>
 <p data-src="10-datatype:244"><code>year</code> の列には「2020年度」のような文字が入っています。このままではグラフの横軸として使いにくいので、数値の年に直しておきましょう。</p>
-<div class="code" data-lang="R" data-src="10-datatype:246"><button class="copy" type="button">コピー</button><pre><code>df_simple &lt;- df_simple %&gt;%
+<div class="code" data-lang="R" data-src="10-datatype:246"><pre><code>df_simple &lt;- df_simple %&gt;%
   mutate(year = as.double(str_sub(year, 1, 4)))</code></pre></div>
 <p data-src="10-datatype:251"><code>str_sub(year, 1, 4)</code> で頭から4文字（＝「2020」）を取り出し、それを <code>as.double()</code> で数値にしています。文字列操作とデータ型変換の合わせ技で、これはよく使う形です。</p>
     </article>

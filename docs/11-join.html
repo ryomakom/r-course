@@ -6,6 +6,15 @@
 <title>データを横にくっつける | 記者のためのR講座</title>
 <meta name="description" content="left_joinで別の統計をくっつけます。ここで「ケ」と「ヶ」に泣かされ、地域コードのありがたさを知ります。">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ</a>
@@ -40,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
-<li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
-<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
+<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
+<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -66,9 +75,9 @@
 <h2 id="まずはくっつけてみる" data-src="11-join:10">まずはくっつけてみる</h2>
 <p data-src="11-join:12">どういうことかはおいおい説明するとして、まずは合体させるためのデータを用意しましょう。市区町村別の労働人口についてのデータです。</p>
 <aside class="box box-data" data-src="11-join:14"><p class="box-title">この章で使うデータ</p><p data-src="11-join:15"><a class="dl" href="files/労働人口データ2020.csv" download>労働人口データ2020.csv<span class="dl-size">134 KB</span></a></p></aside>
-<div class="code" data-lang="R" data-src="11-join:18"><button class="copy" type="button">コピー</button><pre><code>read_csv("data/労働人口データ2020.csv", skip = 8)</code></pre></div>
+<div class="code" data-lang="R" data-src="11-join:18"><pre><code>read_csv("data/労働人口データ2020.csv", skip = 8)</code></pre></div>
 <p data-src="11-join:22">以前に読み込んだ人口についてのデータと同じように、分かりにくい列の名前を簡単なものに改めるとともに、必要な列だけを残しましょう。</p>
-<div class="code" data-lang="R" data-src="11-join:24"><button class="copy" type="button">コピー</button><pre><code>working_population2020 &lt;- read_csv("data/労働人口データ2020.csv", skip = 8) %&gt;%
+<div class="code" data-lang="R" data-src="11-join:24"><pre><code>working_population2020 &lt;- read_csv("data/労働人口データ2020.csv", skip = 8) %&gt;%
   rename(region = 地域,
          primary = `F2201_第1次産業就業者数【人】`,
          secondary = `F2211_第2次産業就業者数【人】`,
@@ -78,7 +87,7 @@
          secondary,
          tertiary)</code></pre></div>
 <p data-src="11-join:36">では、これを人口のデータ（<code>df_simple</code>）に合体させてみましょう。<code>left_join()</code> という関数を使います。ちなみに、なぜ「left」なのかという話は、後で説明しますね。</p>
-<div class="code" data-lang="R" data-src="11-join:38"><button class="copy" type="button">コピー</button><pre><code>df_simple %&gt;%
+<div class="code" data-lang="R" data-src="11-join:38"><pre><code>df_simple %&gt;%
   left_join(working_population2020) %&gt;%
   view()</code></pre></div>
 <p data-src="11-join:44">このコードを実行すると <code>Joining with by = join_by(region)</code> というメッセージが出たはずです。これは、<code>df_simple</code> と <code>working_population2020</code> というふたつのオブジェクトのうち、<code>region</code> という列を「とっかかり」にして合体したよ、という意味です。いずれのオブジェクトにも、自治体名を示す <code>region</code> という列があったのを思い出してください。このメッセージはつまり、<code>region</code> の列に格納された文字列を使って「突合」をして合体した、ということを意味しています。</p>
@@ -86,7 +95,7 @@
 <p data-src="11-join:48"><code>view</code> 関数をつかって、できあがったデータをよくみてみましょう。北海道札幌市の行をみると、人口を示す <code>population</code> の列に数字が入っていますし、その横には第1次産業の労働者数を示す <code>primary</code> や第2次産業の <code>secondary</code> などの数字も入っています。パッと見たところ、うまく行っているようです。</p>
 <p data-src="11-join:50">ただし、注意が必要です。たとえば <code>primary</code> の列に注目して、数字が小さい順に並べ替えてみましょう。そのうえで一番下までスクロールしてみると……NA、つまり「空っぽ」のところがいくつも並んでいますね。なぜでしょうか。</p>
 <p data-src="11-join:52">NAとなっている自治体の名前をみてみると、たとえば「青森県六ケ所村」「佐賀県吉野ケ里町」「東京都青ケ島村」など、カタカナの「ケ」が入っているところが多くなっています。あとは「東京都檜原村」と「福島県檜枝岐村」とか。想像するに、<strong>異体字が原因でうまく突合ができていない</strong>ということなのでしょう。</p>
-<aside class="box box-warn box-review" data-src="11-join:54"><p class="box-title">名前で突合してはいけない<span class="review-tag">要検討</span></p><p data-src="11-join:55">これは日本語のデータを扱う記者が、いつか必ずぶつかる壁です。同じ自治体を指しているのに、統計によって表記が違う。</p>
+<aside class="box box-warn" data-src="11-join:54"><p class="box-title">名前で突合してはいけない</p><p data-src="11-join:55">これは日本語のデータを扱う記者が、いつか必ずぶつかる壁です。同じ自治体を指しているのに、統計によって表記が違う。</p>
 <ul data-src="11-join:57">
 <li>「六ケ所村」と「六ヶ所村」（大文字のケと小文字のヶ）</li>
 <li>「檜原村」と「桧原村」（異体字）</li>
@@ -98,7 +107,7 @@
 <h2 id="地域コードで突合し直す" data-src="11-join:67">地域コードで突合し直す</h2>
 <p data-src="11-join:69">ではどうするか。元のデータには、いずれも地域の「コード」を示す列がありました。ここを利用すればうまくやれそうです。というわけで、まずオブジェクトを作り直しましょう。</p>
 <p data-src="11-join:71">まずは労働力データから。地域コードの列を <code>code</code> という名前にしたうえで残しておきます。</p>
-<div class="code" data-lang="R" data-src="11-join:73"><button class="copy" type="button">コピー</button><pre><code>working_population2020 &lt;- read_csv("data/労働人口データ2020.csv", skip = 8) %&gt;%
+<div class="code" data-lang="R" data-src="11-join:73"><pre><code>working_population2020 &lt;- read_csv("data/労働人口データ2020.csv", skip = 8) %&gt;%
   rename(code = `地域 コード`,
          region = 地域,
          primary = `F2201_第1次産業就業者数【人】`,
@@ -110,7 +119,7 @@
          secondary,
          tertiary)</code></pre></div>
 <p data-src="11-join:87">次に人口データ。同様に地域コードの列を <code>code</code> と改名して残します。</p>
-<div class="code" data-lang="R" data-src="11-join:89"><button class="copy" type="button">コピー</button><pre><code>df_simple &lt;- df %&gt;%
+<div class="code" data-lang="R" data-src="11-join:89"><pre><code>df_simple &lt;- df %&gt;%
   rename(year = 調査年,
          code = `地域 コード`,
          region = 地域,
@@ -120,7 +129,7 @@
          region,
          population)</code></pre></div>
 <p data-src="11-join:101">このふたつを合体してみます。さっきは突合の手がかりについて何も指定しませんでしたが、今回は明示的に指定します。ふたつのオブジェクトで名前が共通している列を使って突合するのがデフォルトですが、今回は <code>region</code> の列は使わずに（使うと前回と同じような突合漏れが発生してしまいます）、<code>code</code> の列だけを使ってほしいからです。</p>
-<div class="code" data-lang="R" data-src="11-join:103"><button class="copy" type="button">コピー</button><pre><code>df_simple %&gt;%
+<div class="code" data-lang="R" data-src="11-join:103"><pre><code>df_simple %&gt;%
   left_join(working_population2020,
             by = join_by(code)) %&gt;%
   view()</code></pre></div>
@@ -129,7 +138,7 @@
 <p data-src="11-join:114">できたものを見てみましょう。住所を示す列が、<code>region.x</code> と <code>region.y</code> のふたつ、できていますね。</p>
 <p data-src="11-join:116">このうち <code>region.x</code> のほうは <code>df_simple</code> にあったregion列の名前が変わったもので、<code>region.y</code> は <code>working_population2020</code> のほうにあったものです。両方のtibbleで同じ名前の列があったけれど、その列は突合のとっかかりに使わなかったので、合体後のtibbleに両方とも残ることになりました。でも名前が同じ列がふたつあると区別が付かなくて具合が悪いので、「.x」「.y」というのを列名の後ろにくっつけた、というわけです。</p>
 <p data-src="11-join:118">ともあれ、住所を示す列がふたつあるのは、やっぱり気持ちがよくないし無駄ですよね。なので、片方は削ってしまいましょう。<code>df_simple</code> のregion列を優先するために、<code>working_population2020</code> のほうを削ることにします。つまり、こんなコードです。</p>
-<div class="code" data-lang="R" data-src="11-join:120"><button class="copy" type="button">コピー</button><pre><code>df_simple %&gt;%
+<div class="code" data-lang="R" data-src="11-join:120"><pre><code>df_simple %&gt;%
   left_join(working_population2020 %&gt;%
               select(-region),
             by = join_by(code)) %&gt;%
@@ -188,10 +197,10 @@
 <p data-src="11-join:190">……ちょっと複雑でしょうか。でも正直言って、それほど真面目に覚える必要はありません。先ほど書いたとおり、<code>left_join()</code> さえ覚えてしまえば大丈夫。すでに覚えたいろいろな関数を使えば、その他のjoin関数でできるのと同じことが実現できますから、何とかなります。</p>
 <div class="table-wrap" data-src="11-join:192"><table><thead><tr><th>関数</th><th>残る行</th><th>使いどき</th></tr></thead><tbody><tr><td><code>left_join()</code></td><td>左のtibbleの行が全部</td><td>ふだんはこれ</td></tr><tr><td><code>right_join()</code></td><td>右のtibbleの行が全部</td><td>ほぼ使わない</td></tr><tr><td><code>full_join()</code></td><td>両方の行が全部</td><td>どちらにしかないものも見たいとき</td></tr><tr><td><code>inner_join()</code></td><td>両方にある行だけ</td><td>両方そろっている分だけで計算したいとき</td></tr><tr><td><code>anti_join()</code></td><td>左にあって右にない行だけ</td><td><strong>突合できなかったものを探すとき</strong></td></tr></tbody></table></div>
 <h2 id="anti_joinで漏れを洗い出す" data-src="11-join:200">anti_joinで「漏れ」を洗い出す</h2>
-<p data-src="11-join:202"><span class="review" title="要検討：書いた人の意見が入っています">表のいちばん下に書いた <code>anti_join()</code> は、地味ですが記者にとってかなり役に立ちます。<span class="review-tag">要検討</span></span>突合できなかった行だけを取り出してくれるからです。</p>
-<div class="code" data-lang="R" data-src="11-join:204"><button class="copy" type="button">コピー</button><pre><code>df_simple %&gt;%
+<p data-src="11-join:202">表のいちばん下に書いた <code>anti_join()</code> は、地味ですが記者にとってかなり役に立ちます。突合できなかった行だけを取り出してくれるからです。</p>
+<div class="code" data-lang="R" data-src="11-join:204"><pre><code>df_simple %&gt;%
   anti_join(working_population2020, by = join_by(region))</code></pre></div>
-<div class="code" data-lang="実行結果" data-src="11-join:209"><button class="copy" type="button">コピー</button><pre><code># A tibble: 15 × 2
+<div class="code" data-lang="実行結果" data-src="11-join:209"><pre><code># A tibble: 15 × 2
    region          population
    &lt;chr&gt;                &lt;dbl&gt;
  1 青森県 外ヶ浜町       5401
@@ -207,14 +216,14 @@
 # ℹ 5 more rows</code></pre></div>
 <p data-src="11-join:212">15件、出てきました。「外ヶ浜町」「鰺ヶ沢町」「六ヶ所村」「七ヶ宿町」「青ヶ島村」は小さい「ヶ」、「塩竈市」は竈の字、「檜枝岐村」「檜原村」は檜の字。これが<strong>突合できなかった自治体の全部</strong>です。</p>
 <p data-src="11-join:214">さきほどの「ケ」と「ヶ」の問題も、これを一発打てば犯人の一覧が出てきます。joinをしたら、まずanti_joinで漏れを確かめる。この癖をつけておけば、黙ってNAにされる事故を防げます。</p>
-<aside class="box box-tips box-review" data-src="11-join:216"><p class="box-title">joinの前後で行数を見る<span class="review-tag">要検討</span></p><p data-src="11-join:217"><code>left_join()</code> は、右側のデータに同じキーの行が複数あると、<strong>行が増えます</strong>。たとえば年ごとのデータに、年を指定せずに突合すると、1つの行が年の数だけ複製されることがあります。</p>
-<div class="code" data-lang="R" data-src="11-join:219"><button class="copy" type="button">コピー</button><pre><code>df_simple %&gt;% nrow()                                  # 突合前
+<aside class="box box-tips" data-src="11-join:216"><p class="box-title">joinの前後で行数を見る</p><p data-src="11-join:217"><code>left_join()</code> は、右側のデータに同じキーの行が複数あると、<strong>行が増えます</strong>。たとえば年ごとのデータに、年を指定せずに突合すると、1つの行が年の数だけ複製されることがあります。</p>
+<div class="code" data-lang="R" data-src="11-join:219"><pre><code>df_simple %&gt;% nrow()                                  # 突合前
 df_simple %&gt;% left_join(working_population2020) %&gt;% nrow()   # 突合後</code></pre></div>
 <p data-src="11-join:224">この2つが一致していなければ、キーの指定を間違えています。<strong>joinの前後で行数を見る。</strong> これだけで、データ分析の事故はかなり減ります。</p></aside>
 <aside class="box box-homework" data-src="11-join:227"><p class="box-title">宿題</p><p data-src="11-join:228">複数の年のデータを含んだ労働力人口のcsvを読み込んで、<code>df_simple</code> と「年度」「自治体」に基づいて突合してください。</p>
 <p data-src="11-join:230">ヒント：とっかかりにする列が2つになります。<code>by = join_by(year, code)</code> のように書きます。作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
 <hr>
-<p data-src="11-join:235">これで第1部は終わりです。読み込む、選ぶ、名前を変える、計算する、絞る、並べる、集計する、縦横を入れ替える、くっつける。<span class="review" title="要検討：書いた人の意見が入っています">ここまでで、記者の仕事で出てくるデータ加工のかなりの部分はこなせるようになりました。<span class="review-tag">要検討</span></span></p>
+<p data-src="11-join:235">これで第1部は終わりです。読み込む、選ぶ、名前を変える、計算する、絞る、並べる、集計する、縦横を入れ替える、くっつける。ここまでで、記者の仕事で出てくるデータ加工のかなりの部分はこなせるようになりました。</p>
 <p data-src="11-join:237">次の第2部では、加工したデータを目で見えるようにしていきます。</p>
     </article>
     <nav class="pager"><a class="prev" href="10-datatype.html"><span>前へ</span>10 データ型でつまずく</a><a class="next" href="12-line.html"><span>次へ</span>12 折れ線グラフ</a></nav>
