@@ -101,7 +101,7 @@
 <figure class="fig" data-src="02-install:52"><img src="images/02-new-rmd.png" alt="RStudioのFileメニューからNew File→R Markdownを選ぶ操作を示した画面" loading="lazy"><figcaption>File → New File → R Markdown</figcaption></figure>
 <p data-src="02-install:54">左上にある「File」をクリックし、さらに「New File」→「R Markdown」と進んでいくと、ファイル名の最後の部分（拡張子）が <code>.Rmd</code> となっているR Markdownの新しいファイルを開くことができます。</p>
 <p data-src="02-install:56">この区画は、コードを保存しておくための場所です。データ分析の過程は試行錯誤の連続ですので、コンソールの区画を使っていろいろなコードを実行して、結果がどうなるかをみてみる必要がありますが、試した結果うまくいって、後に残しておきたくなったコードをR Markdownのほうに書いておくわけです。</p>
-<p data-src="02-install:58">R Markdownは、コンピューターに実行させる命令を書いておくコードの部分と、人間のための（コンピューターには読ませない）メモを書いておくMarkdown部分に分かれています。保存したうえで、htmlやPDFなどの形式で出力することもできます。</p>
+<p data-src="02-install:58">また、R Markdownはコンピューターに実行させる命令を書いておくコードの部分と、人間のための（コンピューターには読ませない）メモを書いておくMarkdown部分に分かれています。保存したうえで、htmlやPDFなどの形式で出力することもできます。</p>
 <aside class="box box-note" data-src="02-install:60"><p class="box-title">コードの部分の作り方</p><p data-src="02-install:61">R Markdownのなかで、コードを書く場所（チャンクと呼びます）はこんな形をしています。</p>
 <div class="code" data-lang="画面に出るもの" data-src="02-install:63"><pre><code>```{r}
 library(tidyverse)
@@ -110,7 +110,10 @@ library(tidyverse)
 <h2 id="その他覚えておくと楽になるキー操作" data-src="02-install:72">その他、覚えておくと楽になるキー操作</h2>
 <p data-src="02-install:74">最初のうちはマウスでちまちま実行してもいいのですが、この3つだけは早めに覚えると作業がラクになります。</p>
 <div class="table-wrap" data-src="02-install:76"><table><thead><tr><th>キー</th><th>何が起きるか</th></tr></thead><tbody><tr><td>Ctrl＋Enter</td><td>カーソルがある行（または選択した範囲）のコードを実行する</td></tr><tr><td>Ctrl＋Shift＋M</td><td>パイプ演算子 <code>%&gt;%</code> が出てくる（これが何をするものかはまた後ほど）</td></tr><tr><td>Ctrl＋Shift＋Enter</td><td>いま書いているチャンクを丸ごと実行する</td></tr></tbody></table></div>
-<p data-src="02-install:82">MacではCtrlをCmdに読み替えてください。とくに <strong>Ctrl＋Enter</strong> は、これから何千回と押すことになります。</p>
+<p data-src="02-install:82">MacではCtrlをCmdに読み替えてください。</p>
+<p data-src="02-install:84">それからもう一つ。このサイトでは、コードを書いている部分はコピペができないようにしています。コードをよく見て、自分で手を動かして同じものを書くという訓練が、Rの各種コマンドや文法を覚えるうえでとても役に立つと思うからです。</p>
+<p data-src="02-install:86">Rに限らずプログラミング言語は、ちょっとした文法ミスでエラーが頻発します。それはたとえば変な場所に意図しない記号が紛れ込んでいたりとか、半角にすべきところを全角にしてたりとか、非常にささいなものです。何でエラーが出るんじゃぁといらいらすることは多々ありますが、そういうのを繰り返すうちにはまりやすいパターンもわかり、また文法やコマンドがだんだんと身についてくるわけです。</p>
+<p data-src="02-install:88">寺子屋みたいな古い学習法のようにも思えますが、とにかくまずは手を動かす。我慢しておつきあいください。</p>
     </article>
     <nav class="pager"><a class="prev" href="01-hajimeni.html"><span>前へ</span>はじめに——Rとは何か</a><a class="next" href="03-project.html"><span>次へ</span>プロジェクトとパッケージ</a></nav>
     <footer class="site-foot">
