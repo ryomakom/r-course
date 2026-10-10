@@ -109,6 +109,13 @@ df2020_simple %>%
 
 いちばん右の列に `rate_aged` が増えているはずです。列がたくさんあって見えないときは `view()` するか、`select(region, rate_aged)` で必要な列だけ表示してみてください。
 
+高齢化率を計算したtibbleを新しいオブジェクト`df2020_aged` に格納しておきます。
+
+```r
+df2020_aged <- df2020_simple %>%
+  mutate(rate_aged=population_over65*100/population)
+```
+
 :::note 「1行ずつ」計算される
 `mutate` の計算は、すべての行について同時に、そして**それぞれの行の中だけで**おこなわれます。北海道札幌市の行では札幌市の65歳以上人口が札幌市の総人口で割られ、青森市の行では青森市の数字同士で割られる。3万行あっても一瞬で終わります。
 
@@ -120,8 +127,7 @@ df2020_simple %>%
 では、少しだけ分析っぽいことをしてみましょう。高齢化率が最も低い自治体は、どこでしょう？　それを計算するには、`arrange` という関数を使います。こんな感じです。
 
 ```r
-df2020_simple %>%
-  mutate(rate_aged = population_over65 * 100 / population) %>%
+df2020_aged %>%
   arrange(rate_aged)
 ```
 
@@ -135,8 +141,7 @@ df2020_simple %>%
 では逆に、高齢化率が高い自治体のランキングをつくってみましょう。やはり `arrange` の関数を使いますが、ちょっと変化をつけます。
 
 ```r
-df2020_simple %>%
-  mutate(rate_aged = population_over65 * 100 / population) %>%
+df2020_aged %>%
   arrange(desc(rate_aged))
 ```
 

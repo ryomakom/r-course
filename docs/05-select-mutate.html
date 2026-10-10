@@ -133,15 +133,17 @@
   mutate(rate_aged = population_over65 * 100 / population)</code></pre></div>
 <p data-src="05-select-mutate:108"><code>mutate</code> というのは、新しい列をつくるための関数です。ここでは、<code>population_over65</code> に100をかけ算し、それを <code>population</code> で割り算して得られる数値を、<code>rate_aged</code> と名付けた列に入力する、という操作をしているわけです。</p>
 <p data-src="05-select-mutate:110">いちばん右の列に <code>rate_aged</code> が増えているはずです。列がたくさんあって見えないときは <code>view()</code> するか、<code>select(region, rate_aged)</code> で必要な列だけ表示してみてください。</p>
-<aside class="box box-note" data-src="05-select-mutate:112"><p class="box-title">「1行ずつ」計算される</p><p data-src="05-select-mutate:113"><code>mutate</code> の計算は、すべての行について同時に、そして<strong>それぞれの行の中だけで</strong>おこなわれます。北海道札幌市の行では札幌市の65歳以上人口が札幌市の総人口で割られ、青森市の行では青森市の数字同士で割られる。3万行あっても一瞬で終わります。</p>
-<p data-src="05-select-mutate:115">これがExcelとの決定的な違いです。Excelでは1行目に数式を書いて、下方向にコピーして……という作業が必要で、そのコピーが1行足りなかったせいで数字が狂う、というのがよくある事故です。Rでは列に対して一度書くだけなので、そもそもその事故が起きません。</p></aside>
-<h2 id="arrange並べ替える" data-src="05-select-mutate:118">arrange——並べ替える</h2>
-<p data-src="05-select-mutate:120">では、少しだけ分析っぽいことをしてみましょう。高齢化率が最も低い自治体は、どこでしょう？　それを計算するには、<code>arrange</code> という関数を使います。こんな感じです。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:122"><pre><code>df2020_simple %&gt;%
-  mutate(rate_aged = population_over65 * 100 / population) %&gt;%
+<p data-src="05-select-mutate:112">高齢化率を計算したtibbleを新しいオブジェクト<code>df2020_aged</code> に格納しておきます。</p>
+<div class="code" data-lang="R" data-src="05-select-mutate:114"><pre><code>df2020_aged &lt;- df2020_simple %&gt;%
+  mutate(rate_aged=population_over65*100/population)</code></pre></div>
+<aside class="box box-note" data-src="05-select-mutate:119"><p class="box-title">「1行ずつ」計算される</p><p data-src="05-select-mutate:120"><code>mutate</code> の計算は、すべての行について同時に、そして<strong>それぞれの行の中だけで</strong>おこなわれます。北海道札幌市の行では札幌市の65歳以上人口が札幌市の総人口で割られ、青森市の行では青森市の数字同士で割られる。3万行あっても一瞬で終わります。</p>
+<p data-src="05-select-mutate:122">これがExcelとの決定的な違いです。Excelでは1行目に数式を書いて、下方向にコピーして……という作業が必要で、そのコピーが1行足りなかったせいで数字が狂う、というのがよくある事故です。Rでは列に対して一度書くだけなので、そもそもその事故が起きません。</p></aside>
+<h2 id="arrange並べ替える" data-src="05-select-mutate:125">arrange——並べ替える</h2>
+<p data-src="05-select-mutate:127">では、少しだけ分析っぽいことをしてみましょう。高齢化率が最も低い自治体は、どこでしょう？　それを計算するには、<code>arrange</code> という関数を使います。こんな感じです。</p>
+<div class="code" data-lang="R" data-src="05-select-mutate:129"><pre><code>df2020_aged %&gt;%
   arrange(rate_aged)</code></pre></div>
-<p data-src="05-select-mutate:128"><code>mutate</code> によって作った <code>rate_aged</code> という列のデータを見て、この数字の小さい順番にarrange（並べ替え）しなさい、という命令です。</p>
-<div class="code" data-lang="実行結果" data-src="05-select-mutate:130"><pre><code># A tibble: 1,916 × 3
+<p data-src="05-select-mutate:134"><code>mutate</code> によって作った <code>rate_aged</code> という列のデータを見て、この数字の小さい順番にarrange（並べ替え）しなさい、という命令です。</p>
+<div class="code" data-lang="実行結果" data-src="05-select-mutate:136"><pre><code># A tibble: 1,916 × 3
    region                 population rate_aged
    &lt;chr&gt;                       &lt;dbl&gt;     &lt;dbl&gt;
  1 福島県 大熊町                 847      10.3
@@ -155,13 +157,12 @@
  9 愛知県 長久手市             60162      16.4
 10 埼玉県 戸田市              140899      16.4
 # ℹ 1,906 more rows</code></pre></div>
-<p data-src="05-select-mutate:133">トップは福島県大熊町。おそらく住んでいる人の大半は、原発事故処理のための作業員なのでしょう。そのほか上位にランクインしているのは、東京都中央区など都会の自治体が目立ちます。東京都小笠原村が2位に入っているのは、個人的にはへぇ～と感じました。</p>
-<p data-src="05-select-mutate:135">では逆に、高齢化率が高い自治体のランキングをつくってみましょう。やはり <code>arrange</code> の関数を使いますが、ちょっと変化をつけます。</p>
-<div class="code" data-lang="R" data-src="05-select-mutate:137"><pre><code>df2020_simple %&gt;%
-  mutate(rate_aged = population_over65 * 100 / population) %&gt;%
+<p data-src="05-select-mutate:139">トップは福島県大熊町。おそらく住んでいる人の大半は、原発事故処理のための作業員なのでしょう。そのほか上位にランクインしているのは、東京都中央区など都会の自治体が目立ちます。東京都小笠原村が2位に入っているのは、個人的にはへぇ～と感じました。</p>
+<p data-src="05-select-mutate:141">では逆に、高齢化率が高い自治体のランキングをつくってみましょう。やはり <code>arrange</code> の関数を使いますが、ちょっと変化をつけます。</p>
+<div class="code" data-lang="R" data-src="05-select-mutate:143"><pre><code>df2020_aged %&gt;%
   arrange(desc(rate_aged))</code></pre></div>
-<p data-src="05-select-mutate:143"><code>rate_aged</code> の数字をみて、今度は大きい順番＝降順（<strong>Desc</strong>ending order）に並べ替えなさい、という命令です。</p>
-<div class="code" data-lang="実行結果" data-src="05-select-mutate:145"><pre><code># A tibble: 1,916 × 3
+<p data-src="05-select-mutate:148"><code>rate_aged</code> の数字をみて、今度は大きい順番＝降順（<strong>Desc</strong>ending order）に並べ替えなさい、という命令です。</p>
+<div class="code" data-lang="実行結果" data-src="05-select-mutate:150"><pre><code># A tibble: 1,916 × 3
    region          population rate_aged
    &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;
  1 群馬県 南牧村         1611      65.2
@@ -175,9 +176,9 @@
  9 山口県 上関町         2342      56.4
 10 徳島県 上勝町         1380      55.9
 # ℹ 1,906 more rows</code></pre></div>
-<p data-src="05-select-mutate:148">結果は、やはりというべきか、町村部がトップを占めています。都会から離れた場所にお年寄りが残されているという現状が、一目瞭然になりました。</p>
-<aside class="box box-homework" data-src="05-select-mutate:150"><p class="box-title">宿題</p><p data-src="05-select-mutate:151">人口に占める若者の割合を示す列を作って、「若者率が高い自治体」「低い自治体」それぞれのランキングを作りなさい。</p>
-<p data-src="05-select-mutate:153">（15歳未満人口の列は <code>`A1301_15歳未満人口【人】`</code> です。作例は<a href="a3-shukudai.html">付録C</a>にあります）</p></aside>
+<p data-src="05-select-mutate:153">結果は、やはりというべきか、町村部がトップを占めています。都会から離れた場所にお年寄りが残されているという現状が、一目瞭然になりました。</p>
+<aside class="box box-homework" data-src="05-select-mutate:155"><p class="box-title">宿題</p><p data-src="05-select-mutate:156">人口に占める若者の割合を示す列を作って、「若者率が高い自治体」「低い自治体」それぞれのランキングを作りなさい。</p>
+<p data-src="05-select-mutate:158">（15歳未満人口の列は <code>`A1301_15歳未満人口【人】`</code> です。作例は<a href="a3-shukudai.html">付録C</a>にあります）</p></aside>
     </article>
     <nav class="pager"><a class="prev" href="04-import.html"><span>前へ</span>04 データを読み込む</a><a class="next" href="06-strings-filter.html"><span>次へ</span>06 文字を切る・行を絞る</a></nav>
     <footer class="site-foot">

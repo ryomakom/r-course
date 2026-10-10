@@ -75,7 +75,7 @@
 <p data-src="07-group:10">ただ、今のデータでは市区町村ごとの人口データはありますが、都道府県別にまとまってはいません。各市区町村を都道府県別に割り振り、人口を足し上げてやる必要があるわけです。</p>
 <h2 id="group_byとsummarize" data-src="07-group:12">group_byとsummarize</h2>
 <p data-src="07-group:14">そのために使えるのが <code>group_by</code> と <code>summarize</code> という関数です。こんなふうに使います。</p>
-<div class="code" data-lang="R" data-src="07-group:16"><pre><code>df2020_pref &lt;- df2020_simple %&gt;%
+<div class="code" data-lang="R" data-src="07-group:16"><pre><code>df2020_pref &lt;- df2020_aged %&gt;%
   filter(is.na(ward)) %&gt;%
   group_by(prefecture) %&gt;%
   summarize(pref_population = sum(population),
@@ -94,7 +94,7 @@
 <p data-src="07-group:29">47行になりました。Excelのピボットテーブルを使ったことがあれば、あの「行に都道府県、値に人口の合計」という操作とまったく同じことをしていると考えてください。</p>
 <p data-src="07-group:31">なお、並び順が五十音でも人口順でもなく妙に見えるのは、<code>group_by</code> が文字コードの順番で並べているからです。気になるなら <code>arrange()</code> で並べ直してください。</p>
 <h2 id="二重計上に気をつける" data-src="07-group:33">二重計上に気をつける</h2>
-<p data-src="07-group:35">また、ちょっと話がそれますが、2行目で <code>filter(is.na(ward))</code> という操作をしているのは、<strong>二重計上を防ぐため</strong>です。政令指定都市のデータは市のデータと区のデータの両方があるからです。</p>
+<p data-src="07-group:35">また、ちょっと話がそれますが、2行目で <code>filter(is.na(ward))</code> という操作をしているのは、<strong>二重計上を防ぐため</strong>です。なぜかというと、政令指定都市があるから。たとえば札幌市をみると、市全体の人口と、中央区、北区、東区、といった区それぞれの人口がいずれも記録されています。何も考えずに足し上げると、札幌市の人口が2倍になってしまうわけです。</p>
 <p data-src="07-group:37"><code>is.na(ward)</code> というのは、「<code>ward</code> という列がNAつまり欠損値（Not Available）である」という意味です。この条件に合う行だけを抽出することによって、政令指定都市の区を除外しているわけです。</p>
 <p data-src="07-group:39">そうして作った都道府県別の人口データを、<code>df2020_pref</code> というデータフレームに格納する。上記のコードは、そういう命令を書き記したものです。</p>
 <aside class="box box-warn" data-src="07-group:41"><p class="box-title">合計は必ず答え合わせする</p><p data-src="07-group:42">足し算をしたら、答えが合っているかを外の数字と照らし合わせる。これは絶対にやってください。</p>
@@ -105,10 +105,10 @@
       &lt;dbl&gt;
 1 <mark>126146099</mark></code></pre></div>
 <p data-src="07-group:52">2020年国勢調査の総人口は1億2614万6099人。ぴったり合いました。合っていなければ、どこかで二重に数えているか、どこかを落としています。</p>
-<p data-src="07-group:54">もし <code>filter(is.na(ward))</code> を忘れていたら、政令指定都市の人口（20市で2800万人ほど）が2回数えられて、答えは1億5千万人あたりまでふくらみます。2割以上ずれるので、答え合わせをすれば必ず気づけます。逆にいえば、答え合わせをしないと気づけません。</p></aside>
+<p data-src="07-group:54">もし <code>filter(is.na(ward))</code> を忘れていたら、政令指定都市の人口（20市で2800万人ほど）が2回数えられて、答えは1億5千万人あたりまでふくらみます。2割以上ずれるので、答え合わせをすれば必ず気づけます。</p></aside>
 <h2 id="summarizeで使えるもの" data-src="07-group:57">summarizeで使えるもの</h2>
 <p data-src="07-group:59"><code>sum()</code> のほかにも、いろいろな集計ができます。</p>
-<div class="code" data-lang="R" data-src="07-group:61"><pre><code>df2020_simple %&gt;%
+<div class="code" data-lang="R" data-src="07-group:61"><pre><code>df2020_aged %&gt;%
   filter(is.na(ward)) %&gt;%
   group_by(prefecture) %&gt;%
   summarize(jichitai_su = n(),                    # 自治体の数を数える
@@ -118,23 +118,21 @@
             saidai = max(population),             # 最大
             saishou = min(population))            # 最小</code></pre></div>
 <p data-src="07-group:73"><code>n()</code> は「このグループに何行あるか」を数える関数です。丸括弧のなかに何も入れないのが特徴で、自治体の数、事件の件数、企業の数といった「件数」を出すときに大活躍します。</p>
-<aside class="box box-tips" data-src="07-group:75"><p class="box-title">平均と中央値は並べて出す</p><p data-src="07-group:76">人口や所得のように、極端に大きい値が少しだけあるデータでは、平均が実感からずれます。全国の市区町村の人口を平均すると7万人あたりになりますが、中央値は2万人台。「平均的な自治体」と書くときにどちらの数字を指しているのか、記事にする前に自分で確かめておきたいところです。</p>
-<p data-src="07-group:78">だから私は、<code>mean()</code> と <code>median()</code> はいつも並べて出すようにしています。ずれが大きければ、それ自体が記事の切り口になります。</p></aside>
-<aside class="box box-warn" data-src="07-group:81"><p class="box-title">NAがあると合計がNAになる</p><p data-src="07-group:82"><code>sum()</code> は、足す数字のなかに一つでもNA（欠損値）があると、答えもNAになります。「何も出てこないぞ」というときは、まずこれを疑ってください。</p>
-<div class="code" data-lang="R" data-src="07-group:84"><pre><code>sum(population, na.rm = TRUE)</code></pre></div>
-<p data-src="07-group:88"><code>na.rm = TRUE</code> を足すと、NAを飛ばして計算してくれます。ただし、<strong>気軽に付けないでください</strong>。NAを飛ばすというのは「そこは無かったことにする」という判断なので、なぜNAなのかを確かめないまま付けると、集計の意味が変わってしまいます。</p>
-<p data-src="07-group:90">たとえば秘匿処理でNAになっているなら「集計できていない自治体がある」と注記すべきですし、そもそも読み込みの失敗でNAになっているなら、直すべきなのは読み込みのほうです。まずNAがどこにいくつあるかを見る。</p>
-<div class="code" data-lang="R" data-src="07-group:92"><pre><code>df2020_simple %&gt;% filter(is.na(population))</code></pre></div></aside>
-<h2 id="group_byを解除する" data-src="07-group:97">group_byを解除する</h2>
-<p data-src="07-group:99"><code>group_by</code> したあとのtibbleは、グループ化された状態のまま残ることがあります。<code>summarize</code> を使うとふつうは解除されますが、<code>mutate</code> などを続けて使うときには、そのままだと思わぬ計算結果になることがあります。</p>
-<div class="code" data-lang="R" data-src="07-group:101"><pre><code>df2020_simple %&gt;%
+<aside class="box box-warn" data-src="07-group:75"><p class="box-title">NAがあると合計がNAになる</p><p data-src="07-group:76"><code>sum()</code> は、足す数字のなかに一つでもNA（欠損値）があると、答えもNAになります。「何も出てこないぞ」というときは、まずこれを疑ってください。</p>
+<div class="code" data-lang="R" data-src="07-group:78"><pre><code>sum(population, na.rm = TRUE)</code></pre></div>
+<p data-src="07-group:82"><code>na.rm = TRUE</code> を足すと、NAを飛ばして計算してくれます。ただし、<strong>気軽に付けないでください</strong>。NAを飛ばすというのは「そこは無かったことにする」という判断なので、なぜNAなのかを確かめないまま付けると、集計の意味が変わってしまいます。</p>
+<p data-src="07-group:84">たとえば秘匿処理でNAになっているなら「集計できていない自治体がある」と注記すべきですし、そもそも読み込みの失敗でNAになっているなら、直すべきなのは読み込みのほうです。まずNAがどこにいくつあるかを見る。</p>
+<div class="code" data-lang="R" data-src="07-group:86"><pre><code>df2020_aged %&gt;% filter(is.na(population))</code></pre></div></aside>
+<h2 id="group_byを解除する" data-src="07-group:91">group_byを解除する</h2>
+<p data-src="07-group:93"><code>group_by</code> したあとのtibbleは、グループ化された状態のまま残ることがあります。<code>summarize</code> を使うとふつうは解除されますが、<code>mutate</code> などを続けて使うときには、そのままだと思わぬ計算結果になることがあります。</p>
+<div class="code" data-lang="R" data-src="07-group:95"><pre><code>df2020_aged %&gt;%
   group_by(prefecture) %&gt;%
   mutate(kensu = n()) %&gt;%
   ungroup()            # グループ化を解除する</code></pre></div>
-<p data-src="07-group:108">上のコードは、都道府県ごとの自治体数を、行を減らさずに新しい列として足すというものです（<code>summarize</code> は行をまとめてしまいますが、<code>mutate</code> なら元の行がそのまま残ります）。この使い方は「全体に対する比率」を出すときに便利です。</p>
-<p data-src="07-group:110">最後に <code>ungroup()</code> を付ける癖をつけておくと、後々の事故が減ります。</p>
-<aside class="box box-homework" data-src="07-group:112"><p class="box-title">宿題</p><p data-src="07-group:113">都道府県別に高齢化率を計算し、ランキングを作りなさい（ヒント：前回使った関数を活用）。</p>
-<p data-src="07-group:115">作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
+<p data-src="07-group:102">上のコードは、都道府県ごとの自治体数を、行を減らさずに新しい列として足すというものです（<code>summarize</code> は行をまとめてしまいますが、<code>mutate</code> なら元の行がそのまま残ります）。この使い方は「全体に対する比率」を出すときに便利です。</p>
+<p data-src="07-group:104">最後に <code>ungroup()</code> を付ける癖をつけておくと、後々の事故が減ります。</p>
+<aside class="box box-homework" data-src="07-group:106"><p class="box-title">宿題</p><p data-src="07-group:107">都道府県別に高齢化率を計算し、ランキングを作りなさい（ヒント：前回使った関数を活用）。</p>
+<p data-src="07-group:109">作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
     </article>
     <nav class="pager"><a class="prev" href="06-strings-filter.html"><span>前へ</span>06 文字を切る・行を絞る</a><a class="next" href="08-bind.html"><span>次へ</span>08 縦にくっつける</a></nav>
     <footer class="site-foot">

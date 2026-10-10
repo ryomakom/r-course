@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>文字を切り分ける、行を絞り込む | 記者のためのR講座</title>
-<meta name="description" content="「北海道 札幌市 豊平区」を3つの列に切り分け、そこから東京都だけを、人口10万人以上だけを、「市」だけを取り出します。">
+<meta name="description" content="「北海道 札幌市 豊平区」という形式で表現されている自治体名をみっつの列に切り分け、そこからたとえば東京都だけを、人口10万人以上だけを、「市」だけを取り出します。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
@@ -69,9 +69,9 @@
     <article>
       <p class="kicker">第1部　データを読む・加工する</p>
       <h1>文字を切り分ける、行を絞り込む</h1>
-      <p class="lead">「北海道 札幌市 豊平区」を3つの列に切り分け、そこから東京都だけを、人口10万人以上だけを、「市」だけを取り出します。</p>
+      <p class="lead">「北海道 札幌市 豊平区」という形式で表現されている自治体名をみっつの列に切り分け、そこからたとえば東京都だけを、人口10万人以上だけを、「市」だけを取り出します。</p>
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#str_split_i文字を切り分ける">str_split_i——文字を切り分ける</a></li><li><a href="#filter条件に合う行だけ取り出す">filter——条件に合う行だけ取り出す</a></li><li><a href="#条件の書き方をもう少し">条件の書き方をもう少し</a></li></ul></nav>
-      <p data-src="06-strings-filter:8">では次に、都道府県別に高齢化率をみて、ランキングとかをつくっていきましょう。ただ、現状では <code>region</code> の列に自治体名が書いてありますが、「●●県 ●●市 ●●区」のようなかたちでひとまとめにされてしまっています。できればこれを、「都道府県名」「市区町村名」「政令指定都市の区名」といった形で分割したい。そうすれば、後で整理するのがラクになります。</p>
+      <p data-src="06-strings-filter:8">では次に、都道府県別に高齢化率をみて、ランキングとかをつくっていきましょう。ただ、現状では <code>region</code> の列に自治体名が書いてありますが、「●●県 ●●市 ●●区」のようなかたちでひとまとめにされてしまっています。できればこれを、「都道府県名」「市区町村名」「政令指定都市の区名」といった形で分割したい。そうすれば、後で整理するのが楽になります。</p>
 <h2 id="str_split_i文字を切り分ける" data-src="06-strings-filter:10">str_split_i——文字を切り分ける</h2>
 <p data-src="06-strings-filter:12">どうすればいいか。考える前に、<code>region</code> の列をよく見てみましょう。すると、都道府県名と市区町村名と特別区名はそれぞれ、<strong>半角スペースで区切られている</strong>ことがわかります。つまり、半角スペースで区切ったうえで、一つ目の要素を都道府県名に、二つ目を市区町村名に、三つ目を区名に格納してやればいいわけです。</p>
 <p data-src="06-strings-filter:14">たとえば <code>str_split_i</code> という関数を使うと、それが実現できます。<code>mutate</code> 関数を使って、こんな列をつくるわけです。</p>
@@ -84,13 +84,12 @@
 </ol>
 <p data-src="06-strings-filter:26">つまり、<code>str_split_i(region, " ", 1)</code> というのは、「<code>region</code> という列に入っている文字を半角スペースで区切って、その一つ目を取り出しなさい」という命令。そうして取り出した文字を <code>prefecture</code> という新しい列に格納しているわけです。</p>
 <p data-src="06-strings-filter:28"><code>municipality</code> という列と <code>ward</code> という列も、ほぼ同じやり方でつくることができます。上記の説明をみれば、わかりますね。新しい列をつくったデータフレームを上書き保存しましょう。</p>
-<div class="code" data-lang="R" data-src="06-strings-filter:30"><pre><code>df2020_simple &lt;- df2020_simple %&gt;%
-  mutate(rate_aged = population_over65 * 100 / population) %&gt;%
+<div class="code" data-lang="R" data-src="06-strings-filter:30"><pre><code>df2020_aged &lt;- df2020_aged %&gt;%
   mutate(prefecture = str_split_i(region, " ", 1),
          municipality = str_split_i(region, " ", 2),
          ward = str_split_i(region, " ", 3))</code></pre></div>
-<p data-src="06-strings-filter:38">3つの列ができました。</p>
-<div class="code" data-lang="実行結果" data-src="06-strings-filter:40"><pre><code># A tibble: 1,916 × 4
+<p data-src="06-strings-filter:37">みっつの列が作られました。</p>
+<div class="code" data-lang="実行結果" data-src="06-strings-filter:39"><pre><code># A tibble: 1,916 × 4
   prefecture municipality ward   rate_aged
   &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;      &lt;dbl&gt;
 1 北海道     札幌市       &lt;<mark>NA</mark>&gt;        27.4
@@ -102,19 +101,19 @@
 7 北海道     札幌市       南区        35.3
 8 北海道     札幌市       西区        27.6
 # ℹ 1,908 more rows</code></pre></div>
-<p data-src="06-strings-filter:43">札幌市の行は <code>municipality</code> に「札幌市」が入って <code>ward</code> は空っぽ、中央区の行は <code>ward</code> にも「中央区」が入っています。この違いが、あとで<a href="07-group.html">集計するとき</a>に効いてきます。</p>
-<aside class="box box-note" data-src="06-strings-filter:45"><p class="box-title">上書きするということ</p><p data-src="06-strings-filter:46"><code>df2020_simple &lt;- df2020_simple %&gt;% ...</code> は、加工した結果を同じ名前のオブジェクトに入れ直す、つまり上書きするコードです。便利ですが、危なくもあります。</p>
-<p data-src="06-strings-filter:48">たとえばこのコードを2回実行しても結果は変わりませんが（同じ列を作り直すだけなので）、もし途中に <code>select</code> で列を捨てるような処理が入っていると、2回目には「捨てた列がないぞ」とエラーになります。「あれ、さっきは動いたのに」というときは、たいていこれです。</p>
-<p data-src="06-strings-filter:50">そういうときは、読み込みのコードから順に上から流し直す。R Markdownに手順を書き残しておくのは、こういうときのためでもあります。</p></aside>
-<p data-src="06-strings-filter:53">ちなみに文字列の操作には、このように分割するもの以外にも、複数の文字列をくっつけたり、あるいは何らかの文字が含まれているかどうかを判断したり、「●文字目から●文字目までを取り出しなさい」と命令したり、あるいは文字数を数えたりと、いろいろなものがあります。いちいち説明しているとキリがないので省きますが、これらの命令をうまく組み合わせることで、データを自分の望むかたちに加工していくことができます。</p>
-<p data-src="06-strings-filter:55">こうした各種文字列操作の命令は、stringrというパッケージに入っているのですが、stringrはtidyverseの中に含まれています。名前が <code>str_</code> で始まるのが目印です。よく使うものは<a href="a2-functions.html">付録B</a>にまとめました。</p>
-<h2 id="filter条件に合う行だけ取り出す" data-src="06-strings-filter:57">filter——条件に合う行だけ取り出す</h2>
-<p data-src="06-strings-filter:59">話が少しそれました。本筋にもどって、高齢化率を都道府県別に見ていきましょう。</p>
-<p data-src="06-strings-filter:61">それに使えるのが <code>filter</code> 関数です。こんなふうに使います。</p>
-<div class="code" data-lang="R" data-src="06-strings-filter:63"><pre><code>df2020_simple %&gt;%
+<p data-src="06-strings-filter:42">札幌市の行は <code>municipality</code> に「札幌市」が入って <code>ward</code> は空っぽ、中央区の行は <code>ward</code> にも「中央区」が入っています。この違いが、あとで<a href="07-group.html">集計するとき</a>に効いてきます。</p>
+<aside class="box box-note" data-src="06-strings-filter:44"><p class="box-title">上書きするということ</p><p data-src="06-strings-filter:45"><code>df2020_aged &lt;- df2020_aged %&gt;% ...</code> は、加工した結果を同じ名前のオブジェクトに入れ直す、つまり上書きするコードです。便利ですが、危なくもあります。</p>
+<p data-src="06-strings-filter:47">たとえばこのコードを2回実行しても結果は変わりませんが（同じ列を作り直すだけなので）、もし途中に <code>select</code> で列を捨てるような処理が入っていると、2回目には「捨てた列がないぞ」とエラーになります。「あれ、さっきは動いたのに」というときは、たいていこれです。</p>
+<p data-src="06-strings-filter:49">そういうときは、読み込みのコードから順に上から流し直す。R Markdownに手順を書き残しておくのは、こういうときのためでもあります。</p></aside>
+<p data-src="06-strings-filter:52">ちなみに文字列の操作には、このように分割するもの以外にも、複数の文字列をくっつけたり、あるいは何らかの文字が含まれているかどうかを判断したり、「●文字目から●文字目までを取り出しなさい」と命令したり、あるいは文字数を数えたりと、いろいろなものがあります。いちいち説明しているとキリがないので省きますが、これらの命令をうまく組み合わせることで、データを自分の望むかたちに加工していくことができます。</p>
+<p data-src="06-strings-filter:54">こうした各種文字列操作の命令は、stringrというパッケージに入っているのですが、stringrはtidyverseの中に含まれています。名前が <code>str_</code> で始まるのが目印です。よく使うものは<a href="a2-functions.html">付録B</a>にまとめました。</p>
+<h2 id="filter条件に合う行だけ取り出す" data-src="06-strings-filter:56">filter——条件に合う行だけ取り出す</h2>
+<p data-src="06-strings-filter:58">話が少しそれました。本筋にもどって、高齢化率を都道府県別に見ていきましょう。</p>
+<p data-src="06-strings-filter:60">それに使えるのが <code>filter</code> 関数です。こんなふうに使います。</p>
+<div class="code" data-lang="R" data-src="06-strings-filter:62"><pre><code>df2020_aged %&gt;%
   filter(prefecture == "東京都") %&gt;%
   arrange(desc(rate_aged))</code></pre></div>
-<div class="code" data-lang="実行結果" data-src="06-strings-filter:69"><pre><code># A tibble: 62 × 3
+<div class="code" data-lang="実行結果" data-src="06-strings-filter:68"><pre><code># A tibble: 62 × 3
   municipality population rate_aged
   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;
 1 檜原村             2003      52.8
@@ -126,28 +125,29 @@
 7 大島町             7102      38.2
 8 青梅市           133535      31.8
 # ℹ 54 more rows</code></pre></div>
-<p data-src="06-strings-filter:72">檜原村、奥多摩町、八丈町。都内といっても、山と島が上位に並びました。</p>
-<p data-src="06-strings-filter:74"><code>filter</code> という関数は、特定の「行」だけを抽出しなさい、という命令です。この場合だと、<code>prefecture</code> が「東京都」になっている行だけを取り出しなさい、と命令しています。等号（<code>=</code>）がふたつ続けられて <code>==</code> になっていますが、これが「<code>prefecture</code> が『東京都』に等しい」という条件づけをしています。</p>
-<aside class="box box-warn" data-src="06-strings-filter:76"><p class="box-title">イコールは2つ</p><p data-src="06-strings-filter:77">初心者はふたつ続けるのを忘れがちなので（ソースは小宮山）、ここ、注意してください。</p>
-<ul data-src="06-strings-filter:79">
+<p data-src="06-strings-filter:71">檜原村、奥多摩町、八丈町。都内といっても、山と島が上位に並びました。</p>
+<p data-src="06-strings-filter:73"><code>filter</code> という関数は、特定の「行」だけを抽出しなさい、という命令です。この場合だと、<code>prefecture</code> が「東京都」になっている行だけを取り出しなさい、と命令しています。等号（<code>=</code>）がふたつ続けられて <code>==</code> になっていますが、これが「<code>prefecture</code> が『東京都』に等しい」という条件づけをしています。</p>
+<aside class="box box-warn" data-src="06-strings-filter:75"><p class="box-title">イコールは2つ</p><p data-src="06-strings-filter:76">初心者はふたつ続けるのを忘れがちだということが国連の研究で知られています。ここ、注意してください。</p>
+<ul data-src="06-strings-filter:78">
 <li><code>==</code> は「等しいかどうかを確かめる」</li>
 <li><code>=</code> は「等しくする（＝代入する）」</li>
 </ul>
-<p data-src="06-strings-filter:82"><code>filter(prefecture = "東京都")</code> と書くとエラーになります。エラーメッセージには「<code>==</code> を使うつもりでしたか？」と親切に書いてあることも多いので、落ち着いて読んでください。</p></aside>
-<p data-src="06-strings-filter:85"><code>filter</code> を使うときの条件設定には、<code>==</code> 以外にもあります。たとえば人口が10万人以上の自治体についてだけ調べたいとしましょう。そのときには、こんなふうに使えます。</p>
-<div class="code" data-lang="R" data-src="06-strings-filter:87"><pre><code>df2020_simple %&gt;%
+<p data-src="06-strings-filter:81"><code>filter(prefecture = "東京都")</code> と書くとエラーになります。エラーメッセージには「<code>==</code> を使うつもりでしたか？」と親切に書いてあることも多いので、落ち着いて読んでください。</p></aside>
+<p data-src="06-strings-filter:84"><code>filter</code> を使うときの条件設定には、<code>==</code> 以外にもあります。たとえば人口が10万人以上の自治体についてだけ調べたいとしましょう。そのときには、こんなふうに使えます。</p>
+<div class="code" data-lang="R" data-src="06-strings-filter:86"><pre><code>df2020_aged %&gt;%
   filter(population &gt;= 100000) %&gt;%
   arrange(desc(rate_aged))</code></pre></div>
-<p data-src="06-strings-filter:93"><code>population</code> という列に含まれた数字が、100000以上である行だけを取り出す、という操作をしているのが、わかるでしょうか。</p>
-<p data-src="06-strings-filter:95">また、たとえば町村部をふくまない「市」についてだけ調べたい、とかいうこともあると思います。ちょっと複雑ですが、こんなふうにやれば条件を指定できます。</p>
-<div class="code" data-lang="R" data-src="06-strings-filter:97"><pre><code>df2020_simple %&gt;%
+<p data-src="06-strings-filter:92"><code>population</code> という列に含まれた数字が、100000以上である行だけを取り出す、という操作をしているのがわかりますね。</p>
+<p data-src="06-strings-filter:94">また、たとえば町村部をふくまない「市」についてだけ調べたい、とかいうこともあると思います。ちょっと複雑ですが、こんなふうにやれば条件を指定できます。</p>
+<div class="code" data-lang="R" data-src="06-strings-filter:96"><pre><code>df2020_aged %&gt;%
   filter(str_sub(municipality, -1, -1) == "市") %&gt;%
   arrange(desc(rate_aged))</code></pre></div>
-<p data-src="06-strings-filter:103"><code>str_sub()</code> という関数は、「●番目から●番目までの文字を抽出しなさい」という命令です。この場合は「<code>municipality</code> という文字列のうち、後ろから数えて1番目の文字から、後ろから数えて1番目の文字まで（まだるっこしいですが、要するにいちばん最後の文字）を抽出しなさい」という意味です（マイナスの記号が「後ろから数えて」というのを意味してるわけですが、マイナスをつけなければ前から数えることになります）。そうやって取り出した文字が「市」である行だけを取り出しなさい、という命令になっています。</p>
-<p data-src="06-strings-filter:105">だいぶ複雑になってきたような気がします。一つひとつの命令が何をやっているのか、確認しながら読み進めてください。実際に自分でプログラムを書いて、エラーが出たときに「なぜだろう？？？」と考えながらやっていくと、理解が深まってくるはずです。</p>
-<h2 id="条件の書き方をもう少し" data-src="06-strings-filter:107">条件の書き方をもう少し</h2>
-<p data-src="06-strings-filter:109"><code>filter</code> の丸括弧のなかには、いろいろな条件を書けます。よく使うものを並べておきます。</p>
-<div class="code" data-lang="R" data-src="06-strings-filter:111"><pre><code>filter(population &gt;= 100000)              # 10万以上
+<p data-src="06-strings-filter:102"><code>str_sub()</code> という関数は、「●番目から●番目までの文字を抽出しなさい」という命令です。この場合は「<code>municipality</code> という文字列のうち、後ろから数えて1番目の文字から、後ろから数えて1番目の文字まで（まだるっこしいですが、要するにいちばん最後の文字）を抽出しなさい」という意味です（マイナスの記号が「後ろから数えて」というのを意味してるわけですが、マイナスをつけなければ前から数えることになります）。そうやって取り出した文字が「市」である行だけを取り出しなさい、という命令になっています。</p>
+<p data-src="06-strings-filter:104">自治体名に「市」を含むものを抽出する、という単純な命令にしなかったのは、たとえば兵庫県にある「市川町」みたいなのを含まないようにするための工夫です。</p>
+<p data-src="06-strings-filter:106">だいぶ複雑になってきたような気がします。一つひとつの命令が何をやっているのか、確認しながら読み進めてください。実際に自分でプログラムを書いて、エラーが出たときに「なぜだろう？？？」と考えながらやっていくと、理解が深まってくるはずです。</p>
+<h2 id="条件の書き方をもう少し" data-src="06-strings-filter:108">条件の書き方をもう少し</h2>
+<p data-src="06-strings-filter:110"><code>filter</code> の丸括弧のなかには、いろいろな条件を書けます。よく使うものを並べておきます。</p>
+<div class="code" data-lang="R" data-src="06-strings-filter:112"><pre><code>filter(population &gt;= 100000)              # 10万以上
 filter(population &lt; 5000)                 # 5000未満
 filter(prefecture != "東京都")             # 東京都以外
 filter(is.na(ward))                       # wardが空っぽの行だけ
@@ -156,19 +156,14 @@ filter(prefecture %in% c("東京都", "大阪府"))   # どれかに当てはま
 filter(str_detect(municipality, "町"))     # 「町」という字を含む
 filter(population &gt;= 100000, rate_aged &gt;= 30)  # 両方を満たす（AND）
 filter(prefecture == "東京都" | prefecture == "大阪府")  # どちらか（OR）</code></pre></div>
-<p data-src="06-strings-filter:123">コンマで区切って条件を並べると「かつ（AND）」、<code>|</code> でつなぐと「または（OR）」になります。<code>!</code> は「〜でない」をひっくり返す記号です。</p>
-<aside class="box box-tips" data-src="06-strings-filter:125"><p class="box-title">絞り込んだら、必ず行数を数える</p><p data-src="06-strings-filter:126">絞り込みは、静かに間違えることがある操作です。条件の書き間違いでゼロ行になっていても、Rは黙っています。</p>
-<div class="code" data-lang="R" data-src="06-strings-filter:128"><pre><code>df2020_simple %&gt;%
-  filter(prefecture == "東京都") %&gt;%
-  nrow()</code></pre></div>
-<p data-src="06-strings-filter:134">東京都は62市区町村。返ってきた数字がそれと合っているか。合っていなければ、どこかがおかしい。手元の知識と突き合わせて確かめる、この習慣が身についているかどうかで、データ分析の信頼度はかなり変わります。</p></aside>
-<aside class="box box-warn" data-src="06-strings-filter:137"><p class="box-title">全角と半角、それに空白</p><p data-src="06-strings-filter:138"><code>filter(prefecture == "東京都")</code> が0行になるとき、犯人はたいてい目に見えないものです。</p>
-<ul data-src="06-strings-filter:140">
+<p data-src="06-strings-filter:124">コンマで区切って条件を並べると「かつ（AND）」、<code>|</code> でつなぐと「または（OR）」になります。<code>!</code> は「〜でない」という意味で、条件をひっくり返す記号です。</p>
+<aside class="box box-warn" data-src="06-strings-filter:126"><p class="box-title">全角と半角、それに空白</p><p data-src="06-strings-filter:127"><code>filter()</code> で条件を設定して絞り込んだところ、結果はからっぽ、0行になってしまった。こういうことはよくあります。たいていはこんな理由です。</p>
+<ul data-src="06-strings-filter:129">
 <li>名前の前後に空白が入っている（<code>"東京都 "</code>）</li>
 <li>全角の空白と半角の空白が混じっている</li>
 <li>「ケ」と「ヶ」、「﨑」と「崎」のような異体字（<a href="11-join.html">11章</a>で痛い目にあいます）</li>
 </ul>
-<p data-src="06-strings-filter:144">前後の空白は <code>str_trim()</code> で取れます。<code>str_squish()</code> なら途中の連続した空白もまとめてくれます。役所のデータを読み込んだら、まずこれをかけておくと平和です。</p></aside>
+<p data-src="06-strings-filter:133">前後の空白は <code>str_trim()</code> で取れます。<code>str_squish()</code> なら途中の連続した空白もまとめてくれます。役所のデータを読み込んだら、まずこれをかけておくと平和です。</p></aside>
     </article>
     <nav class="pager"><a class="prev" href="05-select-mutate.html"><span>前へ</span>05 選ぶ・名前を変える・計算する</a><a class="next" href="07-group.html"><span>次へ</span>07 集計する</a></nav>
     <footer class="site-foot">
