@@ -2,7 +2,7 @@
 title: 縦長と横長を行き来する
 nav: 09 縦長と横長
 kicker: 第1部　データを読む・加工する
-lead: pivot_widerとpivot_longer。理解するのに私はいちばん時間がかかりましたが、いちばん多用する関数でもあります。
+lead: pivot_widerとpivot_longer。理解するのに私はいちばん時間がかかりましたが、とてもよく使う関数でもあります。
 ---
 
 ## 人間に読みやすい形、機械に読みやすい形
@@ -96,7 +96,8 @@ df_simple %>%
 
 ```r
 df_simple_wide %>%
-  mutate(population_increase_rate = (`2020年度` / `2010年度` - 1) * 100)
+  mutate(population_increase_rate = (`2020年度` / `2010年度` - 1) * 100) %>%
+  select(region, `2010年度`, `2020年度`, population_increase_rate)
 ```
 
 ```out outputs/09-change.txt

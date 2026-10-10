@@ -183,8 +183,8 @@ save_out("09-wide", df_simple_wide %>%
 
 save_out("09-change",
          df_simple_wide %>%
-           mutate(henka = (`2020年度` / `2010年度` - 1) * 100) %>%
-           select(region, `2010年度`, `2020年度`, henka), n = 6)
+           mutate(population_increase_rate = (`2020年度` / `2010年度` - 1) * 100) %>%
+           select(region, `2010年度`, `2020年度`, population_increase_rate), n = 6)
 
 # 10章　データ型が合わなくてbind_rowsが失敗する
 type_err <- tryCatch(
