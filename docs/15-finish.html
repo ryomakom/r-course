@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>グラフを仕上げて、外に出す | 記者のためのR講座</title>
-<meta name="description" content="日本語が四角に化ける問題、画像として保存する方法、デザイナーに渡すcsvの作り方、ついでにマウスで触れるグラフ。">
+<title>グラフを仕上げて外に出す | 記者のためのR講座</title>
+<meta name="description" content="日本語が四角に化ける問題、画像として保存する方法、デザイナーに渡すcsvの作り方、ついでにマウスで触れるグラフも。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
@@ -68,8 +68,8 @@
   <main id="main" class="page chapter">
     <article>
       <p class="kicker">第2部　データを見る</p>
-      <h1>グラフを仕上げて、外に出す</h1>
-      <p class="lead">日本語が四角に化ける問題、画像として保存する方法、デザイナーに渡すcsvの作り方、ついでにマウスで触れるグラフ。</p>
+      <h1>グラフを仕上げて外に出す</h1>
+      <p class="lead">日本語が四角に化ける問題、画像として保存する方法、デザイナーに渡すcsvの作り方、ついでにマウスで触れるグラフも。</p>
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#日本語がになるとき">日本語が「□□□」になるとき</a></li><li><a href="#テーマで見た目を変える">テーマで見た目を変える</a></li><li><a href="#グラフを画像として保存する">グラフを画像として保存する</a></li><li><a href="#デザイナーに渡すデータを書き出す">デザイナーに渡すデータを書き出す</a></li><li><a href="#マウスで触れるグラフにする">マウスで触れるグラフにする</a></li></ul></nav>
       <h2 id="日本語がになるとき" data-src="15-finish:8">日本語が「□□□」になるとき</h2>
 <p data-src="15-finish:10">グラフに日本語のタイトルを入れたら、文字が全部豆腐みたいな四角になった。あるいは警告がずらずら出てきた。Macを使っている人は、ほぼ確実にこれに出会います。</p>
@@ -96,7 +96,7 @@ system_fonts() %&gt;%
 <p data-src="15-finish:58">細かい調整もできます。よく使うのは凡例の位置と、文字の大きさくらいでしょうか。</p>
 <div class="code" data-lang="R" data-src="15-finish:60"><pre><code>  theme(legend.position = "bottom",           # 凡例を下に
         plot.title = element_text(size = 16)) # タイトルを大きく</code></pre></div>
-<p data-src="15-finish:65">ここは凝りだすとキリがなく、しかも凝ったところで社内のデザイナーが作り直すことになるので、私はあまり深追いしないことにしています。</p>
+<p data-src="15-finish:65">が、まあこういうのは凝りだすとキリがありません。しかも凝ったところで社内のデザイナーが作り直すことになるので、ほどほどに。</p>
 <h2 id="グラフを画像として保存する" data-src="15-finish:67">グラフを画像として保存する</h2>
 <p data-src="15-finish:69">同僚にチャットで送りたい、企画書に貼りたい。そういうときは <code>ggsave()</code> を使います。</p>
 <div class="code" data-lang="R" data-src="15-finish:71"><pre><code>ggsave("output/kodomo.png", width = 8, height = 5, dpi = 200)</code></pre></div>
@@ -106,46 +106,35 @@ system_fonts() %&gt;%
   geom_line(aes(x = year, y = population, color = prefecture))
 
 ggsave("output/jinko.png", plot = g, width = 8, height = 5, dpi = 200)</code></pre></div>
-<p data-src="15-finish:85"><code>width</code> と <code>height</code> はインチ、<code>dpi</code> は解像度です。紙面用の相談に使うなら <code>dpi = 300</code> くらいにしておくと、印刷しても粗く見えません。拡張子を <code>.pdf</code> や <code>.svg</code> にすると、拡大しても劣化しない形式で保存できます。デザイナーに渡すならこちらのほうが喜ばれます。</p>
+<p data-src="15-finish:85"><code>width</code> と <code>height</code> はインチ、<code>dpi</code> は解像度です。拡張子を <code>.pdf</code> や <code>.svg</code> にすると、拡大しても劣化しない形式で保存できます。デザイナーに渡すならこちらのほうが喜ばれます。</p>
 <h2 id="デザイナーに渡すデータを書き出す" data-src="15-finish:87">デザイナーに渡すデータを書き出す</h2>
 <p data-src="15-finish:89">とはいえ、このグラフを記事に使って読者様にお見せするのは、さすがにちょっとキツイ。社内にいるプロのデザイナーに頼んで、もっとかっこいいグラフにしたいですよね。あるいはFlourishとかを使って、ウェブで使えるインタラクティブなグラフにしてもいいでしょう。いずれにしても、データを何らかの形で出力して保存する必要があります。そのときにはこんなコードを書きます。</p>
 <div class="code" data-lang="R" data-src="15-finish:91"><pre><code>all_municipality_change %&gt;%
   write_excel_csv("デザイナー用.csv")</code></pre></div>
 <p data-src="15-finish:96"><code>write_excel_csv</code> というのが、そのための関数です。同じようなことができる関数はいくつかあります。たとえば <code>write_csv</code> なんていうものもありますが、これで出力したファイルをエクセルでそのまま開くと文字化けしてしまいます。<code>write_excel_csv</code> ならエクセルでも文字化けしませんので、私はこちらをよく使っています。</p>
-<aside class="box box-note" data-src="15-finish:98"><p class="box-title">なぜwrite_excel_csvだと化けないのか</p><p data-src="15-finish:99"><code>write_excel_csv()</code> は、ファイルの先頭にBOM（Byte Order Mark）という短い目印を付けてくれます。「このファイルはUTF-8ですよ」という札です。Excelはこの札を見てから開くので、化けません。</p>
-<p data-src="15-finish:101">つまり、あの文字化けはExcelが悪いというより、「札がないと判断を間違える」という仕様なわけです。ともあれ、<strong>人に渡すcsvは <code>write_excel_csv()</code></strong>。これだけ覚えておけば平和に暮らせます。</p></aside>
-<p data-src="15-finish:104">渡す前に、必要な列だけに絞っておくのも親切です。</p>
-<div class="code" data-lang="R" data-src="15-finish:106"><pre><code>five_pref %&gt;%
+<p data-src="15-finish:98">渡す前に、必要な列だけに絞っておくのも親切です。</p>
+<div class="code" data-lang="R" data-src="15-finish:100"><pre><code>five_pref %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   select(year, prefecture, rate_under15) %&gt;%
   write_excel_csv("output/デザイナー用.csv")</code></pre></div>
-<aside class="box box-tips" data-src="15-finish:113"><p class="box-title">渡すときに一緒に伝えること</p><p data-src="15-finish:114">デザイナーや校閲に渡すとき、csvだけをぽんと渡すと必ず往復が発生します。私は次のことを添えるようにしています。</p>
-<ul data-src="15-finish:116">
-<li>出典（統計の名前と調査年、公表機関）</li>
-<li>単位（人か％か、千人単位ではないか）</li>
-<li>数字がない部分の意味（秘匿か、該当なしか）</li>
-<li>グラフのタイトルと軸に入れたい文言</li>
-<li>強調したい点（「東京だけ増えている、をひと目で」など）</li>
-</ul>
-<p data-src="15-finish:122">これを書いたテキストファイルを同じフォルダに置いておくと、あとで自分が見返すときにも役立ちます。</p></aside>
-<h2 id="マウスで触れるグラフにする" data-src="15-finish:125">マウスで触れるグラフにする</h2>
-<p data-src="15-finish:127">もうひとつ、自分がデータを探るときに便利な技を紹介します。plotlyというパッケージを使うと、ggplotで描いたグラフをそのままマウスで触れるものに変えてくれます。</p>
-<div class="code" data-lang="R" data-src="15-finish:129"><pre><code>install.packages("plotly")
+<h2 id="マウスで触れるグラフにする" data-src="15-finish:107">マウスで触れるグラフにする</h2>
+<p data-src="15-finish:109">もうひとつ、自分がデータを探るときに便利な技を紹介します。plotlyというパッケージを使うと、ggplotで描いたグラフをそのままマウスで触れるものに変えてくれます。</p>
+<div class="code" data-lang="R" data-src="15-finish:111"><pre><code>install.packages("plotly")
 library(plotly)</code></pre></div>
-<p data-src="15-finish:134"><code>ggplotly()</code> という関数の丸括弧のなかに、インタラクティブ化したいグラフを入れるだけです。</p>
-<div class="code" data-lang="R" data-src="15-finish:136"><pre><code>ggplotly(all_pref %&gt;%
+<p data-src="15-finish:116"><code>ggplotly()</code> という関数の丸括弧のなかに、インタラクティブ化したいグラフを入れるだけです。</p>
+<div class="code" data-lang="R" data-src="15-finish:118"><pre><code>ggplotly(all_pref %&gt;%
            mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
            ggplot() +
            geom_point(aes(x = year,
                           y = rate_under15,
                           color = prefecture)))</code></pre></div>
-<p data-src="15-finish:145">点にマウスを乗せると、それがどの都道府県のどの年のデータなのかが表示されます。さきほど「47色は多すぎる」と書きましたが、こうやって一つずつ確かめられるなら、色が多くても探索の役には立ちます。</p>
-<p data-src="15-finish:147"><strong>これは記事用ではなく、自分が確かめるための道具</strong>だと考えるのがいいと思います。「この外れ値、どこだ？」を一瞬で確かめられるので、私は分析中にかなり使います。</p>
-<aside class="box box-warn" data-src="15-finish:149"><p class="box-title">ggplotlyの限界</p><p data-src="15-finish:150"><code>ggplotly()</code> は便利ですが、ggplotの見た目を完全に再現してはくれません。タイトルの位置がずれたり、凡例の見出しが消えたり、<code>labs()</code> で入れたsubtitleが落ちたりします。</p>
-<p data-src="15-finish:152">読者に見せるインタラクティブなグラフを作るなら、FlourishやDatawrapperのようなサービスにcsvを渡すか、社内のデザイナーに頼むのが現実的です。</p></aside>
+<p data-src="15-finish:127">点にマウスを乗せると、それがどの都道府県のどの年のデータなのかが表示されます。さきほど「47色は多すぎる」と書きましたが、こうやって一つずつ確かめられるなら、色が多くても探索の役には立ちます。</p>
+<p data-src="15-finish:129"><strong>これは記事用ではなく、自分が確かめるための道具</strong>だと考えるのがいいと思います。「この外れ値、どこだ？」を一瞬で確かめられるので、私は分析中にかなり使います。htmlとして出力することもできるので、同僚と共有するのにも使えます。</p>
+<aside class="box box-warn" data-src="15-finish:131"><p class="box-title">ggplotlyの限界</p><p data-src="15-finish:132"><code>ggplotly()</code> は便利ですが、ggplotの見た目を完全に再現してはくれません。タイトルの位置がずれたり、凡例の見出しが消えたり、<code>labs()</code> で入れたsubtitleが落ちたりします。</p>
+<p data-src="15-finish:134">読者に見せるインタラクティブなグラフを作るなら、FlourishやDatawrapperのようなサービスにcsvを渡すか、社内のデザイナーに頼むのが現実的です。</p></aside>
 <hr>
-<p data-src="15-finish:157">これで第2部は終わりです。データを読み込んで、加工して、グラフで眺めて、外に出すところまでできるようになりました。</p>
-<p data-src="15-finish:159">ただ、ここまでのすべては「データがすでに手元にある」ことを前提にしていました。次の第3部では、そのデータを自分で集めてくる方法を扱います。ここからが、記者にとって一番おいしいところだと思っています。</p>
+<p data-src="15-finish:139">これで第2部は終わりです。データを読み込んで、加工して、グラフで眺めて、外に出すところまでできるようになりました。</p>
+<p data-src="15-finish:141">ただ、ここまでのすべては「データがすでに手元にある」ことを前提にしていました。次の第3部では、そのデータを自分で集めてくる方法を扱います。</p>
     </article>
     <nav class="pager"><a class="prev" href="14-point.html"><span>前へ</span>14 散布図</a><a class="next" href="16-scraping.html"><span>次へ</span>16 ウェブから表を取る</a></nav>
     <footer class="site-foot">

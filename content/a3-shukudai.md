@@ -269,9 +269,9 @@ all_municipality %>%
   pivot_wider(names_from = c(category, year),              # 再びwideに変換
               values_from = value) %>%
   mutate(change_under15 = (population_under15_2020 * 100 / population_under15_2000) - 100) %>%
-  mutate(area = ifelse(prefecture == "東京都",
-                       "東京都の自治体",
-                       "その他")) %>%
+  mutate(area = if_else(prefecture == "東京都",
+                        "東京都の自治体",
+                        "その他")) %>%
   ggplot() +
   geom_point(aes(x = population_2020,
                  y = change_under15,
