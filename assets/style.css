@@ -435,6 +435,14 @@ td .dl-size { white-space: nowrap; }
 /* --------------------------------------------------------------- 図 */
 .fig { margin: 1.8rem 0; }
 .fig svg { width: 100%; height: auto; display: block; }
+.fig video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  background: #000;
+}
 .fig img {
   width: 100%;
   height: auto;
@@ -488,6 +496,24 @@ td .dl-size { white-space: nowrap; }
 .fig .f-hl { fill: none; stroke: var(--accent); stroke-width: 2.5; }
 .fig .f-dash { stroke-dasharray: 4 3; }
 .fig .f-sep { stroke: var(--line); }
+/* 16章の模式図（ページの模型と、開発者ツールのまね） */
+.fig .f-pg { fill: var(--paper-2); stroke: var(--line); }
+.fig .f-pgline { stroke: var(--line); }
+.fig .f-pgtext { fill: var(--ink-2); font-size: 9.5px; }
+.fig .f-blue { fill: color-mix(in srgb, #4a90d9 38%, transparent); stroke: #4a90d9; stroke-width: 1.5; }
+.fig .f-tip { fill: var(--paper-2); stroke: var(--ink-2); stroke-width: .8; }
+.fig .f-tiptext { font-family: var(--mono); font-size: 11px; font-weight: 700; fill: var(--accent-2); }
+.fig .f-mono { font-family: var(--mono); font-size: 12px; }
+.fig .f-tri { fill: var(--ink-2); font-size: 10px; }
+.fig .f-ring { fill: none; stroke: var(--accent); stroke-width: 2; }
+.fig .f-target { fill: color-mix(in srgb, #e8628a 22%, var(--paper-2)); stroke: var(--accent); stroke-width: 2.2; }
+.fig .f-targethead { fill: color-mix(in srgb, #e8628a 40%, var(--paper-2)); }
+.fig .f-targetline { stroke: color-mix(in srgb, #e8628a 60%, var(--paper-2)); }
+.fig .f-targettext { fill: var(--accent); font-size: 10px; font-weight: 700; }
+.fig .f-targetedge { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+.fig-details { margin: 1.2rem 0 1.8rem; }
+.fig-details summary { cursor: pointer; color: var(--accent-2); font-size: .92rem; }
+.fig-details[open] summary { margin-bottom: .6rem; }
 
 /* --------------------------------------------------------------- 表 */
 .table-wrap { overflow-x: auto; margin: 1.4rem 0 1.8rem; }
