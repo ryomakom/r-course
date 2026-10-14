@@ -481,6 +481,13 @@ td .dl-size { white-space: nowrap; }
 .fig .f-code2 { font-family: var(--mono); font-size: 12px; fill: var(--accent-2); }
 .fig .f-arrow { fill: none; stroke: var(--ink-2); stroke-width: 1.6; }
 .fig .f-label { fill: var(--ink); font-size: 13px; font-weight: 700; }
+.fig .f-mark3 { fill: color-mix(in srgb, var(--mark) 85%, var(--paper-2)); stroke: var(--line); }
+.fig .f-mark4 { fill: color-mix(in srgb, #2e8b57 16%, var(--paper-2)); stroke: var(--line); }
+.fig .f-aside { fill: color-mix(in srgb, #2e8b57 8%, var(--paper-2)); stroke: #2e8b57; stroke-dasharray: 3 3; }
+.fig .f-gone { fill: none; stroke: var(--line); stroke-dasharray: 3 3; }
+.fig .f-hl { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+.fig .f-dash { stroke-dasharray: 4 3; }
+.fig .f-sep { stroke: var(--line); }
 
 /* --------------------------------------------------------------- 表 */
 .table-wrap { overflow-x: auto; margin: 1.4rem 0 1.8rem; }

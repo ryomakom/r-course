@@ -2,8 +2,9 @@
 """
 「記者のためのR講座」サイトの組み立てスクリプト。
 
-content/ にある .md ファイルを読んで、site/ に .html を書き出します。
+content/ にある .md ファイルを読んで、docs/ に .html を書き出します。
 使い方:  python build.py
+確認用:  python build.py --preview   （工事中の部も本文を出して、preview/ に書き出す）
 """
 
 import html
@@ -76,6 +77,14 @@ WIP_PARTS = {
     "第4部　詰まったときに",
 }
 WIP = {slug for part, slugs in PARTS if part in WIP_PARTS for slug in slugs}
+
+# 確認用の書き出し。python build.py --preview とすると、工事中の部も本文を出して
+# preview/ に書き出す。preview/ は .gitignore で履歴から外してあるので、公開サイトは変わらない。
+PREVIEW = "--preview" in sys.argv
+if PREVIEW:
+    OUT = os.path.join(BASE, "preview")
+    WIP_PARTS = set()
+    WIP = set()
 
 WIP_BODY = """<div class="wip-notice">
 <p class="wip-notice-title">工事中</p>
@@ -506,8 +515,9 @@ def make_zip():
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for name in names:
             z.write(os.path.join(FILES, name), name)
-    # zipじたいの大きさを表示できるように、files/ にも置いておく
-    shutil.copy(out, os.path.join(FILES, ZIP_NAME))
+    # zipじたいの大きさを表示できるように、files/ にも置いておく（確認用の書き出しでは触らない）
+    if not PREVIEW:
+        shutil.copy(out, os.path.join(FILES, ZIP_NAME))
     print("%d 個のデータファイルを %s にまとめました。" % (len(names), ZIP_NAME))
 
 
@@ -587,6 +597,8 @@ def build():
             f.write(html_out)
 
     print("%d ページを %s に書き出しました。" % (len(ORDER), OUT))
+    if PREVIEW:
+        print("（確認用です。工事中の部も本文を出しています。公開用の docs/ は変えていません）")
     if WIP:
         print("（うち %d ページは「工事中」として本文を出していません：%s）"
               % (len(WIP), "、".join(sorted(WIP_PARTS))))
