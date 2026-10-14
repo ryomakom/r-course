@@ -454,26 +454,21 @@ save_out("a3-join-check",
 
 suppressMessages(library(rvest))
 # 16章の実行結果は、保存しておいたページから作ります。相手のサーバーを
-# 何度も叩かないためです（16章・17章で書いているとおり）。
-#   取得元 https://www.courts.go.jp/sapporo-h/about/syozai/index.html
-#   取得日 2026年8月10日
-PAGE <- "sample/sapporo.html"
+# 何度も叩かないためです（17章で書いているとおり）。
+#   取得元 https://www.courts.go.jp/tokyo/about/syozai/index.html
+#   取得日 2026年10月13日
+PAGE <- "sample/tokyo.html"
 
-tables <- PAGE %>% read_html() %>% html_table()
+tokyo <- PAGE %>%
+  read_html() %>%
+  html_element("div.module-sub-page-parts-table table") %>%
+  html_table()
 
-save_out("16-len", length(tables))
-save_out("16-colnames", colnames(tables[[1]]))
+save_out("16-table", tokyo, n = 6)
 
-# 列名が重複しているので、名前を直したものも見せる
-naosita <- tables[[1]] %>% as_tibble(.name_repair = "unique")
-save_out("16-repaired", colnames(naosita))
-save_out("16-table",
-         naosita %>%
-           mutate(所在地 = str_trunc(所在地, 10)) %>%
-           select(裁判所名, 郵便番号, 所在地, 電話番号...4, 電話番号...5))
-
-save_out("16-node-len",
-         length(PAGE %>% read_html() %>%
-                  html_nodes("div.module-sub-page-parts-table") %>% html_table()))
+save_out("16-clean",
+         tokyo %>%
+           rename(担当 = 4) %>%
+           slice(-1), n = 6)
 
 cat("\n終わりました。python build.py でサイトを組み立て直してください。\n")

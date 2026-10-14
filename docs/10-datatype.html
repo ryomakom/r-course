@@ -87,7 +87,7 @@ read_excel("data/人口データ2000.xlsx", skip = 8)</code></pre></div>
 <div class="code" data-lang="R" data-src="10-datatype:39"><pre><code>excel_sheets("data/人口データ2000.xlsx")            # シート名の一覧を見る
 read_excel("data/人口データ2000.xlsx", sheet = 2)    # 2枚目を読む
 read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指定する</code></pre></div>
-<p data-src="10-datatype:45">シートが47枚あるファイルを全部まとめて読む、というのは<a href="19-kami-excel.html">19章</a>でやります。</p>
+<p data-src="10-datatype:45">シートがたくさんあるファイルを、それも何十個もまとめて読む、というのは<a href="19-kami-excel.html">19章</a>でやります。</p>
 <p data-src="10-datatype:47">なお、<code>read_excel()</code> には <code>locale</code> の指定はいりません。文字コードの問題はExcelファイルには起きないので、そこだけはcsvよりラクです。</p></aside>
 <h2 id="エラーが出る" data-src="10-datatype:50">エラーが出る</h2>
 <p data-src="10-datatype:52">というわけで、ほかの年のデータと合体してみましょう。</p>

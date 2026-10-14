@@ -205,12 +205,15 @@ mutate(seireki = case_when(
 | 関数 | すること |
 |---|---|
 | `read_html("url")` | ページのHTMLを読む（`library(rvest)`） |
-| `html_nodes("div.class-name")` | 名札で場所を指定する |
+| `html_element("div.class-name table")` | 場所を指定して、最初に見つかったひとつを取り出す |
+| `html_elements("div.class-name table")` | 場所を指定して、見つかったものを全部取り出す |
 | `html_elements("a")` | リンクを全部取り出す |
 | `html_attr("href")` | リンク先のURLを取り出す |
 | `html_table()` | 表をtibbleに変える |
 | `html_text2()` | 中の文字だけを取り出す |
 | `url_absolute(x, "元のURL")` | 相対パスを完全なURLに直す |
+| `stop_for_status(res)` | サーバーの返事が失敗（「見つかりません」など）ならエラーにする（`library(httr)`） |
+| `unlink("path")` | ファイルを消す |
 | `GET(url, write_disk("path", overwrite = TRUE))` | ファイルを落とす（`library(httr)`） |
 | `basename(url)` | URLの末尾のファイル名だけ取り出す |
 
@@ -221,4 +224,5 @@ mutate(seireki = case_when(
 | `xlsx_cells("path")` | セルを1個ずつバラして読む（`library(tidyxl)`） |
 | `behead("up", "name")` | 上の見出しを剥がしてname列にする（`library(unpivotr)`） |
 | `behead("up-left", "name")` | 上にあって左に寄った見出しを剥がす |
+| `behead("left-up", "area")` | 左にあって上に寄った見出し（グループの先頭の行にだけ書かれた見出し）を剥がす |
 | `behead("left", "name")` | 左の見出しを剥がす |

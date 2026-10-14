@@ -22,7 +22,7 @@ Rを覚えると、そこを越えられます。何百万行あっても平気�
 <ul class="cards">
 <li><a href="01-hajimeni.html"><strong>はじめて触る人</strong><br>まずは「はじめに」から順番に。第1部の最後まで来れば、たいていのデータは加工できるようになります。</a></li>
 <li><a href="12-line.html"><strong>グラフを描きたい人</strong><br>第2部から。折れ線・棒・散布図の3種類だけで、記者の仕事はほぼ足ります。</a></li>
-<li><a href="16-scraping.html"><strong>データを集めたい人</strong><br>第3部から。1ページから始めて、50ページ、ファイルの一括取得へ。（いまは工事中です）</a></li>
+<li><a href="16-scraping.html"><strong>データを集めたい人</strong><br>第3部から。1ページから始めて、70ページ近く、ファイルの一括取得へ。（いまは工事中です）</a></li>
 <li><a href="a2-functions.html"><strong>関数の名前を思い出したい人</strong><br>付録の早見表へ。「あれ、何だっけ」の8割はここで済みます。</a></li>
 </ul>
 
