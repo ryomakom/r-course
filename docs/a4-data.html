@@ -49,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -73,7 +73,7 @@
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#まとめてダウンロード">まとめてダウンロード</a></li><li><a href="#フォルダの構え">フォルダの構え</a></li><li><a href="#自分で取ってくる場合">自分で取ってくる場合</a></li><li><a href="#第2部で使う加工済みファイル">第2部で使う加工済みファイル</a></li><li><a href="#第3部で使うデータ">第3部で使うデータ</a></li><li><a href="#Rでまとめて落とす">Rでまとめて落とす</a></li><li><a href="#この講座に出てくるパッケージ">この講座に出てくるパッケージ</a></li></ul></nav>
       <h2 id="まとめてダウンロード" data-src="a4-data:8">まとめてダウンロード</h2>
 <p data-src="a4-data:10"><a class="dl" href="files/r-course-data.zip" download>データ一式（zip）<span class="dl-size">1.2 MB</span></a></p>
-<p data-src="a4-data:12">12個のファイルが入っています。解凍して、プロジェクトのなかの <code>data</code> フォルダに移してください（<code>001062204.xlsx</code> だけは <code>download</code> フォルダへ）。</p>
+<p data-src="a4-data:12">12個のファイルが入っています。解凍して、プロジェクトのなかの <code>data</code> フォルダに移してください（<code>000979538.xlsx</code> だけは <code>download</code> フォルダへ）。</p>
 <p data-src="a4-data:14">1つずつ落としたい人は、下の表から。</p>
 <h3 id="第1部で使うもの" data-src="a4-data:16">第1部で使うもの</h3>
 <div class="table-wrap" data-src="a4-data:18"><table><thead><tr><th>ファイル</th><th>中身</th><th>読み込み方</th><th>使う章</th></tr></thead><tbody><tr><td><a class="dl" href="files/人口データ2020.csv" download>人口データ2020.csv<span class="dl-size">288 KB</span></a></td><td>2020年の市区町村別人口</td><td><code>skip = 8</code></td><td>04〜07</td></tr><tr><td><a class="dl" href="files/人口データ2015.csv" download>人口データ2015.csv<span class="dl-size">288 KB</span></a></td><td>2015年</td><td><code>skip = 2</code></td><td>08</td></tr><tr><td><a class="dl" href="files/人口データ2010.csv" download>人口データ2010.csv<span class="dl-size">273 KB</span></a></td><td>2010年</td><td><code>skip = 5</code>、CP932</td><td>08</td></tr><tr><td><a class="dl" href="files/人口データ2005.xls" download>人口データ2005.xls<span class="dl-size">671 KB</span></a></td><td>2005年（Excel）</td><td><code>skip = 8</code></td><td>10</td></tr><tr><td><a class="dl" href="files/人口データ2000.xlsx" download>人口データ2000.xlsx<span class="dl-size">268 KB</span></a></td><td>2000年（Excel）</td><td><code>skip = 8</code></td><td>10</td></tr><tr><td><a class="dl" href="files/労働人口データ2020.csv" download>労働人口データ2020.csv<span class="dl-size">134 KB</span></a></td><td>2020年の産業別就業者数</td><td><code>skip = 8</code></td><td>11</td></tr><tr><td><a class="dl" href="files/労働人口データ.csv" download>労働人口データ.csv<span class="dl-size">673 KB</span></a></td><td>5年分の産業別就業者数</td><td><code>skip = 8</code></td><td>付録C・宿題5</td></tr></tbody></table></div>
@@ -84,9 +84,9 @@
 <p data-src="a4-data:41">どれも余計な説明行がないので、<code>read_csv("data/東京都の人口.csv")</code> だけで読めます。</p>
 <h3 id="第3部で使うもの" data-src="a4-data:43">第3部で使うもの</h3>
 <p data-src="a4-data:45">第3部は、コードのなかでウェブから直接取ってきます。ただ、サイトの作りが変わって落ちてこないことがあるので、<a href="19-kami-excel.html">19章</a>で使うファイルだけ置いておきます。</p>
-<div class="table-wrap" data-src="a4-data:47"><table><thead><tr><th>ファイル</th><th>中身</th></tr></thead><tbody><tr><td><a class="dl" href="files/001062204.xlsx" download>001062204.xlsx<span class="dl-size">46 KB</span></a></td><td>第51回衆院選（2026年2月8日執行）の小選挙区の市区町村別得票（北海道）。<code>download</code> フォルダへ</td></tr></tbody></table></div>
+<div class="table-wrap" data-src="a4-data:47"><table><thead><tr><th>ファイル</th><th>中身</th></tr></thead><tbody><tr><td><a class="dl" href="files/000979538.xlsx" download>000979538.xlsx<span class="dl-size">46 KB</span></a></td><td>第50回衆院選（2024年10月27日執行）の小選挙区の市区町村別得票（北海道）。<code>download</code> フォルダへ</td></tr></tbody></table></div>
 <aside class="box box-warn" data-src="a4-data:51"><p class="box-title">出典と、扱いについて</p><p data-src="a4-data:52">人口データと労働人口データは、政府統計の総合窓口 <a href="https://www.e-stat.go.jp/">e-Stat</a> の「都道府県・市区町村のすがた（社会・人口統計体系）」から、<strong>2024年6月21日公開版</strong>をダウンロードしたものです。もとは国勢調査です。</p>
-<p data-src="a4-data:54"><code>001062204.xlsx</code> は総務省が公表している衆院選の得票データの写しです。</p>
+<p data-src="a4-data:54"><code>000979538.xlsx</code> は総務省が公表している衆院選の得票データの写しです。</p>
 <p data-src="a4-data:56">いずれも公表されている統計ですが、<strong>ここに置いてあるのは私がある日ダウンロードした写し</strong>です。数字が訂正されている可能性があるので、記事に使うときは必ず出典元で最新のものを確認してください。</p>
 <p data-src="a4-data:58">社外に公開するときは、出典の表示のしかたを含めて、それぞれの利用規約を確認してください。</p></aside>
 <h2 id="フォルダの構え" data-src="a4-data:61">フォルダの構え</h2>

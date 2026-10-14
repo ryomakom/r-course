@@ -12,9 +12,6 @@
 Thumbs.db
 .DS_Store
 
-# 確認用の書き出し（python build.py --preview）。公開しない
-preview/
-
 # 一時ファイル
 *.tmp
 ~$*

@@ -49,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -299,71 +299,43 @@ df_simple %&gt;%
 <p data-src="a3-shukudai:289">3つ目がいちばん記者らしいやり方かもしれません。「全国で子どもが増えた自治体は◯◯しかない」という一覧は、それ自体が記事の骨になります。そして、そのリストに載った自治体に電話をかけるのが、次の仕事です。</p>
 <h2 id="81つのファイルの全シートを処理する19章19-kami-excelhtml" data-src="a3-shukudai:291">8．1つのファイルの全シートを処理する（<a href="19-kami-excel.html">19章</a>）</h2>
 <blockquote data-src="a3-shukudai:293">一つのファイルにある複数のシートに同じ処理を連続的にほどこすコードを、for文を使ってつくりましょう。</blockquote>
-<div class="code" data-lang="R" data-src="a3-shukudai:295"><pre><code>sheet_names &lt;- "download/001062204.xlsx" %&gt;%
+<div class="code" data-lang="R" data-src="a3-shukudai:295"><pre><code>sheet_names &lt;- "download/000979538.xlsx" %&gt;%
   excel_sheets()
 
 vote_data &lt;- tibble()
 
 for (i in sheet_names) {
-  sheet_cells &lt;- "download/001062204.xlsx" %&gt;%
+  vote_data_temporaly &lt;- "download/000979538.xlsx" %&gt;%
     xlsx_cells() %&gt;%
-    filter(sheet == i, row &gt;= 5, character != "")
-
-  b_col &lt;- sheet_cells %&gt;%
-    filter(col == 2) %&gt;%
-    select(row, municipality = character)
-
-  vote_data_temporaly &lt;- sheet_cells %&gt;%
-    filter(col != 2) %&gt;%
+    filter(sheet == i, row &gt;= 4, !is_blank) %&gt;%
     behead("up", "name") %&gt;%
     behead("up", "party") %&gt;%
-    behead("left-up", "area") %&gt;%
-    left_join(b_col, by = "row") %&gt;%
-    filter(!is.na(party)) %&gt;%
-    mutate(vote = parse_number(character)) %&gt;%
-    filter(!str_ends(area, "計")) %&gt;%
-    group_by(area) %&gt;%
-    filter(!(is.na(municipality) &amp; any(!is.na(municipality)))) %&gt;%
-    ungroup() %&gt;%
-    mutate(municipality = if_else(is.na(municipality), area, municipality),
-           district = i) %&gt;%
-    select(district, municipality, name, party, vote)
+    behead("left", "municipality") %&gt;%
+    filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
+    mutate(district = i) %&gt;%
+    select(district, municipality, name, party, vote = numeric)
 
   vote_data &lt;- bind_rows(vote_data, vote_data_temporaly)
 }</code></pre></div>
-<p data-src="a3-shukudai:330">ポイントは3つ。空っぽの <code>tibble()</code> を先に用意すること、<code>filter(sheet == i)</code> でそのシートだけに絞ること、<code>district = i</code> でシート名を情報として持ち込むこと。</p>
-<p data-src="a3-shukudai:332"><strong>発展。</strong> 同じファイルを何度も <code>xlsx_cells()</code> で読み直しているので、シートが多いと遅くなります。先に1回だけ読んでおくと速くなります。</p>
-<div class="code" data-lang="R" data-src="a3-shukudai:334"><pre><code>all_cells &lt;- xlsx_cells("download/001062204.xlsx")   # 1回だけ読む
+<p data-src="a3-shukudai:316">ポイントは3つ。空っぽの <code>tibble()</code> を先に用意すること、<code>filter(sheet == i)</code> でそのシートだけに絞ること、<code>district = i</code> でシート名を情報として持ち込むこと。</p>
+<p data-src="a3-shukudai:318"><strong>発展。</strong> 同じファイルを何度も <code>xlsx_cells()</code> で読み直しているので、シートが多いと遅くなります。先に1回だけ読んでおくと速くなります。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:320"><pre><code>all_cells &lt;- xlsx_cells("download/000979538.xlsx")   # 1回だけ読む
 
 vote_data &lt;- tibble()
 
 for (i in sheet_names) {
-  sheet_cells &lt;- all_cells %&gt;%
-    filter(sheet == i, row &gt;= 5, character != "")
-
-  b_col &lt;- sheet_cells %&gt;%
-    filter(col == 2) %&gt;%
-    select(row, municipality = character)
-
-  temp &lt;- sheet_cells %&gt;%
-    filter(col != 2) %&gt;%
+  temp &lt;- all_cells %&gt;%
+    filter(sheet == i, row &gt;= 4, !is_blank) %&gt;%
     behead("up", "name") %&gt;%
     behead("up", "party") %&gt;%
-    behead("left-up", "area") %&gt;%
-    left_join(b_col, by = "row") %&gt;%
-    filter(!is.na(party)) %&gt;%
-    mutate(vote = parse_number(character)) %&gt;%
-    filter(!str_ends(area, "計")) %&gt;%
-    group_by(area) %&gt;%
-    filter(!(is.na(municipality) &amp; any(!is.na(municipality)))) %&gt;%
-    ungroup() %&gt;%
-    mutate(municipality = if_else(is.na(municipality), area, municipality),
-           district = i) %&gt;%
-    select(district, municipality, name, party, vote)
+    behead("left", "municipality") %&gt;%
+    filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
+    mutate(district = i) %&gt;%
+    select(district, municipality, name, party, vote = numeric)
 
   vote_data &lt;- bind_rows(vote_data, temp)
 }</code></pre></div>
-<p data-src="a3-shukudai:367">「同じ作業を繰り返さない」というのは、for文を書くときの基本です。ループの中に入れなくていいものは、外に出す。</p>
+<p data-src="a3-shukudai:339">「同じ作業を繰り返さない」というのは、for文を書くときの基本です。ループの中に入れなくていいものは、外に出す。</p>
     </article>
     <nav class="pager"><a class="prev" href="a2-functions.html"><span>前へ</span>B 関数早見表</a><a class="next" href="a4-data.html"><span>次へ</span>D データの準備</a></nav>
     <footer class="site-foot">

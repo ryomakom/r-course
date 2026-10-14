@@ -49,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -101,7 +101,9 @@
 6 北海道 札幌市 豊平区     225298     218652     212118
 # ℹ 1,910 more rows</code></pre></div>
 <p data-src="09-pivot:32">行数が9580から1916に減って、代わりに年の列が3つ増えました。列名を <code>year</code> から取ってきて、その中身（つまりvalue）を <code>population</code> から取ってくることによって、データを横長（wider）にしなさい、という意味です。</p>
-<figure class="fig">
+<div class="pivot-anim anim-host"></div>
+<script src="assets/pivot-anim.js"></script>
+<figure class="fig fig-pivot-static fig-anim-static">
 <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="縦長のデータを横長に変える様子を示した図">
   <text class="f-label" x="10" y="18">縦長（tidy data）</text>
   <rect class="f-head" x="10" y="28" width="90" height="26"/>
@@ -147,17 +149,17 @@
 </svg>
 <figcaption>同じデータの2つの形。数字は説明のための架空のものです。</figcaption>
 </figure>
-<p data-src="09-pivot:83">あまり見ないタイプですが、いちばん左側に「調査年度」の列があって、その横に自治体名の列がずらりと並んでいる、というような表も考えられます。こんなコードで書けます。</p>
-<div class="code" data-lang="R" data-src="09-pivot:85"><pre><code>df_simple %&gt;%
+<p data-src="09-pivot:86">あまり見ないタイプですが、いちばん左側に「調査年度」の列があって、その横に自治体名の列がずらりと並んでいる、というような表も考えられます。こんなコードで書けます。</p>
+<div class="code" data-lang="R" data-src="09-pivot:88"><pre><code>df_simple %&gt;%
   pivot_wider(names_from = region,
               values_from = population)</code></pre></div>
-<p data-src="09-pivot:91">なかなかピンと来ないかもしれませんが、データ処理や分析をしていくうえでは、この関数はメチャクチャ多用しますので、ぜひしっかり覚えてください。</p>
-<h2 id="横長にすると計算ができる" data-src="09-pivot:93">横長にすると計算ができる</h2>
-<p data-src="09-pivot:95">こういう横長の形式にすると、たとえば各自治体について2020年度の人口を2010年度の人口で割り算することで、10年間の人口変化率がどうだったか、といったことを計算することができます。具体的にはこうやるわけです。</p>
-<div class="code" data-lang="R" data-src="09-pivot:97"><pre><code>df_simple_wide %&gt;%
+<p data-src="09-pivot:94">なかなかピンと来ないかもしれませんが、データ処理や分析をしていくうえでは、この関数はメチャクチャ多用しますので、ぜひしっかり覚えてください。</p>
+<h2 id="横長にすると計算ができる" data-src="09-pivot:96">横長にすると計算ができる</h2>
+<p data-src="09-pivot:98">こういう横長の形式にすると、たとえば各自治体について2020年度の人口を2010年度の人口で割り算することで、10年間の人口変化率がどうだったか、といったことを計算することができます。具体的にはこうやるわけです。</p>
+<div class="code" data-lang="R" data-src="09-pivot:100"><pre><code>df_simple_wide %&gt;%
   mutate(population_increase_rate = (`2020年度` / `2010年度` - 1) * 100) %&gt;%
   select(region, `2010年度`, `2020年度`, population_increase_rate)</code></pre></div>
-<div class="code" data-lang="実行結果" data-src="09-pivot:103"><pre><code># A tibble: 1,916 × 4
+<div class="code" data-lang="実行結果" data-src="09-pivot:106"><pre><code># A tibble: 1,916 × 4
   region               `2010年度` `2020年度` population_increase_rate
   &lt;chr&gt;                     &lt;dbl&gt;      &lt;dbl&gt;                    &lt;dbl&gt;
 1 北海道 札幌市           1913545    1973395                     3.13
@@ -167,47 +169,47 @@
 5 北海道 札幌市 白石区     204259     211835                     3.71
 6 北海道 札幌市 豊平区     212118     225298                     6.21
 # ℹ 1,910 more rows</code></pre></div>
-<p data-src="09-pivot:106">札幌市は10年で3.1％増えた、と読めます。年度名を表す列名がバッククオート（<code>`</code>）で囲われているのは、列名の最初に半角数字が来ると、そのままではRにきちんと認識してもらえなくなるからです。めんどくさい……。</p>
-<p data-src="09-pivot:108">「縦長」のデータ形式のままでは、こういう計算をすることができません。<strong>計算は基本的に、ひとつの「行」の中で完結しなければいけません</strong>が、縦長状態では、ひとつの自治体のデータが複数の行にまたがっているからです。横長にすると複数年のデータが1行にまとまるので、今回のように、たとえば年ごとの変遷を追うような計算がやりやすくなります。</p>
-<aside class="box box-tips" data-src="09-pivot:110"><p class="box-title">ここが分かれ道</p><p data-src="09-pivot:111">「前年比」「10年間の変化」「A市とB市の差」のような<strong>引き算・割り算をしたくなったら、まず横長にする</strong>。これを覚えておくと、詰まったときに手が動きます。</p>
-<p data-src="09-pivot:113">逆に、グラフを描くときや、集計するときは縦長のほうが便利です。この講座でこれからやることは、要するに「計算のために横長にして、グラフのために縦長に戻す」の繰り返しです。</p></aside>
-<h2 id="pivot_longer縦長に戻す" data-src="09-pivot:116">pivot_longer——縦長に戻す</h2>
-<p data-src="09-pivot:118">と、横長データのメリットを説明したばかりではあるのですが、今度は横長から縦長に変換するやり方を説明します。なぜそんなことをする必要があるのかというと、横長のままだと、データの意味するところをコンピューターに理解してもらうのが難しいからです。</p>
-<p data-src="09-pivot:120">なぜ理解できないかというと、たとえば今回、データの中身はすべて「人口」でしたよね。でも、データのどこをみても、そんなことは書いてありません。これは人口のデータだよねというのを人間が理解できるのは、たとえばファイル名とか、あるいはファイルの中身を説明するための文書とかに、そのむねが書いてあるから（あるいは今回のように、それまで自分が加工してきたデータだから）。データの「外部」にある何かをすでに読んでいるから、なわけです。</p>
-<p data-src="09-pivot:122">でも、コンピューターがアクセスできるのはデータだけです。もとの縦長データでは、「調査年」「自治体名」「人口」と、それぞれの列の中身が何なのかを示すものがそれぞれの列の名前になっていましたよね。<strong>すべての数字に「これは●●を示す数字ですよ」というラベルがついている。</strong> これこそが、コンピューターにとって読みやすく、理解しやすい形式なのです。</p>
-<p data-src="09-pivot:124">こういうコードを書くと、縦長に戻すことができます。</p>
-<div class="code" data-lang="R" data-src="09-pivot:126"><pre><code>df_simple_wide %&gt;%
+<p data-src="09-pivot:109">札幌市は10年で3.1％増えた、と読めます。年度名を表す列名がバッククオート（<code>`</code>）で囲われているのは、列名の最初に半角数字が来ると、そのままではRにきちんと認識してもらえなくなるからです。めんどくさい……。</p>
+<p data-src="09-pivot:111">「縦長」のデータ形式のままでは、こういう計算をすることができません。<strong>計算は基本的に、ひとつの「行」の中で完結しなければいけません</strong>が、縦長状態では、ひとつの自治体のデータが複数の行にまたがっているからです。横長にすると複数年のデータが1行にまとまるので、今回のように、たとえば年ごとの変遷を追うような計算がやりやすくなります。</p>
+<aside class="box box-tips" data-src="09-pivot:113"><p class="box-title">ここが分かれ道</p><p data-src="09-pivot:114">「前年比」「10年間の変化」「A市とB市の差」のような<strong>引き算・割り算をしたくなったら、まず横長にする</strong>。これを覚えておくと、詰まったときに手が動きます。</p>
+<p data-src="09-pivot:116">逆に、グラフを描くときや、集計するときは縦長のほうが便利です。この講座でこれからやることは、要するに「計算のために横長にして、グラフのために縦長に戻す」の繰り返しです。</p></aside>
+<h2 id="pivot_longer縦長に戻す" data-src="09-pivot:119">pivot_longer——縦長に戻す</h2>
+<p data-src="09-pivot:121">と、横長データのメリットを説明したばかりではあるのですが、今度は横長から縦長に変換するやり方を説明します。なぜそんなことをする必要があるのかというと、横長のままだと、データの意味するところをコンピューターに理解してもらうのが難しいからです。</p>
+<p data-src="09-pivot:123">なぜ理解できないかというと、たとえば今回、データの中身はすべて「人口」でしたよね。でも、データのどこをみても、そんなことは書いてありません。これは人口のデータだよねというのを人間が理解できるのは、たとえばファイル名とか、あるいはファイルの中身を説明するための文書とかに、そのむねが書いてあるから（あるいは今回のように、それまで自分が加工してきたデータだから）。データの「外部」にある何かをすでに読んでいるから、なわけです。</p>
+<p data-src="09-pivot:125">でも、コンピューターがアクセスできるのはデータだけです。もとの縦長データでは、「調査年」「自治体名」「人口」と、それぞれの列の中身が何なのかを示すものがそれぞれの列の名前になっていましたよね。<strong>すべての数字に「これは●●を示す数字ですよ」というラベルがついている。</strong> これこそが、コンピューターにとって読みやすく、理解しやすい形式なのです。</p>
+<p data-src="09-pivot:127">こういうコードを書くと、縦長に戻すことができます。</p>
+<div class="code" data-lang="R" data-src="09-pivot:129"><pre><code>df_simple_wide %&gt;%
   pivot_longer(cols = -c(region),
                names_to = "year",
                values_to = "population")</code></pre></div>
-<p data-src="09-pivot:133"><code>pivot_longer()</code> 関数の括弧の中では、<code>cols</code> のところでまず、どの列を縦長にするかを選びます。この場合で縦長にしたいのは、<code>region</code> という列を除いた、「2020年度」「2015年度」「2010年度」の3つですね。この3つを一つずつ列挙することもできますが、<code>region</code> の前にマイナス記号をつけることで、region「以外」だよ、と指定することもできます。</p>
-<p data-src="09-pivot:135">さらに <code>names_to</code> のところでは、いまは列名になっているもの（つまり「2020年度」「2015年度」「2010年度」の3つです）を、「year」という名前の列の中身に格納してください、と指示しています。yearを二重引用符で囲っているのは、このデータにはyearという列はもともと存在しないので、コンピューターにとっては「初耳」だから、とでも解釈してください。</p>
-<p data-src="09-pivot:137">つぎに <code>values_to</code> のところでは、もとのデータで中身になっていたもの（つまり「2020年度」「2015年度」「2010年度」の3つの列に格納されていた数字）を、<code>population</code> という列に入れてください、と指示しています。populationを二重引用符で囲っているのは、yearのときと同じ理由です。</p>
-<p data-src="09-pivot:139">めんどくさいですが、こういう書き方もできます。</p>
-<div class="code" data-lang="R" data-src="09-pivot:141"><pre><code>df_simple_wide %&gt;%
+<p data-src="09-pivot:136"><code>pivot_longer()</code> 関数の括弧の中では、<code>cols</code> のところでまず、どの列を縦長にするかを選びます。この場合で縦長にしたいのは、<code>region</code> という列を除いた、「2020年度」「2015年度」「2010年度」の3つですね。この3つを一つずつ列挙することもできますが、<code>region</code> の前にマイナス記号をつけることで、region「以外」だよ、と指定することもできます。</p>
+<p data-src="09-pivot:138">さらに <code>names_to</code> のところでは、いまは列名になっているもの（つまり「2020年度」「2015年度」「2010年度」の3つです）を、「year」という名前の列の中身に格納してください、と指示しています。yearを二重引用符で囲っているのは、このデータにはyearという列はもともと存在しないので、コンピューターにとっては「初耳」だから、とでも解釈してください。</p>
+<p data-src="09-pivot:140">つぎに <code>values_to</code> のところでは、もとのデータで中身になっていたもの（つまり「2020年度」「2015年度」「2010年度」の3つの列に格納されていた数字）を、<code>population</code> という列に入れてください、と指示しています。populationを二重引用符で囲っているのは、yearのときと同じ理由です。</p>
+<p data-src="09-pivot:142">めんどくさいですが、こういう書き方もできます。</p>
+<div class="code" data-lang="R" data-src="09-pivot:144"><pre><code>df_simple_wide %&gt;%
   pivot_longer(cols = c(`2020年度`, `2015年度`, `2010年度`),
                names_to = "year",
                values_to = "population")</code></pre></div>
-<p data-src="09-pivot:148">どうでしょうか。理解するのはなかなか難しいと思います。私は正直、これが腑に落ちるまでかなりの時間を要しました。今でもときどき混乱します。何度も練習して、体にしみこませてください。</p>
-<aside class="box box-note" data-src="09-pivot:150"><p class="box-title">覚え方</p><p data-src="09-pivot:151">私はこう考えるようにしています。</p>
-<ul data-src="09-pivot:153">
+<p data-src="09-pivot:151">どうでしょうか。理解するのはなかなか難しいと思います。私は正直、これが腑に落ちるまでかなりの時間を要しました。今でもときどき混乱します。何度も練習して、体にしみこませてください。</p>
+<aside class="box box-note" data-src="09-pivot:153"><p class="box-title">覚え方</p><p data-src="09-pivot:154">私はこう考えるようにしています。</p>
+<ul data-src="09-pivot:156">
 <li><strong>pivot_longer</strong>：列の名前を、データの中身に降ろす。だから行が増えて縦に長くなる。</li>
 <li><strong>pivot_wider</strong>：データの中身を、列の名前に持ち上げる。だから列が増えて横に広くなる。</li>
 </ul>
-<p data-src="09-pivot:156">そして引数の指定は、この対応で覚えます。</p>
-<div class="table-wrap" data-src="09-pivot:158"><table><thead><tr><th></th><th>列の名前</th><th>中身の数字</th></tr></thead><tbody><tr><td>longer（降ろす）</td><td><code>names_to = "year"</code></td><td><code>values_to = "population"</code></td></tr><tr><td>wider（持ち上げる）</td><td><code>names_from = year</code></td><td><code>values_from = population</code></td></tr></tbody></table></div>
-<p data-src="09-pivot:163"><code>_to</code> はこれから作る列（だから引用符でくくる。まだ存在しないので）、<code>_from</code> はいまある列（だから引用符はいらない）。ここが混乱の元です。</p></aside>
-<aside class="box box-homework" data-src="09-pivot:166"><p class="box-title">宿題</p><p data-src="09-pivot:167"><code>df_simple</code> のデータフレームについて、<code>region</code> の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず <code>pivot_wider</code> をかけ、それをまた <code>pivot_longer</code> で元に戻してください。<code>df_simple</code> はyear、region、populationの三つの列だけで構成されたデータフレームです。</p>
-<p data-src="09-pivot:169">作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
-<h2 id="整然データという考え方" data-src="09-pivot:172">整然データ、という考え方</h2>
-<p data-src="09-pivot:174">いま説明した「縦長」の形には、tidy data（整然データ）という名前がついています。tidyverseというパッケージ名の「tidy」はここから来ています。決まりごとは3つだけです。</p>
-<ol data-src="09-pivot:176">
+<p data-src="09-pivot:159">そして引数の指定は、この対応で覚えます。</p>
+<div class="table-wrap" data-src="09-pivot:161"><table><thead><tr><th></th><th>列の名前</th><th>中身の数字</th></tr></thead><tbody><tr><td>longer（降ろす）</td><td><code>names_to = "year"</code></td><td><code>values_to = "population"</code></td></tr><tr><td>wider（持ち上げる）</td><td><code>names_from = year</code></td><td><code>values_from = population</code></td></tr></tbody></table></div>
+<p data-src="09-pivot:166"><code>_to</code> はこれから作る列（だから引用符でくくる。まだ存在しないので）、<code>_from</code> はいまある列（だから引用符はいらない）。ここが混乱の元です。</p></aside>
+<aside class="box box-homework" data-src="09-pivot:169"><p class="box-title">宿題</p><p data-src="09-pivot:170"><code>df_simple</code> のデータフレームについて、<code>region</code> の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず <code>pivot_wider</code> をかけ、それをまた <code>pivot_longer</code> で元に戻してください。<code>df_simple</code> はyear、region、populationの三つの列だけで構成されたデータフレームです。</p>
+<p data-src="09-pivot:172">作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
+<h2 id="整然データという考え方" data-src="09-pivot:175">整然データ、という考え方</h2>
+<p data-src="09-pivot:177">いま説明した「縦長」の形には、tidy data（整然データ）という名前がついています。tidyverseというパッケージ名の「tidy」はここから来ています。決まりごとは3つだけです。</p>
+<ol data-src="09-pivot:179">
 <li>1つの列に、1つの種類の情報が入っている</li>
 <li>1つの行が、1件の観測にあたる</li>
 <li>1つのマスに、1つの値だけが入っている</li>
 </ol>
-<p data-src="09-pivot:180">役所が出す表は、ほぼこの逆を向いています。列の名前に年や性別が入り、1つのマスに「1,234（うち男 567）」のような複数の情報が詰め込まれ、行の途中に小計が挟まる。</p>
-<p data-src="09-pivot:182">だから私たちの仕事のかなりの部分は、「人間が見るために作られた表」を「機械が読める整然データ」に組み替えることになります。この講座の第1部でやってきたことは、全部そのための道具です。そして<a href="19-kami-excel.html">19章</a>では、その最終形態ともいえる「神エクセル」に挑みます。</p>
+<p data-src="09-pivot:183">役所が出す表は、ほぼこの逆を向いています。列の名前に年や性別が入り、1つのマスに「1,234（うち男 567）」のような複数の情報が詰め込まれ、行の途中に小計が挟まる。</p>
+<p data-src="09-pivot:185">だから私たちの仕事のかなりの部分は、「人間が見るために作られた表」を「機械が読める整然データ」に組み替えることになります。この講座の第1部でやってきたことは、全部そのための道具です。そして<a href="19-kami-excel.html">19章</a>では、その最終形態ともいえる「神エクセル」に挑みます。</p>
     </article>
     <nav class="pager"><a class="prev" href="08-bind.html"><span>前へ</span>08 縦にくっつける</a><a class="next" href="10-datatype.html"><span>次へ</span>10 データ型でつまずく</a></nav>
     <footer class="site-foot">

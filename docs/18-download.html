@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ファイルを一括ダウンロードする | 記者のためのR講座</title>
-<meta name="description" content="">
+<meta name="description" content="総務省が出している衆院選の市区町村別得票データ。都道府県ごとに分かれたExcelを、リンクを拾って全部落としてきます。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
@@ -49,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
-<li class="here wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li class="here"><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -69,13 +69,99 @@
     <article>
       <p class="kicker">第3部　データを集める</p>
       <h1>ファイルを一括ダウンロードする</h1>
-      
-      
-      <div class="wip-notice">
-<p class="wip-notice-title">工事中</p>
-<p>この章はいま書いているところです。公開まで、もうしばらくお待ちください。</p>
-<p>先に<a href="index.html">第1部・第2部</a>を進めておくと、この章もすっと読めるはずです。</p>
-</div>
+      <p class="lead">総務省が出している衆院選の市区町村別得票データ。都道府県ごとに分かれたExcelを、リンクを拾って全部落としてきます。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#リンクの一覧をつくる">リンクの一覧をつくる</a></li><li><a href="#全部落とす">全部落とす</a></li><li><a href="#途中で止まらないようにする">途中で止まらないようにする</a></li></ul></nav>
+      <p data-src="18-download:8">ネット上にあるデータは、ウェブサイトに直接表示されているときもありますが、エクセルやCSVなどのファイルとして置かれている場合もあります。たとえば衆院選の市区町村別得票データは、47都道府県ごとに分かれたエクセルファイルが総務省の<a href="https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html">サイト</a>に置かれています。</p>
+<p data-src="18-download:10">リンクを1個1個クリックしてダウンロードすることも、もちろんできます。でもやりたくないですよね。こういう単純作業はコンピューターにやってもらいましょう。ここでもfor文が使えます。</p>
+<p data-src="18-download:12">が、その前に、まずは一つのファイルをRのコードでダウンロードするのをやってみましょう。httrというパッケージを使います。</p>
+<div class="code" data-lang="R" data-src="18-download:14"><pre><code># install.packages("httr")
+library(httr)</code></pre></div>
+<p data-src="18-download:19">たとえば北海道の小選挙区のデータが入ったエクセルファイルなら、こうやってダウンロードします。</p>
+<div class="code" data-lang="R" data-src="18-download:21"><pre><code>GET("https://www.soumu.go.jp/main_content/000979538.xlsx",
+    write_disk("download/000979538.xlsx",
+               overwrite = TRUE))</code></pre></div>
+<p data-src="18-download:27"><code>GET()</code> は、そのURLに「このファイルを下さい」とお願いしなさい、という命令。<code>write_disk()</code> が、返ってきたものをファイルとして保存する場所の指定。<code>overwrite = TRUE</code> は、同じ名前のファイルがすでにあったら上書きしていいですよ、という意味です。なお、「download」というフォルダをあらかじめ作っておかないとエラーが出るのでご注意。</p>
+<p data-src="18-download:29">保存するファイルの名前は、URLの最後の部分（<code>000979538.xlsx</code>）と同じにしておきました。</p>
+<h2 id="リンクの一覧をつくる" data-src="18-download:31">リンクの一覧をつくる</h2>
+<p data-src="18-download:33">さて、ここからが本番。エクセルファイルへのリンクをまとめて取ってきます。前章と同じで、rvestを使います。</p>
+<p data-src="18-download:35">このページの表は2列に分かれていますね。今回は比例代表ではなく小選挙区のデータだけを取りたい。なので、左の列のリンクだけを集めます。</p>
+<div class="code" data-lang="R" data-src="18-download:37"><pre><code>excel_urls &lt;- "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html" %&gt;%
+  read_html() %&gt;%                         # そのページのHTMLのコードを読み込む
+  html_element("table.tableList") %&gt;%     # 最初にある &lt;table class="tableList"&gt; 要素を取得
+  html_elements("tr") %&gt;%                 # 表の行を全部取得
+  html_element("a") %&gt;%                   # それぞれの行から、最初の &lt;a&gt; 要素を1つだけ取得（＝小選挙区のほう）
+  html_attr("href") %&gt;%                   # 各リンクの href 属性（URL部分）を抽出
+  url_absolute("https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html") %&gt;%
+  str_subset("xlsx")                      # 見出しの行（リンクがない）を除く
+
+length(excel_urls)</code></pre></div>
+<p data-src="18-download:50">ポイントは4行目と5行目です。<code>html_elements("tr")</code> で表の行を全部取り、<code>html_element("a")</code> でそれぞれの行から最初のリンクをひとつだけ取っています。<a href="16-scraping.html">16章</a>と<a href="17-loop.html">17章</a>で見たとおり、複数形の <code>html_elements()</code> は当てはまるものを全部、単数形の <code>html_element()</code> は最初のひとつを取ってきます。表のどの行も左に小選挙区のリンクがあるので、最初のリンクを取れば小選挙区のほうになるわけです。</p>
+<p data-src="18-download:52">いちばん上の見出しの行にはリンクがないので、そこだけ空っぽ（NA）が入ります。最後の <code>str_subset("xlsx")</code> では、この空っぽのやつを消すために、xlsxファイルを指すURLだけを残しなさいと命令しています。</p>
+<p data-src="18-download:54"><code>length(excel_urls)</code> が47になっていれば、47都道府県のぶんがそろっています。</p>
+<h2 id="全部落とす" data-src="18-download:56">全部落とす</h2>
+<p data-src="18-download:58">あとはfor文に入れるだけです。今回はtibbleにためるのではなく、ファイルを一つ一つ保存します。</p>
+<div class="code" data-lang="R" data-src="18-download:60"><pre><code>for (i in seq_along(excel_urls)) {
+  # リンクの末尾に書かれているファイル名を取得
+  filename &lt;- excel_urls[i] %&gt;%
+    basename() %&gt;%
+    str_c("download/", .)
+
+  # ローカルに保存
+  excel_urls[i] %&gt;%
+    GET(write_disk(filename,
+                   overwrite = TRUE))
+
+  Sys.sleep(2)   # アクセス先に過剰な負荷をかけないため、次の動作までちょっとだけ待つ
+}</code></pre></div>
+<p data-src="18-download:76"><code>basename()</code> は、URLやファイルパスから最後の部分（＝ファイル名）だけを取り出す関数です。<code>https://www.soumu.go.jp/main_content/000979538.xlsx</code> なら <code>000979538.xlsx</code> が返ってきます。その前に<code>str_c()</code>関数で <code>download/</code> という文字列をくっつけて、保存先のパスにしています。<code>str_c("download/", .)</code> の最後にあるピリオドは、パイプで渡ってきたもの（ここではファイル名）を指しています。</p>
+<h2 id="途中で止まらないようにする" data-src="18-download:78">途中で止まらないようにする</h2>
+<p data-src="18-download:80">47回のうち1回でも、相手のサーバーにつながらないとか、返事が来なくて時間切れになるとかいったエラーが起きると、for文はそこで止まります。1回の失敗で最後まで走らないのは困るので、前章と同じように <code>tryCatch()</code> で囲みましょう。</p>
+<p data-src="18-download:82">ただ、ややこしいことに、リンク切れのほうは <code>GET()</code> にとってはエラーになりません。ファイルがなくても、相手のサーバーは「ページが見つかりません」という案内のページを返してきます。<code>GET()</code> はそれを受け取って、<code>.xlsx</code> という名前のままきちんと保存し、何事もなかったかのように次へ進んでしまうのです。中身はExcelではないので、次の章で読もうとしたところでエラーになります。</p>
+<p data-src="18-download:84">なので、返事の中身を確かめて、「見つかりません」のような返事だったらエラーとして扱うようにします。</p>
+<div class="code" data-lang="R" data-src="18-download:86"><pre><code>for (i in seq_along(excel_urls)) {
+
+  # ファイル名をリンクの末尾から取得
+  filename &lt;- excel_urls[i] %&gt;%
+    basename() %&gt;%
+    str_c("download/", .)
+
+  tryCatch({
+
+    # ローカルに保存
+    res &lt;- GET(excel_urls[i], write_disk(filename, overwrite = TRUE))
+
+    # 「見つかりません」などの返事だったら、エラーにする
+    stop_for_status(res)
+
+    message(
+      str_c("✅ ", filename, " をダウンロードしました。")
+    )
+
+  }, error = function(e) {
+
+    # 失敗したときに残った、中身の正しくないファイルを消す
+    unlink(filename)
+
+    message(
+      str_c(
+        "⚠️ ", excel_urls[i],
+        " のダウンロード中にエラーが発生しました: ",
+        e$message
+      )
+    )
+
+  })
+
+  Sys.sleep(2)  # サーバーへの負荷軽減のため待機
+}</code></pre></div>
+<p data-src="18-download:125">前のコードとの違いは、全体を <code>tryCatch()</code> で囲んで、前章と同じように ✅ と ⚠️ のメッセージを出すようにしたことに加えて、二つです。</p>
+<p data-src="18-download:127">一つめは、<code>GET()</code> の結果を <code>res</code> に入れて、<code>stop_for_status(res)</code> にかけていること。<code>stop_for_status()</code> は、サーバーからの返事が「見つかりません」や「サーバーの調子が悪いです」といった失敗の知らせだったときに、エラーを起こしてくれる関数です。これで、リンク切れも <code>error = function(e)</code> のほうに回るようになります。</p>
+<p data-src="18-download:129">二つめは、<code>error = function(e)</code> のなかの <code>unlink(filename)</code>。<code>unlink()</code> はファイルを削除する関数です。失敗したときには、「見つかりません」のページや、途中で切れた空っぽのファイルが <code>download</code> フォルダに残ってしまうので、それを消しています。こうしておけば、<code>download</code> フォルダに残っているのは、ちゃんと落ちてきたファイルだけになります。</p>
+<p data-src="18-download:131">全部終わったら、落ちてきたファイルを数えて確かめましょう。</p>
+<div class="code" data-lang="R" data-src="18-download:133"><pre><code>list.files("download")
+length(list.files("download"))</code></pre></div>
+<p data-src="18-download:138"><code>list.files()</code> は、フォルダのなかにあるファイルの名前を一覧にする関数です。47になっていますか。足りなければ、⚠️ が出たものを探して、そのファイルだけもう一度落とします。</p>
+<p data-src="18-download:140">これですべてのファイルがdownloadフォルダに保存されたはずです。手作業よりずっと楽、ですよね？</p>
     </article>
     <nav class="pager"><a class="prev" href="17-loop.html"><span>前へ</span>17 まとめて集める（for文）</a><a class="next" href="19-kami-excel.html"><span>次へ</span>19 神エクセルを解体する</a></nav>
     <footer class="site-foot">

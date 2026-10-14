@@ -293,35 +293,21 @@ all_municipality %>%
 > 一つのファイルにある複数のシートに同じ処理を連続的にほどこすコードを、for文を使ってつくりましょう。
 
 ```r
-sheet_names <- "download/001062204.xlsx" %>%
+sheet_names <- "download/000979538.xlsx" %>%
   excel_sheets()
 
 vote_data <- tibble()
 
 for (i in sheet_names) {
-  sheet_cells <- "download/001062204.xlsx" %>%
+  vote_data_temporaly <- "download/000979538.xlsx" %>%
     xlsx_cells() %>%
-    filter(sheet == i, row >= 5, character != "")
-
-  b_col <- sheet_cells %>%
-    filter(col == 2) %>%
-    select(row, municipality = character)
-
-  vote_data_temporaly <- sheet_cells %>%
-    filter(col != 2) %>%
+    filter(sheet == i, row >= 4, !is_blank) %>%
     behead("up", "name") %>%
     behead("up", "party") %>%
-    behead("left-up", "area") %>%
-    left_join(b_col, by = "row") %>%
-    filter(!is.na(party)) %>%
-    mutate(vote = parse_number(character)) %>%
-    filter(!str_ends(area, "計")) %>%
-    group_by(area) %>%
-    filter(!(is.na(municipality) & any(!is.na(municipality)))) %>%
-    ungroup() %>%
-    mutate(municipality = if_else(is.na(municipality), area, municipality),
-           district = i) %>%
-    select(district, municipality, name, party, vote)
+    behead("left", "municipality") %>%
+    filter(name != "得票数計", !str_detect(municipality, "合計")) %>%
+    mutate(district = i) %>%
+    select(district, municipality, name, party, vote = numeric)
 
   vote_data <- bind_rows(vote_data, vote_data_temporaly)
 }
@@ -332,33 +318,19 @@ for (i in sheet_names) {
 **発展。** 同じファイルを何度も `xlsx_cells()` で読み直しているので、シートが多いと遅くなります。先に1回だけ読んでおくと速くなります。
 
 ```r
-all_cells <- xlsx_cells("download/001062204.xlsx")   # 1回だけ読む
+all_cells <- xlsx_cells("download/000979538.xlsx")   # 1回だけ読む
 
 vote_data <- tibble()
 
 for (i in sheet_names) {
-  sheet_cells <- all_cells %>%
-    filter(sheet == i, row >= 5, character != "")
-
-  b_col <- sheet_cells %>%
-    filter(col == 2) %>%
-    select(row, municipality = character)
-
-  temp <- sheet_cells %>%
-    filter(col != 2) %>%
+  temp <- all_cells %>%
+    filter(sheet == i, row >= 4, !is_blank) %>%
     behead("up", "name") %>%
     behead("up", "party") %>%
-    behead("left-up", "area") %>%
-    left_join(b_col, by = "row") %>%
-    filter(!is.na(party)) %>%
-    mutate(vote = parse_number(character)) %>%
-    filter(!str_ends(area, "計")) %>%
-    group_by(area) %>%
-    filter(!(is.na(municipality) & any(!is.na(municipality)))) %>%
-    ungroup() %>%
-    mutate(municipality = if_else(is.na(municipality), area, municipality),
-           district = i) %>%
-    select(district, municipality, name, party, vote)
+    behead("left", "municipality") %>%
+    filter(name != "得票数計", !str_detect(municipality, "合計")) %>%
+    mutate(district = i) %>%
+    select(district, municipality, name, party, vote = numeric)
 
   vote_data <- bind_rows(vote_data, temp)
 }

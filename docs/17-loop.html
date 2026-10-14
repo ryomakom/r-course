@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>全国の裁判所を一気に集める | 記者のためのR講座</title>
-<meta name="description" content="">
+<meta name="description" content="ページは70近く。読みたいURLのリストをまず作って、それに同じ処理をいっぺんにかけます。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
@@ -49,14 +49,14 @@
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
-<li class="wip"><a href="16-scraping.html">16 ウェブから表を取る<span class="wip-tag">工事中</span></a></li>
-<li class="here wip"><a href="17-loop.html">17 まとめて集める（for文）<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="18-download.html">18 一括ダウンロード<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="19-kami-excel.html">19 神エクセルを解体する<span class="wip-tag">工事中</span></a></li>
+<li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
+<li class="here"><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="18-download.html">18 一括ダウンロード</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
-<li class="wip"><a href="20-error.html">20 エラーとの付き合い方<span class="wip-tag">工事中</span></a></li>
-<li class="wip"><a href="21-ai.html">21 AIと一緒に書く<span class="wip-tag">工事中</span></a></li>
+<li><a href="20-error.html">20 エラーとの付き合い方</a></li>
+<li><a href="21-ai.html">21 AIと一緒に書く</a></li>
 </ul>
 <p class="nav-part">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
@@ -69,13 +69,199 @@
     <article>
       <p class="kicker">第3部　データを集める</p>
       <h1>全国の裁判所を一気に集める</h1>
-      
-      
-      <div class="wip-notice">
-<p class="wip-notice-title">工事中</p>
-<p>この章はいま書いているところです。公開まで、もうしばらくお待ちください。</p>
-<p>先に<a href="index.html">第1部・第2部</a>を進めておくと、この章もすっと読めるはずです。</p>
-</div>
+      <p class="lead">ページは70近く。読みたいURLのリストをまず作って、それに同じ処理をいっぺんにかけます。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#読みたいURLのリストを作る">読みたいURLのリストを作る</a></li><li><a href="#for文の仕組み">for文の仕組み</a></li><li><a href="#結果をまとめて保存する">結果をまとめて保存する</a></li><li><a href="#途中で止まらないようにする">途中で止まらないようにする</a></li><li><a href="#集まったものを整える">集まったものを整える</a></li></ul></nav>
+      <p data-src="17-loop:8">前回は東京地裁の管内にある裁判所について、リストをつくりました。でも裁判所はほかにもたくさんあって、そのすべてがcourts.go.jpというサイトのなかに散らばっています。</p>
+<p data-src="17-loop:10">さっきみたいなコードを一つ一つ書けば、ぜんぶ取ることもできます。でもめんどくさいですよね。できれば少ないコードでまとめて取得したい。</p>
+<h2 id="読みたいURLのリストを作る" data-src="17-loop:12">読みたいURLのリストを作る</h2>
+<p data-src="17-loop:14">「各地の裁判所の所在地・電話番号等一覧」の<a href="https://www.courts.go.jp/courthouse/map_tel/index.html">ページ</a>をみると、各地の裁判所のリストに飛べるリンクがたくさん張られています。まずはこのリンクを抜き出しましょう。この作業にもスクレイピングが使えます。こんなコードです。</p>
+<div class="code" data-lang="R" data-src="17-loop:16"><pre><code>"https://www.courts.go.jp/courthouse/map_tel/index.html" %&gt;%
+  read_html() %&gt;%
+  html_elements("div.module-sub-page-parts-table") %&gt;%   # 前回と同じ名前の容器
+  html_elements("a") %&gt;%
+  html_attr("href")</code></pre></div>
+<p data-src="17-loop:24"><code>html_elements("a")</code> は、その中にあるすべての <code>&lt;a&gt;</code> 要素、つまりハイパーリンクを取ってきなさい、という命令。前回は <code>html_element()</code> というコマンドを使いましたが、今回は取ってくるべき要素が2個以上あるので、複数形で <code>html_elements()</code> です。その上の行で容器を指定するところも同じで、このページには同じ名前の容器が八つあるので、ここでも複数形の<code>html_elements()</code> にしています。</p>
+<p data-src="17-loop:26">最後の行にある <code>html_attr("href")</code> は、各リンクの <code>href</code> 属性、つまりURLの部分を抽出しなさい、という命令です。</p>
+<p data-src="17-loop:28">実際に動かすと、こんなふうに返ってきます（全部で221個あるので、ここでは最初の10個だけ載せています）。</p>
+<div class="code" data-lang="実行結果" data-src="17-loop:30"><pre><code> [1] "./../../sapporo-h/about/syozai/index.html"   
+ [2] "./../../sapporo-h/saiban/madoguti/index.html"
+ [3] "./../../sapporo/about/syozai/index.html"     
+ [4] "./../../sapporo/saiban/madoguti/index.html"  
+ [5] "./../../sapporo/about2/syozai2/index.html"   
+ [6] "./../../sapporo/saiban/madoguti/index.html"  
+ [7] "./../../hakodate/about/syozai/index.html"    
+ [8] "./../../hakodate/saiban/madoguti/index.html" 
+ [9] "./../../hakodate/about/syozai/index.html"    
+[10] "./../../hakodate/saiban/madoguti/index.html" </code></pre></div>
+<p data-src="17-loop:33">HTMLをみてみると、リンクは <code>&lt;a href="./../../sapporo-h/about/syozai/index.html"&gt;所在地・代表電話&lt;/a&gt;</code> のように書かれています。画面に見えている「所在地・代表電話」という文字をクリックしたときに飛んでいく行き先を、<code>html_attr("href")</code> が拾ってくるわけです。</p>
+<p data-src="17-loop:35">というわけで、必要なデータはひとまず取れました、が、余計なのが混じっていますし、URLとして完全なものにもなっていません。三つ、手を入れます。</p>
+<div class="code" data-lang="R" data-src="17-loop:37"><pre><code>"https://www.courts.go.jp/courthouse/map_tel/index.html" %&gt;%
+  read_html() %&gt;%
+  html_elements("div.module-sub-page-parts-table") %&gt;%
+  html_elements("a") %&gt;%
+  html_attr("href") %&gt;%
+  str_subset("syozai") %&gt;%    # 所在地ページのURLだけを抽出
+  url_absolute("https://www.courts.go.jp/courthouse/map_tel/index.html") %&gt;%   # 絶対URLに変換
+  unique()                    # 重複するURLを削除</code></pre></div>
+<p data-src="17-loop:48">このページには「窓口案内」のページなど、関係ないリンクも含まれています。狙っているリンクをいくつか開いて確認すると、URLに「syozai」という文字が含まれていることが分かります。なので、<code>str_subset("syozai")</code> という命令で、こういうURLだけにしぼります（知的財産高等裁判所だけはURLに「syozai」が入っていないので、このやり方では漏れてしまいますが、まあ今回はよしとしましょう）。</p>
+<p data-src="17-loop:50">つぎに、取れてきたURLっぽい文字の並びを、完全なURLに変換します。元のURLを基準にした「相対URL」を、<code>url_absolute()</code> というコマンドを使って、そのまま使える「絶対URL」に変換するわけです。括弧内には、リンク元のページのURLを書いておけばOKです。</p>
+<p data-src="17-loop:52">さらにURLが重複しているケースがあるので、余計なものを削るのが <code>unique()</code> というコマンドです。</p>
+<p data-src="17-loop:54">うまくいったらオブジェクトに入れて、中身を見ておきましょう。</p>
+<div class="code" data-lang="R" data-src="17-loop:56"><pre><code>court_urls &lt;- "https://www.courts.go.jp/courthouse/map_tel/index.html" %&gt;%
+  read_html() %&gt;%
+  html_elements("div.module-sub-page-parts-table") %&gt;%
+  html_elements("a") %&gt;%
+  html_attr("href") %&gt;%
+  str_subset("syozai") %&gt;%    # 所在地ページのURLだけを抽出
+  url_absolute("https://www.courts.go.jp/courthouse/map_tel/index.html") %&gt;%   # 絶対URLに変換
+  unique()                    # 重複するURLを削除
+
+court_urls</code></pre></div>
+<p data-src="17-loop:69">全部で69個のURLが入っています（ここでは最初の10個だけ載せています）。</p>
+<div class="code" data-lang="実行結果" data-src="17-loop:71"><pre><code> [1] "https://www.courts.go.jp/sapporo-h/about/syozai/index.html"
+ [2] "https://www.courts.go.jp/sapporo/about/syozai/index.html"  
+ [3] "https://www.courts.go.jp/sapporo/about2/syozai2/index.html"
+ [4] "https://www.courts.go.jp/hakodate/about/syozai/index.html" 
+ [5] "https://www.courts.go.jp/asahikawa/about/syozai/index.html"
+ [6] "https://www.courts.go.jp/kushiro/about/syozai/index.html"  
+ [7] "https://www.courts.go.jp/sendai-h/about/syozai/index.html" 
+ [8] "https://www.courts.go.jp/sendai/about/syozai/index.html"   
+ [9] "https://www.courts.go.jp/fukushima/about/syozai/index.html"
+[10] "https://www.courts.go.jp/yamagata/about/syozai/index.html" </code></pre></div>
+<h2 id="for文の仕組み" data-src="17-loop:74">for文の仕組み</h2>
+<p data-src="17-loop:76">リストができました。このURLの一つひとつにアクセスして、前回やったように、表を抜き出してtibbleに変えていくわけです。こういう反復作業をまとめていっぺんにやるのが「for文」です。</p>
+<p data-src="17-loop:78">ただし、for文というのはちょっと複雑です。スクレイピングのことはいったん忘れて、どういう仕組みで動くのか、その基本を少しだけ見てみましょう。</p>
+<div class="code" data-lang="R" data-src="17-loop:80"><pre><code>alphabet &lt;- c("あいうえお", "かきくけこ", "さしすせそ")
+
+for (i in alphabet) {
+  print(i)
+}</code></pre></div>
+<div class="code" data-lang="コンソール" data-src="17-loop:88"><pre><code>[1] "あいうえお"
+[1] "かきくけこ"
+[1] "さしすせそ"</code></pre></div>
+<p data-src="17-loop:94">上のコードでは、まず「あいうえお」「かきくけこ」「さしすせそ」という三つの文字列を <code>alphabet</code> というオブジェクトに入れたうえで、for文を使ってそれを一つずつ表示するということをやっています。</p>
+<p data-src="17-loop:96"><code>c()</code> は文字列を並べてひとかたまりにする関数で、<a href="06-strings-filter.html">06章</a>の <code>filter(prefecture %in% c("東京都", "大阪府"))</code> でもう出てきていましたよね。</p>
+<p data-src="17-loop:98">「<code>i in alphabet</code>」というのは、<code>alphabet</code> というオブジェクトの中にあるものを一つずつ順番に取り出して、それを「<code>i</code>」と呼ぶことにして、波括弧のなかの処理をやりなさい、という命令です。今回は <code>print()</code> というコマンドなので、三つの文字列が順番に表示されます。このときに使っている「<code>i</code>」という名前は慣習で、別に何でもかまいません。</p>
+<p data-src="17-loop:100">ただ、よく見かけるのは、オブジェクトの中身そのものではなく、番号で回す書き方です。</p>
+<div class="code" data-lang="R" data-src="17-loop:102"><pre><code>for (i in seq_along(alphabet)) {
+  print(alphabet[i])
+}</code></pre></div>
+<p data-src="17-loop:108"><code>seq_along(alphabet)</code> は「<code>alphabet</code> の長さのぶんだけ、1、2……と数字を並べたもの」を返しなさい、という命令です。<code>alphabet[1]</code> と書けば、<code>alphabet</code> というオブジェクトにある1番目の要素、つまり「あいうえお」を取り出します。同様に <code>alphabet[2]</code> は「かきくけこ」です。つまり <code>alphabet</code> の中身をひとつひとつ取り出すには、<code>alphabet[i]</code> と書いて、iを一つずつ増やしていけばいいわけです。</p>
+<h2 id="結果をまとめて保存する" data-src="17-loop:110">結果をまとめて保存する</h2>
+<p data-src="17-loop:112">では、ここからはさっきの裁判所のデータに戻りましょう。</p>
+<p data-src="17-loop:114">ひとつのURLにアクセスして処理することで、裁判所の所在地をまとめたtibbleがひとつ、できてきます。これをfor文で繰り返すわけですが、この際にはまず空っぽの入れ物をまず作ったうえで、できたtibbleを一つずつそこに足していく、という作業をやります。</p>
+<div class="code" data-lang="R" data-src="17-loop:116"><pre><code># データの収容先として空っぽのtibbleを作っておく
+court_contacts &lt;- tibble()
+
+# URLのリストに対して、さっきと同じように表を抽出してtibbleにするのを
+# いっぺんに実行して、結果をまとめて保存する
+for (i in seq_along(court_urls)) {
+  table &lt;- court_urls[i] %&gt;%
+    read_html() %&gt;%
+    html_elements("div.module-sub-page-parts-table table") %&gt;%
+    html_table()
+
+  court_contacts &lt;- bind_rows(court_contacts, table)
+
+  Sys.sleep(2) # アクセス先に過剰な負荷をかけないため、次の動作までちょっとだけ待つ
+}</code></pre></div>
+<p data-src="17-loop:134">だいじなのは下から2行目の <code>bind_rows()</code> のところ。これまで作った <code>court_contacts</code> というtibbleに、新しく読んだものを縦にくっつける。これを繰り返すと中身がどんどん増えていく、というわけです。空っぽのtibbleを最初に作るのを忘れると動かないので、そこは注意して下さい。</p>
+<p data-src="17-loop:136">最後の <code>Sys.sleep(2)</code> は「2秒待て」という命令です。70ページ近くを2秒間隔で回すので、全部終わるまで3分ほどかかります。そのあいだRStudioは操作できないので、しばしお待ちを。</p>
+<aside class="box box-warn" data-src="17-loop:138"><p class="box-title">相手のサーバーに迷惑をかけない</p><p data-src="17-loop:139">コンピューターは何のためらいもなく、1秒間に何十回もアクセスします。これは相手のサーバーにとってはかなりの負荷で、場合によってはハッカーからの攻撃と区別がつきません。公開情報を機械的に取得しただけで問題になることもあります。だから <code>Sys.sleep()</code> というコマンドでわざとペースを落とすわけです。</p>
+<p data-src="17-loop:141">2秒はあくまで例ですが、相手が小さな自治体のサーバーならもっと長くてもいいと思います。一度取ったものは手元に保存して、試行錯誤のたびに取り直さないようにする。何かあったときに相手の担当者が対応できない深夜や早朝は避ける。大量に取る必要があるなら、事前に連絡を入れる、といったことも必要でしょうか。</p></aside>
+<h2 id="途中で止まらないようにする" data-src="17-loop:144">途中で止まらないようにする</h2>
+<p data-src="17-loop:146">スクレイピングの対象が何十件もあると、いくつかのページは他と作りが違ったりして、同じコードではデータを取れなかったりします。そうするとエラーが出るわけですが、何もしないと、for文はそこで止まってしまいます。</p>
+<p data-src="17-loop:148">これを防ぐのが <code>tryCatch()</code> です。</p>
+<div class="code" data-lang="R" data-src="17-loop:150"><pre><code>court_contacts &lt;- tibble()
+
+for (i in seq_along(court_urls)) {
+  tryCatch({
+
+    table &lt;- court_urls[i] %&gt;%
+      read_html() %&gt;%
+      html_elements("div.module-sub-page-parts-table table") %&gt;%
+      html_table()
+
+    court_contacts &lt;- bind_rows(court_contacts, table)
+    message(str_c("成功", i, "/", length(court_urls)))
+
+  }, error = function(e) {
+    message(str_c("失敗", court_urls[i], "：", e$message))
+  })
+
+  Sys.sleep(2)
+}</code></pre></div>
+<p data-src="17-loop:172">波括弧のなかの処理を試して、エラーが起きたら <code>error = function(e)</code> のほうに書いた処理をして、次のループに進みなさい、という命令です。<code>e$message</code> にはエラーの内容が入っているので、表示しておくと後で原因を追えます。</p>
+<p data-src="17-loop:174"><code>message()</code> は途中経過を画面に出す関数です。「成功」と「失敗」を並べておけば、全部終わったあとに、どれが失敗したのかがひと目で分かります。失敗したものだけ、あとで個別に対処すればいいわけです。</p>
+<aside class="box box-tips" data-src="17-loop:176"><p class="box-title">いきなり全部まわさない</p><p data-src="17-loop:177">for文は基本、初めからうまく動くことなんてほぼありません（少なくとも私の場合は）。なので、上記の例であれば、<code>for (i in seq_along(court_urls))</code> の部分をたとえば <code>for (i in seq_along(court_urls[1:3]))</code> として始めてみると良いと思います。こうすれば、70個近くある <code>court_urls</code> の要素のうちで最初の三つだけでループを試すことができます。こういう試験がうまくいってから、<code>[1:3]</code> のところを消して全体に挑戦するのが吉でしょう。</p></aside>
+<h2 id="集まったものを整える" data-src="17-loop:180">集まったものを整える</h2>
+<p data-src="17-loop:182">さて、集まったtibbleを見てみましょう。列の数がなんと16もあります。もとの表は5列だったはずなのに、なぜなのかと列名をチェックしてみると……なかなかひどい状態です。</p>
+<div class="code" data-lang="R" data-src="17-loop:184"><pre><code>court_contacts %&gt;% colnames()</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="17-loop:188"><pre><code> [1] "裁判所名"                                              
+ [2] "郵便番号"                                              
+ [3] "所在地"                                                
+ [4] "電話番号...4"                                          
+ [5] "電話番号...5"                                          
+ [6] "電話番号...6"                                          
+ [7] "...7"                                                  
+ [8] "...8"                                                  
+ [9] "...9"                                                  
+[10] "...10"                                                 
+[11] "電話番号...11"                                         
+[12] "...12"                                                 
+[13] "...13"                                                 
+[14] "裁判所名（裁判所名をクリックすると地図が表示されます）"
+[15] "地図写真"                                              
+[16] "郵便番号・所在地"                                      </code></pre></div>
+<p data-src="17-loop:191">ページによって表の列名が違うのです。「裁判所名」となっているところもあれば「裁判所名（裁判所名をクリックすると地図が表示されます）」となっているところもある。郵便番号と所在地が「郵便番号・所在地」というひとつの列にまとまっているページもある。名前のない <code>...7</code> や <code>...8</code> は、HTMLでの表の書き方がほかと少し違うページから来たものです。<code>bind_rows()</code> は名前が違う列を別の列として扱いますから、列がやたら増えてしまっているわけです。</p>
+<p data-src="17-loop:193">うーむ、めんどくさい。創造性は別のかたちで発揮してくださいよ……と愚痴りたくもなりますが、世の中のデータはだいたいこんなものです。なので「クリーニング」つまりデータのお掃除が大切になるわけで、ある意味ではこれがデータ分析の本丸といってもいいくらいです。</p>
+<p data-src="17-loop:195">それから、多くのページの表には、<a href="16-scraping.html">16章</a>の東京地裁と同じく「電話番号」という列が二つあります。<code>bind_rows()</code> は同じ名前の列を見つけると、<code>電話番号...4</code>、<code>電話番号...5</code> のように後ろに番号をつけて区別します（ループを回しているあいだに「New names:」というメッセージがたくさん出るのはこのためです）。このあとのコードに出てくる <code>電話番号...4</code>（担当）と <code>電話番号...5</code>（番号）は、この2列のことです。</p>
+<p data-src="17-loop:197">というわけで、ある程度クリーニングしましょう。</p>
+<div class="code" data-lang="R" data-src="17-loop:199"><pre><code>court_contacts_clean &lt;- court_contacts %&gt;%
+  distinct() %&gt;%
+  mutate(name = if_else(is.na(裁判所名),
+                        `裁判所名（裁判所名をクリックすると地図が表示されます）`,
+                        裁判所名),
+         post_code = if_else(is.na(郵便番号), `郵便番号・所在地`, 郵便番号),
+         address = if_else(is.na(所在地), str_sub(`郵便番号・所在地`, 10), 所在地)) %&gt;%
+  filter(str_sub(name, 1, 4) != "裁判所名") %&gt;%
+  mutate(name = name %&gt;%
+           str_split_i("\n", 1) %&gt;%
+           str_remove_all("地図表示") %&gt;%
+           str_squish(),
+         post_code = post_code %&gt;%
+           str_remove_all("〒") %&gt;%
+           str_remove_all("地裁"),
+         post_code = str_c(str_sub(post_code, 1, 3), "-", str_sub(post_code, 5, 8))) %&gt;%
+  rename(contact_point = `電話番号...4`,
+         phone = `電話番号...5`) %&gt;%
+  select(name, post_code, address, contact_point, phone)
+
+court_contacts_clean</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="17-loop:223"><pre><code># A tibble: 595 × 5
+  name                                 post_code address contact_point phone
+  &lt;chr&gt;                                &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;         &lt;chr&gt;
+1 札幌高等裁判所                       060-0042  札幌市中央区… 代表各種問い合わせ（窓口… 011-…
+2 札幌地方裁判所                       060-0042  北海道札幌市… 各窓口の電話番号は右欄の… ダイヤル…
+3 札幌簡易裁判所                       060-0042  北海道札幌市… 各窓口の電話番号は右欄の… ダイヤル…
+4 札幌地方裁判所岩見沢支部岩見沢簡易裁判所…… 068-0004  北海道岩見沢… 各窓口の電話番号は右欄の… ダイヤル…
+5 札幌地方裁判所滝川支部滝川簡易裁判所 073-0022  北海道滝川市… 各窓口の電話番号は右欄の… ダイヤル…
+6 札幌地方裁判所室蘭支部室蘭簡易裁判所 050-0081  北海道室蘭市… 各窓口の電話番号は右欄の… ダイヤル…
+# ℹ 589 more rows</code></pre></div>
+<p data-src="17-loop:226">一つひとつの説明はしませんが、使っているのはこれまでに出てきた関数だけです。何をしているのか気になる人は、パイプを1行ずつ足しながら実行して、表がどう変わっていくか確かめてみてください。</p>
+<p data-src="17-loop:228">これでも、まだ残っているものがあります。</p>
+<ul data-src="17-loop:230">
+<li>電話番号の列には、番号のかわりに「ダイヤルイン一覧」のようなリンクの文字だけが入っている行がかなりあります。ページに番号が書いてない裁判所が多いからです。</li>
+<li>住所のうしろには、交通案内がついたままです。</li>
+<li>名古屋家裁と大阪家裁の本庁、それに高松高裁は入っていません。HTMLでの表の書き方がほかのページと少し違っていたり、そもそも表がなかったりするためです。こういうのは手作業でやっちゃったほうが早い、かも。</li>
+</ul>
+<p data-src="17-loop:234">どこまでやるかは、目的に応じて判断して下さい。照会の宛先リストにするだけなら住所と電話番号が正しければ十分ですが、地図に落とすなら住所の表記をそろえる必要がありますし、過去の一覧と突き合わせるなら裁判所名の表記を完全にそろえないといけません。きれいにする作業には終わりがないので、必要なところで止めるのがコツです。</p>
+<p data-src="17-loop:236">そして、できあがったら何件か抜き出して、元のページと見比べておきましょう。70ページ近くあるうちの5ページ分くらいでいいので、目で確かめる。機械が集めたものだからといって、そのまま信じないほうがいいです。</p>
+<p data-src="17-loop:238">最後に書き出して、おしまいです。</p>
+<div class="code" data-lang="R" data-src="17-loop:240"><pre><code>court_contacts_clean %&gt;%
+  write_excel_csv("output/裁判所連絡先.csv")</code></pre></div>
+<aside class="box box-homework" data-src="17-loop:245"><p class="box-title">宿題</p><p data-src="17-loop:246">前の章の宿題で見つけたページが、都道府県別や年度別に分かれていたら、リンクのリストを作ってfor文で全部集めてみて下さい。<code>Sys.sleep()</code> と <code>tryCatch()</code> を入れること。集めたら行数を数えて、想定と合っているかどうかも確かめて下さい。</p></aside>
+<p data-src="17-loop:249">ところで、役所が数字を出すときには、ページに表を貼るのではなく、Excelファイルへのリンクをずらりと並べていることもあります。選挙の得票データがまさにそれです。</p>
     </article>
     <nav class="pager"><a class="prev" href="16-scraping.html"><span>前へ</span>16 ウェブから表を取る</a><a class="next" href="18-download.html"><span>次へ</span>18 一括ダウンロード</a></nav>
     <footer class="site-foot">

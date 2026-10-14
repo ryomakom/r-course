@@ -511,6 +511,35 @@ td .dl-size { white-space: nowrap; }
 .fig .f-targetline { stroke: color-mix(in srgb, #e8628a 60%, var(--paper-2)); }
 .fig .f-targettext { fill: var(--accent); font-size: 10px; font-weight: 700; }
 .fig .f-targetedge { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+/* 09章・19章のアニメーション（assets/pivot-anim.js、behead-anim.js）。動くときは静的な図を隠す */
+.fig-anim-static.is-replaced { display: none; }
+.anim-fig .pv-cell { transform-box: view-box; }
+.anim-fig .pv-note { margin: .4rem 0 .6rem; font-size: .9rem; text-align: center; color: var(--ink); min-height: 1.6em; }
+.anim-fig .pv-controls { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+.anim-fig .pv-controls button {
+  font: inherit; font-size: .88rem; font-family: var(--mono);
+  padding: .4rem .9rem; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--paper-2); color: var(--ink);
+}
+.anim-fig .pv-controls button:hover:not(:disabled) { border-color: var(--accent); }
+.anim-fig .pv-controls button:disabled { opacity: .4; cursor: default; }
+.anim-fig .pv-small { font-size: 11px; }
+.fig .f-na { fill: var(--paper-2); stroke: var(--line); }
+.anim-fig .pv-code {
+  margin: 0 auto .8rem; padding: .5rem .9rem; max-width: 42rem;
+  font-family: var(--mono); font-size: .82rem; line-height: 1.6;
+  background: var(--code-bg); color: var(--code-ink); border-radius: .4rem; overflow-x: auto;
+}
+.anim-fig .pv-code span { padding: 0 .2em; border-radius: .2rem; }
+.anim-fig .pv-code .is-now { background: var(--mark); font-weight: 700; }
+.anim-fig .pv-code .is-done { opacity: .45; }
+.anim-fig .pv-code .pv-dir { color: var(--accent); }
+.fig .pv-arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.fig .pv-arrow-label { fill: var(--accent); font-size: 12px; font-weight: 700; }
+@media print {
+  .anim-host { display: none; }
+  .fig-anim-static.is-replaced { display: block; }
+}
 .fig-details { margin: 1.2rem 0 1.8rem; }
 .fig-details summary { cursor: pointer; color: var(--accent-2); font-size: .92rem; }
 .fig-details[open] summary { margin-bottom: .6rem; }

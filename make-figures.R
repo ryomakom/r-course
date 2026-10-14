@@ -471,4 +471,68 @@ save_out("16-clean",
            rename(担当 = 4) %>%
            slice(-1), n = 6)
 
+# =========================================================================
+# 第3部　17章　リンクを集める（保存しておいたページから作る）
+# =========================================================================
+
+#   取得元 https://www.courts.go.jp/courthouse/map_tel/index.html
+#   取得日 2026年10月13日
+hrefs <- "sample/map_tel.html" %>%
+  read_html() %>%
+  html_elements("div.module-sub-page-parts-table") %>%
+  html_elements("a") %>%
+  html_attr("href")
+
+# 全部で200個以上あるので、最初の10個だけ載せる（本文にもそう書いている）
+save_out("17-href", head(hrefs, 10))
+cat("17-href: 全部で", length(hrefs), "個\n")
+
+# 17章　court_urls の中身（所在地のページのURLだけにして、絶対URLに直し、重複を除いたもの）
+court_urls <- hrefs %>%
+  str_subset("syozai") %>%
+  url_absolute("https://www.courts.go.jp/courthouse/map_tel/index.html") %>%
+  unique()
+
+# 全部で69個あるので、最初の10個だけ載せる（本文にもそう書いている）
+save_out("17-court-urls", head(court_urls, 10))
+cat("17-court-urls: 全部で", length(court_urls), "個\n")
+
+# 17章　全国の裁判所のページを集めたあとの court_contacts の列名（663行×16列になる）
+# 69ページを保存しておいたもの（sample/courts/。並びは urls.txt と同じ）から作る
+#   取得日 2026年10月13日・14日
+court_contacts <- tibble()
+for (f in sort(list.files("sample/courts", "html$", full.names = TRUE))) {
+  table <- f %>%
+    read_html() %>%
+    html_elements("div.module-sub-page-parts-table table") %>%
+    html_table()
+  court_contacts <- suppressMessages(bind_rows(court_contacts, table))
+}
+writeLines(capture.output(print(court_contacts %>% colnames())),
+           file.path(OUT_TXT, "17-colnames.txt"), useBytes = TRUE)
+cat("○ outputs/17-colnames.txt\n")
+
+# 17章　クリーニングしたあと（本文のコードと同じ）
+court_contacts_clean <- court_contacts %>%
+  distinct() %>%
+  mutate(name = if_else(is.na(裁判所名),
+                        `裁判所名（裁判所名をクリックすると地図が表示されます）`,
+                        裁判所名),
+         post_code = if_else(is.na(郵便番号), `郵便番号・所在地`, 郵便番号),
+         address = if_else(is.na(所在地), str_sub(`郵便番号・所在地`, 10), 所在地)) %>%
+  filter(str_sub(name, 1, 4) != "裁判所名") %>%
+  mutate(name = name %>%
+           str_split_i("\n", 1) %>%
+           str_remove_all("地図表示") %>%
+           str_squish(),
+         post_code = post_code %>%
+           str_remove_all("〒") %>%
+           str_remove_all("地裁"),
+         post_code = str_c(str_sub(post_code, 1, 3), "-", str_sub(post_code, 5, 8))) %>%
+  rename(contact_point = `電話番号...4`,
+         phone = `電話番号...5`) %>%
+  select(name, post_code, address, contact_point, phone)
+
+save_out("17-clean", court_contacts_clean, n = 6)
+
 cat("\n終わりました。python build.py でサイトを組み立て直してください。\n")

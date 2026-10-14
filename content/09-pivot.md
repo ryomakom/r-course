@@ -31,7 +31,10 @@ df_simple_wide <- df_simple %>%
 
 行数が9580から1916に減って、代わりに年の列が3つ増えました。列名を `year` から取ってきて、その中身（つまりvalue）を `population` から取ってくることによって、データを横長（wider）にしなさい、という意味です。
 
-<figure class="fig">
+<div class="pivot-anim anim-host"></div>
+<script src="assets/pivot-anim.js"></script>
+
+<figure class="fig fig-pivot-static fig-anim-static">
 <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="縦長のデータを横長に変える様子を示した図">
   <text class="f-label" x="10" y="18">縦長（tidy data）</text>
   <rect class="f-head" x="10" y="28" width="90" height="26"/>
