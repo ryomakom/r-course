@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>文字を切り分ける、行を絞り込む | 記者のためのR講座</title>
-<meta name="description" content="「北海道 札幌市 豊平区」という形式で表現されている自治体名をみっつの列に切り分け、そこからたとえば東京都だけを、人口10万人以上だけを、「市」だけを取り出します。">
+<meta name="description" content="「北海道 札幌市 豊平区」という形式で表現されている自治体名を三つの列に切り分け、そこからたとえば東京都だけを、人口10万人以上だけを、「市」だけを取り出します。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
@@ -69,26 +69,26 @@
     <article>
       <p class="kicker">第1部　データを読む・加工する</p>
       <h1>文字を切り分ける、行を絞り込む</h1>
-      <p class="lead">「北海道 札幌市 豊平区」という形式で表現されている自治体名をみっつの列に切り分け、そこからたとえば東京都だけを、人口10万人以上だけを、「市」だけを取り出します。</p>
+      <p class="lead">「北海道 札幌市 豊平区」という形式で表現されている自治体名を三つの列に切り分け、そこからたとえば東京都だけを、人口10万人以上だけを、「市」だけを取り出します。</p>
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#str_split_i文字を切り分ける">str_split_i——文字を切り分ける</a></li><li><a href="#filter条件に合う行だけ取り出す">filter——条件に合う行だけ取り出す</a></li><li><a href="#条件の書き方をもう少し">条件の書き方をもう少し</a></li></ul></nav>
       <p data-src="06-strings-filter:8">では次に、都道府県別に高齢化率をみて、ランキングとかをつくっていきましょう。ただ、現状では <code>region</code> の列に自治体名が書いてありますが、「●●県 ●●市 ●●区」のようなかたちでひとまとめにされてしまっています。できればこれを、「都道府県名」「市区町村名」「政令指定都市の区名」といった形で分割したい。そうすれば、後で整理するのが楽になります。</p>
 <h2 id="str_split_i文字を切り分ける" data-src="06-strings-filter:10">str_split_i——文字を切り分ける</h2>
-<p data-src="06-strings-filter:12">どうすればいいか。考える前に、<code>region</code> の列をよく見てみましょう。すると、都道府県名と市区町村名と特別区名はそれぞれ、<strong>半角スペースで区切られている</strong>ことがわかります。つまり、半角スペースで区切ったうえで、一つ目の要素を都道府県名に、二つ目を市区町村名に、三つ目を区名に格納してやればいいわけです。</p>
+<p data-src="06-strings-filter:12">どうすればいいか。考える前に、<code>region</code> の列をよく見てみましょう。すると、都道府県名と市区町村名と特別区名はそれぞれ、<strong>半角スペースで区切られている</strong>ことがわかります。つまり、半角スペースで区切ったうえで、一つめの要素を都道府県名に、二つめを市区町村名に、三つめを区名に格納してやればいいわけです。</p>
 <p data-src="06-strings-filter:14">たとえば <code>str_split_i</code> という関数を使うと、それが実現できます。<code>mutate</code> 関数を使って、こんな列をつくるわけです。</p>
 <div class="code" data-lang="R" data-src="06-strings-filter:16"><pre><code>prefecture = str_split_i(region, " ", 1)</code></pre></div>
 <p data-src="06-strings-filter:20">ちょっと難しいですが、<code>str_split_i</code> という関数の丸括弧のなかに、三つの要素が入っています。</p>
 <ol data-src="06-strings-filter:22">
-<li>一つ目が、分割する対象。ここでは <code>region</code> という列です。</li>
-<li>二つ目は、分割する目印。半角スペースをダブルクォーテーションで囲って <code>" "</code> としています。</li>
-<li>三つ目は、区切って取り出した文字列の何番目かを示す数字。都道府県名は最初に入っているので、1としています。</li>
+<li>一つめが、分割する対象。ここでは <code>region</code> という列です。</li>
+<li>二つめは、分割する目印。半角スペースをダブルクォーテーションで囲って <code>" "</code> としています。</li>
+<li>三つめは、区切って取り出した文字列の何番目かを示す数字。都道府県名は最初に入っているので、1としています。</li>
 </ol>
-<p data-src="06-strings-filter:26">つまり、<code>str_split_i(region, " ", 1)</code> というのは、「<code>region</code> という列に入っている文字を半角スペースで区切って、その一つ目を取り出しなさい」という命令。そうして取り出した文字を <code>prefecture</code> という新しい列に格納しているわけです。</p>
+<p data-src="06-strings-filter:26">つまり、<code>str_split_i(region, " ", 1)</code> というのは、「<code>region</code> という列に入っている文字を半角スペースで区切って、その一つめを取り出しなさい」という命令。そうして取り出した文字を <code>prefecture</code> という新しい列に格納しているわけです。</p>
 <p data-src="06-strings-filter:28"><code>municipality</code> という列と <code>ward</code> という列も、ほぼ同じやり方でつくることができます。上記の説明をみれば、わかりますね。新しい列をつくったデータフレームを上書き保存しましょう。</p>
 <div class="code" data-lang="R" data-src="06-strings-filter:30"><pre><code>df2020_aged &lt;- df2020_aged %&gt;%
   mutate(prefecture = str_split_i(region, " ", 1),
          municipality = str_split_i(region, " ", 2),
          ward = str_split_i(region, " ", 3))</code></pre></div>
-<p data-src="06-strings-filter:37">みっつの列が作られました。</p>
+<p data-src="06-strings-filter:37">三つの列が作られました。</p>
 <div class="code" data-lang="実行結果" data-src="06-strings-filter:39"><pre><code># A tibble: 1,916 × 4
   prefecture municipality ward   rate_aged
   &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;      &lt;dbl&gt;
@@ -125,9 +125,9 @@
 7 大島町             7102      38.2
 8 青梅市           133535      31.8
 # ℹ 54 more rows</code></pre></div>
-<p data-src="06-strings-filter:71">檜原村、奥多摩町、八丈町。都内といっても、山と島が上位に並びました。</p>
-<p data-src="06-strings-filter:73"><code>filter</code> という関数は、特定の「行」だけを抽出しなさい、という命令です。この場合だと、<code>prefecture</code> が「東京都」になっている行だけを取り出しなさい、と命令しています。等号（<code>=</code>）がふたつ続けられて <code>==</code> になっていますが、これが「<code>prefecture</code> が『東京都』に等しい」という条件づけをしています。</p>
-<aside class="box box-warn" data-src="06-strings-filter:75"><p class="box-title">イコールは2つ</p><p data-src="06-strings-filter:76">初心者はふたつ続けるのを忘れがちだということが国連の研究で知られています。ここ、注意してください。</p>
+<p data-src="06-strings-filter:71">檜原村、奥多摩町、八丈町。都内といっても、山間部と離島が上位に並びました。</p>
+<p data-src="06-strings-filter:73"><code>filter</code> という関数は、<strong>特定の「行」だけを抽出しなさい</strong>、という命令です。この場合だと、<code>prefecture</code> が「東京都」になっている行だけを取り出しなさい、と命令しています。等号（<code>=</code>）が二つ続けられて <code>==</code> になっていますが、これが「<code>prefecture</code> が『東京都』に等しい」という条件づけをしています。</p>
+<aside class="box box-warn" data-src="06-strings-filter:75"><p class="box-title">イコールは二つ</p><p data-src="06-strings-filter:76">初心者は二つ続けるのを忘れがちだということが、国連による過去50年の研究で知られています。ここ、注意してください。</p>
 <ul data-src="06-strings-filter:78">
 <li><code>==</code> は「等しいかどうかを確かめる」</li>
 <li><code>=</code> は「等しくする（＝代入する）」</li>
@@ -144,7 +144,7 @@
   arrange(desc(rate_aged))</code></pre></div>
 <p data-src="06-strings-filter:102"><code>str_sub()</code> という関数は、「●番目から●番目までの文字を抽出しなさい」という命令です。この場合は「<code>municipality</code> という文字列のうち、後ろから数えて1番目の文字から、後ろから数えて1番目の文字まで（まだるっこしいですが、要するにいちばん最後の文字）を抽出しなさい」という意味です（マイナスの記号が「後ろから数えて」というのを意味してるわけですが、マイナスをつけなければ前から数えることになります）。そうやって取り出した文字が「市」である行だけを取り出しなさい、という命令になっています。</p>
 <p data-src="06-strings-filter:104">自治体名に「市」を含むものを抽出する、という単純な命令にしなかったのは、たとえば兵庫県にある「市川町」みたいなのを含まないようにするための工夫です。</p>
-<p data-src="06-strings-filter:106">だいぶ複雑になってきたような気がします。一つひとつの命令が何をやっているのか、確認しながら読み進めてください。実際に自分でプログラムを書いて、エラーが出たときに「なぜだろう？？？」と考えながらやっていくと、理解が深まってくるはずです。</p>
+<p data-src="06-strings-filter:106">だいぶ複雑になってきたような気がします。一つ一つの命令が何をやっているのか、確認しながら読み進めてください。実際に自分でプログラムを書いて、エラーが出たときに「なぜだろう？？？」と考えながらやっていくと、理解が深まってくるはずです。</p>
 <h2 id="条件の書き方をもう少し" data-src="06-strings-filter:108">条件の書き方をもう少し</h2>
 <p data-src="06-strings-filter:110"><code>filter</code> の丸括弧のなかには、いろいろな条件を書けます。よく使うものを並べておきます。</p>
 <div class="code" data-lang="R" data-src="06-strings-filter:112"><pre><code>filter(population &gt;= 100000)              # 10万以上
@@ -163,7 +163,7 @@ filter(prefecture == "東京都" | prefecture == "大阪府")  # どちらか（
 <li>全角の空白と半角の空白が混じっている</li>
 <li>「ケ」と「ヶ」、「﨑」と「崎」のような異体字（<a href="11-join.html">11章</a>で痛い目にあいます）</li>
 </ul>
-<p data-src="06-strings-filter:133">前後の空白は <code>str_trim()</code> で取れます。<code>str_squish()</code> なら途中の連続した空白もまとめてくれます。役所のデータを読み込んだら、まずこれをかけておくと平和です。</p></aside>
+<p data-src="06-strings-filter:133">前後の空白は <code>str_trim()</code> で取れます。<code>str_squish()</code> なら途中の連続した空白もまとめてくれます。役所のデータを読み込んだら、まずこれをかけておくとよい、かも。</p></aside>
 <p data-src="06-strings-filter:136">次の章では、市区町村ごとの人口を都道府県ごとに足し上げて、都道府県別の高齢化率を出すための下ごしらえをします。うっかりやりがちな二重計上の防ぎ方も一緒に。</p>
     </article>
     <nav class="pager"><a class="prev" href="05-select-mutate.html"><span>前へ</span>05 選ぶ・名前を変える・計算する</a><a class="next" href="07-group.html"><span>次へ</span>07 集計する</a></nav>

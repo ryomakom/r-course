@@ -78,7 +78,7 @@
   geom_col(aes(x = year, y = population))</code></pre></div>
 <figure class="fig" data-src="13-col:18"><img src="images/13-col-tokyo.png" alt="東京都の人口の推移を棒グラフで示したもの" loading="lazy"><figcaption>geom_colに変えるだけで棒グラフになる</figcaption></figure>
 <p data-src="13-col:20">コードは、折れ線グラフで <code>geom_line</code> としていたところを <code>geom_col</code> としただけです。colはたぶん、「柱」を意味するcolumnの略。これで東京都の人口が増え続けていることを示す棒グラフができたはずです。</p>
-<aside class="box box-note" data-src="13-col:22"><p class="box-title">geom_colとgeom_barの違い</p><p data-src="13-col:23">ggplotには <code>geom_bar()</code> という、名前がいかにも棒グラフっぽい関数もあります。ただしこれは<strong>行数を勝手に数えて</strong>棒の高さにするものです。「都道府県ごとの件数」みたいな数え上げのときには便利ですが、手元にすでに集計済みの数字があるときに使うと、思った高さになりません。</p>
+<aside class="box box-note" data-src="13-col:22"><p class="box-title">geom_colとgeom_barの違い</p><p data-src="13-col:23">ggplotには <code>geom_bar()</code> という、名前がいかにも棒グラフっぽい関数もあります。ただしこれは行数を勝手に数えて棒の高さにするものです。「都道府県ごとの件数」みたいな数え上げのときには便利ですが、手元にすでに集計済みの数字があるときに使うと、思った高さになりません。</p>
 <p data-src="13-col:25"><strong>すでに数字がある → <code>geom_col()</code>。数えてほしい → <code>geom_bar()</code>。</strong> ふだんの仕事では <code>geom_col()</code> のほうが圧倒的に多いはずです。</p></aside>
 <h2 id="積み上げ棒グラフ" data-src="13-col:28">積み上げ棒グラフ</h2>
 <p data-src="13-col:30">ただ、これも1色しかないので少し寂しい気もします。年代別に色分けして、各年代でどんな増減があったかを可視化してみましょう。</p>
@@ -89,7 +89,7 @@
                values_to = "value") %&gt;%
   ggplot() +
   geom_col(aes(x = year, y = value, fill = category))</code></pre></div>
-<figure class="fig" data-src="13-col:42"><img src="images/13-col-stack.png" alt="東京都の人口を3つの年齢層に分けて積み上げた棒グラフ" loading="lazy"><figcaption>年齢層ごとに色分けした積み上げ棒グラフ</figcaption></figure>
+<figure class="fig" data-src="13-col:42"><img src="images/13-col-stack.png" alt="東京都の人口を三つの年齢層に分けて積み上げた棒グラフ" loading="lazy"><figcaption>年齢層ごとに色分けした積み上げ棒グラフ</figcaption></figure>
 <p data-src="13-col:44">はじめに <code>select</code> 関数で <code>population</code> の列を除外しているのは、年代別の人口を積みあげた棒グラフにしたいのに、全体の人口を示すこのデータが残っていると二重計上になってしまうからです。</p>
 <p data-src="13-col:46">そのうえで <code>pivot_longer</code> 関数をかけて、人口の数値はすべて <code>value</code> 列に入るように加工しています。なぜなら、<strong>ggplotで「縦軸にこれを使いなさい」と指定できるのは一つの列だけ</strong>だからです。縦長のデータになっていないと、人口は <code>population_under15</code> と <code>population_15to64</code>、<code>population_over65</code> という三つの列に分かれてしまっていますが、ggplotで縦軸上に（あるいは横軸上に）表現したいデータは、すべて一つの列に格納されている必要があるのです。</p>
 <p data-src="13-col:48">そのうえで、<code>fill = category</code> というところで「categoryごとに色分けしなさいね」と指示しています。</p>
@@ -98,7 +98,7 @@
 <p data-src="13-col:54">ともあれ、縦軸と横軸にそれぞれ、可視化したい列の名前を指定するというggplotの基本は、折れ線のときと変わりません。</p>
 <aside class="box box-tips" data-src="13-col:56"><p class="box-title">面には fill、線には color</p><p data-src="13-col:57">実用的には、こう覚えておけば足ります。</p>
 <div class="table-wrap" data-src="13-col:59"><table><thead><tr><th>描くもの</th><th>中身の色</th><th>輪郭の色</th></tr></thead><tbody><tr><td>折れ線 <code>geom_line</code></td><td>—</td><td><code>color</code></td></tr><tr><td>棒 <code>geom_col</code></td><td><code>fill</code></td><td><code>color</code>（縁取り）</td></tr><tr><td>点 <code>geom_point</code></td><td><code>color</code>（<code>shape</code>次第で<code>fill</code>も）</td><td>—</td></tr></tbody></table></div>
-<p data-src="13-col:65">棒グラフで <code>color</code> を指定すると、棒の<strong>縁</strong>だけが色づいて中は灰色のまま、という残念な絵ができます。「色分けしたのに変わらない」と思ったら、この2つを取り違えていないか確かめてください。</p></aside>
+<p data-src="13-col:65">棒グラフで <code>color</code> を指定すると、棒の縁だけが色づいて中は灰色のまま、という残念な絵ができます。「色分けしたのに変わらない」と思ったら、この二つを取り違えていないか確かめてください。</p></aside>
 <h2 id="横に並べる棒グラフ" data-src="13-col:68">横に並べる棒グラフ</h2>
 <p data-src="13-col:70">今回は「積み上げ型」の棒グラフになりましたが、つぎに各年代の人口を示す棒が横に並んだグラフにしてみましょう。こんなコードです。</p>
 <div class="code" data-lang="R" data-src="13-col:72"><pre><code>tokyo %&gt;%
@@ -111,7 +111,7 @@
                y = value,
                fill = category),   # ここまでは同じ
            position = "dodge")</code></pre></div>
-<figure class="fig" data-src="13-col:85"><img src="images/13-col-dodge.png" alt="3つの年齢層の棒が横に並んだ棒グラフ。65歳以上だけが増えている" loading="lazy"><figcaption>横に並べると、増えているのが65歳以上だけだと分かる</figcaption></figure>
+<figure class="fig" data-src="13-col:85"><img src="images/13-col-dodge.png" alt="三つの年齢層の棒が横に並んだ棒グラフ。65歳以上だけが増えている" loading="lazy"><figcaption>横に並べると、増えているのが65歳以上だけだと分かる</figcaption></figure>
 <p data-src="13-col:87">といっても、先ほどのコードとほぼ同じ。<code>geom_col()</code> の丸括弧の中で <code>position = "dodge"</code> と指定したのが唯一のちがいです。dodgeというのはドッジボールのドッジで、「かわす」という意味があります。できあがったグラフをみると、増えているのはほぼ65歳以上の人口だけなのだな、ということがわかりますね。</p>
 <p data-src="13-col:89">ここで気をつけたほうがいいのは、<code>position = "dodge"</code> という記述が <strong><code>aes()</code> の丸括弧の外側</strong>にあるということです。コンマでつなぐことによって、階層構造的にみて <code>aes()</code> と同じレベルのところにあるのです。丸括弧の中に入れてしまうと、エラーが出ます。</p>
 <p data-src="13-col:91">これまで見てきた <code>color</code> とか <code>fill</code> は、横軸と縦軸を示すxとyの二つと同じレベルにありましたが、<code>position</code> はその一つ上のレベルにあるのです。<code>position</code> は都道府県ごとに変わるものではなく、グラフ全体の並べ方の指定だから、外側に書くわけです。</p>
@@ -124,7 +124,7 @@
 <figure class="fig" data-src="13-col:104"><img src="images/13-col-five.png" alt="5都府県の15歳未満人口を横並びの棒グラフで比較したもの。東京都だけが増えている" loading="lazy"><figcaption>東京都だけ、子どもの数が増え続けている</figcaption></figure>
 <p data-src="13-col:106">東京都でのみ、子どもの数がわずかながら増え続けていることがわかりますね。</p>
 <p data-src="13-col:108">全国的に子どもが減っているというのは誰でも知っていますが、東京だけは増えている。なぜか。他の県から人が移ってきているのか、それとも都内で生まれる子が多いのか。データはそこまで答えてくれませんが、「どこを取材すべきか」が分かることがあります。</p>
-<aside class="box box-homework" data-src="13-col:110"><p class="box-title">宿題</p><p data-src="13-col:111"><code>data/主な都道府県の人口.csv</code> のファイルを読み込んで作ったtibbleをもとに、<strong>宮城県</strong>の年齢層別人口の推移を示すグラフを作ってください。</p>
+<aside class="box box-homework" data-src="13-col:110"><p class="box-title">宿題</p><p data-src="13-col:111"><code>data/主な都道府県の人口.csv</code> のファイルを読み込んで作ったtibbleをもとに、宮城県の年齢層別人口の推移を示すグラフを作ってください。</p>
 <p data-src="13-col:113">この章で出てきた東京都のグラフと同じ形（積み上げ棒グラフ）で、タイトルと軸の名前も日本語で入れること。作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
 <p data-src="13-col:116">次の章では散布図を描きます。全国1700余りの市町村をいちどに眺めて、「東京だけ子どもが減っていない」という話をもう少し先まで追いかけます。</p>
     </article>

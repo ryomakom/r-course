@@ -91,8 +91,8 @@
 5 北海道             5224614                1664023
 6 千葉県             6284480                1699991
 # ℹ 41 more rows</code></pre></div>
-<p data-src="07-group:29">47行になりました。Excelのピボットテーブルを使ったことがあれば、あの「行に都道府県、値に人口の合計」という操作とまったく同じことをしていると考えてください。</p>
-<p data-src="07-group:31">なお、並び順が五十音でも人口順でもなく妙に見えるのは、<code>group_by</code> が文字コードの順番で並べているからです。気になるなら <code>arrange()</code> で並べ直してください。</p>
+<p data-src="07-group:29">47行、つまり47都道府県ごとにまとめられました。</p>
+<p data-src="07-group:31">なお、並び順が五十音でも人口順でもなく妙に見えるのは、<code>group_by</code> が文字コードの順番で並べているからです。</p>
 <h2 id="二重計上に気をつける" data-src="07-group:33">二重計上に気をつける</h2>
 <p data-src="07-group:35">また、ちょっと話がそれますが、2行目で <code>filter(is.na(ward))</code> という操作をしているのは、<strong>二重計上を防ぐため</strong>です。なぜかというと、政令指定都市があるから。たとえば札幌市をみると、市全体の人口と、中央区、北区、東区、といった区それぞれの人口がいずれも記録されています。何も考えずに足し上げると、札幌市の人口が2倍になってしまうわけです。</p>
 <p data-src="07-group:37"><code>is.na(ward)</code> というのは、「<code>ward</code> という列がNAつまり欠損値（Not Available）である」という意味です。この条件に合う行だけを抽出することによって、政令指定都市の区を除外しているわけです。</p>
@@ -124,7 +124,7 @@
 <p data-src="07-group:84">たとえば秘匿処理でNAになっているなら「集計できていない自治体がある」と注記すべきですし、そもそも読み込みの失敗でNAになっているなら、直すべきなのは読み込みのほうです。まずNAがどこにいくつあるかを見る。</p>
 <div class="code" data-lang="R" data-src="07-group:86"><pre><code>df2020_aged %&gt;% filter(is.na(population))</code></pre></div></aside>
 <h2 id="group_byを解除する" data-src="07-group:91">group_byを解除する</h2>
-<p data-src="07-group:93"><code>group_by</code> したあとのtibbleは、グループ化された状態のまま残ることがあります。<code>summarize</code> を使うとふつうは解除されますが、<code>mutate</code> などを続けて使うときには、そのままだと思わぬ計算結果になることがあります。</p>
+<p data-src="07-group:93"><code>group_by</code> したあとのtibbleは、グループ化された状態のまま残ることがあります。そのままにしておくと、あとの過程で計算結果がおかしくなることがあります。</p>
 <div class="code" data-lang="R" data-src="07-group:95"><pre><code>df2020_aged %&gt;%
   group_by(prefecture) %&gt;%
   mutate(kensu = n()) %&gt;%

@@ -118,7 +118,7 @@ ggsave("output/jinko.png", plot = g, width = 8, height = 5, dpi = 200)</code></p
   select(year, prefecture, rate_under15) %&gt;%
   write_excel_csv("output/デザイナー用.csv")</code></pre></div>
 <h2 id="マウスで触れるグラフにする" data-src="15-finish:107">マウスで触れるグラフにする</h2>
-<p data-src="15-finish:109">もうひとつ、自分がデータを探るときに便利な技を紹介します。plotlyというパッケージを使うと、ggplotで描いたグラフをそのままマウスで触れるものに変えてくれます。</p>
+<p data-src="15-finish:109">もう一つ、自分がデータを探るときに便利な技を紹介します。plotlyというパッケージを使うと、ggplotで描いたグラフをそのままマウスで触れるものに変えてくれます。</p>
 <div class="code" data-lang="R" data-src="15-finish:111"><pre><code>install.packages("plotly")
 library(plotly)</code></pre></div>
 <p data-src="15-finish:116"><code>ggplotly()</code> という関数の丸括弧のなかに、インタラクティブ化したいグラフを入れるだけです。</p>

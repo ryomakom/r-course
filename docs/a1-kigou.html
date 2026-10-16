@@ -73,7 +73,7 @@
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#行列とは">行列とは</a></li><li><a href="#代入と名前">代入と、名前</a></li><li><a href="#演算子">演算子</a></li><li><a href="#ブール論理">ブール論理</a></li><li><a href="#引用符とかたまり">引用符と、かたまり</a></li><li><a href="#データ型">データ型</a></li><li><a href="#NA空っぽということ">NA——空っぽということ</a></li><li><a href="#オブジェクト関数引数">オブジェクト、関数、引数</a></li><li><a href="#助けを呼ぶ">助けを呼ぶ</a></li></ul></nav>
       <h2 id="行列とは" data-src="a1-kigou:8">行列とは</h2>
 <p data-src="a1-kigou:10">「行列」といっても、「行列のできるラーメン屋さん」とかの行列ではありません。エクセルのように、マス目が縦横に並んでいて、その中に数字とかのデータが入っているものを「行列」と呼びます。「3行目の4列目」みたいに言えば、マス目の一つ一つを指定することができます。</p>
-<p data-src="a1-kigou:12">で、ここで問題になるのが、行と列って、どっちがどっち？　「3行目の4列目」って、上から3つめで左から4つめってこと？　それとも上から4つめ、左から3つめのことか？</p>
+<p data-src="a1-kigou:12">で、ここで問題になるのが、行と列って、どっちがどっち？　「3行目の4列目」って、上から三つめで左から四つめってこと？　それとも上から四つめ、左から三つめのことか？</p>
 <p data-src="a1-kigou:14">こたえは前者。覚え方もあります。「行」っていう漢字のつくりの上のところに、横に平行な線が2本並んでるでしょ。というわけで、<strong>横に平行に並んでるのが「行」</strong>です。一方で、「列」という漢字のつくりには、縦棒が2本並んでますね。というわけで、<strong>縦に平行に並んでるのが「列」</strong>。こうやって覚えてください。</p>
 <p data-src="a1-kigou:16">この講座では、</p>
 <ul data-src="a1-kigou:18">
@@ -84,19 +84,19 @@
 <h2 id="代入と名前" data-src="a1-kigou:23">代入と、名前</h2>
 <div class="table-wrap" data-src="a1-kigou:25"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>&lt;-</code></td><td>代入。<code>A &lt;- 3</code> は「3という数字をAという変数に入力しなさい」</td></tr><tr><td><code>=</code></td><td>記号の左右にある値を等しくする。代入を意味する <code>&lt;-</code> と似ているが、関数の中で使われることが多いという違いがある</td></tr><tr><td><code>==</code></td><td>記号の左右にある値が等しいかどうかをチェックする。<code>A == 3</code> は、Aが3と等しければTRUE、等しくなければFALSE</td></tr></tbody></table></div>
 <p data-src="a1-kigou:31"><code>&lt;-</code> は <strong>Alt＋マイナス</strong>（MacはOption＋マイナス）で入力できます。</p>
-<p data-src="a1-kigou:33">イコール記号は混乱を招く可能性があります。代入は <code>&lt;-</code>、比較は <code>==</code>、関数の中で引数を指定するときは <code>=</code>。この3つを使い分けます。</p>
+<p data-src="a1-kigou:33">イコール記号は混乱を招く可能性があります。代入は <code>&lt;-</code>、比較は <code>==</code>、関数の中で引数を指定するときは <code>=</code>。この三つを使い分けます。</p>
 <h2 id="演算子" data-src="a1-kigou:35">演算子</h2>
 <div class="table-wrap" data-src="a1-kigou:37"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>+</code> <code>-</code></td><td>足す、引く</td></tr><tr><td><code>*</code> <code>/</code></td><td>かける、割る</td></tr><tr><td><code>&gt;</code> <code>&lt;</code></td><td>より大きい、より小さい</td></tr><tr><td><code>&gt;=</code> <code>&lt;=</code></td><td>以上、以下</td></tr><tr><td><code>==</code></td><td>等しい</td></tr><tr><td><code>!=</code></td><td>等しくない</td></tr><tr><td><code>%in%</code></td><td>並んだもののどれかに当てはまる</td></tr><tr><td><code>%&gt;%</code></td><td>パイプ演算子。左のものを右の関数に渡す</td></tr></tbody></table></div>
 <h2 id="ブール論理" data-src="a1-kigou:48">ブール論理</h2>
 <p data-src="a1-kigou:50">TRUEかFALSEかで考える論理のことです。<code>filter()</code> の条件を組み合わせるときに出てきます。</p>
 <div class="table-wrap" data-src="a1-kigou:52"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>&amp;</code></td><td>AND（かつ）。両方の条件を満たすもの</td></tr><tr><td><code>|</code></td><td>OR（または）。どちらかの条件を満たすもの</td></tr><tr><td><code>!</code></td><td>NOT（〜でない）。条件をひっくり返す</td></tr></tbody></table></div>
-<p data-src="a1-kigou:58">ベン図で言えば、<code>A &amp; B</code> は2つの円が重なったところ、<code>A | B</code> は2つの円のどちらかに入っているところ全体、<code>!A</code> はAの円の外側です。</p>
+<p data-src="a1-kigou:58">ベン図で言えば、<code>A &amp; B</code> は二つの円が重なったところ、<code>A | B</code> は二つの円のどちらかに入っているところ全体、<code>!A</code> はAの円の外側です。</p>
 <p data-src="a1-kigou:60"><code>filter()</code> のなかでコンマで条件を区切ると、<code>&amp;</code> と同じ意味になります。</p>
 <div class="code" data-lang="R" data-src="a1-kigou:62"><pre><code>filter(population &gt;= 100000, prefecture == "東京都")   # コンマ
 filter(population &gt;= 100000 &amp; prefecture == "東京都")  # 上と同じ意味</code></pre></div>
 <h2 id="引用符とかたまり" data-src="a1-kigou:67">引用符と、かたまり</h2>
 <p data-src="a1-kigou:69">数字ではない「テキスト」や「日付」は、引用符で囲んで入力します（たとえば <code>"Japan"</code> や <code>"2025-02-10"</code> のように）。</p>
-<p data-src="a1-kigou:71">2つ以上の値をリストとして入力する場合は、コンマで区切って <code>c()</code> で結合します。</p>
+<p data-src="a1-kigou:71">二つ以上の値をリストとして入力する場合は、コンマで区切って <code>c()</code> で結合します。</p>
 <div class="code" data-lang="R" data-src="a1-kigou:73"><pre><code>c("Japan", "2025-02-10")</code></pre></div>
 <p data-src="a1-kigou:77">コロンを使うと値の範囲を指定できます。<code>1:10</code> は1から10までの整数を示します。</p>
 <div class="table-wrap" data-src="a1-kigou:79"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>"..."</code></td><td>文字列。ダブルクオーテーション。シングル（<code>'...'</code>）でも動くが、ダブルが慣習</td></tr><tr><td><code>`...`</code></td><td>バッククオート。<strong>列名</strong>が日本語だったり空白を含んだり数字で始まるときに囲む</td></tr><tr><td><code>c(...)</code></td><td>値を並べたかたまりを作る</td></tr><tr><td><code>1:10</code></td><td>1から10までの連続した整数</td></tr><tr><td><code>#</code></td><td>これより右はコメント。人間のためのメモで、実行されない</td></tr><tr><td><code>.</code></td><td>パイプで渡ってきたものを指す。渡す位置を明示したいときに使う</td></tr></tbody></table></div>

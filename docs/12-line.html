@@ -121,7 +121,7 @@
   geom_line(aes(x = year, y = population, group = prefecture))</code></pre></div>
 <figure class="fig" data-src="12-line:109"><img src="images/12-line-group.png" alt="5本の線に分かれたが、すべて同じ色の折れ線グラフ" loading="lazy"><figcaption>group=prefectureで5本に分かれた。でも色が同じ</figcaption></figure>
 <p data-src="12-line:111">うまく行きました。<code>group = prefecture</code> という部分で、都府県ごとにグループ化してくださいね、と指示しているわけです。</p>
-<aside class="box box-note" data-src="12-line:113"><p class="box-title">ggplotは「1本の線」しか知らない</p><p data-src="12-line:114">なぜ最初のコードでジグザグになったのか。ggplotから見ると、渡されたのは「年と人口の組み合わせが並んだ表」でしかありません。そのなかで、どこからどこまでが1本の線なのかは、こちらが教えないと分からないのです。</p>
+<aside class="box box-note" data-src="12-line:113"><p class="box-title">ggplotは「1本の線」しか知らない</p><p data-src="12-line:114">なぜ最初のコードでジグザグになったのか。ggplotから見ると、渡されたのは「年と人口の組み合わせが並んだ表」でしかありません。そのなかで、<strong>どこからどこまでが1本の線なのかは、こちらが教えないと分からない</strong>のです。</p>
 <p data-src="12-line:116">だから <code>group=</code> で「この列の値が同じもの同士をつなげてね」と指示する。折れ線グラフでデータが増えたときは、まずこれを疑ってください。</p></aside>
 <h2 id="色分けする" data-src="12-line:119">色分けする</h2>
 <p data-src="12-line:121">ただ、全部同じ色なので、どの線がどの都府県に対応しているのか、分かりません。色分けしてみましょう。こんなコードです。</p>

@@ -9,7 +9,7 @@ function beheadAnim() {
 
   var SVGNS = 'http://www.w3.org/2000/svg';
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var DUR = reduce ? 0 : 1600;    // 1つの段の動きにかける時間（ミリ秒）
+  var DUR = reduce ? 0 : 1600;    // 一つの段の動きにかける時間（ミリ秒）
   var PEEL = 0.3;                 // 剥がしたあと・よそへ移ったあとに、もとの場所にうすく残す濃さ
 
   // ---- 左：シート
@@ -43,7 +43,7 @@ function beheadAnim() {
   // code: 光らせるコードの行（いくつでも）
   var STEPS = [
     { code: [0, 1], note: 'セルがバラバラのまま。数字のセル（白）の上と左に、ラベルのセル（色つき）がある' },
-    { code: [], note: '数字のセルひとつが、整然データの1行になる' },
+    { code: [], note: '数字のセル一つが、整然データの1行になる' },
     { code: [2], note: '"up"：数字のセルから見て「上」にあるラベル（候補者名）を、name の列に入れる' },
     { code: [3], note: '"up"：その次に「上」にあるラベル（政党名）を、party の列に入れる' },
     { code: [4], note: '"left"：数字のセルから見て「左」にあるラベル（A列）を、municipality の列に入れる。いちばん下の「合計」の行も同じように配られる（あとで答え合わせに使う）' }

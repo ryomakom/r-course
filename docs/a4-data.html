@@ -74,7 +74,7 @@
       <h2 id="まとめてダウンロード" data-src="a4-data:8">まとめてダウンロード</h2>
 <p data-src="a4-data:10"><a class="dl" href="files/r-course-data.zip" download>データ一式（zip）<span class="dl-size">1.2 MB</span></a></p>
 <p data-src="a4-data:12">12個のファイルが入っています。解凍して、プロジェクトのなかの <code>data</code> フォルダに移してください（<code>000979538.xlsx</code> だけは <code>download</code> フォルダへ）。</p>
-<p data-src="a4-data:14">1つずつ落としたい人は、下の表から。</p>
+<p data-src="a4-data:14">一つずつ落としたい人は、下の表から。</p>
 <h3 id="第1部で使うもの" data-src="a4-data:16">第1部で使うもの</h3>
 <div class="table-wrap" data-src="a4-data:18"><table><thead><tr><th>ファイル</th><th>中身</th><th>読み込み方</th><th>使う章</th></tr></thead><tbody><tr><td><a class="dl" href="files/人口データ2020.csv" download>人口データ2020.csv<span class="dl-size">288 KB</span></a></td><td>2020年の市区町村別人口</td><td><code>skip = 8</code></td><td>04〜07</td></tr><tr><td><a class="dl" href="files/人口データ2015.csv" download>人口データ2015.csv<span class="dl-size">288 KB</span></a></td><td>2015年</td><td><code>skip = 2</code></td><td>08</td></tr><tr><td><a class="dl" href="files/人口データ2010.csv" download>人口データ2010.csv<span class="dl-size">273 KB</span></a></td><td>2010年</td><td><code>skip = 5</code>、CP932</td><td>08</td></tr><tr><td><a class="dl" href="files/人口データ2005.xls" download>人口データ2005.xls<span class="dl-size">671 KB</span></a></td><td>2005年（Excel）</td><td><code>skip = 8</code></td><td>10</td></tr><tr><td><a class="dl" href="files/人口データ2000.xlsx" download>人口データ2000.xlsx<span class="dl-size">268 KB</span></a></td><td>2000年（Excel）</td><td><code>skip = 8</code></td><td>10</td></tr><tr><td><a class="dl" href="files/労働人口データ2020.csv" download>労働人口データ2020.csv<span class="dl-size">134 KB</span></a></td><td>2020年の産業別就業者数</td><td><code>skip = 8</code></td><td>11</td></tr><tr><td><a class="dl" href="files/労働人口データ.csv" download>労働人口データ.csv<span class="dl-size">673 KB</span></a></td><td>5年分の産業別就業者数</td><td><code>skip = 8</code></td><td>付録C・宿題5</td></tr></tbody></table></div>
 <p data-src="a4-data:28">飛ばす行数がファイルごとに違うのが分かるでしょうか。<strong>同じ統計なのに、公表された年によって上の説明行の数が違う。</strong> これが役所のデータのふつうの姿です。</p>
@@ -104,7 +104,7 @@
 <p data-src="a4-data:83">使っているのは「社会・人口統計体系」という統計です。国勢調査などの結果を、市区町村ごとに項目別に並べ直したもので、<code>A1101_総人口【人】</code> のような、項目コードのついた列名が特徴です。</p>
 <p data-src="a4-data:85">e-Statのトップページから「地域」を選び、社会・人口統計体系のデータベースへ進んで、次の項目を市区町村別・年別に指定してダウンロードします。</p>
 <div class="table-wrap" data-src="a4-data:87"><table><thead><tr><th>項目コード</th><th>中身</th><th>使う章</th></tr></thead><tbody><tr><td>A1101</td><td>総人口</td><td>全体</td></tr><tr><td>A1301</td><td>15歳未満人口</td><td>05、12〜14</td></tr><tr><td>A1302</td><td>15〜64歳人口</td><td>13</td></tr><tr><td>A1303</td><td>65歳以上人口</td><td>05〜07</td></tr><tr><td>F2201</td><td>第1次産業就業者数</td><td>11</td></tr><tr><td>F2211</td><td>第2次産業就業者数</td><td>11</td></tr><tr><td>F2221</td><td>第3次産業就業者数</td><td>11</td></tr></tbody></table></div>
-<p data-src="a4-data:97">労働人口データは、<strong>2020年だけのものと、5年分まとめたものの2つ</strong>を作ってください。11章では前者、<a href="a3-shukudai.html">付録C</a>の宿題5では後者を使います。同じ統計なのに、切り出す年の範囲を変えるとデータ型が変わる、という実例になっているので、両方あったほうが面白いです。</p>
+<p data-src="a4-data:97">労働人口データは、<strong>2020年だけのものと、5年分まとめたものの二つ</strong>を作ってください。11章では前者、<a href="a3-shukudai.html">付録C</a>の宿題5では後者を使います。同じ統計なのに、切り出す年の範囲を変えるとデータ型が変わる、という実例になっているので、両方あったほうが面白いです。</p>
 <p data-src="a4-data:99">年は2000年、2005年、2010年、2015年、2020年の5回分。ダウンロードしたファイルの名前を、次のように変えて <code>data</code> フォルダに入れてください。</p>
 <div class="code" data-lang="画面に出るもの" data-src="a4-data:101"><pre><code>data/人口データ2020.csv       （csv、上に8行の説明がある）
 data/人口データ2015.csv       （csv、上に2行）
@@ -117,7 +117,7 @@ data/労働人口データ.csv       （csv、上に8行。5年分まとめて�
 <p data-src="a4-data:114"><strong>自分がダウンロードしたファイルを、必ずExcelかメモ帳で開いて確かめてください。</strong> そして、この講座のコードの <code>skip =</code> の数字を、自分のファイルに合わせて直してください。</p>
 <p data-src="a4-data:116">……というのは面倒なのですが、これは意地悪ではありません。役所のデータを扱うときに毎回やる作業を、最初から練習しているのだと考えてください。ファイルの上に何行あるかを自分の目で確かめる、というのは、この先ずっと必要になる習慣です。</p></aside>
 <h2 id="第2部で使う加工済みファイル" data-src="a4-data:119">第2部で使う加工済みファイル</h2>
-<p data-src="a4-data:121">第2部（グラフの章）で使う4つのファイルは、第1部で作った <code>df</code> から作ります。第1部を最後までやった状態で、以下のコードを実行してください。</p>
+<p data-src="a4-data:121">第2部（グラフの章）で使う四つのファイルは、第1部で作った <code>df</code> から作ります。第1部を最後までやった状態で、以下のコードを実行してください。</p>
 <p data-src="a4-data:123">まず、市町村別の人口データを整えます。<a href="10-datatype.html">10章</a>までの内容の総復習です。</p>
 <div class="code" data-lang="R" data-src="a4-data:125"><pre><code>df_all &lt;- df %&gt;%
   rename(year = 調査年,
@@ -144,10 +144,10 @@ data/労働人口データ.csv       （csv、上に8行。5年分まとめて�
   select(-region, -ward) %&gt;%
   select(year, code, prefecture, municipality, everything()) %&gt;%
   mutate(year = as.double(str_sub(year, 1, 4)))</code></pre></div>
-<p data-src="a4-data:153">やっていることは6つです。列名を短くする、いらない列を捨てる、数値に変換する、地名を3つに分ける、政令市の区を除く、年を数値にする。</p>
+<p data-src="a4-data:153">やっていることは六つです。列名を短くする、いらない列を捨てる、数値に変換する、地名を三つに分ける、政令市の区を除く、年を数値にする。</p>
 <aside class="box box-warn" data-src="a4-data:155"><p class="box-title">全角のチルダに注意</p><p data-src="a4-data:156"><code>`A1302_15～64歳人口【人】`</code> の「～」は<strong>全角のチルダ</strong>です。半角の <code>~</code> と見た目が似ていますが別の文字なので、打ち直すと列名が見つかりません。</p>
 <p data-src="a4-data:158"><code>colnames(df)</code> の出力からコピーして貼りつけるのが確実です。ここで30分溶かした人を何人も見ています（私も含みます）。</p></aside>
-<p data-src="a4-data:161">できたら、4つのファイルに書き出します。</p>
+<p data-src="a4-data:161">できたら、四つのファイルに書き出します。</p>
 <div class="code" data-lang="R" data-src="a4-data:163"><pre><code># 全市町村
 df_all %&gt;%
   write_excel_csv("data/市町村別人口.csv")
@@ -182,7 +182,7 @@ df_pref %&gt;%
 <p data-src="a4-data:204">第3部は、コードの中で直接ウェブから取ってきます。事前の準備は <code>download</code> フォルダを作っておくことだけです。</p>
 <div class="code" data-lang="R" data-src="a4-data:206"><pre><code>dir.create("download", showWarnings = FALSE)
 dir.create("output", showWarnings = FALSE)</code></pre></div>
-<p data-src="a4-data:211">対象にしているのは、次の3つです。</p>
+<p data-src="a4-data:211">対象にしているのは、次の三つです。</p>
 <ul data-src="a4-data:213">
 <li><a href="16-scraping.html">16章</a>・<a href="17-loop.html">17章</a>：裁判所の所在地一覧（裁判所ウェブサイト）</li>
 <li><a href="18-download.html">18章</a>：衆院選の市区町村別得票（総務省ウェブサイト）</li>
@@ -191,7 +191,7 @@ dir.create("output", showWarnings = FALSE)</code></pre></div>
 <p data-src="a4-data:217">ウェブサイトの構造は、しばしば変わります。<strong>この講座に書いてあるコードが、そのままでは動かなくなっている可能性があります。</strong> その場合は、<a href="16-scraping.html">16章</a>に書いた手順で、自分でHTMLを見て名札を調べ直してください。それも練習の一部です。</p>
 <aside class="box box-note" data-src="a4-data:219"><p class="box-title">TODO：勉強会の日付に合わせて確かめておく</p><p data-src="a4-data:220">勉強会の直前に、17章と18章のコードを一度通しておくのがおすすめです。サイトの作りが変わっていて当日動かない、というのがいちばん困ります。動かなくなっていたら、それを教材にしてもいいかもしれません。実務ではしょっちゅう起きることなので。</p></aside>
 <h2 id="Rでまとめて落とす" data-src="a4-data:223">Rでまとめて落とす</h2>
-<p data-src="a4-data:225">ブラウザで1つずつ落とすのが面倒なら、Rにやらせることもできます。<a href="18-download.html">18章</a>でやることの予習です。</p>
+<p data-src="a4-data:225">ブラウザで一つずつ落とすのが面倒なら、Rにやらせることもできます。<a href="18-download.html">18章</a>でやることの予習です。</p>
 <div class="code" data-lang="R" data-src="a4-data:227"><pre><code>dir.create("data", showWarnings = FALSE)
 
 base &lt;- "TODO：このサイトを公開したURL/files/"   # ← 公開後に書き換える

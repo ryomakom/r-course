@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>列を選ぶ、名前を変える、計算する | 記者のためのR講座</title>
-<meta name="description" content="select、rename、mutate、arrange。この4つで「高齢化率の高い自治体ランキング」がもうできます。">
+<meta name="description" content="select、rename、mutate、arrange。この四つで「高齢化率の高い自治体ランキング」がもうできます。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
@@ -69,11 +69,11 @@
     <article>
       <p class="kicker">第1部　データを読む・加工する</p>
       <h1>列を選ぶ、名前を変える、計算する</h1>
-      <p class="lead">select、rename、mutate、arrange。この4つで「高齢化率の高い自治体ランキング」がもうできます。</p>
+      <p class="lead">select、rename、mutate、arrange。この四つで「高齢化率の高い自治体ランキング」がもうできます。</p>
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#select列を選ぶ">select——列を選ぶ</a></li><li><a href="#rename名前を変える">rename——名前を変える</a></li><li><a href="#その前にデータ型をちらっと見る">その前に——データ型をちらっと見る</a></li><li><a href="#mutate新しい列をつくる">mutate——新しい列をつくる</a></li><li><a href="#arrange並べ替える">arrange——並べ替える</a></li></ul></nav>
       <p data-src="05-select-mutate:8">はい、では次に、読み込んで <code>df2020</code> というオブジェクトに入力したデータを、いろいろな形に加工していきましょう。データはいろんなやり方で加工していくことができますが、いくつもの加工プロセスを組み合わせることで、生のデータから「知りたい情報＝エッセンス」を抽出していくわけです。</p>
 <p data-src="05-select-mutate:10">加工のための基本的な道具を、これから紹介していきます。</p>
-<p data-src="05-select-mutate:12"><code>df2020</code> の中身をみると、それぞれの列には各市区町村について、さまざまな年齢層ごとの人口が入っています。また「注釈」のための列もあります。これを元にして、たとえば市区町村ごとの「高齢化率」を知りたかったとしましょう。</p>
+<p data-src="05-select-mutate:12"><code>df2020</code> の中身をみると、それぞれの列には各市区町村について、さまざまな年齢層ごとの人口が入っています。「注釈」のための列もあります。これを元にして、たとえば市区町村ごとの「高齢化率」を知りたかったとしましょう。</p>
 <p data-src="05-select-mutate:14">高齢化率は65歳以上の人口が総人口に占める割合です。なのでさしあたって必要なのは、各市区町村の名前と総人口、65歳以上人口の列だけです。そのほかは不要なうえ、邪魔くさいので、消えてもらうことにしましょうか。</p>
 <h2 id="select列を選ぶ" data-src="05-select-mutate:16">select——列を選ぶ</h2>
 <p data-src="05-select-mutate:18">そのときに使えるのが <code>select</code> という関数です。具体的には、こうやります。</p>
@@ -110,7 +110,7 @@
   select(region = 地域,
          population = `A1101_総人口【人】`,
          population_over65 = `A1303_65歳以上人口【人】`)</code></pre></div>
-<p data-src="05-select-mutate:79">短く書けるので私はよく使いますが、最初のうちは「選ぶ」と「名前を変える」を分けて書いたほうが、自分が何をしているのかを見失いにくいと思います。</p></aside>
+<p data-src="05-select-mutate:79">短く書けるのでありがたいですが、最初のうちは「選ぶ」と「名前を変える」を分けて書いたほうが、自分が何をしているのかを見失いにくいと思います。</p></aside>
 <h2 id="その前にデータ型をちらっと見る" data-src="05-select-mutate:82">その前に——データ型をちらっと見る</h2>
 <p data-src="05-select-mutate:84">では次に、高齢化率を計算してみましょう。ただ、その前に。<code>df2020_simple</code> をもう一度見てみましょう。</p>
 <div class="code" data-lang="R" data-src="05-select-mutate:86"><pre><code>df2020_simple</code></pre></div>
@@ -136,7 +136,7 @@
 <p data-src="05-select-mutate:112">高齢化率を計算したtibbleを新しいオブジェクト<code>df2020_aged</code> に格納しておきます。</p>
 <div class="code" data-lang="R" data-src="05-select-mutate:114"><pre><code>df2020_aged &lt;- df2020_simple %&gt;%
   mutate(rate_aged=population_over65*100/population)</code></pre></div>
-<aside class="box box-note" data-src="05-select-mutate:119"><p class="box-title">「1行ずつ」計算される</p><p data-src="05-select-mutate:120"><code>mutate</code> の計算は、すべての行について同時に、そして<strong>それぞれの行の中だけで</strong>おこなわれます。北海道札幌市の行では札幌市の65歳以上人口が札幌市の総人口で割られ、青森市の行では青森市の数字同士で割られる。3万行あっても一瞬で終わります。</p>
+<aside class="box box-note" data-src="05-select-mutate:119"><p class="box-title">「1行ずつ」計算される</p><p data-src="05-select-mutate:120"><code>mutate</code> の計算は、すべての行について同時に、そしてそれぞれの行の中だけでおこなわれます。北海道札幌市の行では札幌市の65歳以上人口が札幌市の総人口で割られ、青森市の行では青森市の数字同士で割られる。3万行あっても一瞬で終わります。</p>
 <p data-src="05-select-mutate:122">これがExcelとの決定的な違いです。Excelでは1行目に数式を書いて、下方向にコピーして……という作業が必要で、そのコピーが1行足りなかったせいで数字が狂う、というのがよくある事故です。Rでは列に対して一度書くだけなので、そもそもその事故が起きません。</p></aside>
 <h2 id="arrange並べ替える" data-src="05-select-mutate:125">arrange——並べ替える</h2>
 <p data-src="05-select-mutate:127">では、少しだけ分析っぽいことをしてみましょう。高齢化率が最も低い自治体は、どこでしょう？　それを計算するには、<code>arrange</code> という関数を使います。こんな感じです。</p>
@@ -179,7 +179,7 @@
 <p data-src="05-select-mutate:153">結果は、やはりというべきか、町村部がトップを占めています。都会から離れた場所にお年寄りが残されているという現状が、一目瞭然になりました。</p>
 <aside class="box box-homework" data-src="05-select-mutate:155"><p class="box-title">宿題</p><p data-src="05-select-mutate:156">人口に占める若者の割合を示す列を作って、「若者率が高い自治体」「低い自治体」それぞれのランキングを作りなさい。</p>
 <p data-src="05-select-mutate:158">（15歳未満人口の列は <code>`A1301_15歳未満人口【人】`</code> です。作例は<a href="a3-shukudai.html">付録C</a>にあります）</p></aside>
-<p data-src="05-select-mutate:161">次の章では、「北海道 札幌市 豊平区」のようにひとまとめになっている自治体名を、都道府県、市区町村、政令指定都市の区のみっつに切り分けます。そのうえで、東京都だけ、人口10万人以上だけ、といった条件で行を絞り込みます。</p>
+<p data-src="05-select-mutate:161">次の章では、「北海道 札幌市 豊平区」のようにひとまとめになっている自治体名を、都道府県、市区町村、政令指定都市の区の三つに切り分けます。そのうえで、東京都だけ、人口10万人以上だけ、といった条件で行を絞り込みます。</p>
     </article>
     <nav class="pager"><a class="prev" href="04-import.html"><span>前へ</span>04 データを読み込む</a><a class="next" href="06-strings-filter.html"><span>次へ</span>06 文字を切る・行を絞る</a></nav>
     <footer class="site-foot">

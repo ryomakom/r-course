@@ -88,66 +88,61 @@
 4   2015100000 2015年度   01109   北海道 札幌市 手稲区   NA   
 # ℹ 1,906 more rows</code></pre></div>
 <p data-src="08-bind:31">あれ? 列名が何かおかしいですね。たとえば4列目の名前が「北海道 札幌市 豊平区」となってしまっています。データの「中身」になるべきものが、列の名前になってしまっているようです。なぜでしょうか。ファイルをExcelなどで開いて、確認してみましょう。</p>
-<div class="code" data-lang="ファイルの中身" data-src="08-bind:33"><pre><code>表題：,都道府県・市区町村のすがた（社会・人口統計体系）,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-公開日：,2024年6月21日,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-調査年 コード,調査年,地域 コード,地域,/項目,A1101_総人口【人】,注釈,A110101_総人口（男）【人】,注釈,A110102_総人口（女）【人】,注釈,A1102_日本人人口【人】,注釈,A110201_日本人人口（男...
-2015100000,2015年度,01100,北海道 札幌市,,1952356,,910614,,1041742,,1937785,,903535,,1034250,,46.4,,221013,,112743,,108270,,12...
-2015100000,2015年度,01101,北海道 札幌市 中央区,,237627,,107756,,129871,,235280,,106503,,128777,,44.2,,23997,,12187,,11810,,16033...
-2015100000,2015年度,01102,北海道 札幌市 北区,,285321,,134534,,150787,,281851,,132881,,148970,,45.8,,32916,,16722,,16194,,178950...</code></pre></div>
-<p data-src="08-bind:36">こうなっています。2020年の人口データのファイルでは、1～8行目にはあまり意味のない情報が入っていたので、<code>skip=8</code> と指定することで、8行分を飛ばして読み込みました。でもこのファイルでは、意味のない情報は1～2行目にしか入っていません。つまり3行目以降を読み込むのが正解だったのです。</p>
-<div class="code" data-lang="R" data-src="08-bind:38"><pre><code>read_csv("data/人口データ2015.csv", skip = 2)</code></pre></div>
-<h2 id="文字コードでつまずく" data-src="08-bind:42">文字コードでつまずく</h2>
-<p data-src="08-bind:44">次に2010年のデータも読み込んでみます。Excelで確認すると、5行目まで飛ばして読めばよさそうです。やってみましょう。</p>
-<div class="code" data-lang="R" data-src="08-bind:46"><pre><code>read_csv("data/人口データ2010.csv", skip = 5)</code></pre></div>
-<p data-src="08-bind:50">あれ?　やっぱりうまく行きませんね。</p>
-<div class="code" data-lang="実行結果" data-src="08-bind:52"><pre><code>unable to translate '&lt;92&gt;&lt;8d&gt;&lt;8e&gt;&lt;df&gt;' to a wide string</code></pre></div>
-<p data-src="08-bind:55">こんなふうに叱られました。読めない文字があると言っています（<code>input string 1 is invalid UTF-8</code> と出ることもあります。文言はRやパッケージのバージョンによって変わりますが、言っていることは同じです）。文字コードがUTF-8じゃないから読み込めないようです。日本語だと、可能性が高い文字コードはShift-JISです。そこで、文字コードを指定して読み込みましょう。</p>
-<div class="code" data-lang="R" data-src="08-bind:57"><pre><code>read_csv("data/人口データ2010.csv", skip = 5, locale = locale(encoding = "CP932"))</code></pre></div>
-<p data-src="08-bind:61">これでうまく行きました。</p>
-<aside class="box box-warn" data-src="08-bind:63"><p class="box-title">文字コードの話（役所のデータを扱うなら避けられません）</p><p data-src="08-bind:64">文字コードとは、文字をコンピューターの中で数字として表すときの取り決めのことです。同じ「東」という字でも、取り決めが違えば違う数字になります。だから、書いたときの取り決めと読むときの取り決めが食い違うと、文字化けしたりエラーになったりします。</p>
-<p data-src="08-bind:66">役所が出すcsvでよく出会うのは次の2つです。</p>
-<ul data-src="08-bind:68">
-<li><strong>UTF-8</strong>……いまの世界標準。<code>read_csv()</code> はこれを前提にしています。</li>
-<li><strong>Shift-JIS</strong>（Windows拡張版の名前がCP932）……日本のWindowsで長く使われてきたもの。役所のcsvにはまだ多い。</li>
+<figure class="fig" data-src="08-bind:33"><img src="images/08-csv2015.png" alt="人口データ2015.csvをExcelで開いたところ。1行目に表題、2行目に公開日があり、3行目が「調査年 コード」「調査年」「地域 コード」「地域」などの列名、4行目からが北海道札幌市などのデータになっている" loading="lazy"><figcaption>人口データ2015.csv をExcelで開いたところ</figcaption></figure>
+<p data-src="08-bind:35">こうなっています。2020年の人口データのファイルでは、1～8行目にはあまり意味のない情報が入っていたので、<code>skip=8</code> と指定することで、8行分を飛ばして読み込みました。でもこのファイルでは、意味のない情報は1～2行目にしか入っていません。つまり3行目以降を読み込むのが正解だったのです。</p>
+<div class="code" data-lang="R" data-src="08-bind:37"><pre><code>read_csv("data/人口データ2015.csv", skip = 2)</code></pre></div>
+<h2 id="文字コードでつまずく" data-src="08-bind:41">文字コードでつまずく</h2>
+<p data-src="08-bind:43">次に2010年のデータも読み込んでみます。Excelで確認すると、5行目まで飛ばして読めばよさそうです。やってみましょう。</p>
+<div class="code" data-lang="R" data-src="08-bind:45"><pre><code>read_csv("data/人口データ2010.csv", skip = 5)</code></pre></div>
+<p data-src="08-bind:49">あれ?　やっぱりうまく行きませんね。</p>
+<div class="code" data-lang="実行結果" data-src="08-bind:51"><pre><code>unable to translate '&lt;92&gt;&lt;8d&gt;&lt;8e&gt;&lt;df&gt;' to a wide string</code></pre></div>
+<p data-src="08-bind:54">こんなふうに叱られました。読めない文字があると言っています（<code>input string 1 is invalid UTF-8</code> と出ることもあります。文言はRやパッケージのバージョンによって変わりますが、言っていることは同じです）。文字コードがUTF-8じゃないから読み込めないようです。日本語だと、可能性が高い文字コードはShift-JISです。そこで、<strong>文字コードを指定して読み込みましょう</strong>。</p>
+<div class="code" data-lang="R" data-src="08-bind:56"><pre><code>read_csv("data/人口データ2010.csv", skip = 5, locale = locale(encoding = "CP932"))</code></pre></div>
+<p data-src="08-bind:60">これでうまく行きました。</p>
+<aside class="box box-warn" data-src="08-bind:62"><p class="box-title">文字コードの話</p><p data-src="08-bind:63">文字コードとは、文字をコンピューターの中で数字として表すときの取り決めのことです。同じ「東」という字でも、取り決めが違えば違う数字になります。だから、書いたときの取り決めと読むときの取り決めが食い違うと、文字化けしたりエラーになったりします。</p>
+<p data-src="08-bind:65">役所が出すcsvでよく出会うのは次の二つです。</p>
+<ul data-src="08-bind:67">
+<li>UTF-8……いまの世界標準。<code>read_csv()</code> はこれを前提にしています。</li>
+<li>Shift-JIS（Windows拡張版の名前がCP932）……日本のWindowsで長く使われてきたもの。役所のcsvにはまだ多い。</li>
 </ul>
-<p data-src="08-bind:71"><code>invalid UTF-8</code> と言われたら、<code>locale = locale(encoding = "CP932")</code> を付けてみる。逆にShift-JISだと思って指定したのに化けるなら、外してみる。この2択でほぼ解決します。</p>
-<p data-src="08-bind:73">なぜ「Shift-JIS」ではなく「CP932」と書くのかというと、CP932のほうが対応している文字の範囲が広く、Windowsで作られたファイルを読むならこちらが確実だからです。私はいつもCP932と書いています。</p></aside>
-<h2 id="bind_rows縦に積み上げる" data-src="08-bind:76">bind_rows——縦に積み上げる</h2>
-<p data-src="08-bind:78">ではいよいよ、<code>bind_rows()</code> 関数を使って、読み込んだデータを合体させていきます。</p>
-<div class="code" data-lang="R" data-src="08-bind:80"><pre><code>df &lt;- bind_rows(df2020,
+<p data-src="08-bind:70"><code>invalid UTF-8</code> と言われたら、<code>locale = locale(encoding = "CP932")</code> を付けてみる。逆にShift-JISだと思って指定したのに化けるなら、外してみる。この2択でほぼ解決します。</p>
+<p data-src="08-bind:72">なぜ「Shift-JIS」ではなく「CP932」と書くのかというと、CP932のほうが対応している文字の範囲が広く、Windowsで作られたファイルを読むならこちらが確実だからです。</p></aside>
+<h2 id="bind_rows縦に積み上げる" data-src="08-bind:75">bind_rows——縦に積み上げる</h2>
+<p data-src="08-bind:77">ではいよいよ、<code>bind_rows()</code> 関数を使って、読み込んだデータを合体させていきます。</p>
+<div class="code" data-lang="R" data-src="08-bind:79"><pre><code>df &lt;- bind_rows(df2020,
                 read_csv("data/人口データ2015.csv", skip = 2),
                 read_csv("data/人口データ2010.csv", skip = 5,
                          locale = locale(encoding = "CP932")))</code></pre></div>
-<p data-src="08-bind:87"><code>bind_rows()</code> 関数の括弧のなかでは、すでに読み込み済みの <code>df2020</code> と、2015年と2010年のデータをそれぞれ <code>read_csv()</code> 関数で読み込んだもののみっつがコンマでつながっています。これで合体させたものを、<code>df</code> というオブジェクトに代入しているわけです。</p>
-<p data-src="08-bind:89"><code>bind_rows()</code> がやっているのは、<strong>列の名前を見比べて、同じ名前の列を同じ列に積み上げる</strong>という作業です。だから列の並び順が違っていても平気ですし、片方にしかない列があっても、足りないほうはNAで埋めて合体してくれます。</p>
-<aside class="box box-tips" data-src="08-bind:91"><p class="box-title">何行になったか、必ず確かめる</p><div class="code" data-lang="R" data-src="08-bind:92"><pre><code>df %&gt;% nrow()</code></pre></div>
-<p data-src="08-bind:96">合体前のみっつを足した行数と合っていますか。また、年ごとの行数も見ておきましょう。</p>
-<div class="code" data-lang="R" data-src="08-bind:98"><pre><code>df %&gt;% count(調査年)</code></pre></div>
-<div class="code" data-lang="実行結果" data-src="08-bind:102"><pre><code># A tibble: 3 × 2
+<p data-src="08-bind:86"><code>bind_rows()</code> 関数の括弧のなかでは、すでに読み込み済みの <code>df2020</code> と、2015年と2010年のデータをそれぞれ <code>read_csv()</code> 関数で読み込んだものの三つがコンマでつながっています。これで合体させたものを、<code>df</code> というオブジェクトに代入しているわけです。</p>
+<p data-src="08-bind:88"><code>bind_rows()</code> がやっているのは、<strong>列の名前を見比べて、同じ名前の列を同じ列に積み上げる</strong>という作業です。だから列の並び順が違っていても平気ですし、片方にしかない列があっても、足りないほうはNAで埋めて合体してくれます。</p>
+<aside class="box box-tips" data-src="08-bind:90"><p class="box-title">何行になったか、必ず確かめる</p><div class="code" data-lang="R" data-src="08-bind:91"><pre><code>df %&gt;% nrow()</code></pre></div>
+<p data-src="08-bind:95">合体前の三つを足した行数と合っていますか。また、年ごとの行数も見ておきましょう。</p>
+<div class="code" data-lang="R" data-src="08-bind:97"><pre><code>df %&gt;% count(調査年)</code></pre></div>
+<div class="code" data-lang="実行結果" data-src="08-bind:101"><pre><code># A tibble: 3 × 2
   調査年       n
   &lt;chr&gt;    &lt;int&gt;
 1 2010年度  1916
 2 2015年度  1916
 3 2020年度  1916</code></pre></div>
-<p data-src="08-bind:105">みっつの年が、それぞれ1916行。市区町村と政令市の区を合わせた数なので、これで正しそうです。</p>
-<p data-src="08-bind:107"><code>count()</code> は「その列の値ごとに何行あるか」を数えてくれる関数で、<code>group_by</code> ＋ <code>summarize(n())</code> の省略版です。</p></aside>
-<h2 id="列の名前をそろえる" data-src="08-bind:110">列の名前をそろえる</h2>
-<p data-src="08-bind:112">さて、この <code>df</code> というtibbleには余計な列がたくさんあったり、列の名前が長ったらしいうえに日本語なので扱いにくかったりします。シンプルなものに変えてみましょう。<code>df2020</code> のときにやったのと基本は同じですが、今回は複数の年のものが混じっているのが大きな違いです。この年のデータと地域名、それぞれの総人口という3つの列に絞りましょう。</p>
-<div class="code" data-lang="R" data-src="08-bind:114"><pre><code>df_simple &lt;- df %&gt;%
+<p data-src="08-bind:104">三つの年が、それぞれ1916行。市区町村と政令市の区を合わせた数なので、これで正しそうです。</p>
+<p data-src="08-bind:106"><code>count()</code> は「その列の値ごとに何行あるか」を数えてくれる関数で、<code>group_by</code> ＋ <code>summarize(n())</code> の省略版です。</p></aside>
+<h2 id="列の名前をそろえる" data-src="08-bind:109">列の名前をそろえる</h2>
+<p data-src="08-bind:111">さて、この <code>df</code> というtibbleには余計な列がたくさんあったり、列の名前が長ったらしいうえに日本語なので扱いにくかったりします。シンプルなものに変えてみましょう。<code>df2020</code> のときにやったのと基本は同じですが、今回は複数の年のものが混じっているのが大きな違いです。この年のデータと地域名、それぞれの総人口という三つの列に絞りましょう。</p>
+<div class="code" data-lang="R" data-src="08-bind:113"><pre><code>df_simple &lt;- df %&gt;%
   select(調査年,
          地域,
          `A1101_総人口【人】`) %&gt;%
   rename(year = 調査年,
          region = 地域,
          population = `A1101_総人口【人】`)</code></pre></div>
-<p data-src="08-bind:124">これで、「年」「自治体名」「人口」の3列だけのすっきりしたデータになりました。</p>
-<aside class="box box-warn" data-src="08-bind:126"><p class="box-title">bind_rowsがうまくいかないとき</p><p data-src="08-bind:127"><code>bind_rows()</code> は便利ですが、つまずきやすいのは次のふたつです。</p>
-<ol data-src="08-bind:129">
-<li><strong>列名が微妙に違う。</strong> 「地域 コード」と「地域コード」のように空白の有無が違うだけでも、別の列として扱われます。結果として、片方がNAで埋まった不気味なtibbleができあがります。合体したら <code>colnames()</code> で列名を眺め、似た名前の列が2つできていないか確かめてください。</li>
-<li><strong>データ型が違う。</strong> 同じ名前の列なのに、片方は数値、片方は文字列だと、そもそもエラーで止まります。これは<a href="10-datatype.html">10章</a>で正面から扱います。</li>
+<p data-src="08-bind:123">これで、「年」「自治体名」「人口」の3列だけのすっきりしたデータになりました。</p>
+<aside class="box box-warn" data-src="08-bind:125"><p class="box-title">bind_rowsがうまくいかないとき</p><p data-src="08-bind:126"><code>bind_rows()</code> は便利ですが、つまずきやすいのは次の二つです。</p>
+<ol data-src="08-bind:128">
+<li>列名が微妙に違う。「地域 コード」と「地域コード」のように空白の有無が違うだけでも、別の列として扱われます。結果として、片方がNAで埋まった不気味なtibbleができあがります。合体したら <code>colnames()</code> で列名を眺め、<strong>似た名前の列が二つできていないか確かめてください</strong>。</li>
+<li>データ型が違う。同じ名前の列なのに、片方は数値、片方は文字列だと、そもそもエラーで止まります。これは<a href="10-datatype.html">10章</a>で正面から扱います。</li>
 </ol>
-<p data-src="08-bind:132">1番のほうはエラーは出ませんが、中身を見るとぜんぜんうまくいっていない。こちらのほうが厄介です。</p></aside>
-<p data-src="08-bind:135">次の章では、くっつけたデータを、年を列の名前にした横長の形に組み替えたり、縦長に戻したりします。</p>
+<p data-src="08-bind:131">1番のほうはエラーは出ませんが、中身を見るとぜんぜんうまくいっていない。こちらのほうが厄介です。</p></aside>
+<p data-src="08-bind:134">次の章では、くっつけたデータを、年を列の名前にした横長の形に組み替えたり、縦長に戻したりします。</p>
     </article>
     <nav class="pager"><a class="prev" href="07-group.html"><span>前へ</span>07 集計する</a><a class="next" href="09-pivot.html"><span>次へ</span>09 縦長と横長</a></nav>
     <footer class="site-foot">

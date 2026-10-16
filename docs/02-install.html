@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RとRStudioを入れる | 記者のためのR講座</title>
-<meta name="description" content="どちらも無料です。入れたら、4つに区切られた画面の見方をおさえましょう。">
+<meta name="description" content="どちらも無料です。入れたら、四つに区切られた画面の見方をおさえましょう。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
@@ -69,7 +69,7 @@
     <article>
       <p class="kicker">はじめに</p>
       <h1>RとRStudioを入れる</h1>
-      <p class="lead">どちらも無料です。入れたら、4つに区切られた画面の見方をおさえましょう。</p>
+      <p class="lead">どちらも無料です。入れたら、四つに区切られた画面の見方をおさえましょう。</p>
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#Rを入れる">Rを入れる</a></li><li><a href="#RStudioを入れる">RStudioを入れる</a></li><li><a href="#RStudioの画面">RStudioの画面</a></li><li><a href="#その他覚えておくと楽になるキー操作">その他、覚えておくと楽になるキー操作</a></li></ul></nav>
       <h2 id="Rを入れる" data-src="02-install:8">Rを入れる</h2>
 <ol data-src="02-install:10">
@@ -90,7 +90,7 @@
 <p data-src="02-install:30">インストールできたRStudioを開いてみましょう。最初の画面は3区画に分かれています。</p>
 <h3 id="左側Consoleコンソール" data-src="02-install:32">左側——Console（コンソール）</h3>
 <p data-src="02-install:34">コンピューターに実行させたい命令を「コード」と呼ばれる文章にして、ここに打ち込みます。画面に <code>&gt;</code> という記号が出ているときは、命令を聞く準備がととのっていますよ、さあどうぞ命令してください、という合図です。</p>
-<p data-src="02-install:36">一方で <code>+</code> の記号が出ているときは、前に入力した命令が最後まで終わっていませんよ、という意味です（コンピューターが「からの～～～？」と聞いてきている状態です）。閉じ括弧を忘れたときによく出ます。Escキーを押せば <code>&gt;</code> の状態に戻すことができます。</p>
+<p data-src="02-install:36">一方で <code>+</code> の記号が出ているときは、前に入力した命令が最後まで終わっていませんよ、という意味です（コンピューターが「からの～～～？」と聞いてきている状態です）。閉じ括弧を忘れたときによく出ます。<strong>Escキーを押せば <code>&gt;</code> の状態に戻すことができます</strong>。</p>
 <h3 id="右上EnvironmentとHistory" data-src="02-install:38">右上——EnvironmentとHistory</h3>
 <p data-src="02-install:40">「Environment（環境）」タブでは、いまRStudioで扱っているデータなどにどんなものがあるのかを確認できます。最初はまだ何のデータも読み込んでいないので、空っぽになっています。</p>
 <p data-src="02-install:42">「History（履歴）」タブには、コンソールですでに実行された命令が記録されています。</p>
@@ -100,20 +100,20 @@
 <p data-src="02-install:50">作業にはもう一つの区画が必要になります。データ処理や分析の手順を一連のコードとして書き残し、保存するための場所です。R MarkdownやR Scriptなどの形で保存しておくことができますが、ここではR Markdownでのやり方を書いていきます。</p>
 <figure class="fig" data-src="02-install:52"><img src="images/02-new-rmd.png" alt="RStudioのFileメニューからNew File→R Markdownを選ぶ操作を示した画面" loading="lazy"><figcaption>File → New File → R Markdown</figcaption></figure>
 <p data-src="02-install:54">左上にある「File」をクリックし、さらに「New File」→「R Markdown」と進んでいくと、ファイル名の最後の部分（拡張子）が <code>.Rmd</code> となっているR Markdownの新しいファイルを開くことができます。</p>
-<p data-src="02-install:56">この区画は、コードを保存しておくための場所です。データ分析の過程は試行錯誤の連続ですので、コンソールの区画を使っていろいろなコードを実行して、結果がどうなるかをみてみる必要がありますが、試した結果うまくいって、後に残しておきたくなったコードをR Markdownのほうに書いておくわけです。</p>
+<p data-src="02-install:56">この区画は、コードを保存しておくための場所です。データ分析の過程は試行錯誤の連続ですので、コンソールの区画を使っていろいろなコードを実行して、結果がどうなるかをみてみる必要がありますが、試した結果うまくいって、<strong>後に残しておきたくなったコードをR Markdownのほうに書いておく</strong>わけです。</p>
 <p data-src="02-install:58">また、R Markdownはコンピューターに実行させる命令を書いておくコードの部分と、人間のための（コンピューターには読ませない）メモを書いておくMarkdown部分に分かれています。保存したうえで、htmlやPDFなどの形式で出力することもできます。</p>
 <aside class="box box-note" data-src="02-install:60"><p class="box-title">コードの部分の作り方</p><p data-src="02-install:61">R Markdownのなかで、コードを書く場所（チャンクと呼びます）はこんな形をしています。</p>
 <div class="code" data-lang="画面に出るもの" data-src="02-install:63"><pre><code>```{r}
 library(tidyverse)
 ```</code></pre></div>
-<p data-src="02-install:69">この3つのバッククオートで挟まれた中に書いたものだけが、Rの命令として実行されます。外側に書いた文字は、ぜんぶ人間向けのメモとして扱われます。チャンクを作るのは <strong>Ctrl＋Alt＋I</strong>（MacはCmd＋Option＋I）が早いです。</p></aside>
+<p data-src="02-install:69">この三つのバッククオートで挟まれた中に書いたものだけが、Rの命令として実行されます。外側に書いた文字は、ぜんぶ人間向けのメモとして扱われます。チャンクを作るのは Ctrl＋Alt＋I（MacはCmd＋Option＋I）が早いです。</p></aside>
 <h2 id="その他覚えておくと楽になるキー操作" data-src="02-install:72">その他、覚えておくと楽になるキー操作</h2>
-<p data-src="02-install:74">最初のうちはマウスでちまちま実行してもいいのですが、この3つだけは早めに覚えると作業がラクになります。</p>
+<p data-src="02-install:74">最初のうちはマウスでちまちま実行してもいいのですが、この三つだけは早めに覚えると作業がラクになります。</p>
 <div class="table-wrap" data-src="02-install:76"><table><thead><tr><th>キー</th><th>何が起きるか</th></tr></thead><tbody><tr><td>Ctrl＋Enter</td><td>カーソルがある行（または選択した範囲）のコードを実行する</td></tr><tr><td>Ctrl＋Shift＋M</td><td>パイプ演算子 <code>%&gt;%</code> が出てくる（これが何をするものかはまた後ほど）</td></tr><tr><td>Ctrl＋Shift＋Enter</td><td>いま書いているチャンクを丸ごと実行する</td></tr></tbody></table></div>
 <p data-src="02-install:82">MacではCtrlをCmdに読み替えてください。</p>
 <p data-src="02-install:84">それからもう一つ。このサイトでは、コードを書いている部分はコピペができないようにしています。コードをよく見て、自分で手を動かして同じものを書くという訓練が、Rの各種コマンドや文法を覚えるうえでとても役に立つと思うからです。</p>
 <p data-src="02-install:86">Rに限らずプログラミング言語は、ちょっとした文法ミスでエラーが頻発します。それはたとえば変な場所に意図しない記号が紛れ込んでいたりとか、半角にすべきところを全角にしてたりとか、非常にささいなものです。何でエラーが出るんじゃぁといらいらすることは多々ありますが、そういうのを繰り返すうちにはまりやすいパターンもわかり、また文法やコマンドがだんだんと身についてくるわけです。</p>
-<p data-src="02-install:88">寺子屋みたいな古い学習法のようにも思えますが、とにかくまずは手を動かす。我慢しておつきあいください。</p>
+<p data-src="02-install:88">寺子屋みたいな古い学習法のようにも思えますが、<strong>とにかくまずは手を動かす</strong>。我慢しておつきあいください。</p>
 <p data-src="02-install:90">次の章では、作業場所をひとまとめにする「プロジェクト」をつくり、道具箱にあたる「パッケージ」を入れます。</p>
     </article>
     <nav class="pager"><a class="prev" href="01-hajimeni.html"><span>前へ</span>01 Rとは何か</a><a class="next" href="03-project.html"><span>次へ</span>03 プロジェクトとパッケージ</a></nav>

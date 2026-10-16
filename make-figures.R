@@ -186,17 +186,38 @@ save_out("09-change",
            mutate(population_increase_rate = (`2020年度` / `2010年度` - 1) * 100) %>%
            select(region, `2010年度`, `2020年度`, population_increase_rate), n = 6)
 
-# 10章　データ型が合わなくてbind_rowsが失敗する
+# 10章　データ型が合わなくてbind_rowsが失敗する（本文のコードと同じ5年分で合体させる）
 type_err <- tryCatch(
   bind_rows(
-    read_csv(paste0(DATA, "人口データ2020.csv"), skip = 8,
+    df2020,
+    read_csv(paste0(DATA, "人口データ2015.csv"), skip = 2,
+             show_col_types = FALSE, name_repair = "unique_quiet"),
+    read_csv(paste0(DATA, "人口データ2010.csv"), skip = 5,
+             locale = locale(encoding = "CP932"),
              show_col_types = FALSE, name_repair = "unique_quiet"),
     read_excel(paste0(DATA, "人口データ2005.xls"), skip = 8,
+               .name_repair = "unique_quiet"),
+    read_excel(paste0(DATA, "人口データ2000.xlsx"), skip = 8,
                .name_repair = "unique_quiet")),
   error = function(e) conditionMessage(e))
 writeLines(as.character(type_err), file.path(OUT_TXT, "10-type-error.txt"),
            useBytes = TRUE)
 cat("○ outputs/10-type-error.txt\n")
+
+# 10章　tibbleを表示すると、列名の下にデータ型が出る
+save_out("10-df2020", df2020, n = 6)
+save_out("10-df2005",
+         read_excel(paste0(DATA, "人口データ2005.xls"), skip = 8,
+                    .name_repair = "unique_quiet"), n = 6)
+# 人口の列（表示のいちばん右の列）のデータ型だけに色をつける。«» で囲むとサイトで色がつく
+mark_last_type <- function(name, type) {
+  f <- file.path(OUT_TXT, paste0(name, ".txt"))
+  txt <- read_lines(f)
+  txt[3] <- sub(paste0("(.*)", type), paste0("\\1«", type, "»"), txt[3])   # 3行目が型の行
+  writeLines(txt, f, useBytes = TRUE)
+}
+mark_last_type("10-df2020", "<dbl>")
+mark_last_type("10-df2005", "<chr>")
 
 # 10章　文字列を数値に戻すとNAが生まれる
 save_out("10-na-check",

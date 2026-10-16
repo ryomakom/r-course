@@ -2,7 +2,7 @@
 title: プロジェクトとパッケージ
 nav: 03 プロジェクトとパッケージ
 kicker: はじめに
-lead: 作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この2つを用意すれば準備は終わりです。
+lead: 作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この二つを用意すれば準備は終わりです。
 ---
 
 ## プロジェクトをつくる
@@ -13,7 +13,7 @@ RStudioの「プロジェクト」は、ファイルやフォルダを整理し�
 
 プロジェクトを使う最大のメリットは、分析環境の再現性が高まる点です。たとえば「テーマ別」「月ごと」など、記事の枠組みに合わせてプロジェクトを切り分ければ、それぞれのフォルダ内だけでコードやデータをやり取りすることになるため、混乱を防ぐことができます。さらに、プロジェクトごとに作業スペースが独立しているので、一つのプロジェクトを閉じて別のプロジェクトを開けば、作業環境がきれいに切り替わるのも便利です。
 
-![RStudioのNew Projectダイアログ。New Directory、Existing Directory、Version Controlの3つが並んでいる](images/03-new-project.png "New Project の選択画面。ふだんはNew DirectoryかExisting Directory")
+![RStudioのNew Projectダイアログ。New Directory、Existing Directory、Version Controlの三つが並んでいる](images/03-new-project.png "New Project の選択画面。ふだんはNew DirectoryかExisting Directory")
 
 新しくプロジェクトをつくるときには、RStudioの画面左上にある「File」から「New Project」→「New Directory」と進み、また「New Project」を選べば、新しいフォルダでそのプロジェクトを始めることができます。既存のフォルダでプロジェクトを始めたい場合には、「New Directory」ではなく「Existing Directory」を選びましょう。「Version Control」はGitHubと連携するためのものらしいのですが、ここではひとまず忘れてください（実は私自身が使いこなせていません……）。
 
@@ -39,7 +39,7 @@ RStudioの「プロジェクト」は、ファイルやフォルダを整理し�
 
 ## tidyverseを入れる
 
-では、いよいよ作業に入りましょう……と言いたいところなのですが、その前にもうひとつだけ。データの基本的な処理に使われるtidyverse（タイディバース）と呼ばれるパッケージをインストールします。
+では、いよいよ作業に入りましょう……と言いたいところなのですが、その前にもう一つだけ。データの基本的な処理に使われるtidyverse（タイディバース）と呼ばれるパッケージをインストールします。
 
 ```r
 install.packages("tidyverse")
@@ -54,7 +54,7 @@ library(tidyverse)
 こちらの命令は、次にRStudioを開いたときにも、改めてやり直さなくてはいけません。
 
 :::warn install.packages と library の違い
-- `install.packages("tidyverse")` は「道具を買ってきて棚に置く」。**一度やれば二度目はいらない**（というか、やると時間の無駄です）。
+- `install.packages("tidyverse")` は「道具を買ってきて棚に置く」。一度やれば二度目はいらない（というか、やると時間の無駄です）。
 - `library(tidyverse)` は「棚から道具を取り出して机に置く」。**RStudioを開くたびに毎回必要**。
 
 「昨日は動いたコードが今日はエラーになる」というときの原因は、たいていこれです。`Error: object 'read_csv' not found` とか `関数 "%>%" を見つけることができませんでした` みたいなエラーが出たら、まず `library(tidyverse)` を実行し忘れていないか確かめてください。

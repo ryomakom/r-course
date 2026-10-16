@@ -87,7 +87,7 @@
 <p data-src="04-import:42"><code>read_csv("data/xxx.csv")</code> という命令（つまり「data」というフォルダのなかにおいてある「xxx.csv」というファイルを読み込んでくださいね、という命令）によって読みこんだtibble形式のデータが、<code>df</code> という「オブジェクト」に左向きの矢印で注入された、みたいな感じでイメージしてください（<code>df</code>というのは、この手の教科書的なものによく出てきますが、「データフレーム」の頭文字です）。</p>
 <p data-src="04-import:44">オブジェクトというのもプログラミング業界の専門用語で、なんだかとっつきにくいですが、データとか数字とかのかたまりのようなものだと考えてください。</p>
 <aside class="box box-tips" data-src="04-import:46"><p class="box-title">名前のつけかた</p><p data-src="04-import:47"><code>df</code> でもいいのですが、いくつもデータを扱いはじめると「dfって何のデータだっけ」と必ず混乱します。2020年の人口だったら<code>jinko2020</code>、2025年だったら<code>jinko2025</code> みたいに、中身が想像できる名前をつけたほうがいいでしょう。</p>
-<p data-src="04-import:49">ただし名前は<strong>半角英数字とアンダースコア</strong>で。数字から始める名前（<code>2020data</code> など）も使えません。</p></aside>
+<p data-src="04-import:49">ただし名前は半角英数字とアンダースコアで。数字から始める名前（<code>2020data</code> など）も使えません。</p></aside>
 <h2 id="実際に読んでみる" data-src="04-import:52">実際に読んでみる</h2>
 <p data-src="04-import:54">はい、というわけで実践です。</p>
 <p data-src="04-import:56">2020年時点での全国の各自治体における人口のデータ（国勢調査）を使います。</p>
@@ -96,7 +96,7 @@
 <p data-src="04-import:62">（この先の章で使うファイルも<a href="a4-data.html">付録D</a>にまとめて置いてあります。先に全部落としておきたい人はそちらから。もとの入手先はe-Statで、その手順も付録Dに書きました）</p>
 <p data-src="04-import:64">ただまぁ、RStudioで読み込む前に、中身がどんななのかExcelを使ってチェックしてみましょうか。</p>
 <figure class="fig" data-src="04-import:66"><img src="images/04-population-csv.png" alt="Excelでファイルを開いてみると、こんな中身だった" loading="lazy"><figcaption>Excelでファイルを開いてみると、こんな中身だった</figcaption></figure>
-<p data-src="04-import:68">どうも、8行目まではいろんな説明文とか能書きとかが書かれていて、必要なデータは9行目からのようです。つまり、8行目までは飛ばしてしまったほうがよさそうです。なので、読み込むコードはこんな感じになります。</p>
+<p data-src="04-import:68">どうも、8行目まではいろんな説明文とか能書きとかが書かれていて、必要なデータ（と、そのラベル）は9行目からのようです。つまり、8行目までは飛ばしてしまったほうがよさそうです。なので、読み込むコードはこんな感じになります。</p>
 <div class="code" data-lang="R" data-src="04-import:70"><pre><code>df2020 &lt;- read_csv("data/人口データ2020.csv", skip = 8)</code></pre></div>
 <p data-src="04-import:74"><code>skip=</code> というのの後に、飛ばしたい行数分の数字を入力するわけです（skipの行数を指定しなければ、最初の行からすべて読み込みます）。これで最初の8行を無視した形でcsvファイルを読み込み、さらにそれを <code>df2020</code> というオブジェクトに入れることができました。</p>
 <p data-src="04-import:76">ファイルをパソコン内に保存することなく、ウェブ上にあるものを直接読み込むというやり方でも、同じことができます。ウェブ上にあるファイルのありかを括弧内に入力して、</p>
@@ -107,12 +107,12 @@
 -,データが得られないもの
 X,数値が秘匿されているもの</code></pre></div>
 <p data-src="04-import:93">これは凡例です。表のなかに <code>***</code> や <code>-</code> や <code>X</code> が入っていたら、それぞれ意味が違うということが書いてあります。「調べていない」のと「秘匿した」のと「データが取れなかった」のは、まったく別の話です。</p>
-<p data-src="04-import:95"><code>skip = 8</code> で読み飛ばすのは、あくまで<strong>Rに読ませない</strong>という意味であって、<strong>自分が読まなくていい</strong>という意味ではありません。ここを読まずに集計すると、記事に書く注記を間違えます。<a href="10-datatype.html">10章</a>でこの話に戻ってきます。</p></aside>
-<h2 id="中身を見る" data-src="04-import:99">中身を見る</h2>
-<p data-src="04-import:101">さて、<code>df2020</code> にはどんなデータが入ったんでしょうか。それを見るためにはシンプルに</p>
-<div class="code" data-lang="R" data-src="04-import:103"><pre><code>df2020</code></pre></div>
-<p data-src="04-import:107">と入力すればいいわけですが、こんなふうに表示されます（列が多いので、はじめの6列だけにしてあります）。</p>
-<div class="code" data-lang="実行結果" data-src="04-import:109"><pre><code># A tibble: 1,916 × 6
+<p data-src="04-import:95"><code>skip = 8</code> で読み飛ばすのは、あくまでRに読ませないという意味であって、<strong>自分が読まなくていいという意味ではありません</strong>。ここを読まずに集計すると、記事に書く注記を間違えます。<a href="10-datatype.html">10章</a>でこの話に戻ってきます。</p></aside>
+<h2 id="中身を見る" data-src="04-import:98">中身を見る</h2>
+<p data-src="04-import:100">さて、<code>df2020</code> にはどんなデータが入ったんでしょうか。それを見るためにはシンプルに</p>
+<div class="code" data-lang="R" data-src="04-import:102"><pre><code>df2020</code></pre></div>
+<p data-src="04-import:106">と入力すればいけます。こんなふうに表示されます（列が多いので、はじめの6列だけにしてあります）。</p>
+<div class="code" data-lang="実行結果" data-src="04-import:108"><pre><code># A tibble: 1,916 × 6
   `調査年 コード` 調査年   `地域 コード` 地域   `/項目` `A1101_総人口【人】`
             &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;chr&gt;  &lt;lgl&gt;                  &lt;dbl&gt;
 1      2020100000 2020年度 01100         北海道 札… NA                   1973395
@@ -146,12 +146,12 @@ df2020 %&gt;% colnames()  # 列の名前だけ一覧にする</code></pre></div>
 <p data-src="04-import:162">また、関数はもともと、適用する対象の変数などを丸括弧の中身に入れ込んでいくという書き方だったので、パイプ演算子を使えば丸括弧の中身が空っぽになる場合でも、丸括弧じたいは残すのが基本的なお作法とされているわけです。ま、<code>view()</code> とかのシンプルな関数なら、実際には丸括弧がなくてもちゃんと動いちゃうんですけどね。</p>
 <p data-src="04-import:164">それから、より新しいバージョンのRでは、<code>|&gt;</code> という記号でパイプ演算子を表すこともあります。何がちがうかというと、こっちのほうが何となくシュッとしてます。あとは同じです。</p>
 <p data-src="04-import:166">……というのは厳密には間違いで、詳しくいうと動作に少し違いがあるらしいんですが、私はよく分かりません。この講座では <code>%&gt;%</code> で通します。</p>
-<p data-src="04-import:168">あと、前節でも触れましたが、いちいち3文字打ち込むのがめんどくさいよ、というときには、コントロールキー(Ctrl)とシフトキー(Shift)、「M」のキーのみっつを同時に打つと、パイプ演算子が出てきます。これを使うとだいぶ楽になります。</p>
+<p data-src="04-import:168">あと、前節でも触れましたが、いちいち3文字打ち込むのがめんどくさいよ、というときには、コントロールキー(Ctrl)とシフトキー(Shift)、「M」のキーの三つを同時に打つと、パイプ演算子が出てきます。これを使うとだいぶ楽になります。</p>
 <aside class="box box-note" data-src="04-import:170"><p class="box-title">改行の位置</p><p data-src="04-import:171">長いコードは、パイプ演算子のところで改行して書くのがお作法です。</p>
 <div class="code" data-lang="R" data-src="04-import:173"><pre><code>df2020 %&gt;%
   select(地域) %&gt;%
   view()</code></pre></div>
-<p data-src="04-import:179">改行するときは、<strong><code>%&gt;%</code> を行の末尾に置いて、次の行を書く</strong>。逆に <code>%&gt;%</code> を行の頭に置くと、Rは前の行で命令が終わったと判断してしまい、うまく動きません。</p>
+<p data-src="04-import:179">改行するときは、<code>%&gt;%</code> <strong>を行の末尾に置いて、次の行を書く</strong>。逆に <code>%&gt;%</code> を行の頭に置くと、Rは前の行で命令が終わったと判断してしまい、うまく動きません。</p>
 <p data-src="04-import:181">この形で書いておくと、上から1行ずつ足したり削ったりして「ここまでの段階でデータはどうなっているか」を確かめられます。これは実際の作業でものすごく多用する技です。</p></aside>
 <p data-src="04-import:184">次の章から、この形でデータを加工していきます。</p>
     </article>

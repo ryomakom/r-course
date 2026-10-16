@@ -69,7 +69,7 @@ lead: 「あれ、何だっけ」の8割はここで済むように並べまし�
 | `arrange(x)` | xの小さい順に並べる |
 | `arrange(desc(x))` | xの大きい順に並べる |
 | `slice_max(x, n = 10)` | xが大きい上位10行だけ取り出す |
-| `distinct(df, code, .keep_all = TRUE)` | codeが重複する行を1つに絞る |
+| `distinct(df, code, .keep_all = TRUE)` | codeが重複する行を一つに絞る |
 
 ## 集計する
 
@@ -89,7 +89,7 @@ lead: 「あれ、何だっけ」の8割はここで済むように並べまし�
 |---|---|
 | `bind_rows(a, b)` | 縦に積み上げる |
 | `left_join(b, by = join_by(code))` | codeをとっかかりに横にくっつける |
-| `left_join(b, by = join_by(year, code))` | 2つの列で突合する |
+| `left_join(b, by = join_by(year, code))` | 二つの列で突合する |
 | `left_join(b, by = join_by(code == shikuchoson_code))` | 名前が違う列同士で突合する |
 | `anti_join(b, by = join_by(code))` | 突合できなかった行を探す |
 | `full_join()` / `inner_join()` | 両方全部残す／両方にあるものだけ残す |
@@ -100,7 +100,7 @@ lead: 「あれ、何だっけ」の8割はここで済むように並べまし�
 |---|---|
 | `pivot_wider(names_from = year, values_from = population)` | 横長にする |
 | `pivot_longer(cols = -c(region), names_to = "year", values_to = "population")` | 縦長にする |
-| `pivot_wider(names_from = c(category, year), values_from = value)` | 2つの列を組み合わせた列名で横長にする |
+| `pivot_wider(names_from = c(category, year), values_from = value)` | 二つの列を組み合わせた列名で横長にする |
 
 ## 文字を扱う（stringr）
 
@@ -111,7 +111,7 @@ lead: 「あれ、何だっけ」の8割はここで済むように並べまし�
 | `str_c("a", "b")` | くっつける |
 | `str_sub(x, 1, 4)` | 1文字目から4文字目を取り出す |
 | `str_sub(x, -1, -1)` | 最後の1文字を取り出す |
-| `str_split_i(x, " ", 1)` | 半角スペースで区切って1つ目を取り出す |
+| `str_split_i(x, " ", 1)` | 半角スペースで区切って一つ目を取り出す |
 | `str_detect(x, "市")` | 「市」を含むかどうか（TRUE/FALSE） |
 | `str_subset(x, "syozai")` | 「syozai」を含むものだけに絞る |
 | `str_remove_all(x, ",")` | カンマを全部取り除く |
@@ -165,8 +165,8 @@ mutate(seireki = case_when(
 
 | 関数 | すること |
 |---|---|
-| `ifelse(条件, 合うとき, 合わないとき)` | 2つに振り分ける |
-| `case_when(条件1 ~ 値1, 条件2 ~ 値2, .default = 値3)` | 3つ以上に振り分ける |
+| `ifelse(条件, 合うとき, 合わないとき)` | 二つに振り分ける |
+| `case_when(条件1 ~ 値1, 条件2 ~ 値2, .default = 値3)` | 三つ以上に振り分ける |
 | `if_else()` | ifelseの厳しい版（型のずれを見つけてくれる） |
 
 ## グラフを描く（ggplot2）
@@ -191,7 +191,7 @@ mutate(seireki = case_when(
 
 | 書き方 | すること |
 |---|---|
-| `for (i in x) { ... }` | xの中身を1つずつ取り出して繰り返す |
+| `for (i in x) { ... }` | xの中身を一つずつ取り出して繰り返す |
 | `for (i in seq_along(x)) { ... }` | 番号で繰り返す |
 | `for (i in seq_len(nrow(df))) { ... }` | 表の行数だけ繰り返す |
 | `tibble()` | 空っぽの受け皿を作る |
@@ -205,7 +205,7 @@ mutate(seireki = case_when(
 | 関数 | すること |
 |---|---|
 | `read_html("url")` | ページのHTMLを読む（`library(rvest)`） |
-| `html_element("div.class-name table")` | 場所を指定して、最初に見つかったひとつを取り出す |
+| `html_element("div.class-name table")` | 場所を指定して、最初に見つかった一つを取り出す |
 | `html_elements("div.class-name table")` | 場所を指定して、見つかったものを全部取り出す |
 | `html_elements("a")` | リンクを全部取り出す |
 | `html_attr("href")` | リンク先のURLを取り出す |

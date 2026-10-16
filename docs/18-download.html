@@ -89,13 +89,13 @@ library(httr)</code></pre></div>
   read_html() %&gt;%                         # そのページのHTMLのコードを読み込む
   html_element("table.tableList") %&gt;%     # 最初にある &lt;table class="tableList"&gt; 要素を取得
   html_elements("tr") %&gt;%                 # 表の行を全部取得
-  html_element("a") %&gt;%                   # それぞれの行から、最初の &lt;a&gt; 要素を1つだけ取得（＝小選挙区のほう）
+  html_element("a") %&gt;%                   # それぞれの行から、最初の &lt;a&gt; 要素を一つだけ取得（＝小選挙区のほう）
   html_attr("href") %&gt;%                   # 各リンクの href 属性（URL部分）を抽出
   url_absolute("https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html") %&gt;%
   str_subset("xlsx")                      # 見出しの行（リンクがない）を除く
 
 length(excel_urls)</code></pre></div>
-<p data-src="18-download:50">ポイントは4行目と5行目です。<code>html_elements("tr")</code> で表の行を全部取り、<code>html_element("a")</code> でそれぞれの行から最初のリンクをひとつだけ取っています。<a href="16-scraping.html">16章</a>と<a href="17-loop.html">17章</a>で見たとおり、複数形の <code>html_elements()</code> は当てはまるものを全部、単数形の <code>html_element()</code> は最初のひとつを取ってきます。表のどの行も左に小選挙区のリンクがあるので、最初のリンクを取れば小選挙区のほうになるわけです。</p>
+<p data-src="18-download:50">ポイントは4行目と5行目です。<code>html_elements("tr")</code> で表の行を全部取り、<code>html_element("a")</code> でそれぞれの行から最初のリンクを一つだけ取っています。<a href="16-scraping.html">16章</a>と<a href="17-loop.html">17章</a>で見たとおり、複数形の <code>html_elements()</code> は当てはまるものを全部、単数形の <code>html_element()</code> は最初の一つを取ってきます。表のどの行も左に小選挙区のリンクがあるので、最初のリンクを取れば小選挙区のほうになるわけです。</p>
 <p data-src="18-download:52">いちばん上の見出しの行にはリンクがないので、そこだけ空っぽ（NA）が入ります。最後の <code>str_subset("xlsx")</code> では、この空っぽのやつを消すために、xlsxファイルを指すURLだけを残しなさいと命令しています。</p>
 <p data-src="18-download:54"><code>length(excel_urls)</code> が47になっていれば、47都道府県のぶんがそろっています。</p>
 <h2 id="全部落とす" data-src="18-download:56">全部落とす</h2>
@@ -116,7 +116,7 @@ length(excel_urls)</code></pre></div>
 <p data-src="18-download:76"><code>basename()</code> は、URLやファイルパスから最後の部分（＝ファイル名）だけを取り出す関数です。<code>https://www.soumu.go.jp/main_content/000979538.xlsx</code> なら <code>000979538.xlsx</code> が返ってきます。その前に<code>str_c()</code>関数で <code>download/</code> という文字列をくっつけて、保存先のパスにしています。<code>str_c("download/", .)</code> の最後にあるピリオドは、パイプで渡ってきたもの（ここではファイル名）を指しています。</p>
 <h2 id="途中で止まらないようにする" data-src="18-download:78">途中で止まらないようにする</h2>
 <p data-src="18-download:80">47回のうち1回でも、相手のサーバーにつながらないとか、返事が来なくて時間切れになるとかいったエラーが起きると、for文はそこで止まります。1回の失敗で最後まで走らないのは困るので、前章と同じように <code>tryCatch()</code> で囲みましょう。</p>
-<p data-src="18-download:82">ただ、ややこしいことに、リンク切れのほうは <code>GET()</code> にとってはエラーになりません。ファイルがなくても、相手のサーバーは「ページが見つかりません」という案内のページを返してきます。<code>GET()</code> はそれを受け取って、<code>.xlsx</code> という名前のままきちんと保存し、何事もなかったかのように次へ進んでしまうのです。中身はExcelではないので、次の章で読もうとしたところでエラーになります。</p>
+<p data-src="18-download:82">ただ、ややこしいことに、リンク切れのほうは <code>GET()</code> にとってはエラーになりません。ファイルがなくても、相手のサーバーは「ページが見つかりません」という案内のページを返してきます。<code>GET()</code> はそれを受け取って、<code>.xlsx</code> という名前のままきちんと保存し、<strong>何事もなかったかのように次へ進んでしまう</strong>のです。中身はExcelではないので、次の章で読もうとしたところでエラーになります。</p>
 <p data-src="18-download:84">なので、返事の中身を確かめて、「見つかりません」のような返事だったらエラーとして扱うようにします。</p>
 <div class="code" data-lang="R" data-src="18-download:86"><pre><code>for (i in seq_along(excel_urls)) {
 
@@ -157,7 +157,7 @@ length(excel_urls)</code></pre></div>
 <p data-src="18-download:125">前のコードとの違いは、全体を <code>tryCatch()</code> で囲んで、前章と同じように ✅ と ⚠️ のメッセージを出すようにしたことに加えて、二つです。</p>
 <p data-src="18-download:127">一つめは、<code>GET()</code> の結果を <code>res</code> に入れて、<code>stop_for_status(res)</code> にかけていること。<code>stop_for_status()</code> は、サーバーからの返事が「見つかりません」や「サーバーの調子が悪いです」といった失敗の知らせだったときに、エラーを起こしてくれる関数です。これで、リンク切れも <code>error = function(e)</code> のほうに回るようになります。</p>
 <p data-src="18-download:129">二つめは、<code>error = function(e)</code> のなかの <code>unlink(filename)</code>。<code>unlink()</code> はファイルを削除する関数です。失敗したときには、「見つかりません」のページや、途中で切れた空っぽのファイルが <code>download</code> フォルダに残ってしまうので、それを消しています。こうしておけば、<code>download</code> フォルダに残っているのは、ちゃんと落ちてきたファイルだけになります。</p>
-<p data-src="18-download:131">全部終わったら、落ちてきたファイルを数えて確かめましょう。</p>
+<p data-src="18-download:131">全部終わったら、<strong>落ちてきたファイルを数えて確かめましょう</strong>。</p>
 <div class="code" data-lang="R" data-src="18-download:133"><pre><code>list.files("download")
 length(list.files("download"))</code></pre></div>
 <p data-src="18-download:138"><code>list.files()</code> は、フォルダのなかにあるファイルの名前を一覧にする関数です。47になっていますか。足りなければ、⚠️ が出たものを探して、そのファイルだけもう一度落とします。</p>
