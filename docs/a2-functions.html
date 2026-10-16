@@ -28,9 +28,9 @@
 <li><a href="index.html">トップ</a></li>
 </ul>
 <p class="nav-part">はじめに</p><ul>
-<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
-<li><a href="02-install.html">RとRStudioを入れる</a></li>
-<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
 </ul>
 <p class="nav-part">第1部　データを読む・加工する</p><ul>
 <li><a href="04-import.html">04 データを読み込む</a></li>
@@ -40,7 +40,7 @@
 <li><a href="08-bind.html">08 縦にくっつける</a></li>
 <li><a href="09-pivot.html">09 縦長と横長</a></li>
 <li><a href="10-datatype.html">10 データ型でつまずく</a></li>
-<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
 </ul>
 <p class="nav-part">第2部　データを見る</p><ul>
 <li><a href="12-line.html">12 折れ線グラフ</a></li>
@@ -50,9 +50,9 @@
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
 <li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="17-loop.html">17 まとめて集める</a></li>
 <li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを扱いやすく</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
 <li><a href="20-error.html">20 エラーとの付き合い方</a></li>
@@ -116,7 +116,7 @@
 <h2 id="ウェブから取る" data-src="a2-functions:203">ウェブから取る</h2>
 <div class="table-wrap" data-src="a2-functions:205"><table><thead><tr><th>関数</th><th>すること</th></tr></thead><tbody><tr><td><code>read_html("url")</code></td><td>ページのHTMLを読む（<code>library(rvest)</code>）</td></tr><tr><td><code>html_element("div.class-name table")</code></td><td>場所を指定して、最初に見つかったひとつを取り出す</td></tr><tr><td><code>html_elements("div.class-name table")</code></td><td>場所を指定して、見つかったものを全部取り出す</td></tr><tr><td><code>html_elements("a")</code></td><td>リンクを全部取り出す</td></tr><tr><td><code>html_attr("href")</code></td><td>リンク先のURLを取り出す</td></tr><tr><td><code>html_table()</code></td><td>表をtibbleに変える</td></tr><tr><td><code>html_text2()</code></td><td>中の文字だけを取り出す</td></tr><tr><td><code>url_absolute(x, "元のURL")</code></td><td>相対パスを完全なURLに直す</td></tr><tr><td><code>stop_for_status(res)</code></td><td>サーバーの返事が失敗（「見つかりません」など）ならエラーにする（<code>library(httr)</code>）</td></tr><tr><td><code>unlink("path")</code></td><td>ファイルを消す</td></tr><tr><td><code>GET(url, write_disk("path", overwrite = TRUE))</code></td><td>ファイルを落とす（<code>library(httr)</code>）</td></tr><tr><td><code>basename(url)</code></td><td>URLの末尾のファイル名だけ取り出す</td></tr></tbody></table></div>
 <h2 id="神エクセルを解体する" data-src="a2-functions:220">神エクセルを解体する</h2>
-<div class="table-wrap" data-src="a2-functions:222"><table><thead><tr><th>関数</th><th>すること</th></tr></thead><tbody><tr><td><code>xlsx_cells("path")</code></td><td>セルを1個ずつバラして読む（<code>library(tidyxl)</code>）</td></tr><tr><td><code>behead("up", "name")</code></td><td>上の見出しを剥がしてname列にする（<code>library(unpivotr)</code>）</td></tr><tr><td><code>behead("up-left", "name")</code></td><td>上にあって左に寄った見出しを剥がす</td></tr><tr><td><code>behead("left-up", "area")</code></td><td>左にあって上に寄った見出し（グループの先頭の行にだけ書かれた見出し）を剥がす</td></tr><tr><td><code>behead("left", "name")</code></td><td>左の見出しを剥がす</td></tr></tbody></table></div>
+<div class="table-wrap" data-src="a2-functions:222"><table><thead><tr><th>関数</th><th>すること</th></tr></thead><tbody><tr><td><code>xlsx_cells("path")</code></td><td>セルを1個ずつバラして読む（<code>library(tidyxl)</code>）</td></tr><tr><td><code>behead("up", "name")</code></td><td>上のラベルを剥がしてname列にする（<code>library(unpivotr)</code>）</td></tr><tr><td><code>behead("up-left", "name")</code></td><td>上にあって左に寄ったラベルを剥がす</td></tr><tr><td><code>behead("left-up", "area")</code></td><td>左にあって上に寄ったラベル（グループの先頭の行にだけ書かれたラベル）を剥がす</td></tr><tr><td><code>behead("left", "name")</code></td><td>左のラベルを剥がす</td></tr></tbody></table></div>
     </article>
     <nav class="pager"><a class="prev" href="a1-kigou.html"><span>前へ</span>A 記号と用語の辞典</a><a class="next" href="a3-shukudai.html"><span>次へ</span>C 宿題と作例</a></nav>
     <footer class="site-foot">

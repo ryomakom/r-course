@@ -1,4 +1,4 @@
-// 19章の behead() で、見出しがどう剥がされて、中身の各行に配られるかを見せるアニメーション。
+// 19章の behead() で、ラベルがどう剥がされて、中身の各行に配られるかを見せるアニメーション。
 // ・外部のライブラリは使わない（勉強会の会場や、ファイルを直接開いたときにも動くように）。
 // ・ページには、スクリプトが動かないとき用の静的な図（.fig-behead-static）も置いてある。
 //   アニメーションが組み立てられたら、そちらは隠す（印刷するときは静的な図を出す）。
@@ -27,7 +27,7 @@ function beheadAnim() {
   function tw(name) { for (var k = 0; k < TCOLS.length; k++) if (TCOLS[k][0] === name) return TCOLS[k][1]; }
   function ty(i) { return TY + TH * (i + 1); }
 
-  // シートの中身（A列の市区町村名、4行目の候補者名、5行目の党派名、数字のセル）
+  // シートの中身（A列の市区町村名、4行目の候補者名、5行目の政党名、数字のセル）
   var MUNI = { 6: '札幌市中央区', 7: '札幌市北区第１区', 8: '札幌市南区', 9: '札幌市西区第１区', 10: '北海道第１区 合計' };
   var NAME = { B: '小林　さとる', C: '道下　大樹' };
   var PARTY = { B: '日本維新の会', C: '立憲民主党' };
@@ -42,11 +42,11 @@ function beheadAnim() {
   var LAST = 4;
   // code: 光らせるコードの行（いくつでも）
   var STEPS = [
-    { code: [0, 1], note: 'セルがバラバラのまま。数字のセル（白）の上と左に、見出しのセル（色つき）がある' },
-    { code: [], note: '数字のセル1つが、整然データの1行になる（数字は numeric という列に入っている）' },
-    { code: [2], note: '"up"：数字のセルから見て「上」にある見出し（候補者名）を、name の列に入れる' },
-    { code: [3], note: '"up"：その次に「上」にある見出し（党派名）を、party の列に入れる' },
-    { code: [4], note: '"left"：数字のセルから見て「左」にある見出し（A列）を、municipality の列に入れる。いちばん下の「合計」の行は、このあと捨てる' }
+    { code: [0, 1], note: 'セルがバラバラのまま。数字のセル（白）の上と左に、ラベルのセル（色つき）がある' },
+    { code: [], note: '数字のセルひとつが、整然データの1行になる' },
+    { code: [2], note: '"up"：数字のセルから見て「上」にあるラベル（候補者名）を、name の列に入れる' },
+    { code: [3], note: '"up"：その次に「上」にあるラベル（政党名）を、party の列に入れる' },
+    { code: [4], note: '"left"：数字のセルから見て「左」にあるラベル（A列）を、municipality の列に入れる。いちばん下の「合計」の行も同じように配られる（あとで答え合わせに使う）' }
   ];
   // コードの行。[文字, 強調するか] の並び
   var CODE = [
@@ -66,7 +66,7 @@ function beheadAnim() {
     cells.push({ text: text, cls: cls, w: w, h: h, s: s });
   }
 
-  // 見出しのセル（剥がされると、その場にうすく残る）。A4・A5 も、その行といっしょに剥がされる
+  // ラベルのセル（剥がされると、その場にうすく残る）。A4・A5 も、その行といっしょに剥がされる
   add('候補者名', 'f-off', SW.A, RH, function (k) { return st(sx('A'), sy(4), k < 2 ? 1 : PEEL); });
   add('市区町村名＼政党名', 'f-off', SW.A, RH, function (k) { return st(sx('A'), sy(5), k < 3 ? 1 : PEEL); });
   ['B', 'C'].forEach(function (c) {
@@ -82,7 +82,7 @@ function beheadAnim() {
     add(v[2], 'f-cell', SW[v[1]], RH, function () { return st(sx(v[1]), sy(v[0]), PEEL); });
   });
 
-  // 右の表の見出し（最初からある）
+  // 右の表の列名（最初からある）
   TCOLS.forEach(function (c) {
     add(c[0], 'f-head', c[1], TH, function () { return st(tx(c[0]), TY); });
   });
@@ -99,7 +99,7 @@ function beheadAnim() {
     });
   });
 
-  // 配られる見出しのコピー：段 a より前は元のセルの上で見えず、段 a で右の表へ飛んでいく
+  // 配られるラベルのコピー：段 a より前は元のセルの上で見えず、段 a で右の表へ飛んでいく
   function copy(text, cls, col, i, srcX, srcY, a) {
     add(text, cls, tw(col), TH, function (k) {
       return k < a ? st(srcX, srcY, 0) : st(tx(col), ty(i));
@@ -115,9 +115,9 @@ function beheadAnim() {
   var arrows = [];
   function mid(c) { return sx(c) + SW[c] / 2; }
   ['B', 'C'].forEach(function (c) {
-    // up（候補者名）：数字のセルから、真上の見出しの行へ
+    // up（候補者名）：数字のセルから、真上のラベルの行へ
     arrows.push([2, 'M' + mid(c) + ' ' + (sy(10) + RH - 4) + ' V' + (sy(4) + RH + 2)]);
-    // up（党派名）
+    // up（政党名）
     arrows.push([3, 'M' + mid(c) + ' ' + (sy(10) + RH - 4) + ' V' + (sy(5) + RH + 2)]);
   });
   // left：数字のセルから、真横（左）のA列へ
@@ -125,9 +125,9 @@ function beheadAnim() {
     arrows.push([4, 'M' + (sx('C') + SW.C - 6) + ' ' + (sy(r) + RH / 2) + ' H' + (sx('A') + SW.A + 2)]);
   });
   var arrowLabels = [
-    [2, '"up"：上の見出しへ', sx('B'), sy(10) + RH + 18],
-    [3, '"up"：上の見出しへ', sx('B'), sy(10) + RH + 18],
-    [4, '"left"：左の見出しへ', sx('B'), sy(10) + RH + 18]
+    [2, '"up"：上のラベルへ', sx('B'), sy(10) + RH + 18],
+    [3, '"up"：上のラベルへ', sx('B'), sy(10) + RH + 18],
+    [4, '"left"：左のラベルへ', sx('B'), sy(10) + RH + 18]
   ];
 
   // ---- 組み立て
@@ -136,7 +136,7 @@ function beheadAnim() {
   var svg = document.createElementNS(SVGNS, 'svg');
   svg.setAttribute('viewBox', '0 0 720 ' + (ty(votes.length - 1) + TH + 14));
   svg.setAttribute('role', 'img');
-  svg.setAttribute('aria-label', 'behead() で見出しを剥がし、数字のセルの1行ずつに配っていく様子のアニメーション');
+  svg.setAttribute('aria-label', 'behead() でラベルを剥がし、数字のセルの1行ずつに配っていく様子のアニメーション');
   fig.appendChild(svg);
   var defs = document.createElementNS(SVGNS, 'defs');
   defs.innerHTML = '<marker id="bh-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
@@ -225,11 +225,7 @@ function beheadAnim() {
   var bReset = button('↺ 最初から');
   var bPrev = button('◀ 戻る');
   var bNext = button('次へ ▶');
-  fig.appendChild(bar);
-
-  var cap = document.createElement('figcaption');
-  cap.textContent = '「次へ」「戻る」で1段ずつ動きます。シートは北海道第１区のもので、D〜F列（ほかの候補者3人）とG列（得票数計）を省いています。それ以外の位置と中身は、もとのExcelのとおりです。';
-  fig.appendChild(cap);
+  fig.insertBefore(bar, svg);     // ボタンはアニメーションの上に置く
 
   host.appendChild(fig);
   var fallback = document.querySelector('.fig-behead-static');
@@ -262,7 +258,7 @@ function beheadAnim() {
     bPrev.disabled = busy || stage === 0;
     bReset.disabled = busy || stage === 0;
   }
-  // 1段だけ動かす（+1 で次へ、-1 で戻る）。戻るときは、配ったコピーが元の見出しへ帰っていく
+  // 1段だけ動かす（+1 で次へ、-1 で戻る）。戻るときは、配ったコピーが元のラベルへ帰っていく
   function step(d) {
     var to = stage + d;
     if (busy || to < 0 || to > LAST) return;

@@ -222,7 +222,7 @@ mutate(seireki = case_when(
 | 関数 | すること |
 |---|---|
 | `xlsx_cells("path")` | セルを1個ずつバラして読む（`library(tidyxl)`） |
-| `behead("up", "name")` | 上の見出しを剥がしてname列にする（`library(unpivotr)`） |
-| `behead("up-left", "name")` | 上にあって左に寄った見出しを剥がす |
-| `behead("left-up", "area")` | 左にあって上に寄った見出し（グループの先頭の行にだけ書かれた見出し）を剥がす |
-| `behead("left", "name")` | 左の見出しを剥がす |
+| `behead("up", "name")` | 上のラベルを剥がしてname列にする（`library(unpivotr)`） |
+| `behead("up-left", "name")` | 上にあって左に寄ったラベルを剥がす |
+| `behead("left-up", "area")` | 左にあって上に寄ったラベル（グループの先頭の行にだけ書かれたラベル）を剥がす |
+| `behead("left", "name")` | 左のラベルを剥がす |

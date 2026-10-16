@@ -305,7 +305,6 @@ for (i in sheet_names) {
     behead("up", "name") %>%
     behead("up", "party") %>%
     behead("left", "municipality") %>%
-    filter(name != "得票数計", !str_detect(municipality, "合計")) %>%
     mutate(district = i) %>%
     select(district, municipality, name, party, vote = numeric)
 
@@ -314,6 +313,8 @@ for (i in sheet_names) {
 ```
 
 ポイントは3つ。空っぽの `tibble()` を先に用意すること、`filter(sheet == i)` でそのシートだけに絞ること、`district = i` でシート名を情報として持ち込むこと。
+
+できあがった `vote_data` には、合計の行と得票数計の列から来た行も入っています。数えたり足したりするときは、19章の「数え上げて確かめる」のように、それを除いてから使って下さい。
 
 **発展。** 同じファイルを何度も `xlsx_cells()` で読み直しているので、シートが多いと遅くなります。先に1回だけ読んでおくと速くなります。
 
@@ -328,7 +329,6 @@ for (i in sheet_names) {
     behead("up", "name") %>%
     behead("up", "party") %>%
     behead("left", "municipality") %>%
-    filter(name != "得票数計", !str_detect(municipality, "合計")) %>%
     mutate(district = i) %>%
     select(district, municipality, name, party, vote = numeric)
 

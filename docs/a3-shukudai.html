@@ -28,9 +28,9 @@
 <li><a href="index.html">トップ</a></li>
 </ul>
 <p class="nav-part">はじめに</p><ul>
-<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
-<li><a href="02-install.html">RとRStudioを入れる</a></li>
-<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
 </ul>
 <p class="nav-part">第1部　データを読む・加工する</p><ul>
 <li><a href="04-import.html">04 データを読み込む</a></li>
@@ -40,7 +40,7 @@
 <li><a href="08-bind.html">08 縦にくっつける</a></li>
 <li><a href="09-pivot.html">09 縦長と横長</a></li>
 <li><a href="10-datatype.html">10 データ型でつまずく</a></li>
-<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
 </ul>
 <p class="nav-part">第2部　データを見る</p><ul>
 <li><a href="12-line.html">12 折れ線グラフ</a></li>
@@ -50,9 +50,9 @@
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
 <li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="17-loop.html">17 まとめて集める</a></li>
 <li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを扱いやすく</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
 <li><a href="20-error.html">20 エラーとの付き合い方</a></li>
@@ -311,15 +311,15 @@ for (i in sheet_names) {
     behead("up", "name") %&gt;%
     behead("up", "party") %&gt;%
     behead("left", "municipality") %&gt;%
-    filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
     mutate(district = i) %&gt;%
     select(district, municipality, name, party, vote = numeric)
 
   vote_data &lt;- bind_rows(vote_data, vote_data_temporaly)
 }</code></pre></div>
-<p data-src="a3-shukudai:316">ポイントは3つ。空っぽの <code>tibble()</code> を先に用意すること、<code>filter(sheet == i)</code> でそのシートだけに絞ること、<code>district = i</code> でシート名を情報として持ち込むこと。</p>
-<p data-src="a3-shukudai:318"><strong>発展。</strong> 同じファイルを何度も <code>xlsx_cells()</code> で読み直しているので、シートが多いと遅くなります。先に1回だけ読んでおくと速くなります。</p>
-<div class="code" data-lang="R" data-src="a3-shukudai:320"><pre><code>all_cells &lt;- xlsx_cells("download/000979538.xlsx")   # 1回だけ読む
+<p data-src="a3-shukudai:315">ポイントは3つ。空っぽの <code>tibble()</code> を先に用意すること、<code>filter(sheet == i)</code> でそのシートだけに絞ること、<code>district = i</code> でシート名を情報として持ち込むこと。</p>
+<p data-src="a3-shukudai:317">できあがった <code>vote_data</code> には、合計の行と得票数計の列から来た行も入っています。数えたり足したりするときは、19章の「数え上げて確かめる」のように、それを除いてから使って下さい。</p>
+<p data-src="a3-shukudai:319"><strong>発展。</strong> 同じファイルを何度も <code>xlsx_cells()</code> で読み直しているので、シートが多いと遅くなります。先に1回だけ読んでおくと速くなります。</p>
+<div class="code" data-lang="R" data-src="a3-shukudai:321"><pre><code>all_cells &lt;- xlsx_cells("download/000979538.xlsx")   # 1回だけ読む
 
 vote_data &lt;- tibble()
 
@@ -329,7 +329,6 @@ for (i in sheet_names) {
     behead("up", "name") %&gt;%
     behead("up", "party") %&gt;%
     behead("left", "municipality") %&gt;%
-    filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
     mutate(district = i) %&gt;%
     select(district, municipality, name, party, vote = numeric)
 

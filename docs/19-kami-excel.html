@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>神エクセルを解体する | 記者のためのR講座</title>
-<meta name="description" content="上に表題が載っていて、見出しが2段になっていて、シートが何枚もある。あのExcelを、tidyxlとunpivotrで機械が読める形に組み替えます。">
+<title>神の頭を切り落とす | 記者のためのR講座</title>
+<meta name="description" content="物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
@@ -28,9 +28,9 @@
 <li><a href="index.html">トップ</a></li>
 </ul>
 <p class="nav-part">はじめに</p><ul>
-<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
-<li><a href="02-install.html">RとRStudioを入れる</a></li>
-<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
 </ul>
 <p class="nav-part">第1部　データを読む・加工する</p><ul>
 <li><a href="04-import.html">04 データを読み込む</a></li>
@@ -40,7 +40,7 @@
 <li><a href="08-bind.html">08 縦にくっつける</a></li>
 <li><a href="09-pivot.html">09 縦長と横長</a></li>
 <li><a href="10-datatype.html">10 データ型でつまずく</a></li>
-<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
 </ul>
 <p class="nav-part">第2部　データを見る</p><ul>
 <li><a href="12-line.html">12 折れ線グラフ</a></li>
@@ -50,9 +50,9 @@
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
 <li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="17-loop.html">17 まとめて集める</a></li>
 <li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li class="here"><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li class="here"><a href="19-kami-excel.html">19 神エクセルを扱いやすく</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
 <li><a href="20-error.html">20 エラーとの付き合い方</a></li>
@@ -68,65 +68,32 @@
   <main id="main" class="page chapter">
     <article>
       <p class="kicker">第3部　データを集める</p>
-      <h1>神エクセルを解体する</h1>
-      <p class="lead">上に表題が載っていて、見出しが2段になっていて、シートが何枚もある。あのExcelを、tidyxlとunpivotrで機械が読める形に組み替えます。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#神エクセルとは">神エクセルとは</a></li><li><a href="#考え方をひっくり返す">考え方をひっくり返す</a></li><li><a href="#beheadで見出しを剥がす">beheadで見出しを剥がす</a></li><li><a href="#合計の行と列を捨てる">合計の行と列を捨てる</a></li><li><a href="#シートを全部処理する">シートを全部処理する</a></li><li><a href="#ファイルもシートも全部処理する">ファイルもシートも全部処理する</a></li><li><a href="#数え上げて確かめる">数え上げて確かめる</a></li></ul></nav>
+      <h1>神の頭を切り落とす</h1>
+      <p class="lead">物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。</p>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#神エクセルとは">神エクセルとは</a></li><li><a href="#ふたつの武器で戦う">ふたつの武器で戦う</a></li><li><a href="#シートを全部処理する">シートを全部処理する</a></li><li><a href="#ファイルもシートも全部処理する">ファイルもシートも全部処理する</a></li><li><a href="#数え上げて確かめる">数え上げて確かめる</a></li></ul></nav>
       <h2 id="神エクセルとは" data-src="19-kami-excel:8">神エクセルとは</h2>
-<p data-src="19-kami-excel:10">役所が公表するExcelファイルには、独特の様式があります。上のほうに表題や日付や注記が入っていて、見出しが2段や3段になっていて、セルが結合されていて一つの見出しが複数の列にまたがっている。途中に小計の行が挟まっていたりもしますし、一つのファイルに同じ形のシートが47枚入っていることもあります。</p>
-<p data-src="19-kami-excel:12">紙に印刷して人が見るために作られているので、これはこれで理にかなっているわけです。でも <code>read_excel()</code> で読むと悲惨なことになります。列名が <code>...4</code> <code>...5</code> になり、結合されたセルの二つ目以降はNAになり、見出しの2段目はデータの1行目として読まれる。こういうファイルは、しばしば「神エクセル」と呼ばれます。</p>
-<p data-src="19-kami-excel:14">これを力技で直そうとすると、<code>rename</code> と <code>mutate</code> と <code>filter</code> を延々と書くことになります。しかもシートが何十枚もあれば、シートごとに微妙に形が違って、その全部に対応しなくてはいけません。めんどくさ。</p>
-<p data-src="19-kami-excel:16">でも、もっとましなやり方があります。</p>
-<h2 id="考え方をひっくり返す" data-src="19-kami-excel:18">考え方をひっくり返す</h2>
-<p data-src="19-kami-excel:20">使うのはtidyxlとunpivotrという2つのパッケージです。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:22"><pre><code>install.packages("tidyxl")
+<p data-src="19-kami-excel:12">役所（だけではないですが）が公表するExcelファイルには、独特の様式があります。上のほうに表題やら注釈やらがあって、データのラベルに当たるものが2段や3段に分かれて書いてあって、おまけにセルが結合されている。Excelが表計算ソフトではなく「方眼紙」として使われた結果です。</p>
+<p data-src="19-kami-excel:14">こうした資料は基本的に、紙に印刷して人が見るために作られています。<a href="09-pivot.html">09章</a>でも説明しましたが、人間にとってはこういうスタイルのほうが見やすいし分かりやすい。その意味では理にかなっているわけです。</p>
+<p data-src="19-kami-excel:16">でも <code>read_excel()</code> で読むと悲惨なことになります。結合されたセルの二つめ以降はNAになり、ラベルの2段目はデータの1行目として読まれる。もうぐちゃぐちゃ。その筋では「紙＝神」をもじって「神エクセル」「ネ申エクセル」と呼ばれ、はっきり言って忌み嫌われます。</p>
+<p data-src="19-kami-excel:18">こういうファイルを読み込んで、分析可能な形に力技で直そうとすると、<code>rename</code> と <code>mutate</code> と <code>filter</code> を延々と書くことになります。しかもシートが何十枚もあれば、それぞれ微妙に形が違ったりするわけで、一つひとつプログラムを書き換えなくてはいけない。つらい。</p>
+<p data-src="19-kami-excel:20">でも、もっとマシなやり方があります。</p>
+<h2 id="ふたつの武器で戦う" data-src="19-kami-excel:22">ふたつの武器で戦う</h2>
+<p data-src="19-kami-excel:24">使うのはtidyxlとunpivotrというふたつのパッケージです。</p>
+<div class="code" data-lang="R" data-src="19-kami-excel:26"><pre><code>install.packages("tidyxl")
 install.packages("unpivotr")
 library(tidyxl)
 library(unpivotr)</code></pre></div>
-<aside class="box box-data" data-src="19-kami-excel:29"><p class="box-title">この章で使うデータ</p><p data-src="19-kami-excel:30"><a href="18-download.html">18章</a>の手順でダウンロードしたファイルを使いますが、うまく落ちてこなかった人は、北海道のぶんをここから取って下さい。</p>
-<p data-src="19-kami-excel:32"><a class="dl" href="files/000979538.xlsx" download>000979538.xlsx<span class="dl-size">46 KB</span></a>　第50回衆院選（2024年10月27日執行）の小選挙区の市区町村別得票（北海道）</p>
-<p data-src="19-kami-excel:34"><code>download</code> フォルダに入れると、この章のコードがそのまま動きます。総務省が公表しているファイルの写しです。</p></aside>
-<p data-src="19-kami-excel:37"><code>read_excel()</code> は、Excelのシートを「表」として読み込もうとします。だから表の形が崩れていると困るわけです。</p>
-<p data-src="19-kami-excel:39">一方、tidyxlの <code>xlsx_cells()</code> は、セルを一つずつ、バラバラの部品として読み込みます。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:41"><pre><code>"download/000979538.xlsx" %&gt;%
-  xlsx_cells()</code></pre></div>
-<p data-src="19-kami-excel:46">返ってくるのは、こんな形のtibbleです（列が多いので、一部の列だけを、空っぽのセルを省いて表示しています）。</p>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:48"><pre><code># A tibble: 1,836 × 24
-   sheet        address   row   col is_blank data_type character                         numeric
-   &lt;chr&gt;        &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;lgl&gt;    &lt;chr&gt;     &lt;chr&gt;                               &lt;dbl&gt;
- 1 北海道第１区 A1          1     1 FALSE    character 令和６年１０月２７日執行               NA
- 2 北海道第１区 A2          2     1 FALSE    character 衆議院議員総選挙（小選挙区）　...      NA
- 3 北海道第１区 A3          3     1 FALSE    character 北海道第１区                           NA
- 4 北海道第１区 G3          3     7 FALSE    character [単位：票]                             NA
- 5 北海道第１区 A4          4     1 FALSE    character 候補者名                               NA
- 6 北海道第１区 B4          4     2 FALSE    character 小林　さとる                           NA
- 7 北海道第１区 C4          4     3 FALSE    character 道下　大樹                             NA
-（中略）
-18 北海道第１区 A6          6     1 FALSE    character 札幌市中央区                           NA
-19 北海道第１区 B6          6     2 FALSE    numeric   &lt;NA&gt;                                10260
-20 北海道第１区 C6          6     3 FALSE    numeric   &lt;NA&gt;                                49131</code></pre></div>
-<p data-src="19-kami-excel:65">1行が一つのセルです。何シートの何行目の何列目に、何が入っているか。それがすべて記録されているだけなので、表の形が崩れていようが関係ありません。セルは常にセルであって、崩れようがないからです。</p>
-<p data-src="19-kami-excel:67">文字のセルの中身は <code>character</code> の列に、数値のセルの中身は <code>numeric</code> の列に入ります。このファイルの得票数は数値として入っているので、<code>numeric</code> のほうです。</p>
-<p data-src="19-kami-excel:69">ここから、どのセルが見出しでどのセルが中身なのかをこちらが指定して、整然データに組み直していきます。それをやるのがunpivotrというパッケージです。</p>
-<h2 id="beheadで見出しを剥がす" data-src="19-kami-excel:71">beheadで見出しを剥がす</h2>
-<p data-src="19-kami-excel:73">unpivotrの主役は <code>behead()</code> という関数です。beheadは「首を切り落とす」という意味で、要するに見出しを1段ずつ剥がして、それをデータの列に変えなさい、という命令です。</p>
-<p data-src="19-kami-excel:75">北海道のファイルの「北海道第１区」のシートは、こんな形をしています。</p>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:77"><pre><code>     A                    B             C            …   G
-1  令和６年１０月２７日執行
-2  衆議院議員総選挙（小選挙区）　候補者別市区町村別得票数一覧
-3  北海道第１区                                          [単位：票]
-4  候補者名            小林　さとる   道下　大樹     …   得票数計
-5  市区町村名＼政党名  日本維新の会   立憲民主党     …
-6  札幌市中央区               10260        49131     …     114596
-7  札幌市北区第１区             334         1399     …       3418
-8  札幌市南区                  4480        27833     …      65810
-9  札幌市西区第１区            4926        30031     …      66251
-10 北海道第１区 合計          20000       108394     …     250075</code></pre></div>
-<p data-src="19-kami-excel:91">（D〜F列の、ほかの候補者3人を省いています）</p>
-<p data-src="19-kami-excel:93">上の3行に日付と表題と選挙区名があって、4行目が候補者名、5行目が党派名。A列には市区町村名が並んでいます。いちばん下の行は選挙区全体の合計、いちばん右のG列は、市区町村ごとに全候補者の票を足した合計（得票数計）です。</p>
-<p data-src="19-kami-excel:95">ほしいのは、こういう形です。</p>
-<div class="table-wrap" data-src="19-kami-excel:97"><table><thead><tr><th>市区町村</th><th>候補者</th><th>党派</th><th>得票</th></tr></thead><tbody><tr><td>札幌市中央区</td><td>小林　さとる</td><td>日本維新の会</td><td>10260</td></tr><tr><td>札幌市中央区</td><td>道下　大樹</td><td>立憲民主党</td><td>49131</td></tr><tr><td>札幌市北区第１区</td><td>小林　さとる</td><td>日本維新の会</td><td>334</td></tr></tbody></table></div>
+<aside class="box box-data" data-src="19-kami-excel:33"><p class="box-title">この章で使うデータ</p><p data-src="19-kami-excel:34"><a href="18-download.html">18章</a>の手順でダウンロードしたファイルを使いますが、うまく落ちてこなかった人は、北海道のぶんをここから取って下さい。</p>
+<p data-src="19-kami-excel:36"><a class="dl" href="files/000979538.xlsx" download>000979538.xlsx<span class="dl-size">46 KB</span></a>　2024年にあった第50回衆院選の小選挙区の市区町村別得票（北海道）</p>
+<p data-src="19-kami-excel:38"><code>download</code> フォルダに入れると、この章のコードがそのまま動きます。総務省が公表しているファイルの写しです。</p></aside>
+<p data-src="19-kami-excel:41">Excelで開くと、「北海道第１区」のシートはこんな感じでした。</p>
+<figure class="fig" data-src="19-kami-excel:43"><img src="images/19-excel.png" alt="Excelで開いた「北海道第１区」のシート。上に日付と表題と選挙区名があり、その下に候補者名・政党名の2段のラベル、左に市区町村名が並び、いちばん下が合計の行、いちばん右が得票数計の列になっている" loading="lazy"><figcaption>000979538.xlsx の「北海道第１区」のシートを、Excelで開いたところ</figcaption></figure>
+<p data-src="19-kami-excel:45">最初の3行はデータではなく注釈。数字のうち、たとえば一番左上にある「10,260」は、「日本維新の会」所属の「小林さとる氏」が「札幌市中央区」で獲得した得票数を示しています。これは人間の目には一目瞭然なのですが、人間の常識を持ち合わせないコンピューターには読み取ることができません。</p>
+<p data-src="19-kami-excel:47">そこで、以下のような形に加工していくことが必要なわけです。縦長の、いわゆる整然（tidy）データです。</p>
+<div class="table-wrap" data-src="19-kami-excel:49"><table><thead><tr><th>市区町村</th><th>候補者</th><th>政党</th><th>得票</th></tr></thead><tbody><tr><td>札幌市中央区</td><td>小林　さとる</td><td>日本維新の会</td><td>10260</td></tr><tr><td>札幌市中央区</td><td>道下　大樹</td><td>立憲民主党</td><td>49131</td></tr><tr><td>札幌市北区第１区</td><td>小林　さとる</td><td>日本維新の会</td><td>334</td></tr></tbody></table></div>
+<p data-src="19-kami-excel:55"><code>tidyxl</code>パッケージの<code>xlsx_cells()</code>という関数で表をセルごとにバラしたうえで、<code>unpivotr</code>パッケージの<code>behead()</code>関数でうまいことラベルを取り出してやると、この加工が簡単にできます。こんなイメージです。</p>
 <figure class="fig">
-<svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="シートのどのセルが、整然データのどの列になるかを色で示した図">
+<svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="シートのどのセルが、整然データのどの列になるかを色で示した図">
 <defs><marker id="ar19" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
 <text class="f-label" x="10" y="18">Excelのシート（北海道第１区）</text>
 <rect class="f-head" x="32" y="28" width="108" height="26"/>
@@ -259,42 +226,26 @@ library(unpivotr)</code></pre></div>
 <rect class="f-cell" x="664" y="124" width="50" height="24"/>
 <text x="668" y="140" style="font-size:11px">1399</text>
 <text class="f-note" x="420" y="172">……</text>
-<text class="f-note" x="10" y="268">赤（候補者名）→ name、青（党派名）→ party、黄（A列）→ municipality、白い数字 → vote</text>
-<text class="f-note" x="10" y="288">灰色のセルは使わない。いちばん右の「得票数計」の列と、いちばん下の「合計」の行は、あとで捨てる</text>
-<text class="f-note" x="10" y="308">（D〜F列の、ほかの候補者3人も同じように配られる）</text>
+<text class="f-note" x="10" y="268">赤（候補者名）→ name、青（政党名）→ party、黄（A列）→ municipality、白い数字 → vote</text>
 </svg>
-<figcaption>シートのどのセルが、整然データのどの列になるか。北海道第１区のシートから、D〜F列（ほかの候補者3人）を省いています。</figcaption>
 </figure>
-<p data-src="19-kami-excel:244"><code>behead()</code> を使うと、こう書けます。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:246"><pre><code>"download/000979538.xlsx" %&gt;%
+<p data-src="19-kami-excel:195">コードはこんな感じ。<code>behead()</code>というのが最重要なわけですが、これは市区町村名や候補者名など、データのラベルに当たるものを切り離して、しかるべきところへ格納するための関数です。「首をはねる」という意味の英語から来ています（たぶん）。</p>
+<div class="code" data-lang="R" data-src="19-kami-excel:197"><pre><code>"download/000979538.xlsx" %&gt;%
   xlsx_cells() %&gt;%
   filter(sheet == "北海道第１区", row &gt;= 4, !is_blank) %&gt;%
   behead("up", "name") %&gt;%
   behead("up", "party") %&gt;%
   behead("left", "municipality") %&gt;%
   select(municipality, name, party, numeric)</code></pre></div>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:256"><pre><code># A tibble: 30 × 4
-   municipality     name           party        numeric
-   &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;          &lt;dbl&gt;
- 1 札幌市中央区     小林　さとる   日本維新の会   10260
- 2 札幌市中央区     道下　大樹     立憲民主党     49131
- 3 札幌市中央区     田中　よしひと 参政党         10041
- 4 札幌市中央区     千葉　なおこ   日本共産党      9446
- 5 札幌市中央区     かとう　貴弘   自由民主党     35718
- 6 札幌市中央区     得票数計       &lt;NA&gt;          114596
- 7 札幌市北区第１区 小林　さとる   日本維新の会     334
- 8 札幌市北区第１区 道下　大樹     立憲民主党      1399
- 9 札幌市北区第１区 田中　よしひと 参政党           271
-10 札幌市北区第１区 千葉　なおこ   日本共産党       281
-# ℹ 20 more rows</code></pre></div>
-<p data-src="19-kami-excel:273">順番に見ていきましょう。</p>
-<p data-src="19-kami-excel:275"><code>filter()</code> では、まず「北海道第１区」のシートだけに絞っています。そのうえで <code>row &gt;= 4</code> で、上の3行（日付と表題と選挙区名）を捨てています。</p>
-<p data-src="19-kami-excel:277"><code>!is_blank</code> は、空っぽのセルを捨てる指定です。<code>is_blank</code> はセルが空っぽなら <code>TRUE</code> になる列で、頭の <code>!</code> は「〜でない」という意味でした（<a href="06-strings-filter.html">6章</a>）。見た目は空白でも、罫線などの書式がついているセルを、<code>xlsx_cells()</code> は1つのセルとして読み込みます。このファイルでは表のすぐ下に、そういう空っぽのセルが何行ぶんも並んでいるので、先に落としておかないと、中身のない行がまじってしまいます。</p>
-<p data-src="19-kami-excel:279">そのあとに <code>behead()</code> が3回出てきます。丸括弧には二つ入っています。一つ目がその見出しの方向、つまりデータから見てどの向きにあるか。二つ目が、剥がした見出しを入れる列の名前です。</p>
-<p data-src="19-kami-excel:281">方向にはこんなものがあります。</p>
-<div class="table-wrap" data-src="19-kami-excel:283"><table><thead><tr><th>指定</th><th>意味</th></tr></thead><tbody><tr><td><code>"up"</code></td><td>真上にある見出し（列の見出し）</td></tr><tr><td><code>"left"</code></td><td>真横（左）にある見出し（行の見出し）</td></tr><tr><td><code>"up-left"</code></td><td>上にあって、左に寄っている見出し（結合セルや、左端だけに書かれた見出し）</td></tr><tr><td><code>"left-up"</code></td><td>左にあって、上に寄っている見出し（グループの先頭の行にだけ書かれた見出し）</td></tr></tbody></table></div>
-<p data-src="19-kami-excel:290">上のコードでは、<code>"up"</code> で候補者名と党派名を上から1段ずつ剥がし、そのあと <code>"left"</code> で左の市区町村名を剥がしています。1枚ずつ皮をむくように、外側から順番に剥がしていくイメージです。剥がす順番が大事です。</p>
-<p data-src="19-kami-excel:292">見出しが1段ずつ剥がされて、数字のセルの1行ずつに配られていく様子を、動きで見てみましょう。</p>
+<p data-src="19-kami-excel:207">それぞれのコードが何をしているのか、順番に見ていきましょう。</p>
+<p data-src="19-kami-excel:209"><code>xlsx_cells()</code> では、Excelの各セルについて、行にばらしていきます。たとえば3行×4列の表なら、12行のtibbleに変換します。それぞれの行には、もとのExcelでのセルの位置（行番号・列番号）や、セルに入力されている値、データの種類などが記録されます。</p>
+<p data-src="19-kami-excel:211">次に<code>filter()</code> で「北海道第１区」のシートだけに絞っています。そのうえで <code>row &gt;= 4</code> で、上の3行（日付と表題と選挙区名）を捨てています。</p>
+<p data-src="19-kami-excel:214"><code>is_blank</code> は<code>xlsx_cells()</code>関数で生成され、セルが空っぽのときに <code>TRUE</code> になる列です。頭に <code>!</code> をつけると「〜でない」という意味になる（<a href="06-strings-filter.html">6章</a>）ので、ここでは空っぽでないセルだけを抽出しています。見た目は空白でも罫線などの書式がついていれば、<code>xlsx_cells()</code> はそれをひとつのセルとして読み込みます。このファイルでは表のすぐ下に、そういう空っぽのセルが何行ぶんも並んでいるので、先に落としておかないと、中身のない行がまじってしまいます。</p>
+<p data-src="19-kami-excel:216">そのあとに <code>behead()</code> が3回出てきます。丸括弧の中には二つの要素が記述されています。データのラベルに当たるセルが、そのデータの入ったセルから見てどこにあるかを<code>up</code>とか<code>left</code>とかで示すのが、一つめの要素。そのラベルを何という名前の列に入れるかを決めるのが、二つめです。</p>
+<p data-src="19-kami-excel:218">一つめの要素では以下のような指定ができます。</p>
+<div class="table-wrap" data-src="19-kami-excel:220"><table><thead><tr><th>指定</th><th>各セルから見た探し方</th></tr></thead><tbody><tr><td><code>"up"</code></td><td>上に進み、表の上端にあるセルを探す</td></tr><tr><td><code>"left"</code></td><td>左に進み、表の左端にあるセルを探す</td></tr><tr><td><code>"up-left"</code></td><td>上端まで進み、そこが空白なら左に進んで値のあるセルを探す</td></tr><tr><td><code>"left-up"</code></td><td>左端まで進み、そこが空白なら上に進んで値のあるセルを探す</td></tr></tbody></table></div>
+<p data-src="19-kami-excel:227">上のコードでは、<code>"up"</code> で候補者名と政党名を上からひとつずつ切り離し、そのあと <code>"left"</code> で左の市区町村名を切り離しています。1枚ずつ皮をむくように、外側から順番にはがしていくイメージです。はがす順番が大事です。</p>
+<p data-src="19-kami-excel:229">1枚ずつはがされていく様子を、動きで見てみましょう。</p>
 <div class="behead-anim anim-host"></div>
 <script src="assets/behead-anim.js"></script>
 <figure class="fig fig-behead-static fig-anim-static">
@@ -432,7 +383,7 @@ library(unpivotr)</code></pre></div>
 <rect class="f-hl" x="216" y="274" width="76" height="18"/>
 <text class="f-label" x="330" y="234">② 候補者名を剥がす</text>
 <text class="f-code" x="330" y="254">behead("up", "name")</text>
-<text class="f-note" x="330" y="274">いちばん上の4行目を剥がして、真上の見出しを配る。</text>
+<text class="f-note" x="330" y="274">いちばん上の4行目を剥がして、真上のラベルを配る。</text>
 <rect class="f-cell" x="330" y="286" width="370" height="44"/>
 <text class="f-note" x="338" y="302">「49131」についているラベル</text>
 <text class="f-code" x="338" y="320">name = 道下　大樹</text>
@@ -494,9 +445,9 @@ library(unpivotr)</code></pre></div>
 <rect class="f-cell" x="216" y="530" width="76" height="18"/>
 <text x="220" y="542.6" style="font-size:11px">108394</text>
 <rect class="f-hl" x="216" y="458" width="76" height="18"/>
-<text class="f-label" x="330" y="418">③ 党派名を剥がす</text>
+<text class="f-label" x="330" y="418">③ 政党名を剥がす</text>
 <text class="f-code" x="330" y="438">behead("up", "party")</text>
-<text class="f-note" x="330" y="458">次にいちばん上になった5行目を剥がして、真上の見出しを配る。</text>
+<text class="f-note" x="330" y="458">次にいちばん上になった5行目を剥がして、真上のラベルを配る。</text>
 <rect class="f-cell" x="330" y="470" width="370" height="62"/>
 <text class="f-note" x="338" y="486">「49131」についているラベル</text>
 <text x="338" y="504">name = 道下　大樹</text>
@@ -556,89 +507,32 @@ library(unpivotr)</code></pre></div>
 <rect class="f-hl" x="216" y="642" width="76" height="18"/>
 <text class="f-label" x="330" y="602">④ 市区町村名を剥がす</text>
 <text class="f-code" x="330" y="622">behead("left", "municipality")</text>
-<text class="f-note" x="330" y="642">いちばん左のA列を剥がして、真横（左）の見出しを配る。</text>
+<text class="f-note" x="330" y="642">いちばん左のA列を剥がして、真横（左）のラベルを配る。</text>
 <rect class="f-cell" x="330" y="654" width="370" height="80"/>
 <text class="f-note" x="338" y="670">「49131」についているラベル</text>
 <text x="338" y="688">name = 道下　大樹</text>
 <text x="338" y="706">party = 立憲民主党</text>
 <text class="f-code" x="338" y="724">municipality = 札幌市中央区</text>
 </svg>
-<figcaption>見出しを1段剥がすたびに、中身のセルにラベルが1つずつつく。最後には、どのセルも「どこの、誰の、何党の票か」が分かる1行になる。シートはD〜G列を省いています。</figcaption>
+<figcaption>上や左のラベルを1段剥がすたびに、数字のセルにラベルが1つずつつく。最後には、どのセルも「どこの、誰の、何党の票か」が分かる1行になる。シートはD〜G列を省いています。</figcaption>
 </figure>
-<p data-src="19-kami-excel:566">最後の <code>select()</code> で、ほしい列だけを残しています。得票数は数値なので、<code>numeric</code> の列に入っています。</p>
-<aside class="box box-tips" data-src="19-kami-excel:568"><p class="box-title">1段ずつ実行して確かめる</p><p data-src="19-kami-excel:569">このコードは、パイプを1本ずつ足しながら実行するのが正解です。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:571"><pre><code>"download/000979538.xlsx" %&gt;%
-  xlsx_cells() %&gt;%
-  filter(sheet == "北海道第１区", row &gt;= 4, !is_blank) %&gt;%
-  behead("up", "name") %&gt;%
-  select(row, col, name, character, numeric) %&gt;%      # ここで確かめる
-  view()</code></pre></div>
-<p data-src="19-kami-excel:580"><code>name</code> という列に、候補者名がその下のセル全部に配られていますか。配られていれば成功です。1つ剥がすたびに、こうやって目で確かめる。これがいちばん早い。</p>
-<p data-src="19-kami-excel:582"><code>select(row, col, ...)</code> で行番号と列番号を残しておくと、元のシートのどこの話なのかが分かって理解しやすくなります。</p></aside>
-<aside class="box box-warn" data-src="19-kami-excel:585"><p class="box-title">tidyxlは.xlsを読めません</p><p data-src="19-kami-excel:586"><code>xlsx_cells()</code> が読めるのは、拡張子が <code>.xlsx</code> と <code>.xlsm</code> のファイルだけです。古い <code>.xls</code> は読めません。</p>
-<p data-src="19-kami-excel:588">古い形式のファイルにぶつかったら、Excelで開いて <code>.xlsx</code> として保存し直すのが手っ取り早いです。「元データは手で触らない」原則と矛盾しますが、元ファイルは残したまま別名で保存すればいいので、実務上は問題になりません。</p></aside>
-<h2 id="合計の行と列を捨てる" data-src="19-kami-excel:591">合計の行と列を捨てる</h2>
-<p data-src="19-kami-excel:593">さっきの結果には、まだ余計な行が混じっています。<code>name</code> が「得票数計」になっている行と、<code>municipality</code> が「北海道第１区 合計」になっている行です。いちばん右の列と、いちばん下の行にあった合計も、ほかのセルと同じように1行ずつになったわけです。このまま足し算すると、同じ票を2回数えることになってしまいます。</p>
-<p data-src="19-kami-excel:595">なので、こう足します。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:597"><pre><code>"download/000979538.xlsx" %&gt;%
-  xlsx_cells() %&gt;%
-  filter(sheet == "北海道第１区", row &gt;= 4, !is_blank) %&gt;%
-  behead("up", "name") %&gt;%
-  behead("up", "party") %&gt;%
-  behead("left", "municipality") %&gt;%
-  filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
-  select(municipality, name, party, vote = numeric)</code></pre></div>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:608"><pre><code># A tibble: 20 × 4
-   municipality     name           party         vote
-   &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;        &lt;dbl&gt;
- 1 札幌市中央区     小林　さとる   日本維新の会 10260
- 2 札幌市中央区     道下　大樹     立憲民主党   49131
- 3 札幌市中央区     田中　よしひと 参政党       10041
- 4 札幌市中央区     千葉　なおこ   日本共産党    9446
- 5 札幌市中央区     かとう　貴弘   自由民主党   35718
- 6 札幌市北区第１区 小林　さとる   日本維新の会   334
- 7 札幌市北区第１区 道下　大樹     立憲民主党    1399
- 8 札幌市北区第１区 田中　よしひと 参政党         271
- 9 札幌市北区第１区 千葉　なおこ   日本共産党     281
-10 札幌市北区第１区 かとう　貴弘   自由民主党    1133
-11 札幌市南区       小林　さとる   日本維新の会  4480
-12 札幌市南区       道下　大樹     立憲民主党   27833
-13 札幌市南区       田中　よしひと 参政党        4612
-14 札幌市南区       千葉　なおこ   日本共産党    6280
-15 札幌市南区       かとう　貴弘   自由民主党   22605
-16 札幌市西区第１区 小林　さとる   日本維新の会  4926
-17 札幌市西区第１区 道下　大樹     立憲民主党   30031
-18 札幌市西区第１区 田中　よしひと 参政党        5173
-19 札幌市西区第１区 千葉　なおこ   日本共産党    5444
-20 札幌市西区第１区 かとう　貴弘   自由民主党   20677</code></pre></div>
-<p data-src="19-kami-excel:634">足したのは、下から2行目の <code>filter()</code> です。<code>name != "得票数計"</code> で、得票数計の列から来た行を捨てています。<code>str_detect()</code> は<a href="06-strings-filter.html">6章</a>で出てきた、ある文字を含むかどうかを調べる関数でした。頭に <code>!</code> をつけて、市区町村名に「合計」を含む行を捨てています。</p>
-<p data-src="19-kami-excel:636">最後の <code>select()</code> では、<code>numeric</code> の列の名前を <code>vote</code> に変えています。<code>select()</code> のなかで <code>新しい名前 = 古い名前</code> と書くと、選びながら名前も変えられます。</p>
-<aside class="box box-note" data-src="19-kami-excel:638"><p class="box-title">partyがNAの行で捨ててはいけない</p><p data-src="19-kami-excel:639">得票数計の列には党派名がないので、さっきの結果では、得票数計の行の <code>party</code> がNAになっていました。それなら <code>filter(!is.na(party))</code> で捨てればいいと思うかもしれません。</p>
-<p data-src="19-kami-excel:641">でも、それをやると困ったことになります。無所属の候補者は、党派名のセルが空っぽなのです。「北海道第３区」のシートを同じコードで処理すると、こうなります。</p>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:643"><pre><code># A tibble: 15 × 4
-  municipality       name           party         vote
-  &lt;chr&gt;              &lt;chr&gt;          &lt;chr&gt;        &lt;dbl&gt;
-1 札幌市白石区第３区 増田　健治     &lt;NA&gt;          4280
-2 札幌市白石区第３区 荒井　ゆたか   立憲民主党   32864
-3 札幌市白石区第３区 とりこし　良孝 日本維新の会  7978
-4 札幌市白石区第３区 伊藤　りち子   日本共産党    9775
-5 札幌市白石区第３区 高木　ひろひさ 自由民主党   27989
-6 札幌市豊平区       増田　健治     &lt;NA&gt;          5362
-# ℹ 9 more rows</code></pre></div>
-<p data-src="19-kami-excel:656"><code>!is.na(party)</code> で捨てていたら、増田さんの票がまるごと消えていました。しかもエラーは出ません。捨てたいものは、なるべくそのものの名前で指定するほうが安全です。</p></aside>
-<h2 id="シートを全部処理する" data-src="19-kami-excel:659">シートを全部処理する</h2>
-<p data-src="19-kami-excel:661">さて、このファイルには北海道の小選挙区の数だけシートがあります。全部に同じ処理をしたい。<a href="17-loop.html">17章</a>で覚えたfor文の出番です。今回は「ページの一覧」ではなく「シートの一覧」に対して回します。</p>
-<p data-src="19-kami-excel:663">まずシート名の一覧を取ります。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:665"><pre><code>sheet_names &lt;- "download/000979538.xlsx" %&gt;%
-  excel_sheets()
+<p data-src="19-kami-excel:503">このコードを1行ずつ、順番に実行してみてください。どんなふうにデータが加工されていくか確かめると、腑に落ちるようになると思います。</p>
+<p data-src="19-kami-excel:505">最後の <code>select()</code> では、ほしい列だけを残しています。得票数は数値なので、<code>numeric</code> の列に入っています。</p>
+<aside class="box box-warn" data-src="19-kami-excel:507"><p class="box-title">tidyxlは.xlsを読めません</p><p data-src="19-kami-excel:508"><code>xlsx_cells()</code> が読めるのは、拡張子が <code>.xlsx</code> と <code>.xlsm</code> のファイルだけです。古い <code>.xls</code> は読めません。</p>
+<p data-src="19-kami-excel:510">古い形式のファイルにぶつかったら、Excelで開いて <code>.xlsx</code> として保存し直すのが手っ取り早いです。「元データは手で触らない」原則と矛盾しますが、元ファイルは残したまま別名で保存すればいいので、実務上は問題になりません。</p></aside>
+<h2 id="シートを全部処理する" data-src="19-kami-excel:513">シートを全部処理する</h2>
+<p data-src="19-kami-excel:515">さて、このファイルには北海道の小選挙区の数だけシートがあります。全部に同じ処理をしたい。<a href="17-loop.html">17章</a>で覚えたfor文の出番です。今回は「ページの一覧」ではなく「シートの一覧」に対してループを回します。</p>
+<p data-src="19-kami-excel:517">まずシート名の一覧を取ります。</p>
+<div class="code" data-lang="R" data-src="19-kami-excel:519"><pre><code>sheet_names &lt;- "download/000979538.xlsx" %&gt;%
+  excel_sheets() # シート名をとる関数
 
 sheet_names</code></pre></div>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:672"><pre><code> [1] "北海道第１区"   "北海道第２区"   "北海道第３区"   "北海道第４区"  
+<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:526"><pre><code> [1] "北海道第１区"   "北海道第２区"   "北海道第３区"   "北海道第４区"  
  [5] "北海道第５区"   "北海道第６区"   "北海道第７区"   "北海道第８区"  
  [9] "北海道第９区"   "北海道第１０区" "北海道第１１区" "北海道第１２区"</code></pre></div>
-<p data-src="19-kami-excel:678"><code>excel_sheets()</code> はreadxlの関数です（<code>library(readxl)</code> を忘れずに）。</p>
-<p data-src="19-kami-excel:680">そして回します。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:682"><pre><code>vote_data &lt;- tibble()
+<p data-src="19-kami-excel:532"><code>excel_sheets()</code> はreadxlの関数です（<code>library(readxl)</code> を忘れずに）。</p>
+<p data-src="19-kami-excel:534">そして回します。</p>
+<div class="code" data-lang="R" data-src="19-kami-excel:536"><pre><code>vote_data &lt;- tibble() # まずは空っぽのtibbleを作る
 
 for (i in sheet_names) {
   vote_data_temporaly &lt;- "download/000979538.xlsx" %&gt;%
@@ -647,22 +541,20 @@ for (i in sheet_names) {
     behead("up", "name") %&gt;%
     behead("up", "party") %&gt;%
     behead("left", "municipality") %&gt;%
-    filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
     mutate(district = i) %&gt;%
     select(district, municipality, name, party, vote = numeric)
 
   vote_data &lt;- bind_rows(vote_data, vote_data_temporaly)
 }</code></pre></div>
-<p data-src="19-kami-excel:700">さっきとの違いは二つです。</p>
-<p data-src="19-kami-excel:702">一つは <code>filter(sheet == i)</code> で、「北海道第１区」と決め打ちしていたところを、ループの変数 <code>i</code> にしたこと。1周目は「北海道第１区」、2周目は「北海道第２区」のシートが処理されます。</p>
-<p data-src="19-kami-excel:704">もう一つは <code>mutate(district = i)</code> のところ。シート名そのものが選挙区名なので、ループの変数 <code>i</code> をデータの一部として持ち込んでいます。これは覚えておくと便利な技です。</p>
-<p data-src="19-kami-excel:706">12枚のシートを処理し終えると、<code>vote_data</code> は539行になります。</p>
-<aside class="box box-note" data-src="19-kami-excel:708"><p class="box-title">シート名が情報になっている</p><p data-src="19-kami-excel:709">役所のExcelでは、「シート名」や「ファイル名」そのものが重要な情報を持っていることがよくあります。北海道第１区、北海道第２区……というシート名は、まさにそれです。</p>
-<p data-src="19-kami-excel:711"><code>read_excel()</code> で1枚ずつ読んでいると、この情報はどこにも残りません。だから <code>district = i</code> のように、明示的にデータの中へ入れてやる必要があります。</p>
-<p data-src="19-kami-excel:713">このファイルのシート名には、都道府県名まで入っています。なので、全国のファイルをまとめても、北海道の第1区と東京都の第1区を取り違えることはありません。シート名が「第1区」だけだったら、シートの中の表題などから都道府県名を取り出して、一緒に持ち込む必要がありました。ファイル名は <code>000979538.xlsx</code> のような番号なので、そこからは分かりません。</p></aside>
-<h2 id="ファイルもシートも全部処理する" data-src="19-kami-excel:716">ファイルもシートも全部処理する</h2>
-<p data-src="19-kami-excel:718">47都道府県分のファイルがあり、それぞれにシートが複数ある。というわけで、for文を二重にします。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:720"><pre><code>excel_files &lt;- list.files("download/") %&gt;%
+<p data-src="19-kami-excel:553">さっきとの違いは二つです。</p>
+<p data-src="19-kami-excel:555">一つは <code>filter(sheet == i)</code> で、「北海道第１区」と決め打ちしていたところを、ループの変数 <code>i</code> にしたこと。ループの1周目では「北海道第１区」、2周目では「北海道第２区」のシートが処理されます。</p>
+<p data-src="19-kami-excel:557">もう一つは <code>mutate(district = i)</code> のところ。変数 <code>i</code> をデータの一部として持ち込んでいます。小選挙区名を格納するための列を足しているわけです。</p>
+<aside class="box box-note" data-src="19-kami-excel:559"><p class="box-title">シート名が情報になっている</p><p data-src="19-kami-excel:560">役所のExcelでは、「シート名」や「ファイル名」そのものが重要な情報を持っていることがよくあります。北海道第１区、北海道第２区……というシート名は、まさにそれです。</p>
+<p data-src="19-kami-excel:562"><code>read_excel()</code> で1枚ずつ読んでいると、この情報はどこにも残りません。だから <code>district = i</code> のように、明示的にデータの中へ入れてやる必要があります。</p>
+<p data-src="19-kami-excel:564">このファイルのシート名には、都道府県名まで入っています。なので、全国のファイルをまとめても、北海道の第1区と東京都の第1区を取り違えることはありません。シート名が「第1区」だけだったら、シートの中の表題などから都道府県名を取り出して、一緒に持ち込む必要がありました。ファイル名は <code>000979538.xlsx</code> のような番号なので、そこからは分かりません。</p></aside>
+<h2 id="ファイルもシートも全部処理する" data-src="19-kami-excel:567">ファイルもシートも全部処理する</h2>
+<p data-src="19-kami-excel:569">47都道府県分のファイルがあり、それぞれにシートが複数ある。というわけで、for文を二重にします。</p>
+<div class="code" data-lang="R" data-src="19-kami-excel:571"><pre><code>excel_files &lt;- list.files("download/") %&gt;%
   str_c("download/", .)
 
 # 空のtibbleを初期化
@@ -680,7 +572,6 @@ for (i in excel_files) {
       behead("up", "name") %&gt;%
       behead("up", "party") %&gt;%
       behead("left", "municipality") %&gt;%
-      filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
       mutate(district = j,
              file = basename(i)) %&gt;%
       select(district, municipality, name, party, vote = numeric, file)
@@ -688,47 +579,43 @@ for (i in excel_files) {
     vote_data &lt;- bind_rows(vote_data, vote_data_temp)
   }
 }</code></pre></div>
-<p data-src="19-kami-excel:749">外側のループがファイルを1つずつ、内側のループがそのファイルのシートを1つずつ処理します。シートは全部で289枚あるので、内側の処理は289回まわることになります。</p>
-<p data-src="19-kami-excel:751">外側のループの最初で、<code>xlsx_cells(i)</code> の結果を <code>cells</code> に入れています。ファイルを読み込むのは時間がかかるので、シートごとに読み直すのではなく、1回だけ読んでおいて、それを使い回しているわけです。</p>
-<p data-src="19-kami-excel:753"><code>file = basename(i)</code> で、どのファイルから来たデータなのかを記録しています。これがないと、あとで「この行はどこから来たんだ」が追えなくなります。</p>
-<aside class="box box-warn" data-src="19-kami-excel:755"><p class="box-title">全部同じ形だとは限らない</p><p data-src="19-kami-excel:756">これだけ大量に処理すると、たいてい例外が出てきます。今回のファイルは、289枚のシートがどれも同じ形をしていました。4行目が候補者名、5行目が党派名、6行目から市区町村が並び、いちばん下が合計の行、いちばん右が得票数計の列。全部のシートで確かめてあります。</p>
-<p data-src="19-kami-excel:758">でも、これはたまたまです。同じ総務省の同じ種類のファイルでも、第51回（2026年）のものは形が違います。市区町村をA列とB列の2段に分けて書いたシートと、A列だけのシートがまじっていて、途中に小計の行も挟まっています。得票数も、カンマのついた文字として入っています。この章のコードは、そのままでは使えません。ちなみに、比例代表のファイルは形がまったく違います。18章で小選挙区のぶんだけを落としてきたのは、そのためでもあります。</p>
-<p data-src="19-kami-excel:760">1つのシートでうまくいったコードでも、全部に回したあとで、もう一度確かめる必要があるわけです。</p>
-<p data-src="19-kami-excel:762">例外にぶつかったときの対処のしかたはいくつかあります。<a href="17-loop.html">17章</a>でやったように <code>tryCatch()</code> で囲んで、失敗したものを後から個別に処理する。あるいは形が同じファイルだけを先に処理して、残りは別のコードを書く。数が少なければ、例外のほうは手で入力してしまうのがいちばん早いこともあります。</p>
-<p data-src="19-kami-excel:764">どれを選んでもいいのですが、どのファイルを処理して、どのファイルを除いたのかは記録しておいて下さい。黙って除くと、あとで「全国のデータ」と言えなくなります。なぜ除いたのかも、メモに残しておきましょう。</p></aside>
-<h2 id="数え上げて確かめる" data-src="19-kami-excel:767">数え上げて確かめる</h2>
-<p data-src="19-kami-excel:769">集まったら、必ず確かめます。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:771"><pre><code># 選挙区の数
-vote_data %&gt;% distinct(district) %&gt;% nrow()
-
-# 候補者の数
-vote_data %&gt;% distinct(district, name) %&gt;% nrow()
-
-# 政党別の得票
+<p data-src="19-kami-excel:599">外側のループがファイルを1つずつ、内側のループがそのファイルのシートを1つずつ処理します。シートは全部で289枚あるので、内側の処理は289回まわることになります。</p>
+<p data-src="19-kami-excel:601">外側のループの最初で、<code>xlsx_cells(i)</code> の結果を <code>cells</code> に入れています。ファイルを読み込むのは時間がかかるので、シートごとに読み直すのではなく、1回だけ読んでおいて、それを使い回しているわけです。</p>
+<p data-src="19-kami-excel:603"><code>file = basename(i)</code> で、どのファイルから来たデータなのかを記録しています。これがないと、あとで「この行はどこから来たんだ」が追えなくなります。</p>
+<aside class="box box-warn" data-src="19-kami-excel:605"><p class="box-title">全部同じ形だとは限らない</p><p data-src="19-kami-excel:606">これだけ大量に処理すると、たいてい例外が出てきます。今回のファイルは、289枚のシートがどれも同じ形をしていました。4行目が候補者名、5行目が政党名、6行目から市区町村が並び、いちばん下が合計の行、いちばん右が得票数計の列。全部のシートで確かめてあります。</p>
+<p data-src="19-kami-excel:608">でも、これはたまたまです。同じ総務省の同じ種類のファイルでも、第51回（2026年）のものは形が違います。市区町村をA列とB列の2段に分けて書いたシートと、A列だけのシートがまじっていて、途中に小計の行も挟まっています。得票数も、カンマのついた文字として入っています。この章のコードは、そのままでは使えません。ちなみに、比例代表のファイルは形がまったく違います。18章で小選挙区のぶんだけを落としてきたのは、そのためでもあります。</p>
+<p data-src="19-kami-excel:610">1つのシートでうまくいったコードでも、全部に回したあとで、もう一度確かめる必要があるわけです。</p>
+<p data-src="19-kami-excel:612">例外にぶつかったときの対処のしかたはいくつかあります。<a href="17-loop.html">17章</a>でやったように <code>tryCatch()</code> で囲んで、失敗したものを後から個別に処理する。あるいは形が同じファイルだけを先に処理して、残りは別のコードを書く。数が少なければ、例外のほうは手で入力してしまうのがいちばん早いこともあります。</p>
+<p data-src="19-kami-excel:614">どれを選んでもいいのですが、どのファイルを処理して、どのファイルを除いたのかは記録しておいて下さい。黙って除くと、あとで「全国のデータ」と言えなくなります。なぜ除いたのかも、メモに残しておきましょう。</p></aside>
+<h2 id="数え上げて確かめる" data-src="19-kami-excel:617">数え上げて確かめる</h2>
+<p data-src="19-kami-excel:619">集まったら、必ず確かめます。ここで、とっておいた合計の行の出番です。</p>
+<p data-src="19-kami-excel:621">市区町村ごとの全候補者の票を足し上げたものと、各シートの合計の行にある「得票数計」（その選挙区の票の総数）を足したものが、一致するかを見てみます。</p>
+<div class="code" data-lang="R" data-src="19-kami-excel:623"><pre><code># 市区町村ごとの、全候補者の票を足す
 vote_data %&gt;%
-  group_by(party) %&gt;%
-  summarize(gokei = sum(vote)) %&gt;%
-  arrange(desc(gokei))</code></pre></div>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:785"><pre><code># A tibble: 12 × 2
-   party                gokei
-   &lt;chr&gt;                &lt;dbl&gt;
- 1 自由民主党       20867762.
- 2 立憲民主党       15740860.
- 3 日本維新の会      6048104.
- 4 日本共産党        3695807.
- 5 &lt;NA&gt;              2572812.
- 6 国民民主党        2349584.
- 7 参政党            1357189.
- 8 公明党             730401 
- 9 れいわ新選組       425445.
-10 社会民主党         283287.
-11 （日本保守党）     161351 
-12 みんなでつくる党    29275 </code></pre></div>
-<p data-src="19-kami-excel:803"><code>distinct()</code> は、重複を除いて種類を数えるための関数です。シート名に都道府県名が入っているので、選挙区は <code>district</code> だけで数えられます。選挙区の数は289になっていますか。候補者は、このデータでは1113人です。政党別の合計は、公表されている数字と合っていますか。<code>party</code> がNAになっているのは、無所属の候補者の票です。</p>
-<p data-src="19-kami-excel:805">ちなみに、得票数のなかには「78678.614」のような小数がまじっています。名字や名前（あるいはその読み）が同じ候補者がいて、どちらに入れたのか分からない票を、得票の割合に応じて分けた「按分票」です。この数字は千葉県第８区の柏市のもので、名前が「さとし」という候補者が2人いました。間違いではないので、慌てないで下さい。上の合計で、数字のおしりに「.」がついているのも、この小数のせいです。</p>
-<p data-src="19-kami-excel:807">合わなければ、どこかを取りこぼしているか、二重に数えているということですから、合うまで直します。各シートのいちばん下にあった「合計」の行を捨てずに取っておいて、候補者ごとに足し上げた数字と見比べるのも、いい確かめ方です。ただし、合計の行も同じコードで取り出すと、コードに誤りがあったときに両方が同じように間違えてしまい、ずれが見えません。合計の行は、セルから直接取り出して見比べるのが安全です。逆にいえば、合ったときには、公表されていない切り口——市区町村別、候補者別、党派別の組み合わせ——で自由に分析できる材料が手に入ったことになるわけです。</p>
-<aside class="box box-homework" data-src="19-kami-excel:809"><p class="box-title">宿題</p><p data-src="19-kami-excel:810">一つのファイルにある複数のシートに同じ処理を連続的にほどこすコードを、for文を使ってつくりましょう。</p>
-<p data-src="19-kami-excel:812">作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
+  filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
+  summarize(gokei = sum(vote))
+
+# 合計の行にある「得票数計」を足す
+vote_data %&gt;%
+  filter(name == "得票数計", str_detect(municipality, "合計")) %&gt;%
+  summarize(gokei = sum(vote))</code></pre></div>
+<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:635"><pre><code># A tibble: 1 × 1
+      gokei
+      &lt;dbl&gt;
+1 54261878.
+# A tibble: 1 × 1
+      gokei
+      &lt;dbl&gt;
+1 54261878.</code></pre></div>
+<p data-src="19-kami-excel:646">ひとつめの <code>filter()</code> では、得票数計の列から来た行と、合計の行から来た行を除いて、市区町村ごとの票だけを残しています。ふたつめは逆に、合計の行の得票数計だけを残しています。<code>str_detect()</code> は<a href="06-strings-filter.html">6章</a>で出てきた、ある文字を含むかどうかを調べる関数でした。</p>
+<p data-src="19-kami-excel:648">どちらも5426万1878票で、一致しました。</p>
+<p data-src="19-kami-excel:650">さらに、総務省が別に公表している、都道府県ごとの有効投票数をまとめた<a href="https://www.soumu.go.jp/main_content/000979129.xls">表</a>を開いてみると、小選挙区の有効投票数の合計は5426万1878票。こちらで足し上げた数字と一致していました。</p>
+<p data-src="19-kami-excel:652">ちなみに、「54261878.」というふうに、数字のおしりに「.」がついているのは、得票数のなかに小数がまじっていて、足し合わせた数字が整数にはなっていないからです。なんで小数が混じった数字があるのかといえば、按分票があるから。按分票とは……説明不要ですよね。</p>
+<aside class="box box-homework" data-src="19-kami-excel:654"><p class="box-title">宿題</p><p data-src="19-kami-excel:655">一つのファイルにある複数のシートに同じ処理を連続的にほどこすコードを、for文を使ってつくりましょう。</p>
+<p data-src="19-kami-excel:657">作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
+<hr>
+<p data-src="19-kami-excel:662">これで第3部は終わりです。ウェブのページから表を取り、たくさんのページやファイルをfor文でまとめて集め、扱いにくいExcelを分析しやすい形に組み替えるところまでできるようになりました。</p>
+<p data-src="19-kami-excel:664">次の第4部では、作業がうまく進まなくなったときの話をします。エラーとの付き合い方と、AIに手伝ってもらうやり方です。</p>
     </article>
     <nav class="pager"><a class="prev" href="18-download.html"><span>前へ</span>18 一括ダウンロード</a><a class="next" href="20-error.html"><span>次へ</span>20 エラーとの付き合い方</a></nav>
     <footer class="site-foot">

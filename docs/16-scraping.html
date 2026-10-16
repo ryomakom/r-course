@@ -28,9 +28,9 @@
 <li><a href="index.html">トップ</a></li>
 </ul>
 <p class="nav-part">はじめに</p><ul>
-<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
-<li><a href="02-install.html">RとRStudioを入れる</a></li>
-<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
 </ul>
 <p class="nav-part">第1部　データを読む・加工する</p><ul>
 <li><a href="04-import.html">04 データを読み込む</a></li>
@@ -40,7 +40,7 @@
 <li><a href="08-bind.html">08 縦にくっつける</a></li>
 <li><a href="09-pivot.html">09 縦長と横長</a></li>
 <li><a href="10-datatype.html">10 データ型でつまずく</a></li>
-<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
 </ul>
 <p class="nav-part">第2部　データを見る</p><ul>
 <li><a href="12-line.html">12 折れ線グラフ</a></li>
@@ -50,9 +50,9 @@
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
 <li class="here"><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="17-loop.html">17 まとめて集める</a></li>
 <li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを扱いやすく</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
 <li><a href="20-error.html">20 エラーとの付き合い方</a></li>
@@ -287,8 +287,9 @@ tokyo %&gt;%
 6 東京簡易裁判所墨田庁舎                      130-863… 東京都墨田… "訟廷事… 03-5819…
 # ℹ 7 more rows</code></pre></div>
 <aside class="box box-homework" data-src="16-scraping:259"><p class="box-title">宿題</p><p data-src="16-scraping:260">自分の担当分野の役所のサイトから、表が貼られているページを一つ探して、<code>html_element("table")</code> と <code>html_table()</code> で取れるかどうか試して下さい。うまく取れなかった場合は「検証」でソースを見て、表を囲んでいる容器の名前を調べ、<code>html_element()</code> で指定してみましょう。</p></aside>
+<p data-src="16-scraping:263">次の章では、東京地裁の管内だけでなく、全国の裁判所の連絡先を一気に集めます。ページごとに同じコードを書く代わりに、読みたいページのURLのリストを作って、for文で回します。</p>
     </article>
-    <nav class="pager"><a class="prev" href="15-finish.html"><span>前へ</span>15 仕上げて外に出す</a><a class="next" href="17-loop.html"><span>次へ</span>17 まとめて集める（for文）</a></nav>
+    <nav class="pager"><a class="prev" href="15-finish.html"><span>前へ</span>15 仕上げて外に出す</a><a class="next" href="17-loop.html"><span>次へ</span>17 まとめて集める</a></nav>
     <footer class="site-foot">
       <p>記者のためのR講座</p>
       <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>

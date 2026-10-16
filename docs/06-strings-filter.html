@@ -28,9 +28,9 @@
 <li><a href="index.html">トップ</a></li>
 </ul>
 <p class="nav-part">はじめに</p><ul>
-<li><a href="01-hajimeni.html">はじめに——Rとは何か</a></li>
-<li><a href="02-install.html">RとRStudioを入れる</a></li>
-<li><a href="03-project.html">プロジェクトとパッケージ</a></li>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
 </ul>
 <p class="nav-part">第1部　データを読む・加工する</p><ul>
 <li><a href="04-import.html">04 データを読み込む</a></li>
@@ -40,7 +40,7 @@
 <li><a href="08-bind.html">08 縦にくっつける</a></li>
 <li><a href="09-pivot.html">09 縦長と横長</a></li>
 <li><a href="10-datatype.html">10 データ型でつまずく</a></li>
-<li><a href="11-join.html">11 横にくっつける（join）</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
 </ul>
 <p class="nav-part">第2部　データを見る</p><ul>
 <li><a href="12-line.html">12 折れ線グラフ</a></li>
@@ -50,9 +50,9 @@
 </ul>
 <p class="nav-part">第3部　データを集める</p><ul>
 <li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
-<li><a href="17-loop.html">17 まとめて集める（for文）</a></li>
+<li><a href="17-loop.html">17 まとめて集める</a></li>
 <li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを解体する</a></li>
+<li><a href="19-kami-excel.html">19 神エクセルを扱いやすく</a></li>
 </ul>
 <p class="nav-part">第4部　詰まったときに</p><ul>
 <li><a href="20-error.html">20 エラーとの付き合い方</a></li>
@@ -164,6 +164,7 @@ filter(prefecture == "東京都" | prefecture == "大阪府")  # どちらか（
 <li>「ケ」と「ヶ」、「﨑」と「崎」のような異体字（<a href="11-join.html">11章</a>で痛い目にあいます）</li>
 </ul>
 <p data-src="06-strings-filter:133">前後の空白は <code>str_trim()</code> で取れます。<code>str_squish()</code> なら途中の連続した空白もまとめてくれます。役所のデータを読み込んだら、まずこれをかけておくと平和です。</p></aside>
+<p data-src="06-strings-filter:136">次の章では、市区町村ごとの人口を都道府県ごとに足し上げて、都道府県別の高齢化率を出すための下ごしらえをします。うっかりやりがちな二重計上の防ぎ方も一緒に。</p>
     </article>
     <nav class="pager"><a class="prev" href="05-select-mutate.html"><span>前へ</span>05 選ぶ・名前を変える・計算する</a><a class="next" href="07-group.html"><span>次へ</span>07 集計する</a></nav>
     <footer class="site-foot">
