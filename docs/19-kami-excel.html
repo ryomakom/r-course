@@ -75,7 +75,7 @@
 <p data-src="19-kami-excel:12">役所（だけではないですが）が公表するExcelファイルには、独特の様式があります。上のほうに表題やら注釈やらがあって、データのラベルに当たるものが2段や3段に分かれて書いてあって、おまけにセルが結合されている。Excelが表計算ソフトではなく「方眼紙」として使われた結果です。</p>
 <p data-src="19-kami-excel:14">こうした資料は基本的に、紙に印刷して人が見るために作られています。<a href="09-pivot.html">09章</a>でも説明しましたが、人間にとってはこういうスタイルのほうが見やすいし分かりやすい。その意味では理にかなっているわけです。</p>
 <p data-src="19-kami-excel:16">でも <code>read_excel()</code> で読むと悲惨なことになります。結合されたセルの二つめ以降はNAになり、ラベルの2段目はデータの1行目として読まれる。もうぐちゃぐちゃ。その筋では「紙＝神」をもじって「神エクセル」「ネ申エクセル」と呼ばれ、はっきり言って忌み嫌われます。</p>
-<p data-src="19-kami-excel:18">こういうファイルを読み込んで、分析可能な形に力技で直そうとすると、<code>rename</code> と <code>mutate</code> と <code>filter</code> を延々と書くことになります。しかもシートが何十枚もあれば、それぞれ微妙に形が違ったりするわけで、一つ一つプログラムを書き換えなくてはいけない。つらい。</p>
+<p data-src="19-kami-excel:18">こういうファイルを読み込んで、分析可能な形に力技で直そうとすると、<code>rename</code> と <code>mutate</code> と <code>filter</code> を延々と書くことになります。しかもシートが何十枚もあれば、それぞれ微妙に形が違ったりするわけで、一つひとつプログラムを書き換えなくてはいけない。つらい。</p>
 <p data-src="19-kami-excel:20">でも、もっとマシなやり方があります。</p>
 <h2 id="二つの武器で戦う" data-src="19-kami-excel:22">二つの武器で戦う</h2>
 <p data-src="19-kami-excel:24">使うのはtidyxlとunpivotrという二つのパッケージです。</p>
@@ -86,7 +86,7 @@ library(unpivotr)</code></pre></div>
 <aside class="box box-data" data-src="19-kami-excel:33"><p class="box-title">この章で使うデータ</p><p data-src="19-kami-excel:34"><a href="18-download.html">18章</a>の手順でダウンロードしたファイルを使いますが、うまく落ちてこなかった人は、北海道のぶんをここから取って下さい。</p>
 <p data-src="19-kami-excel:36"><a class="dl" href="files/000979538.xlsx" download>000979538.xlsx<span class="dl-size">46 KB</span></a>　2024年にあった第50回衆院選の小選挙区の市区町村別得票（北海道）</p>
 <p data-src="19-kami-excel:38"><code>download</code> フォルダに入れると、この章のコードがそのまま動きます。総務省が公表しているファイルの写しです。</p></aside>
-<p data-src="19-kami-excel:41">Excelで開くと、「北海道第１区」のシートはこんな感じでした。</p>
+<p data-src="19-kami-excel:41">北海道の市区町村別得票データをExcelで開くと、「北海道第１区」のシートはこんな感じでした。</p>
 <figure class="fig" data-src="19-kami-excel:43"><img src="images/19-excel.png" alt="Excelで開いた「北海道第１区」のシート。上に日付と表題と選挙区名があり、その下に候補者名・政党名の2段のラベル、左に市区町村名が並び、いちばん下が合計の行、いちばん右が得票数計の列になっている" loading="lazy"><figcaption>000979538.xlsx の「北海道第１区」のシートを、Excelで開いたところ</figcaption></figure>
 <p data-src="19-kami-excel:45">最初の3行はデータではなく注釈。数字のうち、たとえば一番左上にある「10,260」は、「日本維新の会」所属の「小林さとる氏」が「札幌市中央区」で獲得した得票数を示しています。これは人間の目には一目瞭然なのですが、人間の常識を持ち合わせないコンピューターには読み取ることができません。</p>
 <p data-src="19-kami-excel:47">そこで、以下のような形に加工していくことが必要なわけです。縦長の、いわゆる整然（tidy）データです。</p>
@@ -229,7 +229,7 @@ library(unpivotr)</code></pre></div>
 <text class="f-note" x="10" y="268">赤（候補者名）→ name、青（政党名）→ party、黄（A列）→ municipality、白い数字 → vote</text>
 </svg>
 </figure>
-<p data-src="19-kami-excel:195">コードはこんな感じ。<code>behead()</code>というのが最重要なわけですが、これは市区町村名や候補者名など、データのラベルに当たるものを切り離して、しかるべきところへ格納するための関数です。「首をはねる」という意味の英語から来ています（たぶん）。</p>
+<p data-src="19-kami-excel:195">コードはこんな感じ。<code>behead()</code>が最重要なわけですが、これは市区町村名や候補者名など、データのラベルに当たるものを切り離して、しかるべきところへ格納するための関数です。「首をはねる」という意味の英語から来ています（たぶん）。</p>
 <div class="code" data-lang="R" data-src="19-kami-excel:197"><pre><code>"download/000979538.xlsx" %&gt;%
   xlsx_cells() %&gt;%
   filter(sheet == "北海道第１区", row &gt;= 4, !is_blank) %&gt;%
@@ -238,7 +238,7 @@ library(unpivotr)</code></pre></div>
   behead("left", "municipality") %&gt;%
   select(municipality, name, party, numeric)</code></pre></div>
 <p data-src="19-kami-excel:207">それぞれのコードが何をしているのか、順番に見ていきましょう。</p>
-<p data-src="19-kami-excel:209"><code>xlsx_cells()</code> では、Excelの各セルについて、行にばらしていきます。たとえば3行×4列の表なら、12行のtibbleに変換します。それぞれの行には、もとのExcelでのセルの位置（行番号・列番号）や、セルに入力されている値、データの種類などが記録されます。</p>
+<p data-src="19-kami-excel:209"><code>xlsx_cells()</code> はExcelの各セルを行にばらす関数です。たとえば3行×4列の表なら、12行のtibbleに変換します。それぞれの行には、もとのExcelでのセルの位置（行番号・列番号）や、セルに入力されている値、データの種類などが記録されます。</p>
 <p data-src="19-kami-excel:211">次に<code>filter()</code> で「北海道第１区」のシートだけに絞っています。そのうえで <code>row &gt;= 4</code> で、上の3行（日付と表題と選挙区名）を捨てています。</p>
 <p data-src="19-kami-excel:214"><code>is_blank</code> は<code>xlsx_cells()</code>関数で生成され、セルが空っぽのときに <code>TRUE</code> になる列です。頭に <code>!</code> をつけると「〜でない」という意味になる（<a href="06-strings-filter.html">6章</a>）ので、ここでは空っぽでないセルだけを抽出しています。見た目は空白でも罫線などの書式がついていれば、<code>xlsx_cells()</code> はそれを一つのセルとして読み込みます。このファイルでは表のすぐ下に、そういう空っぽのセルが何行ぶんも並んでいるので、先に落としておかないと、中身のない行がまじってしまいます。</p>
 <p data-src="19-kami-excel:216">そのあとに <code>behead()</code> が3回出てきます。丸括弧の中には二つの要素が記述されています。データのラベルに当たるセルが、そのデータの入ったセルから見てどこにあるかを<code>up</code>とか<code>left</code>とかで示すのが、一つめの要素。そのラベルを何という名前の列に入れるかを決めるのが、二つめです。</p>

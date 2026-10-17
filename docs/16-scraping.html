@@ -70,10 +70,10 @@
       <p class="kicker">第3部　データを集める</p>
       <h1>ウェブのページから表を取る</h1>
       <p class="lead">ウェブサイトに貼られている表を、手で写さずにそのままtibbleにします。使うのはrvestというパッケージです。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#表を読み込む">表を読み込む</a></li><li><a href="#場所を絞り込む">場所を絞り込む</a></li><li><a href="#1行目を片づける">1行目を片づける</a></li></ul></nav>
+      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#表を読み込む">表を読み込む</a></li><li><a href="#場所を絞り込む">場所を絞り込む</a></li><li><a href="#少しだけお掃除を">少しだけお掃除を</a></li></ul></nav>
       <p data-src="16-scraping:8">これまでやってきたのは、すでに手元にあるデータ、誰かが分析用に整えてくれたデータを分析したり、あるいは可視化したりするといった作業でした。ただ実際には、そういった準備や下ごしらえがすんだデータが存在しない、といったことがあります。</p>
 <p data-src="16-scraping:10">そういうときには、データを自分で集めなくてはいけません。たとえばウェブサイトに何か表があって、これを分析したいなと思ったとしましょう。</p>
-<p data-src="16-scraping:12">文字や数字は確かにそこにあります。一つ一つ、エクセルに手入力することだってできます。が、めんどくさい。運が良ければ、表部分をエクセルにコピペしたときに、その表形式がそのままうまく保存されてくれますが、いつもそれがうまくいくとは限りません。</p>
+<p data-src="16-scraping:12">文字や数字は確かにそこにあります。一つひとつ、Excelに手入力することだってできます。が、めんどくさい。運が良ければ、表部分をExcelにコピペしたときに、その表形式がそのままうまく保存されてくれますが、形がガタガタに崩れてしまうこともよくあります。</p>
 <p data-src="16-scraping:14">そういうときに役に立つのがスクレイピングです。これをやるためのいろんなパッケージがPythonにはそろっているらしいですが、実はRでもぜんぜんできちゃいます。rvestというパッケージを、まずインストールして呼び出しましょう。</p>
 <div class="code" data-lang="R" data-src="16-scraping:16"><pre><code>install.packages("rvest")   # インストールは最初の1回だけ
 library(rvest)</code></pre></div>
@@ -83,8 +83,8 @@ library(rvest)</code></pre></div>
   read_html() %&gt;%
   html_element("table") %&gt;%
   html_table()</code></pre></div>
-<p data-src="16-scraping:32">まず最初にURLを二重引用符つきで書いて、パイプ演算子で次に回します。受け取った <code>read_html()</code> というコマンドは、そのURLにあるhtmlの文章を丸ごと読み込みなさいという命令です。</p>
-<p data-src="16-scraping:34">その次にある <code>html_element("table")</code> は、受け取った文章のなかからtableつまり表になっている要素を見つけて、そこだけを抜き出しなさいという命令。さらに <code>html_table()</code> というコマンドで、その抜き出した表をtibbleに変えるというわけです。</p>
+<p data-src="16-scraping:32">まず最初にURLを二重引用符つきで書いて、パイプ演算子で次に回します。受け取った <code>read_html()</code> という関数で、そのURLにあるhtmlの文章を丸ごと読み込みます。</p>
+<p data-src="16-scraping:34">その次にある <code>html_element("table")</code> は、受け取った文章のなかからtableつまり表になっている要素を見つけて、そこだけを抜き出しなさいという命令。さらに <code>html_table()</code> という関数で、その抜き出した表をtibbleに変えるというわけです。</p>
 <div class="code" data-lang="実行結果" data-src="16-scraping:36"><pre><code># A tibble: 14 × 5
   裁判所名                                 郵便番号 所在地 電話番号 電話番号
   &lt;chr&gt;                                    &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;   
@@ -262,10 +262,10 @@ library(rvest)</code></pre></div>
   read_html() %&gt;%
   html_element("div.module-sub-page-parts-table table") %&gt;%
   html_table()</code></pre></div>
-<p data-src="16-scraping:233">上記コードの3行目は、「module-sub-page-parts-tableという領域（div）の中にあるtable要素を一つ取得する」ということを意味しています。<code>div.</code> のあとに名前を続けると「この名前のついたdiv」、そのあとに半角スペースをはさんで <code>table</code> と書くと「その中にあるtable」という意味になります。こういう書き方を「CSSセレクタ」と呼びます。細かいですが、<code>html_element()</code> ではなく <code>html_elements()</code> というコマンドを使うと、複数のtable要素を（もしあれば）とってくることができます。</p>
-<h2 id="1行目を片づける" data-src="16-scraping:235">1行目を片づける</h2>
+<p data-src="16-scraping:233">上記コードの3行目は、「module-sub-page-parts-tableという領域（div）の中にあるtable要素を一つ取得する」ということを意味しています。<code>div.</code> のあとに名前を続けると「この名前のついたdiv」、そのあとに半角スペースをはさんで <code>table</code> と書くと「その中にあるtable」という意味になります。こういう書き方を「CSSセレクタ」と呼びます。細かいですが、<code>html_element()</code> ではなく、複数形のsをつけて <code>html_elements()</code> という関数を使うと、複数のtable要素を（もしあれば）とってくることができます。</p>
+<h2 id="少しだけお掃除を" data-src="16-scraping:235">少しだけお掃除を</h2>
 <p data-src="16-scraping:237">ところで、こうやって取ってきたtibbleを見てみると、本来は列名になるべきようなデータが1行目の中身になってしまっていますね。これは元のウェブサイトにある表の「電話番号」の列名にあたる部分が2行に分かれてしまっていたからです。</p>
-<p data-src="16-scraping:239">列名のほうも「電話番号」が二つ並んでしまっています。<strong>同じ名前の列が二つあると、Rはこのあとの加工をさせてくれません</strong>。というわけで、まず4列目の名前を変えてから、1行目を捨てる、という順番で、少しだけクリーニングする必要があります。</p>
+<p data-src="16-scraping:239">列名のほうも「電話番号」が二つ並んでしまっています。<strong>同じ名前の列が二つあると、Rはこのあとの加工をさせてくれません</strong>。というわけで、まず4列目の名前を変えてから、1行目を捨てる、という順番で、データを少しだけお掃除（これをデータクリーニングと呼びます）する必要があります。</p>
 <div class="code" data-lang="R" data-src="16-scraping:241"><pre><code>tokyo &lt;- "https://www.courts.go.jp/tokyo/about/syozai/index.html" %&gt;%
   read_html() %&gt;%
   html_element("div.module-sub-page-parts-table table") %&gt;%
@@ -286,7 +286,7 @@ tokyo %&gt;%
 5 東京簡易裁判所                              100-8971 東京都千代… "代表"… 03-3581…
 6 東京簡易裁判所墨田庁舎                      130-863… 東京都墨田… "訟廷事… 03-5819…
 # ℹ 7 more rows</code></pre></div>
-<aside class="box box-homework" data-src="16-scraping:259"><p class="box-title">宿題</p><p data-src="16-scraping:260">自分の担当分野の役所のサイトから、表が貼られているページを一つ探して、<code>html_element("table")</code> と <code>html_table()</code> で取れるかどうか試して下さい。うまく取れなかった場合は「検証」でソースを見て、表を囲んでいる容器の名前を調べ、<code>html_element()</code> で指定してみましょう。</p></aside>
+<aside class="box box-homework" data-src="16-scraping:259"><p class="box-title">宿題</p><p data-src="16-scraping:260">関心があるサイト（たとえば記者として担当している役所とか）から、表が貼られているページを一つ探して、<code>html_element("table")</code> と <code>html_table()</code> で取れるかどうか試して下さい。うまく取れなかった場合は「検証」でソースを見て、表を囲んでいる容器の名前を調べ、<code>html_element()</code> で指定してみましょう。</p></aside>
 <p data-src="16-scraping:263">次の章では、東京地裁の管内だけでなく、全国の裁判所の連絡先を一気に集めます。ページごとに同じコードを書く代わりに、読みたいページのURLのリストを作って、for文で回します。</p>
     </article>
     <nav class="pager"><a class="prev" href="15-finish.html"><span>前へ</span>15 仕上げて外に出す</a><a class="next" href="17-loop.html"><span>次へ</span>17 まとめて集める</a></nav>

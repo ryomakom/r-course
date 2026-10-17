@@ -400,10 +400,16 @@ if (requireNamespace("plotly", quietly = TRUE)) {
       mutate(area = if_else(prefecture == "東京都", "東京都の自治体", "その他")) %>%
       ggplot() +
       geom_point(
-        aes(x = population_2020, y = change_under15, color = area),
+        aes(
+          x = population_2020,
+          y = change_under15,
+          color = area,
+          text = paste0(prefecture, municipality)
+        ),
         alpha = 0.3
       ) +
-      scale_x_log10()
+      scale_x_log10(),
+    tooltip = c("text", "x", "y")
   )
   # plotly.js を最小限の部品だけにして、ファイルを小さくする
   touchable <- tryCatch(plotly::partial_bundle(touchable), error = function(e) touchable)

@@ -132,22 +132,28 @@ library(plotly)</code></pre></div>
     mutate(area = if_else(prefecture == "東京都", "東京都の自治体", "その他")) %&gt;%
     ggplot() +
     geom_point(
-      aes(x = population_2020, y = change_under15, color = area),
+      aes(
+        x = population_2020,
+        y = change_under15,
+        color = area,
+        text = paste0(prefecture, municipality)
+      ),
       alpha = 0.3
     ) +
-    scale_x_log10()
+    scale_x_log10(),
+  tooltip = c("text", "x", "y")
 )</code></pre></div>
 <figure class="fig">
 <iframe src="images/15-plotly.html" title="ggplotly() で作った、マウスで触れる散布図" loading="lazy"></iframe>
 <figcaption>上のコードで作ったグラフ。点にマウスを乗せたり、範囲をドラッグして拡大したりできます。</figcaption>
 </figure>
-<p data-src="15-finish:142">点にマウスを乗せると、それがどの都道府県のどの年のデータなのかが表示されます。さきほど「47色は多すぎる」と書きましたが、こうやって一つずつ確かめられるなら、色が多くても探索の役には立ちます。</p>
-<p data-src="15-finish:144"><strong>これは記事用ではなく、自分が確かめるための道具</strong>だと考えるのがいいと思います。「この外れ値、どこだ？」を一瞬で確かめられるので、私は分析中にかなり使います。htmlとして出力することもできるので、同僚と共有するのにも使えます。</p>
-<aside class="box box-warn" data-src="15-finish:146"><p class="box-title">ggplotlyの限界</p><p data-src="15-finish:147"><code>ggplotly()</code> は便利ですが、ggplotの見た目を完全に再現してはくれません。タイトルの位置がずれたり、凡例の見出しが消えたり、<code>labs()</code> で入れたsubtitleが落ちたりします。</p>
-<p data-src="15-finish:149">読者に見せるインタラクティブなグラフを作るなら、FlourishやDatawrapperのようなサービスにcsvを渡すか、社内のデザイナーに頼むのが現実的です。</p></aside>
+<p data-src="15-finish:148">点にマウスを乗せると、それがどの市区町村のどんなデータなのかが表示されます。</p>
+<p data-src="15-finish:150"><strong>これは記事用ではなく、自分が確かめるための道具</strong>だと考えるのがいいと思います。「この外れ値、どこだ？」みたいなことをすぐに確かめられるので、私は分析中にかなり使います。htmlとして出力することもできるので、同僚と共有するのにも使えます。</p>
+<aside class="box box-warn" data-src="15-finish:152"><p class="box-title">ggplotlyの限界</p><p data-src="15-finish:153"><code>ggplotly()</code> は便利ですが、ggplotの見た目を完全に再現してはくれません。タイトルの位置がずれたり、凡例の見出しが消えたり、<code>labs()</code> で入れたsubtitleが落ちたりします。</p>
+<p data-src="15-finish:155">読者に見せるインタラクティブなグラフを作るなら、FlourishやDatawrapperのようなサービスにcsvを渡すか、社内のデザイナーに頼むのが現実的です。</p></aside>
 <hr>
-<p data-src="15-finish:154">これで第2部は終わりです。データを読み込んで、加工して、グラフで眺めて、外に出すところまでできるようになりました。</p>
-<p data-src="15-finish:156">ただ、ここまでのすべては「データがすでに手元にある」ことを前提にしていました。次の第3部では、そのデータを自分で集めてくる方法を扱います。</p>
+<p data-src="15-finish:160">これで第2部は終わりです。データを読み込んで、加工して、グラフで眺めて、外に出すところまでできるようになりました。</p>
+<p data-src="15-finish:162">ただ、ここまでのすべては「データがすでに手元にある」ことを前提にしていました。次の第3部では、そのデータを自分で集めてくる方法を扱います。</p>
     </article>
     <nav class="pager"><a class="prev" href="14-point.html"><span>前へ</span>14 散布図</a><a class="next" href="16-scraping.html"><span>次へ</span>16 ウェブから表を取る</a></nav>
     <footer class="site-foot">
