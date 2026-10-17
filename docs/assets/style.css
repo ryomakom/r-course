@@ -435,6 +435,14 @@ td .dl-size { white-space: nowrap; }
 /* --------------------------------------------------------------- 図 */
 .fig { margin: 1.8rem 0; }
 .fig svg { width: 100%; height: auto; display: block; }
+.fig iframe {   /* 15章の ggplotly() のグラフ（マウスで触れる） */
+  width: 100%;
+  height: 460px;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  background: #fff;
+}
 .fig video {
   width: 100%;
   height: auto;

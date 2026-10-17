@@ -7,9 +7,7 @@ lead: 日本語が四角に化ける問題、画像として保存する方法�
 
 ## 日本語が「□□□」になるとき
 
-グラフに日本語のタイトルを入れたら、文字が全部豆腐みたいな四角になった。あるいは警告がずらずら出てきた。Macを使っている人は、ほぼ確実にこれに出会います。
-
-（このページのグラフはWindowsで作っていて、そちらでは何も指定しなくても日本語が出ました。Rが勝手に代わりのフォントを探してくれる場合があるからです。つまり**出る人と出ない人がいる**ので、勉強会では必ず両方の説明が必要になります）
+グラフに日本語のタイトルを入れたら、文字が全部豆腐みたいな四角になった。あるいは警告がずらずら出てきた。こういうことが時々あります。
 
 原因は、ggplotが使おうとしている標準のフォントに日本語が入っていないことです。使うフォントを指定してやれば直ります。
 
@@ -35,17 +33,18 @@ Windowsなら「Yu Gothic」「Meiryo」「MS Gothic」、Macなら「Hiragino S
 
 ## テーマで見た目を変える
 
-ggplotの初期設定は背景が灰色ですが、これは好みが分かれるところです。テーマを変えると、雰囲気がかなり変わります。
+ggplotの初期設定は背景が灰色です。こんな感じ。
+
+![theme_grayで描いた折れ線グラフ。灰色の背景に白い格子](images/15-theme-gray.png "theme_gray。ggplotの初期設定")
+
+テーマを変えると、雰囲気がかなり変わります。
 
 ```r
 five_pref %>%
   ggplot() +
   geom_line(aes(x = year, y = population, color = prefecture)) +
-  theme_minimal(base_family = "Yu Gothic")
+  theme_minimal()
 ```
-
-![theme_grayで描いた折れ線グラフ。灰色の背景に白い格子](images/15-theme-gray.png "theme_gray。ggplotの初期設定")
-
 ![theme_minimalで描いた折れ線グラフ。白地に薄い格子](images/15-theme-minimal.png "theme_minimal。白地ですっきり")
 
 | テーマ | 見た目 |
@@ -84,25 +83,32 @@ ggsave("output/jinko.png", plot = g, width = 8, height = 5, dpi = 200)
 
 `width` と `height` はインチ、`dpi` は解像度です。拡張子を `.pdf` や `.svg` にすると、拡大しても劣化しない形式で保存できます。デザイナーに渡すならこちらのほうが喜ばれます。
 
+あるいは、RStudioの右下のパネルにあるExportボタンを押せば、コードを書かなくても画像を保存できます。お好きなやり方でどうぞ。
+
 ## デザイナーに渡すデータを書き出す
 
-とはいえ、このグラフを記事に使って読者様にお見せするのは、さすがにちょっとキツイ。社内にいるプロのデザイナーに頼んで、もっとかっこいいグラフにしたいですよね。あるいはFlourishとかを使って、ウェブで使えるインタラクティブなグラフにしてもいいでしょう。いずれにしても、データを何らかの形で出力して保存する必要があります。そのときにはこんなコードを書きます。
+いい感じのグラフができたとはいえ、さすがにこれをそのまま記事に使って読者様にお見せするのは、ちょっとキツイ。社内にいるプロのデザイナーに頼んで、もっとかっこいいグラフにしたいですよね。あるいはFlourishとかを使って、ウェブで使えるインタラクティブなグラフにしてもいいでしょう。いずれにしても、データを何らかの形で出力して保存する必要があります。そのときにはこんなコードを書きます。
 
 ```r
 all_municipality_change %>%
-  write_excel_csv("デザイナー用.csv")
+  write_excel_csv("output/デザイナー用.csv")
 ```
 
 `write_excel_csv` というのが、そのための関数です。同じようなことができる関数はいくつかあります。たとえば `write_csv` なんていうものもありますが、これで出力したファイルをエクセルでそのまま開くと文字化けしてしまいます。`write_excel_csv` ならエクセルでも文字化けしませんので、私はこちらをよく使っています。
 
-渡す前に、必要な列だけに絞っておくのも親切です。
+渡す前に、必要な列だけに絞っておくのも親切です。たとえばこんな感じ。
 
 ```r
-five_pref %>%
-  mutate(rate_under15 = population_under15 * 100 / population) %>%
-  select(year, prefecture, rate_under15) %>%
+all_municipality_change %>%
+  select(
+    prefecture,
+    municipality,
+    population_2020,
+    change_under15
+  ) %>%
   write_excel_csv("output/デザイナー用.csv")
 ```
+
 
 ## マウスで触れるグラフにする
 
@@ -116,13 +122,22 @@ library(plotly)
 `ggplotly()` という関数の丸括弧のなかに、インタラクティブ化したいグラフを入れるだけです。
 
 ```r
-ggplotly(all_pref %>%
-           mutate(rate_under15 = population_under15 * 100 / population) %>%
-           ggplot() +
-           geom_point(aes(x = year,
-                          y = rate_under15,
-                          color = prefecture)))
+ggplotly(
+  all_municipality_change %>%
+    mutate(area = if_else(prefecture == "東京都", "東京都の自治体", "その他")) %>%
+    ggplot() +
+    geom_point(
+      aes(x = population_2020, y = change_under15, color = area),
+      alpha = 0.3
+    ) +
+    scale_x_log10()
+)
 ```
+
+<figure class="fig">
+<iframe src="images/15-plotly.html" title="ggplotly() で作った、マウスで触れる散布図" loading="lazy"></iframe>
+<figcaption>上のコードで作ったグラフ。点にマウスを乗せたり、範囲をドラッグして拡大したりできます。</figcaption>
+</figure>
 
 点にマウスを乗せると、それがどの都道府県のどの年のデータなのかが表示されます。さきほど「47色は多すぎる」と書きましたが、こうやって一つずつ確かめられるなら、色が多くても探索の役には立ちます。
 

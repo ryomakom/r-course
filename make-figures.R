@@ -393,6 +393,26 @@ save_fig("15-theme-minimal",
            theme_minimal(base_family = FONT) +
            labs(title = "theme_minimal", x = "年", y = "人口", color = "都府県"))
 
+# 15章　ggplotly() で作った、マウスで触れるグラフ（ページに埋め込むhtml）
+if (requireNamespace("plotly", quietly = TRUE)) {
+  touchable <- plotly::ggplotly(
+    all_municipality_change %>%
+      mutate(area = if_else(prefecture == "東京都", "東京都の自治体", "その他")) %>%
+      ggplot() +
+      geom_point(
+        aes(x = population_2020, y = change_under15, color = area),
+        alpha = 0.3
+      ) +
+      scale_x_log10()
+  )
+  # plotly.js を最小限の部品だけにして、ファイルを小さくする
+  touchable <- tryCatch(plotly::partial_bundle(touchable), error = function(e) touchable)
+  htmlwidgets::saveWidget(touchable, file.path(normalizePath(OUT_IMG), "15-plotly.html"),
+                          selfcontained = TRUE, title = "ggplotlyで作ったグラフ")
+  unlink(file.path(OUT_IMG, "15-plotly_files"), recursive = TRUE)
+  cat("○ images/15-plotly.html\n")
+}
+
 # 13章　宿題の作例（宮城県）
 save_fig("13-shukudai-miyagi",
          five_pref %>%

@@ -72,69 +72,82 @@
       <p class="lead">日本語が四角に化ける問題、画像として保存する方法、デザイナーに渡すcsvの作り方、ついでにマウスで触れるグラフも。</p>
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#日本語がになるとき">日本語が「□□□」になるとき</a></li><li><a href="#テーマで見た目を変える">テーマで見た目を変える</a></li><li><a href="#グラフを画像として保存する">グラフを画像として保存する</a></li><li><a href="#デザイナーに渡すデータを書き出す">デザイナーに渡すデータを書き出す</a></li><li><a href="#マウスで触れるグラフにする">マウスで触れるグラフにする</a></li></ul></nav>
       <h2 id="日本語がになるとき" data-src="15-finish:8">日本語が「□□□」になるとき</h2>
-<p data-src="15-finish:10">グラフに日本語のタイトルを入れたら、文字が全部豆腐みたいな四角になった。あるいは警告がずらずら出てきた。Macを使っている人は、ほぼ確実にこれに出会います。</p>
-<p data-src="15-finish:12">（このページのグラフはWindowsで作っていて、そちらでは何も指定しなくても日本語が出ました。Rが勝手に代わりのフォントを探してくれる場合があるからです。つまり<strong>出る人と出ない人がいる</strong>ので、勉強会では必ず両方の説明が必要になります）</p>
-<p data-src="15-finish:14">原因は、ggplotが使おうとしている標準のフォントに日本語が入っていないことです。使うフォントを指定してやれば直ります。</p>
-<div class="code" data-lang="R" data-src="15-finish:16"><pre><code>theme_set(theme_gray(base_family = "HiraKakuProN-W3"))   # Mac
+<p data-src="15-finish:10">グラフに日本語のタイトルを入れたら、文字が全部豆腐みたいな四角になった。あるいは警告がずらずら出てきた。こういうことが時々あります。</p>
+<p data-src="15-finish:12">原因は、ggplotが使おうとしている標準のフォントに日本語が入っていないことです。使うフォントを指定してやれば直ります。</p>
+<div class="code" data-lang="R" data-src="15-finish:14"><pre><code>theme_set(theme_gray(base_family = "HiraKakuProN-W3"))   # Mac
 theme_set(theme_gray(base_family = "Yu Gothic"))         # Windows</code></pre></div>
-<p data-src="15-finish:21"><code>theme_set()</code> は「これからつくるグラフ全部にこの設定を使ってね」という命令です。R Markdownのいちばん上、<code>library(tidyverse)</code> の次の行あたりに書いておくのがおすすめです。</p>
-<aside class="box box-tips" data-src="15-finish:23"><p class="box-title">使えるフォントの名前を調べる</p><p data-src="15-finish:24">フォント名は環境によって違うので、手元で使えるものを確かめるのが確実です。</p>
-<div class="code" data-lang="R" data-src="15-finish:26"><pre><code>library(systemfonts)
+<p data-src="15-finish:19"><code>theme_set()</code> は「これからつくるグラフ全部にこの設定を使ってね」という命令です。R Markdownのいちばん上、<code>library(tidyverse)</code> の次の行あたりに書いておくのがおすすめです。</p>
+<aside class="box box-tips" data-src="15-finish:21"><p class="box-title">使えるフォントの名前を調べる</p><p data-src="15-finish:22">フォント名は環境によって違うので、手元で使えるものを確かめるのが確実です。</p>
+<div class="code" data-lang="R" data-src="15-finish:24"><pre><code>library(systemfonts)
 system_fonts() %&gt;%
   filter(str_detect(family, "Gothic|Mincho|Hira|Noto")) %&gt;%
   distinct(family)</code></pre></div>
-<p data-src="15-finish:33">Windowsなら「Yu Gothic」「Meiryo」「MS Gothic」、Macなら「Hiragino Sans」あたりが使えるはずです。どうしてもうまくいかないときは、グラフの文字は英語のままにして、あとで画像編集ソフトかデザイナーの手で日本語を入れる、という割り切り方もあります。</p></aside>
-<h2 id="テーマで見た目を変える" data-src="15-finish:36">テーマで見た目を変える</h2>
-<p data-src="15-finish:38">ggplotの初期設定は背景が灰色ですが、これは好みが分かれるところです。テーマを変えると、雰囲気がかなり変わります。</p>
-<div class="code" data-lang="R" data-src="15-finish:40"><pre><code>five_pref %&gt;%
+<p data-src="15-finish:31">Windowsなら「Yu Gothic」「Meiryo」「MS Gothic」、Macなら「Hiragino Sans」あたりが使えるはずです。どうしてもうまくいかないときは、グラフの文字は英語のままにして、あとで画像編集ソフトかデザイナーの手で日本語を入れる、という割り切り方もあります。</p></aside>
+<h2 id="テーマで見た目を変える" data-src="15-finish:34">テーマで見た目を変える</h2>
+<p data-src="15-finish:36">ggplotの初期設定は背景が灰色です。こんな感じ。</p>
+<figure class="fig" data-src="15-finish:38"><img src="images/15-theme-gray.png" alt="theme_grayで描いた折れ線グラフ。灰色の背景に白い格子" loading="lazy"><figcaption>theme_gray。ggplotの初期設定</figcaption></figure>
+<p data-src="15-finish:40">テーマを変えると、雰囲気がかなり変わります。</p>
+<div class="code" data-lang="R" data-src="15-finish:42"><pre><code>five_pref %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = population, color = prefecture)) +
-  theme_minimal(base_family = "Yu Gothic")</code></pre></div>
-<figure class="fig" data-src="15-finish:47"><img src="images/15-theme-gray.png" alt="theme_grayで描いた折れ線グラフ。灰色の背景に白い格子" loading="lazy"><figcaption>theme_gray。ggplotの初期設定</figcaption></figure>
-<figure class="fig" data-src="15-finish:49"><img src="images/15-theme-minimal.png" alt="theme_minimalで描いた折れ線グラフ。白地に薄い格子" loading="lazy"><figcaption>theme_minimal。白地ですっきり</figcaption></figure>
-<div class="table-wrap" data-src="15-finish:51"><table><thead><tr><th>テーマ</th><th>見た目</th></tr></thead><tbody><tr><td><code>theme_gray()</code></td><td>初期設定。灰色の背景に白い格子</td></tr><tr><td><code>theme_minimal()</code></td><td>白地に薄い格子。すっきり</td></tr><tr><td><code>theme_classic()</code></td><td>白地に軸の線だけ。論文っぽい</td></tr><tr><td><code>theme_bw()</code></td><td>白地に黒枠</td></tr></tbody></table></div>
-<p data-src="15-finish:58">細かい調整もできます。よく使うのは凡例の位置と、文字の大きさくらいでしょうか。</p>
-<div class="code" data-lang="R" data-src="15-finish:60"><pre><code>  theme(legend.position = "bottom",           # 凡例を下に
+  theme_minimal()</code></pre></div>
+<figure class="fig" data-src="15-finish:48"><img src="images/15-theme-minimal.png" alt="theme_minimalで描いた折れ線グラフ。白地に薄い格子" loading="lazy"><figcaption>theme_minimal。白地ですっきり</figcaption></figure>
+<div class="table-wrap" data-src="15-finish:50"><table><thead><tr><th>テーマ</th><th>見た目</th></tr></thead><tbody><tr><td><code>theme_gray()</code></td><td>初期設定。灰色の背景に白い格子</td></tr><tr><td><code>theme_minimal()</code></td><td>白地に薄い格子。すっきり</td></tr><tr><td><code>theme_classic()</code></td><td>白地に軸の線だけ。論文っぽい</td></tr><tr><td><code>theme_bw()</code></td><td>白地に黒枠</td></tr></tbody></table></div>
+<p data-src="15-finish:57">細かい調整もできます。よく使うのは凡例の位置と、文字の大きさくらいでしょうか。</p>
+<div class="code" data-lang="R" data-src="15-finish:59"><pre><code>  theme(legend.position = "bottom",           # 凡例を下に
         plot.title = element_text(size = 16)) # タイトルを大きく</code></pre></div>
-<p data-src="15-finish:65">が、まあこういうのは凝りだすとキリがありません。しかも凝ったところで社内のデザイナーが作り直すことになるので、ほどほどに。</p>
-<h2 id="グラフを画像として保存する" data-src="15-finish:67">グラフを画像として保存する</h2>
-<p data-src="15-finish:69">同僚にチャットで送りたい、企画書に貼りたい。そういうときは <code>ggsave()</code> を使います。</p>
-<div class="code" data-lang="R" data-src="15-finish:71"><pre><code>ggsave("output/kodomo.png", width = 8, height = 5, dpi = 200)</code></pre></div>
-<p data-src="15-finish:75"><strong>直前に描いたグラフ</strong>が保存されます。オブジェクトに入れてから保存することもできます。</p>
-<div class="code" data-lang="R" data-src="15-finish:77"><pre><code>g &lt;- five_pref %&gt;%
+<p data-src="15-finish:64">が、まあこういうのは凝りだすとキリがありません。しかも凝ったところで社内のデザイナーが作り直すことになるので、ほどほどに。</p>
+<h2 id="グラフを画像として保存する" data-src="15-finish:66">グラフを画像として保存する</h2>
+<p data-src="15-finish:68">同僚にチャットで送りたい、企画書に貼りたい。そういうときは <code>ggsave()</code> を使います。</p>
+<div class="code" data-lang="R" data-src="15-finish:70"><pre><code>ggsave("output/kodomo.png", width = 8, height = 5, dpi = 200)</code></pre></div>
+<p data-src="15-finish:74"><strong>直前に描いたグラフ</strong>が保存されます。オブジェクトに入れてから保存することもできます。</p>
+<div class="code" data-lang="R" data-src="15-finish:76"><pre><code>g &lt;- five_pref %&gt;%
   ggplot() +
   geom_line(aes(x = year, y = population, color = prefecture))
 
 ggsave("output/jinko.png", plot = g, width = 8, height = 5, dpi = 200)</code></pre></div>
-<p data-src="15-finish:85"><code>width</code> と <code>height</code> はインチ、<code>dpi</code> は解像度です。拡張子を <code>.pdf</code> や <code>.svg</code> にすると、拡大しても劣化しない形式で保存できます。デザイナーに渡すならこちらのほうが喜ばれます。</p>
-<h2 id="デザイナーに渡すデータを書き出す" data-src="15-finish:87">デザイナーに渡すデータを書き出す</h2>
-<p data-src="15-finish:89">とはいえ、このグラフを記事に使って読者様にお見せするのは、さすがにちょっとキツイ。社内にいるプロのデザイナーに頼んで、もっとかっこいいグラフにしたいですよね。あるいはFlourishとかを使って、ウェブで使えるインタラクティブなグラフにしてもいいでしょう。いずれにしても、データを何らかの形で出力して保存する必要があります。そのときにはこんなコードを書きます。</p>
-<div class="code" data-lang="R" data-src="15-finish:91"><pre><code>all_municipality_change %&gt;%
-  write_excel_csv("デザイナー用.csv")</code></pre></div>
-<p data-src="15-finish:96"><code>write_excel_csv</code> というのが、そのための関数です。同じようなことができる関数はいくつかあります。たとえば <code>write_csv</code> なんていうものもありますが、これで出力したファイルをエクセルでそのまま開くと文字化けしてしまいます。<code>write_excel_csv</code> ならエクセルでも文字化けしませんので、私はこちらをよく使っています。</p>
-<p data-src="15-finish:98">渡す前に、必要な列だけに絞っておくのも親切です。</p>
-<div class="code" data-lang="R" data-src="15-finish:100"><pre><code>five_pref %&gt;%
-  mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
-  select(year, prefecture, rate_under15) %&gt;%
+<p data-src="15-finish:84"><code>width</code> と <code>height</code> はインチ、<code>dpi</code> は解像度です。拡張子を <code>.pdf</code> や <code>.svg</code> にすると、拡大しても劣化しない形式で保存できます。デザイナーに渡すならこちらのほうが喜ばれます。</p>
+<p data-src="15-finish:86">あるいは、RStudioの右下のパネルにあるExportボタンを押せば、コードを書かなくても画像を保存できます。お好きなやり方でどうぞ。</p>
+<h2 id="デザイナーに渡すデータを書き出す" data-src="15-finish:88">デザイナーに渡すデータを書き出す</h2>
+<p data-src="15-finish:90">いい感じのグラフができたとはいえ、さすがにこれをそのまま記事に使って読者様にお見せするのは、ちょっとキツイ。社内にいるプロのデザイナーに頼んで、もっとかっこいいグラフにしたいですよね。あるいはFlourishとかを使って、ウェブで使えるインタラクティブなグラフにしてもいいでしょう。いずれにしても、データを何らかの形で出力して保存する必要があります。そのときにはこんなコードを書きます。</p>
+<div class="code" data-lang="R" data-src="15-finish:92"><pre><code>all_municipality_change %&gt;%
   write_excel_csv("output/デザイナー用.csv")</code></pre></div>
-<h2 id="マウスで触れるグラフにする" data-src="15-finish:107">マウスで触れるグラフにする</h2>
-<p data-src="15-finish:109">もう一つ、自分がデータを探るときに便利な技を紹介します。plotlyというパッケージを使うと、ggplotで描いたグラフをそのままマウスで触れるものに変えてくれます。</p>
-<div class="code" data-lang="R" data-src="15-finish:111"><pre><code>install.packages("plotly")
+<p data-src="15-finish:97"><code>write_excel_csv</code> というのが、そのための関数です。同じようなことができる関数はいくつかあります。たとえば <code>write_csv</code> なんていうものもありますが、これで出力したファイルをエクセルでそのまま開くと文字化けしてしまいます。<code>write_excel_csv</code> ならエクセルでも文字化けしませんので、私はこちらをよく使っています。</p>
+<p data-src="15-finish:99">渡す前に、必要な列だけに絞っておくのも親切です。たとえばこんな感じ。</p>
+<div class="code" data-lang="R" data-src="15-finish:101"><pre><code>all_municipality_change %&gt;%
+  select(
+    prefecture,
+    municipality,
+    population_2020,
+    change_under15
+  ) %&gt;%
+  write_excel_csv("output/デザイナー用.csv")</code></pre></div>
+<h2 id="マウスで触れるグラフにする" data-src="15-finish:113">マウスで触れるグラフにする</h2>
+<p data-src="15-finish:115">もう一つ、自分がデータを探るときに便利な技を紹介します。plotlyというパッケージを使うと、ggplotで描いたグラフをそのままマウスで触れるものに変えてくれます。</p>
+<div class="code" data-lang="R" data-src="15-finish:117"><pre><code>install.packages("plotly")
 library(plotly)</code></pre></div>
-<p data-src="15-finish:116"><code>ggplotly()</code> という関数の丸括弧のなかに、インタラクティブ化したいグラフを入れるだけです。</p>
-<div class="code" data-lang="R" data-src="15-finish:118"><pre><code>ggplotly(all_pref %&gt;%
-           mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
-           ggplot() +
-           geom_point(aes(x = year,
-                          y = rate_under15,
-                          color = prefecture)))</code></pre></div>
-<p data-src="15-finish:127">点にマウスを乗せると、それがどの都道府県のどの年のデータなのかが表示されます。さきほど「47色は多すぎる」と書きましたが、こうやって一つずつ確かめられるなら、色が多くても探索の役には立ちます。</p>
-<p data-src="15-finish:129"><strong>これは記事用ではなく、自分が確かめるための道具</strong>だと考えるのがいいと思います。「この外れ値、どこだ？」を一瞬で確かめられるので、私は分析中にかなり使います。htmlとして出力することもできるので、同僚と共有するのにも使えます。</p>
-<aside class="box box-warn" data-src="15-finish:131"><p class="box-title">ggplotlyの限界</p><p data-src="15-finish:132"><code>ggplotly()</code> は便利ですが、ggplotの見た目を完全に再現してはくれません。タイトルの位置がずれたり、凡例の見出しが消えたり、<code>labs()</code> で入れたsubtitleが落ちたりします。</p>
-<p data-src="15-finish:134">読者に見せるインタラクティブなグラフを作るなら、FlourishやDatawrapperのようなサービスにcsvを渡すか、社内のデザイナーに頼むのが現実的です。</p></aside>
+<p data-src="15-finish:122"><code>ggplotly()</code> という関数の丸括弧のなかに、インタラクティブ化したいグラフを入れるだけです。</p>
+<div class="code" data-lang="R" data-src="15-finish:124"><pre><code>ggplotly(
+  all_municipality_change %&gt;%
+    mutate(area = if_else(prefecture == "東京都", "東京都の自治体", "その他")) %&gt;%
+    ggplot() +
+    geom_point(
+      aes(x = population_2020, y = change_under15, color = area),
+      alpha = 0.3
+    ) +
+    scale_x_log10()
+)</code></pre></div>
+<figure class="fig">
+<iframe src="images/15-plotly.html" title="ggplotly() で作った、マウスで触れる散布図" loading="lazy"></iframe>
+<figcaption>上のコードで作ったグラフ。点にマウスを乗せたり、範囲をドラッグして拡大したりできます。</figcaption>
+</figure>
+<p data-src="15-finish:142">点にマウスを乗せると、それがどの都道府県のどの年のデータなのかが表示されます。さきほど「47色は多すぎる」と書きましたが、こうやって一つずつ確かめられるなら、色が多くても探索の役には立ちます。</p>
+<p data-src="15-finish:144"><strong>これは記事用ではなく、自分が確かめるための道具</strong>だと考えるのがいいと思います。「この外れ値、どこだ？」を一瞬で確かめられるので、私は分析中にかなり使います。htmlとして出力することもできるので、同僚と共有するのにも使えます。</p>
+<aside class="box box-warn" data-src="15-finish:146"><p class="box-title">ggplotlyの限界</p><p data-src="15-finish:147"><code>ggplotly()</code> は便利ですが、ggplotの見た目を完全に再現してはくれません。タイトルの位置がずれたり、凡例の見出しが消えたり、<code>labs()</code> で入れたsubtitleが落ちたりします。</p>
+<p data-src="15-finish:149">読者に見せるインタラクティブなグラフを作るなら、FlourishやDatawrapperのようなサービスにcsvを渡すか、社内のデザイナーに頼むのが現実的です。</p></aside>
 <hr>
-<p data-src="15-finish:139">これで第2部は終わりです。データを読み込んで、加工して、グラフで眺めて、外に出すところまでできるようになりました。</p>
-<p data-src="15-finish:141">ただ、ここまでのすべては「データがすでに手元にある」ことを前提にしていました。次の第3部では、そのデータを自分で集めてくる方法を扱います。</p>
+<p data-src="15-finish:154">これで第2部は終わりです。データを読み込んで、加工して、グラフで眺めて、外に出すところまでできるようになりました。</p>
+<p data-src="15-finish:156">ただ、ここまでのすべては「データがすでに手元にある」ことを前提にしていました。次の第3部では、そのデータを自分で集めてくる方法を扱います。</p>
     </article>
     <nav class="pager"><a class="prev" href="14-point.html"><span>前へ</span>14 散布図</a><a class="next" href="16-scraping.html"><span>次へ</span>16 ウェブから表を取る</a></nav>
     <footer class="site-foot">

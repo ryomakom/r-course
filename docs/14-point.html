@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>散布図 | 記者のためのR講座</title>
-<meta name="description" content="データ量が多いときに、傾向をざっくりと知るのに役立つグラフ。1700余の市町村をいちどに眺めて、「東京だけ子どもが減っていない」の中身を確かめます。">
+<meta name="description" content="データ量が多いときに、傾向をざっくりと知るのに役立つグラフ。1700あまりの市町村をいちどに眺めて、「東京だけ子どもが増えている」ことの意味を調べます。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
@@ -69,7 +69,7 @@
     <article>
       <p class="kicker">第2部　データを見る</p>
       <h1>散布図</h1>
-      <p class="lead">データ量が多いときに、傾向をざっくりと知るのに役立つグラフ。1700余の市町村をいちどに眺めて、「東京だけ子どもが減っていない」の中身を確かめます。</p>
+      <p class="lead">データ量が多いときに、傾向をざっくりと知るのに役立つグラフ。1700あまりの市町村をいちどに眺めて、「東京だけ子どもが増えている」ことの意味を調べます。</p>
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#点をばらまく">点をばらまく</a></li><li><a href="#色大きさ透明度">色、大きさ、透明度</a></li><li><a href="#全市町村を眺める">全市町村を眺める</a></li><li><a href="#なんとなくを確かめる">「なんとなく」を確かめる</a></li><li><a href="#対数の目盛りにする">対数の目盛りにする</a></li><li><a href="#注目したいものだけ色をつける">注目したいものだけ色をつける</a></li><li><a href="#見栄えを整える">見栄えを整える</a></li></ul></nav>
       <h2 id="点をばらまく" data-src="14-point:8">点をばらまく</h2>
 <p data-src="14-point:10">つぎに散布図です。これは点が平面上にばらばらと散らばったかたちのグラフで、点がたくさんあっても（というか、あればあるほどむしろ）分かりやすいというところが、折れ線グラフと棒グラフに比べて優れています。</p>
@@ -92,7 +92,7 @@
                  color = prefecture))   # 色で分ける</code></pre></div>
 <figure class="fig" data-src="14-point:44"><img src="images/14-point-color47.png" alt="47色に色分けされ、凡例が縦に長く並んで判別できなくなった散布図" loading="lazy"><figcaption>47色。凡例を見比べる気力が失われる</figcaption></figure>
 <p data-src="14-point:46">うーん、色が全都道府県分で47種類もあるので、さすがに分かりにくくなってしまいました。</p>
-<aside class="box box-note" data-src="14-point:48"><p class="box-title">色分けは数色までにとどめる</p><p data-src="14-point:49">これは覚えておくと得をする経験則です。人間が凡例と絵を見比べて区別できる色数は、多くて七つとか八つとか？　それ以上になると、色分けはむしろ邪魔になります。</p>
+<aside class="box box-note" data-src="14-point:48"><p class="box-title">色分けは数色までにとどめる</p><p data-src="14-point:49">人間が凡例と絵を見比べて区別できる色数は、たぶん、多くて七つとか八つとか？　それ以上になると、色分けはむしろ邪魔になります。</p>
 <p data-src="14-point:51">47都道府県を色分けしたくなったら、次のどれかを考えます。</p>
 <ul data-src="14-point:53">
 <li>注目する2〜3個だけに色をつけて、あとは灰色にする（この章の後半でやります）</li>
@@ -108,7 +108,7 @@
                  size = population))   # ここでサイズ指定</code></pre></div>
 <figure class="fig" data-src="14-point:69"><img src="images/14-point-size.png" alt="人口の多さを点の大きさで表した散布図。大きな点が下のほうにある" loading="lazy"><figcaption>点の大きさが人口。大きい点は下＝子どもの割合が低い</figcaption></figure>
 <p data-src="14-point:71"><code>size = population</code> と指定することで、人口によって点のサイズを変えるようにしました。このグラフをみると、2010年ごろまで子どもの割合が群を抜いて少なかったところがありますが、これは人口の多い都道府県なんだなということが読み取れますね。おそらく東京都でしょう。</p>
-<p data-src="14-point:73">ただ、点と点が重なり合ってしまっているところが、グチャグチャ〜ッとなっているのでちょっと分かりにくい。ここを解決するため、点を半透明にしてみましょう。</p>
+<p data-src="14-point:73">ただ、点と点が重なり合ってグチャグチャーッとなってしまっているので、ちょっと分かりにくい。ここを解決するため、点を半透明にしてみましょう。</p>
 <div class="code" data-lang="R" data-src="14-point:75"><pre><code>all_pref %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   ggplot() +
@@ -120,9 +120,9 @@
 <p data-src="14-point:87">点と点が重なり合っているところは色が濃くなっているので、どのあたりに点が集まっているのかがボンヤリ見えてきます。半透明にするように指定しているのは <code>alpha = 0.1</code> という部分で、この数値を1に近づけるほどに色は濃くなり、0に近づけるほどに薄くなります。どれくらいの色合いにするかは、いろいろ試してベストなのを選べばよいと思います。</p>
 <p data-src="14-point:89"><code>alpha</code> が <code>aes()</code> の外に書かれていることにも注目してください。データによって透明度を変えたいわけではなく、全部の点を一律に薄くしたいので、外側です。</p>
 <h2 id="全市町村を眺める" data-src="14-point:91">全市町村を眺める</h2>
-<p data-src="14-point:93">散布図は点がたくさんあっても分かりやすい、というのを最初に書きましたが、せっかくなので都道府県別ではなく、全市町村のデータを表示してみましょうか。まずはデータを読み込んで、<code>all_municipality</code> というオブジェクトに保存します。</p>
+<p data-src="14-point:93">散布図は点がたくさんあっても分かりやすい、というのを最初に書きました。せっかくなので都道府県別ではなく、全市町村のデータを表示してみましょうか。まずはデータを読み込んで、<code>all_municipality</code> というオブジェクトに保存します。</p>
 <div class="code" data-lang="R" data-src="14-point:95"><pre><code>all_municipality &lt;- read_csv("data/市町村別人口.csv")</code></pre></div>
-<p data-src="14-point:99">横軸に年、縦軸に子どもの比率をとったグラフにしてみましょう。先ほどと同じように、人口の多さを点の大きさで表現して、さらに半透明にします。</p>
+<p data-src="14-point:99">さっきまでと同じように、横軸に年、縦軸に子どもの比率をとります。人口の多さを点の大きさで表現して、さらに半透明にします。</p>
 <div class="code" data-lang="R" data-src="14-point:101"><pre><code>all_municipality %&gt;%
   mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
   ggplot() +
@@ -134,36 +134,37 @@
 <p data-src="14-point:113">なんとなく、ですが、小さい丸は右肩下がりになっているのに対して、大きい丸はそうでもない。つまり規模の小さい自治体のほうが、大きい自治体よりも子どもの割合がはっきりと下がってきているように見えます。</p>
 <h2 id="なんとなくを確かめる" data-src="14-point:115">「なんとなく」を確かめる</h2>
 <p data-src="14-point:117">本当にそうでしょうか。確かめるため、2000年から2020年にかけて子どもの数がどう変化したか、自治体ごとに示したデータをつくっていきます。</p>
-<p data-src="14-point:119">以下のようなコードです。<code>pivot_longer</code> にしたと思ったら今度は <code>pivot_wider</code> にしたりしていて、やたら複雑に見えますが、そうしなければならない理由があります。もし興味があれば、パイプ演算子で区切られたところでデータがどんな形をしているか確かめることで、どんなふうに加工されていっているのかを確認してみてください。</p>
+<p data-src="14-point:119">以下のようなコードです。少し複雑にみえるかもしれませんが、必要な列を選んで、横長にして、行のなかで計算する。すべて第1部でやったことです。</p>
 <div class="code" data-lang="R" data-src="14-point:121"><pre><code>all_municipality_change &lt;- all_municipality %&gt;%
-  filter(year %in% c(2020, 2000)) %&gt;%
+  filter(year %in% c(2000, 2020)) %&gt;%
   select(year, code, prefecture, municipality, population_under15, population) %&gt;%
-  pivot_longer(cols = c(population_under15, population),
-               names_to = "category",
-               values_to = "value") %&gt;%
-  pivot_wider(names_from = c(category, year),
-              values_from = value) %&gt;%
-  mutate(change_under15 = (population_under15_2020 * 100 / population_under15_2000) - 100)</code></pre></div>
-<p data-src="14-point:133">横軸に2020年の人口、縦軸に子どもの数の変化率をとったグラフにしてみましょう。</p>
-<div class="code" data-lang="R" data-src="14-point:135"><pre><code>all_municipality_change %&gt;%
+  pivot_wider(
+    names_from = year,
+    values_from = c(population_under15, population)
+  ) %&gt;%
+  mutate(
+    change_under15 = population_under15_2020 / population_under15_2000 * 100 - 100
+  )</code></pre></div>
+<p data-src="14-point:134">横軸に2020年の人口、縦軸に子どもの数の変化率をとったグラフにしてみましょう。</p>
+<div class="code" data-lang="R" data-src="14-point:136"><pre><code>all_municipality_change %&gt;%
   ggplot() +
   geom_point(aes(x = population_2020, y = change_under15))</code></pre></div>
-<figure class="fig" data-src="14-point:141"><img src="images/14-change-plain.png" alt="横軸を人口、縦軸を子どもの数の変化率にした散布図。点が左端に密集している" loading="lazy"><figcaption>人口の少ない自治体が多いので、左に固まってしまう</figcaption></figure>
-<p data-src="14-point:143">うーん、左の方にやたら点が集中していて、右の方には少ない。これは人口の少ない自治体はたくさんあるのに対して、人口が多い自治体は珍しいからです。このグラフでもまだ、何だかよく分かりませんね。</p>
-<h2 id="対数の目盛りにする" data-src="14-point:145">対数の目盛りにする</h2>
-<p data-src="14-point:147">こういうパターンはよくあります。困ったときには「対数グラフ」にしてみると分かりやすくなることがあります。こんな感じです。</p>
-<div class="code" data-lang="R" data-src="14-point:149"><pre><code>all_municipality_change %&gt;%
+<figure class="fig" data-src="14-point:142"><img src="images/14-change-plain.png" alt="横軸を人口、縦軸を子どもの数の変化率にした散布図。点が左端に密集している" loading="lazy"><figcaption>人口の少ない自治体が多いので、左に固まってしまう</figcaption></figure>
+<p data-src="14-point:144">うーん、左の方にやたら点が集中していて、右の方には少ない。これは人口の少ない自治体はたくさんあるのに対して、人口が多い自治体は珍しいからです。このグラフでもまだ、何だかよく分かりませんね。</p>
+<h2 id="対数の目盛りにする" data-src="14-point:146">対数の目盛りにする</h2>
+<p data-src="14-point:148">こういうパターンはよくあります。困ったときには「対数グラフ」にしてみると分かりやすくなることがあります。こんな感じです。</p>
+<div class="code" data-lang="R" data-src="14-point:150"><pre><code>all_municipality_change %&gt;%
   ggplot() +
   geom_point(aes(x = population_2020, y = change_under15)) +
-  scale_x_log10()</code></pre></div>
-<figure class="fig" data-src="14-point:156"><img src="images/14-change-log.png" alt="横軸を対数目盛りにしたことで、点が横に広がって右肩上がりの傾向が見えるようになった散布図" loading="lazy"><figcaption>横軸を対数にすると、傾向が見える</figcaption></figure>
-<p data-src="14-point:158"><code>scale_x_log10()</code> というのを最後に付け加えることで、横軸が対数表示に変わりました。対数というのは高校数学で習うはずですが、目盛りが一つ変わるごとに数字が「倍々ゲーム」で増えるものです。たとえば、目盛りが一つ増えると10倍に、二つ増えると100倍に、三つ増えると1000倍になるというものです。</p>
-<p data-src="14-point:160">このグラフだと、子どもの数の変化率が人口規模に対して右肩上がりになっている、つまり<strong>人口の多い自治体ほど子どもの減り方が小さい</strong>傾向にあることがはっきりしました。</p>
-<aside class="box box-warn" data-src="14-point:162"><p class="box-title">対数グラフを記事に使うときは</p><p data-src="14-point:163">自分がデータを探るときには、対数の目盛りはとても役に立ちます。でも、この手のグラフを知らない、見たことがないという人はたくさんいるはず。目盛りが等間隔に増えていない図は、慣れていない人にはまず誤読されます。</p>
-<p data-src="14-point:165">なので、記事で使うときには気配りというか躊躇が必要ですが、コロナ禍のときには感染者数を対数グラフにしたものを朝日新聞でもちょくちょく使っていました。感染者は倍々ゲームで増えるものなので、対数グラフが非常に向いていたという事情もあります。</p></aside>
-<h2 id="注目したいものだけ色をつける" data-src="14-point:168">注目したいものだけ色をつける</h2>
-<p data-src="14-point:170">また、先ほどつくってみたグラフの中で、東京都は子どもの割合が下げ止まっていそうだなぁ、ということが見えていました。その要素をこのグラフに盛り込んでみましょう。そのためにはまず、各自治体を「東京都の自治体」と「その他」に分類し、その分類にもとづいて色分けしてやればよさそうです。コードはこんな感じです。</p>
-<div class="code" data-lang="R" data-src="14-point:172"><pre><code>all_municipality_change %&gt;%
+  scale_x_log10() # 横軸を対数表示にする</code></pre></div>
+<figure class="fig" data-src="14-point:157"><img src="images/14-change-log.png" alt="横軸を対数目盛りにしたことで、点が横に広がって右肩上がりの傾向が見えるようになった散布図" loading="lazy"><figcaption>横軸を対数にすると、傾向が見える</figcaption></figure>
+<p data-src="14-point:159"><code>scale_x_log10()</code> というのを最後に付け加えることで、横軸が対数表示に変わりました。対数というのは高校数学で習うはずですが、目盛りが一つ変わるごとに数字が「倍々ゲーム」で増えるものです。目盛りが一つ増えると10倍に、二つ増えると100倍に、三つ増えると1000倍になる、という感じです。</p>
+<p data-src="14-point:161">このグラフだと、子どもの数の変化率が人口規模に対して右肩上がりになっている、つまり<strong>人口の多い自治体ほど子どもの減り方が小さい</strong>傾向にあることがはっきりしました。</p>
+<aside class="box box-warn" data-src="14-point:163"><p class="box-title">対数グラフを記事に使うときは</p><p data-src="14-point:164">自分がデータを探るときには、対数の目盛りはとても役に立ちます。でも、この手のグラフを知らない、見たことがないという人はたくさんいるはず。誤読されてしまう恐れもあります。</p>
+<p data-src="14-point:166">なので、記事で使うときには気配りというか躊躇が必要ですが、コロナ禍のときには感染者数を対数グラフにしたものを朝日新聞でもちょくちょく使っていました。感染者は倍々ゲームで増えるものなので、感染の勢いがどう変化しているかをみるには、対数グラフが非常に向いていた（というか、対数でないとうまく表現できなかった）という事情もあります。</p></aside>
+<h2 id="注目したいものだけ色をつける" data-src="14-point:169">注目したいものだけ色をつける</h2>
+<p data-src="14-point:171">また、先ほどつくってみたグラフの中で、東京都は子どもの割合が下げ止まっていそうだなぁ、ということが見えていました。その要素をこのグラフに盛り込んでみましょう。そのためにはまず、各自治体を「東京都の自治体」と「その他」に分類し、その分類にもとづいて色分けしてやればよさそうです。コードはこんな感じです。</p>
+<div class="code" data-lang="R" data-src="14-point:173"><pre><code>all_municipality_change %&gt;%
   mutate(area = if_else(prefecture == "東京都",
                         "東京都の自治体",
                         "その他")) %&gt;%
@@ -172,19 +173,20 @@
                  color = area),
              alpha = .3) +
   scale_x_log10()</code></pre></div>
-<figure class="fig" data-src="14-point:184"><img src="images/14-change-tokyo.png" alt="東京都の自治体だけ色を変えた散布図。規模が小さくても減り方が小さいことが分かる" loading="lazy"><figcaption>東京都の自治体（青）は、規模が小さくても減り方が小さい</figcaption></figure>
-<p data-src="14-point:186">点の重なり合いによって見にくくなるのを防ぐため、半透明にする指示も加えました。東京都の自治体は、規模が小さめでも子どもの減り方がかなり小さいことがみてとれますね。</p>
-<aside class="box box-tips" data-src="14-point:188"><p class="box-title">if_elseは三つセットで覚える</p><p data-src="14-point:189"><code>if_else()</code> は、条件によって値を振り分ける関数です。丸括弧のなかは必ず三つ。</p>
-<div class="code" data-lang="R" data-src="14-point:191"><pre><code>if_else(条件, 条件に合うとき, 合わないとき)</code></pre></div>
-<p data-src="14-point:195">これは記者の仕事でめちゃくちゃ使います。「政令市かどうか」「過疎地域かどうか」「与党系か野党系か」といった、自分の頭のなかにある分類をデータに持ち込むための道具です。</p>
-<p data-src="14-point:197">三つ以上に分けたいときは <code>case_when()</code> を使います。</p>
-<div class="code" data-lang="R" data-src="14-point:199"><pre><code>mutate(kibo = case_when(population &gt;= 500000 ~ "大都市",
+<figure class="fig" data-src="14-point:185"><img src="images/14-change-tokyo.png" alt="東京都の自治体だけ色を変えた散布図。規模が小さくても減り方が小さいことが分かる" loading="lazy"><figcaption>東京都の自治体（青）は、規模が小さくても減り方が小さい</figcaption></figure>
+<p data-src="14-point:187">点の重なり合いによって見にくくなるのを防ぐため、半透明にする指示も加えました。東京都の自治体は、規模が小さめでも子どもの減り方がかなり小さいことがみてとれますね。</p>
+<aside class="box box-tips" data-src="14-point:189"><p class="box-title">if_elseは三つセットで覚える</p><p data-src="14-point:190"><code>if_else()</code> は、条件によって値を振り分ける関数です。丸括弧のなかは必ず三つ。</p>
+<div class="code" data-lang="R" data-src="14-point:192"><pre><code>if_else(条件, 条件に合うとき, 合わないとき)</code></pre></div>
+<p data-src="14-point:196">この関数はグラフづくりに限らず、めちゃくちゃよく使います。「政令市かどうか」「過疎地域かどうか」「与党系か野党系か」といった、自分の頭のなかにある分類をデータに持ち込むための道具です。</p>
+<p data-src="14-point:198">三つ以上に分けたいときは <code>case_when()</code> を使います。</p>
+<div class="code" data-lang="R" data-src="14-point:200"><pre><code>mutate(kibo = case_when(population &gt;= 500000 ~ "大都市",
                         population &gt;= 100000 ~ "中規模",
                         .default = "小規模"))</code></pre></div>
-<p data-src="14-point:205">上から順に条件を確かめて、最初に当てはまったところで止まります。だから<strong>条件を書く順番が大事</strong>です。</p></aside>
-<h2 id="見栄えを整える" data-src="14-point:208">見栄えを整える</h2>
-<p data-src="14-point:210">さて、このグラフを同僚に共有して、記事化の可能性について相談したい。でもグラフにはタイトルがないし、縦軸の表示も <code>change_under15</code> とか英語なのでちょっと分かりにくいし、全体的に少し不親切ですね。というわけで、見栄えにも気をつかってみましょう。こんなコードです。</p>
-<div class="code" data-lang="R" data-src="14-point:212"><pre><code>all_municipality_change %&gt;%
+<p data-src="14-point:206">上から順番に条件を確かめて、最初に当てはまったものを採用します。例えば人口60万人なら、「50万人以上」にも「10万人以上」にも当てはまりますが、先に書かれた「大都市」に分類されます。</p>
+<p data-src="14-point:208">だから、<strong>条件を書く順番が大事</strong>です。 今回は人口の多い方から順番に書いています。どちらにも当てはまらなかった場合は、.default で指定した「小規模」になります。</p></aside>
+<h2 id="見栄えを整える" data-src="14-point:211">見栄えを整える</h2>
+<p data-src="14-point:213">さて、このグラフを同僚に共有して、記事化の可能性について相談したい。でもグラフにはタイトルがないし、縦軸の表示も <code>change_under15</code> とか英語なのでちょっと分かりにくいし、全体的に少し不親切ですね。というわけで、見栄えにも気をつかってみましょう。こんなコードです。</p>
+<div class="code" data-lang="R" data-src="14-point:215"><pre><code>all_municipality_change %&gt;%
   mutate(area = if_else(prefecture == "東京都",
                         "東京都の自治体",
                         "その他")) %&gt;%
@@ -198,9 +200,9 @@
        x = "2020年の人口",
        y = "15歳未満人口の変化率（％）",
        color = "地域")</code></pre></div>
-<figure class="fig" data-src="14-point:229"><img src="images/14-change-labs.png" alt="タイトル、サブタイトル、日本語の軸名と凡例名が入った完成版の散布図" loading="lazy"><figcaption>同僚に見せられる状態。ここまで来たら相談に行く</figcaption></figure>
-<p data-src="14-point:231"><code>labs()</code> の丸括弧のなかでグラフのタイトルとサブタイトルを指定し、さらに縦軸と横軸、凡例のそれぞれが何を示しているのかを日本語で表示するように指示しています。このグラフなら同僚も一目で分かってくれる、はずです。</p>
-<p data-src="14-point:233">次の章では、この「見栄えを整える」をもう少しやったうえで、データを外に出す方法を扱います。</p>
+<figure class="fig" data-src="14-point:232"><img src="images/14-change-labs.png" alt="タイトル、サブタイトル、日本語の軸名と凡例名が入った完成版の散布図" loading="lazy"><figcaption>同僚に見せられる状態。ここまで来たら相談に行く</figcaption></figure>
+<p data-src="14-point:234"><code>labs()</code> の丸括弧のなかでグラフのタイトルとサブタイトルを指定し、さらに縦軸と横軸、凡例のそれぞれが何を示しているのかを日本語で表示するように指示しています。このグラフなら同僚も一目で分かってくれる、はずです。</p>
+<p data-src="14-point:236">次の章では、この「見栄えを整える」をもう少しやったうえで、データを外に出す方法を扱います。</p>
     </article>
     <nav class="pager"><a class="prev" href="13-col.html"><span>前へ</span>13 棒グラフ</a><a class="next" href="15-finish.html"><span>次へ</span>15 仕上げて外に出す</a></nav>
     <footer class="site-foot">
