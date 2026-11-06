@@ -1,0 +1,9 @@
+Rows: 0
+Columns: 7
+$ region            <chr> 
+$ population        <dbl> 
+$ population_over65 <dbl> 
+$ rate_aged         <dbl> 
+$ prefecture        <chr> 
+$ municipality      <chr> 
+$ ward              <chr> 

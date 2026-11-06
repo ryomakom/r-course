@@ -121,6 +121,29 @@ writeLines(capture.output(
 ), file.path(OUT_TXT, "07-zenkoku.txt"), useBytes = TRUE)
 cat("○ outputs/07-zenkoku.txt\n")
 
+# 21章　AIが書いたかもしれない、二重計上してしまうコード（政令市の区を除いていない）
+save_out("21-ai-wrong",
+         df2020 %>%
+           mutate(prefecture = str_split_i(地域, " ", 1)) %>%
+           group_by(prefecture) %>%
+           summarize(population = sum(`A1101_総人口【人】`)) %>%
+           arrange(desc(population)), n = 5)
+
+# 21章　政令市の区を除いて足した、正しいほう
+save_out("21-ai-right",
+         df2020 %>%
+           mutate(prefecture = str_split_i(地域, " ", 1),
+                  ward = str_split_i(地域, " ", 3)) %>%
+           filter(is.na(ward)) %>%
+           group_by(prefecture) %>%
+           summarize(population = sum(`A1101_総人口【人】`)) %>%
+           arrange(desc(population)), n = 5)
+
+# 21章　AIに見せるのは「形」だけ（0行にしてから glimpse）
+writeLines(capture.output(df2020_split %>% slice(0) %>% glimpse()),
+           file.path(OUT_TXT, "21-glimpse.txt"), useBytes = TRUE)
+cat("○ outputs/21-glimpse.txt\n")
+
 # 08章　2015年のファイルを skip=8 で読むと列名が壊れる
 bad2015 <- suppressWarnings(
   read_csv(paste0(DATA, "人口データ2015.csv"), skip = 8,
