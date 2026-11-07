@@ -17,6 +17,33 @@ lead: データ分析のための道具は、前章までにほぼそろいま�
 
 送られてくるのは、人間が見るためのウェブページではなく、XMLやJSONといった、プログラムで扱いやすい形のデータです。第3部でやったように、ページの作りを調べて表の場所を探したり、Excelファイルへのリンクをたどったりする必要がありません。ページのデザインが変わってコードが動かなくなる、という心配も（ほぼ）なくなります。
 
+<figure class="fig xc-fig" role="img" aria-label="ファイルをダウンロードする場合とAPIを使う場合の、ウェブサイトとのやりとりのちがいを示した図。ファイルのダウンロードでは、ウェブサイトが用意したファイルを丸ごと受け取る。APIでは、こちらが条件を伝え、それに合うデータだけを受け取る">
+<div class="xc-panel xc-dl">
+<p class="xc-title">ファイルをダウンロードする</p>
+<div class="xc-row">
+<div class="xc-actor"><svg class="xc-icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="15" r="9"/><path d="M6 46c0-11 8-18 18-18s18 7 18 18z"/></svg><span class="xc-name">人間</span></div>
+<div class="xc-talk">
+<div class="xc-msg xc-req"><span class="xc-say">「人口のファイルをください」</span></div>
+<div class="xc-msg xc-res"><span class="xc-say">用意してあるファイルを丸ごと渡す</span><span class="xc-item xc-file">人口データ2020.csv<small>全国の市区町村ぶん。人が見るための表</small></span></div>
+</div>
+<div class="xc-actor"><svg class="xc-icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="7" width="42" height="34" rx="4" class="xc-win"/><rect x="3" y="7" width="42" height="9" rx="4"/><circle cx="9" cy="11.5" r="1.6" class="xc-dot"/><circle cx="14" cy="11.5" r="1.6" class="xc-dot"/><rect x="9" y="22" width="30" height="3" rx="1.5"/><rect x="9" y="29" width="22" height="3" rx="1.5"/></svg><span class="xc-name">ウェブサイト</span><span class="xc-note">全国の人口をまとめたファイルが、あらかじめ置いてある</span></div>
+</div>
+<p class="xc-after">受け取ったら、表題などの行をよけて、札幌市の行を自分で探して取り出す</p>
+</div>
+<div class="xc-panel xc-api">
+<p class="xc-title">APIを使う</p>
+<div class="xc-row">
+<div class="xc-actor"><svg class="xc-icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="15" r="9"/><path d="M6 46c0-11 8-18 18-18s18 7 18 18z"/></svg><span class="xc-name">人間</span></div>
+<div class="xc-talk">
+<div class="xc-msg xc-req"><span class="xc-say">「2020年の札幌市の人口をください」</span></div>
+<div class="xc-msg xc-res"><span class="xc-say">条件に合うデータだけを返す</span><span class="xc-item xc-data">札幌市｜2020年｜1973395<small>プログラムで扱いやすい形</small></span></div>
+</div>
+<div class="xc-actor"><svg class="xc-icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="7" width="42" height="34" rx="4" class="xc-win"/><rect x="3" y="7" width="42" height="9" rx="4"/><circle cx="9" cy="11.5" r="1.6" class="xc-dot"/><circle cx="14" cy="11.5" r="1.6" class="xc-dot"/><rect x="9" y="22" width="30" height="3" rx="1.5"/><rect x="9" y="29" width="22" height="3" rx="1.5"/></svg><span class="xc-name">ウェブサイト</span><span class="xc-note">注文を受けてから、条件に合うものを探す</span></div>
+</div>
+<p class="xc-after">受け取ったら、そのまま分析に使える</p>
+</div>
+</figure>
+
 私が使ったことのあるものだと、たとえば国会会議録検索システムのAPIがあります。国会のどの会議で、いつ、誰が、どんな発言をしたか。国立国会図書館はこうしたデータをウェブサイトで公開しています。
 
 たとえば（めちゃめちゃ古いネタですが）昭和28年、衆院予算委員会での質疑の最中に、当時の吉田茂首相が「馬鹿野郎」とつぶやいたのがマイクに拾われました。これがきっかけになって、翌月には衆院解散にまで至りました（いわゆる「バカヤロー解散」です）。このときのやりとりもちゃんと記録に残っていて、[確認できます](https://kokkai.ndl.go.jp/txt/101505261X03119530228/267)（まあ、「馬鹿野郎」という言葉そのものは伏せ字になってますが）。
@@ -67,7 +94,26 @@ Rには、このAPIを使うための専用パッケージ`estatapi`もあるの
 
 それから、GIS（Geographic Information System、地理情報システム）を使った分析なんていうのもあります。平たく言うといろんなデータを地図上に表現して、何かおもしろいことが言えないかを探すこと、とお考えください。
 
-Rでこれをやるなら、`sf`というパッケージが使えます。私はたとえば、新型コロナが大流行していた期間に死者が平常時よりどれだけ増えたのか（あるいは減ったのか）を、都道府県ごとの色分け地図をつくることで調べる、なんてことを[やりました](https://ryomakom.github.io/exdeaths/)。
+Rでこれをやるなら、`sf`というパッケージが使えます。
+
+`sf` は「simple features」の略で、地図の形をデータとして扱うためのパッケージです。`sf` で地図のファイルを読み込むと、おなじみのtibbleのような形になります。1行が一つの都道府県で、名前やコードの列と並んで、`geometry` という列に、その県の形（境界線の座標）が丸ごと入っているのです。
+
+地図もtibbleなので、これまで覚えた関数がそのまま使えます。自分のデータを `left_join()` で地図にくっつけて、ggplotの `geom_sf()` で描く。たとえば、都道府県ごとの数字で色分けした地図なら、こんな形になります。
+
+```r
+library(sf)
+
+st_read("data/prefectures.geojson") %>%    # 地図のファイルを読み込む
+  left_join(pref_data, by = "pref") %>%    # 自分のデータ（都道府県コードの pref と、値の value）をくっつける
+  ggplot() +
+  geom_sf(aes(fill = value))               # 値で塗り分ける
+```
+
+くっつけるときは、[11章](11-join.html)でやったのと同じで、名前より都道府県コードや市区町村コードを手がかりにするのが安全です。地図のファイルは、国土交通省の「国土数値情報」や、e-Statの「地図で見る統計（統計GIS）」から、市区町村の境界まで無料で手に入ります。
+
+色分けのほかにも、ある地点がどの市区町村に入っているかを調べたり、二つの地点の距離を測ったりと、地図ならではの計算もできます。
+
+私はたとえば、新型コロナが大流行していた期間に死者が平常時よりどれだけ増えたのか（あるいは減ったのか）を、都道府県ごとの色分け地図をつくることで調べる、なんてことを[やりました](https://ryomakom.github.io/exdeaths/)。
 
 <div class="exdeaths-map anim-host"></div>
 <script src="assets/exdeaths-data.js"></script>
@@ -98,7 +144,9 @@ QGISという、無料のGIS分析ツールも広く使われています。こ�
 
 ただ、施設のある自治体とない自治体を単純に比べると、施設の有無以外の条件の違いも混じってしまいます。そこで、施設のある259の自治体それぞれに、施設の有無以外の条件がよく似た別の自治体を組み合わせてペアをつくる「マッチング」という手法で比べました。
 
-結果は、施設のある自治体のほうが、得票の伸びが約0.07ポイント大きいというものでした。たったそれだけ？　と思うかもしれません。でも施設のある自治体では約2380万人が投票していたので、票数にすると約1万7千票。しかもこれは「最低限」の数字です。自民党の比例区の候補は11万9千票あれば当選できた選挙ですから、教団の支援がいかに魅力的だったかが、数字で見えてきたわけです。
+結果は、施設のある自治体のほうが、得票の伸びが約0.07%ポイント大きいというものでした。たったそれだけ？　と思うかもしれません。でも井上氏が挑んだのは比例区で、相手は日本の有権者全員でした。
+
+施設のある自治体では約2380万人が投票していたので、票数にすると約1万7千票。しかもこれは統計解析で見えてきた「最低限」の数字です。自民党の比例区の候補は11万9千票あれば当選できた選挙だったので、教団の支援が魅力的だったことは明らか。過去にいろいろあった教団との関係を政治家が続けたくなる理由が、数字で見えてきたわけです。
 
 井上氏と旧統一教会の関係は、より簡易な分析にもとづいた記事を朝日新聞に[出した](https://digital.asahi.com/articles/ASQ8K7VY0Q8CULEI001.html)あと、日本選挙学会でのポスター発表を経て、この学会の機関誌「選挙研究」に論文として載りました。データとコードは[私の個人サイト](https://github.com/ryomakom/UC_inoue2)で公開しています。
 
