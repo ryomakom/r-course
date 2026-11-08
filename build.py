@@ -589,7 +589,7 @@ PAGE = """<!DOCTYPE html>
     <nav class="pager">{pager}</nav>
     <footer class="site-foot">
       <p>{site}</p>
-      <p class="small">朝日新聞社　小宮山亮磨／このページは自分の勉強と社内向けの勉強会のためにつくっています。</p>
+      <p class="small">©小宮山亮磨 朝日新聞デジタル企画報道部　<a href="https://x.com/ryomakom">@ryomakom</a></p>
     </footer>
   </main>
 </div>
