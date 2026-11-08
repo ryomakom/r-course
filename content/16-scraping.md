@@ -48,6 +48,48 @@ library(rvest)
 
 絞り込むにはまず、HTMLのソースを確認する必要があります。ちょっとだけめんどくさいんですが、急がば回れと申しますし、なれれば実はたいした手間でもありません。
 
+:::column 寄り道：HTMLは入れ子の箱
+ウェブページの中身は、HTMLという書き方で書かれています。たとえば表のあるページなら、こんな具合です。
+
+```html
+<body>
+  <main>
+    <table>
+      <tr><th>名称</th><th>所在地</th></tr>
+      <tr><td>東京地方裁判所</td><td>千代田区霞が関</td></tr>
+    </table>
+  </main>
+</body>
+```
+
+`<table>` と `</table>` のように、名札（タグ）のついたかっこで挟んだところが一つの箱になっていて、その箱が入れ子になっています。いちばん外側がページ全体の `body`、その中に本文の `main`、さらにその中に表の `table`、表の中に行の `tr`、行の中にマスの `th` や `td`。
+
+<figure class="fig">
+<svg viewBox="0 0 340 196" style="max-width:420px; margin:0 auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="body の中に main、その中に table、その中に tr、その中に td という入れ子の箱を示した図">
+<rect class="f-cell" x="6" y="6" width="328" height="184" rx="6"/>
+<text class="f-code2" x="16" y="24">&lt;body&gt;</text>
+<rect class="f-cell" x="20" y="34" width="300" height="146" rx="6"/>
+<text class="f-code2" x="30" y="52">&lt;main&gt;</text>
+<rect class="f-mark" x="34" y="62" width="272" height="108" rx="6"/>
+<text class="f-code" x="44" y="80">&lt;table&gt;　← ここだけ欲しい</text>
+<rect class="f-cell" x="48" y="90" width="244" height="32" rx="4"/>
+<text class="f-code2" x="56" y="110">&lt;tr&gt;</text>
+<rect class="f-head" x="96" y="96" width="90" height="20"/>
+<text class="f-mono" x="102" y="110">&lt;th&gt;名称</text>
+<rect class="f-head" x="192" y="96" width="92" height="20"/>
+<text class="f-mono" x="198" y="110">&lt;th&gt;所在地</text>
+<rect class="f-cell" x="48" y="128" width="244" height="32" rx="4"/>
+<text class="f-code2" x="56" y="148">&lt;tr&gt;</text>
+<rect class="f-cell" x="96" y="134" width="90" height="20"/>
+<text class="f-mono" x="102" y="148">&lt;td&gt;…</text>
+<rect class="f-cell" x="192" y="134" width="92" height="20"/>
+<text class="f-mono" x="198" y="148">&lt;td&gt;…</text>
+</svg>
+</figure>
+
+`html_element("table")` は、この入れ子のなかから `table` という名札の箱を探してくる命令でした。これから開発者ツールでやるのは、この箱を外側から順に開いていって、欲しい表だけを包んでいる箱を見つける作業です。飛ばしてもかまいません。
+:::
+
 ブラウザで先ほどの[ページ](https://www.courts.go.jp/tokyo/about/syozai/index.html)を開いて、画面のどこかで右クリックすると、ウィンドーが出てきます。そのなかに「検証」とか「開発者ツールで調査する」という項目がありますよね。これを選択してください。
 
 ![右クリックしたときのメニュー。いちばん下に「検証」がある](images/16-step1.png "ページの上で右クリックすると出てくるメニュー。いちばん下の「検証」を選ぶ")

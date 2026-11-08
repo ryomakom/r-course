@@ -22,7 +22,7 @@
 <meta property="article:author" content="https://x.com/ryomakom">
 <meta property="article:section" content="第2部　データを見る">
 <meta property="article:published_time" content="2026-08-10">
-<meta property="article:modified_time" content="2026-11-08">
+<meta property="article:modified_time" content="2026-11-09">
 <meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/15-finish.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
@@ -53,7 +53,7 @@
    "inLanguage": "ja",
    "image": "https://ryomakom.github.io/r-course/assets/og/15-finish.png",
    "datePublished": "2026-08-10",
-   "dateModified": "2026-11-08",
+   "dateModified": "2026-11-09",
    "author": {
     "@type": "Person",
     "@id": "https://ryomakom.github.io/r-course/#author",
@@ -203,6 +203,16 @@ system_fonts() %&gt;%
 ggsave("output/jinko.png", plot = g, width = 8, height = 5, dpi = 200)</code></pre></div>
 <p><code>width</code> と <code>height</code> はインチ、<code>dpi</code> は解像度です。拡張子を <code>.pdf</code> や <code>.svg</code> にすると、拡大しても劣化しない形式で保存できます。デザイナーに渡すならこちらのほうが喜ばれます。</p>
 <p>あるいは、RStudioの右下のパネルにあるExportボタンを押せば、コードを書かなくても画像を保存できます。お好きなやり方でどうぞ。</p>
+<aside class="box box-column"><p class="box-title">寄り道：府県ごとに1枚ずつ保存する</p><p>5府県のグラフを、1枚ずつ別の画像にしたいとしましょう。同じコードを府県名だけ変えて5回書くこともできますが、こんな書き方もあります。</p>
+<div class="code" data-lang="R"><pre><code>for (p in c("宮城県", "東京都", "愛知県", "大阪府", "福岡県")) {
+  g &lt;- five_pref %&gt;%
+    filter(prefecture == p) %&gt;%
+    ggplot() +
+    geom_line(aes(x = year, y = population))
+  ggsave(str_c("output/", p, ".png"), plot = g, width = 8, height = 5, dpi = 200)
+}</code></pre></div>
+<p><code>for</code> で始まるこの書き方を、for文といいます。「府県名を一つずつ <code>p</code> に入れて、波かっこ <code>{}</code> のなかを1回ずつ実行しなさい」という意味です。<code>output</code> フォルダに「宮城県.png」から「福岡県.png」までの5枚ができます。</p>
+<p>くわしくは<a href="17-loop.html">17章</a>で説明します。いまは「同じ作業を、中身だけ変えて何度も繰り返させる書き方がある」と眺めておくだけで十分です。飛ばしてもかまいません。</p></aside>
 <h2 id="デザイナーに渡すデータを書き出す">デザイナーに渡すデータを書き出す</h2>
 <p>いい感じのグラフができたとはいえ、さすがにこれをそのまま記事に使って読者様にお見せするのは、ちょっとキツイ。社内にいるプロのデザイナーに頼んで、もっとかっこいいグラフにしたいですよね。あるいはFlourishとかを使って、ウェブで使えるインタラクティブなグラフにしてもいいでしょう。いずれにしても、データを何らかの形で出力して保存する必要があります。そのときにはこんなコードを書きます。</p>
 <div class="code" data-lang="R"><pre><code>all_municipality_change %&gt;%
