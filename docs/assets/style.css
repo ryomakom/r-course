@@ -505,6 +505,161 @@ td .dl-size { white-space: nowrap; }
 .ex-fig .ex-pref.is-on { stroke: var(--ink); stroke-width: 1.8px; }
 .ex-fig .ex-inset { fill: none; stroke: var(--line); stroke-width: 1px; vector-effect: non-scaling-stroke; }
 .fig-portrait img { max-width: 220px; margin: 0 auto; }   /* 21章の人物写真。小さめに */
+
+/* --------------------------------------------- チャットの画面（:::chat）
+   21章のChatGPTとのやりとり。チャットのサービスの画面に似せて、自分の発言は右の吹き出し、
+   相手の発言は吹き出しなしで左に流す。下の入力欄と、発言の下のボタンは飾り（押せない） */
+.chat {
+  --chat-bg: #ffffff;
+  --chat-ink: #0d0d0d;
+  --chat-sub: #5d5d5d;
+  --chat-faint: #8f8f8f;
+  --chat-bubble: #f2f2f2;
+  --chat-line: #e3e3e3;
+  --chat-code: #ececec;
+  --chat-composer: #ffffff;
+  --chat-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 12px 32px -14px rgba(0, 0, 0, .18);
+  margin: 1.8rem 0 2.2rem;
+  border: 1px solid var(--chat-line);
+  border-radius: 16px;
+  background: var(--chat-bg);
+  color: var(--chat-ink);
+  box-shadow: var(--chat-shadow);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", var(--gothic);
+  font-size: 15.5px;
+  line-height: 1.75;
+  overflow: hidden;
+}
+@media (prefers-color-scheme: dark) {
+  .chat {
+    --chat-bg: #212121;
+    --chat-ink: #ececec;
+    --chat-sub: #b4b4b4;
+    --chat-faint: #8e8e8e;
+    --chat-bubble: #323232;
+    --chat-line: #3a3a3a;
+    --chat-code: #424242;
+    --chat-composer: #303030;
+    --chat-shadow: 0 12px 32px -14px rgba(0, 0, 0, .7);
+  }
+}
+.chat-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 52px;
+  padding: 0 18px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1;
+}
+.chat-chev {
+  width: 18px; height: 18px;
+  fill: none; stroke: var(--chat-faint); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.chat-log { padding: 6px 24px 2px; }
+.chat-turn { margin: 0 0 22px; }
+/* 「私：」「ChatGPT：」は画面には出さず、読み上げのときだけ読む */
+.chat-who {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.chat-me { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.chat-bubble {
+  max-width: 78%;
+  padding: 9px 18px;
+  border-radius: 22px;
+  background: var(--chat-bubble);
+}
+.chat p { margin: 0 0 .9em; }
+.chat-bubble > :last-child, .chat-text > :last-child { margin-bottom: 0; }
+.chat ol, .chat ul { margin: 0 0 .9em; padding-left: 1.6em; }
+.chat li { margin: .45em 0; padding-left: .15em; }
+.chat strong { background: none; font-weight: 600; }
+.chat-bubble, .chat-text { overflow-wrap: anywhere; }   /* 長いURLやコードも、せまい画面で切れずに折り返す */
+.chat :not(pre) > code {
+  font-size: .86em;
+  font-weight: 500;
+  color: inherit;
+  background: var(--chat-code);
+  padding: .12em .4em;
+  border-radius: .375rem;
+  word-break: normal;
+}
+/* 貼りつけたファイルの札 */
+.chat-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 78%;
+  padding: 8px 16px 8px 8px;
+  border: 1px solid var(--chat-line);
+  border-radius: 16px;
+  background: var(--chat-bg);
+}
+.chat-file .chat-ico {
+  flex: none;
+  width: 40px; height: 40px;
+  padding: 9px;
+  border-radius: 10px;
+  background: #2f7cf6;
+  stroke: #fff;
+}
+.chat-file-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.4; }
+.chat-file-name { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.chat-file-kind { font-size: 13px; color: var(--chat-faint); }
+.chat-tools { display: flex; gap: 2px; margin: 6px 0 0 -7px; }
+.chat-ico {
+  display: block;
+  width: 32px; height: 32px;
+  padding: 7px;
+  fill: none; stroke: var(--chat-sub); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.chat-flip { transform: scaleY(-1); }
+/* 入力欄（飾り） */
+.chat-input {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 2px 16px 16px;
+  padding: 6px 6px 6px 8px;
+  border: 1px solid var(--chat-line);
+  border-radius: 28px;
+  background: var(--chat-composer);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+}
+.chat-ph { flex: 1; min-width: 0; padding-left: 4px; color: var(--chat-faint); font-size: 15px; white-space: nowrap; overflow: hidden; }
+.chat-send { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--chat-ink); }
+.chat-send .chat-ico { width: 36px; height: 36px; padding: 8px; stroke: var(--chat-bg); stroke-width: 2.2; }
+@media (max-width: 560px) {
+  .chat { font-size: 15px; border-radius: 14px; }
+  .chat-bar { height: 46px; padding: 0 14px; font-size: 16px; }
+  .chat-log { padding: 4px 14px 0; }
+  .chat-bubble, .chat-file { max-width: 88%; }
+  .chat-bubble { padding: 8px 15px; }
+  .chat-input { margin: 0 10px 12px; }
+}
+/* 印刷では背景色が落ちるので、吹き出しは枠線で囲み、だれの発言かを文字でも出す */
+@media print {
+  .chat { box-shadow: none; }
+  .chat-input, .chat-tools { display: none; }
+  .chat-bubble { border: 1px solid #c8c8c8; }
+  .chat-file .chat-ico { stroke: #2f7cf6; }
+  .chat-who {
+    position: static;
+    width: auto; height: auto;
+    margin: 0 0 .2em;
+    overflow: visible;
+    clip: auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5d5d5d;
+  }
+}
 .fig iframe {   /* 15章の ggplotly() のグラフ（マウスで触れる） */
   width: 100%;
   height: 460px;

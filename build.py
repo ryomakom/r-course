@@ -199,6 +199,116 @@ def loc(line_no):
     return ' data-src="%s:%d"' % (CURRENT[0], line_no)
 
 
+# ------------------------------------------------ チャットの画面（:::chat）
+# AIとのやりとりを、チャットのサービスの画面ふうに見せる。
+#   @私        ここから自分の発言（右側の吹き出し）
+#   @ChatGPT   ここから相手の発言（吹き出しなしで左に流す）。名前は何でもよい（空白を含んでもよい）
+#   [添付] 名前  自分の発言のなかに書くと、貼りつけたファイルの札になる（「名前｜種類」も可）
+# 画面の上の名前は「:::chat 名前」で変えられる（省略すると相手の名前）。
+# ```で囲んだコードのなかの @ の行は、発言の切れ目とは見なさない。
+CHAT_ME = {"私", "わたし", "自分", "ユーザー", "user", "me"}   # 英字は大文字小文字を区別しない
+
+
+def chat_icon(body, cls="chat-ico"):
+    return ('<svg class="%s" viewBox="0 0 24 24" aria-hidden="true" focusable="false">%s</svg>'
+            % (cls, body))
+
+
+CHAT_ICONS = {
+    "chev": '<path d="m7 10 5 5 5-5"/>',
+    "doc": '<path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>'
+           '<path d="M14 3v5h5M9 13h6M9 17h4"/>',
+    "copy": '<rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2.5"/>'
+            '<path d="M15.5 8.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7.5a2 2 0 0 0 2 2h2.5"/>',
+    "good": '<path d="M7.5 10.5V20H5a1 1 0 0 1-1-1v-7.5a1 1 0 0 1 1-1zm0 0 3.6-6.4a1.9 1.9 0 0 1 3.4 1.5'
+            'l-.9 3.9H19a1.8 1.8 0 0 1 1.8 2.1l-1.3 6.8A2 2 0 0 1 17.6 20H7.5"/>',
+    "share": '<path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 13.5V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4.5"/>',
+    "again": '<path d="M19.5 12A7.5 7.5 0 1 1 17 6.4M19.5 4v4.5H15"/>',
+    "plus": '<path d="M12 5.5v13M5.5 12h13"/>',
+    "mic": '<rect x="9" y="3.5" width="6" height="10.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V20.5"/>',
+    "send": '<path d="M12 18V6.5M6.8 11.5 12 6.3l5.2 5.2"/>',
+}
+
+
+def is_me(who):
+    return who.lower() in CHAT_ME
+
+
+def render_chat(lines, title, here, review=False, memo=""):
+    """:::chat の中身（行のリスト）を、チャットの画面ふうのHTMLにする。"""
+    turns = []                      # [名前, 中身の行, 中身が始まる.mdの行]
+    fence = None                    # いま ``` の中にいるなら、その ``` の文字
+    for k, line in enumerate(lines):
+        line_no = here + 1 + k
+        m = None if fence else re.match(r"^@(\S.{0,40}?)\s*$", line)
+        if m:
+            turns.append([m.group(1), [], line_no + 1])
+            continue
+        f = re.match(r"^(`{3,})", line)
+        if f and fence is None:
+            fence = f.group(1)
+        elif fence is not None and line.rstrip() == fence:
+            fence = None
+        if turns:
+            turns[-1][1].append(line)
+        elif line.strip():
+            print("  注意：%s.md の %d行目は :::chat の最初の「@名前」より前にあるので、表示されません"
+                  % (CURRENT[0], line_no))
+    others = [t[0] for t in turns if not is_me(t[0])]
+    app = title or (others[0] if others else "チャット")
+    if review:
+        REVIEW.append(("box", CURRENT[0], "チャット（%s）" % app))
+
+    log = []
+    for who, body, start in turns:
+        me = is_me(who)
+        files = []
+        text = []
+        for line in body:
+            f = re.match(r"^\[添付\]\s*(.+?)\s*$", line) if me else None
+            if f:
+                name, _, kind = f.group(1).partition("｜")
+                files.append(
+                    '<div class="chat-file">%s<span class="chat-file-text">'
+                    '<span class="chat-file-name">%s</span>'
+                    '<span class="chat-file-kind">%s</span></span></div>'
+                    % (chat_icon(CHAT_ICONS["doc"]), inline(name.strip()),
+                       inline(kind.strip() or "テキスト")))
+                text.append("")         # 行の数をずらさないよう、空行を残す（メモ機能の行番号のため）
+            else:
+                text.append(line)
+        inner = render("\n".join(text), [], base_line=start)
+        who_html = '<p class="chat-who">%s：</p>' % esc(who)
+        if me:
+            log.append('<div class="chat-turn chat-me">%s%s%s</div>' % (
+                who_html, "".join(files),
+                '<div class="chat-bubble">%s</div>' % inner if inner.strip() else ""))
+        else:
+            # コピー・よい・よくない（「よい」を逆さに）・共有・作り直し。飾りなので押せない
+            tools = (chat_icon(CHAT_ICONS["copy"]) + chat_icon(CHAT_ICONS["good"])
+                     + chat_icon(CHAT_ICONS["good"], "chat-ico chat-flip")
+                     + chat_icon(CHAT_ICONS["share"]) + chat_icon(CHAT_ICONS["again"]))
+            log.append('<div class="chat-turn chat-ai">%s<div class="chat-text">%s</div>'
+                       '<div class="chat-tools" aria-hidden="true">%s</div></div>'
+                       % (who_html, inner, tools))
+
+    return (
+        '<figure class="chat%s" role="group" aria-label="%s とのやりとり"%s>'
+        '<div class="chat-bar"><span class="chat-app" aria-hidden="true">%s</span>%s%s</div>'
+        '<div class="chat-log">%s</div>'
+        '<div class="chat-input" aria-hidden="true">%s'
+        '<span class="chat-ph">質問してみましょう</span>%s'
+        '<span class="chat-send">%s</span></div>'
+        '</figure>%s' % (
+            " box-review" if review else "",
+            esc(app), loc(here), esc(app), chat_icon(CHAT_ICONS["chev"], "chat-chev"),
+            '<span class="review-tag">要検討</span>' if review else "",
+            "".join(log),
+            chat_icon(CHAT_ICONS["plus"]), chat_icon(CHAT_ICONS["mic"]),
+            chat_icon(CHAT_ICONS["send"]),
+            '<p class="memo-mark memo-static">%s</p>' % inline(memo) if memo else ""))
+
+
 def render(md, headings, base_line=1):
     """Markdownの本文をHTMLにする。見出しは headings に集める（章内の目次用）。"""
     lines = md.split("\n")
@@ -289,6 +399,9 @@ def render(md, headings, base_line=1):
                 buf.append(lines[i])
                 i += 1
             i += 1
+            if kind == "chat":
+                out.append(render_chat(buf, title, here, box_review, box_memo))
+                continue
             inner_headings = []
             body = render("\n".join(buf), inner_headings, base_line=here + 1)
             label = title or BOX_LABEL.get(kind, "")
