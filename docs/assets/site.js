@@ -30,9 +30,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // コードはコピーできないようにしている（自分で打ち込んだほうが身につくため）。
   // 選択・コピー・切り取り・右クリック・ドラッグを、コードの枠のなかでだけ止める。
+  // 例外：コードの枠かその外側に copy-ok がついていれば止めない（長い後片づけのコードや付録など、写すより貼るほうがいいもの）
+  function locked(el) { return !el.closest('.copy-ok'); }
   function inCode(node) {
     while (node && node !== document) {
-      if (node.nodeType === 1 && node.classList.contains('code')) return true;
+      if (node.nodeType === 1 && node.classList.contains('code')) return locked(node);
       node = node.parentNode;
     }
     return false;
@@ -47,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (box.nodeType !== 1) box = box.parentNode;
       var codes = box.querySelectorAll ? box.querySelectorAll('.code') : [];
       for (var j = 0; j < codes.length; j++) {
-        if (r.intersectsNode(codes[j])) return true;
+        if (r.intersectsNode(codes[j]) && locked(codes[j])) return true;
       }
     }
     return false;

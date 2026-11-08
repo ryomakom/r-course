@@ -6,10 +6,13 @@ content/ にある .md ファイルを読んで、docs/ に .html を書き出�
 使い方:  python build.py
 """
 
+import datetime
 import html
+import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import zipfile
 
@@ -22,6 +25,18 @@ OUT = os.path.join(BASE, "docs")   # GitHub Pages が配信できる名前にし
 
 SITE_TITLE = "記者のためのR講座"
 SITE_SUB = "データを自分の手で確かめるために"
+
+# ---------------------------------------------- 検索・AI・SNS向けの情報
+# 公開先のURL（最後の / を忘れずに）。canonical・OGP・sitemap.xml・llms.txt はここから作る
+SITE_URL = "https://ryomakom.github.io/r-course/"
+# トップページの説明（検索結果やSNSのカードに出る。ほかのページは各ページの lead を使う）
+SITE_DESC = ("Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、"
+             "読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。")
+AUTHOR = "小宮山亮磨"
+AUTHOR_ORG = "朝日新聞デジタル企画報道部"
+X_HANDLE = "@ryomakom"
+X_URL = "https://x.com/ryomakom"
+OG_DIR = os.path.join(ASSETS, "og")   # SNS用の画像（tools/make_og.py が作る）
 
 # ---------------------------------------------------------------- 目次の定義
 # (部の名前, [ファイル名（.md抜き）, ...])
@@ -326,6 +341,9 @@ def render(md, headings, base_line=1):
             fence, lang = m.group(1), m.group(2) or "text"
             # ```out outputs/x.txt <chr> …… 1つ目が読み込むファイル、あとは色をつける文字
             tokens = (m.group(3) or "").split()
+            # ```r copy …… この枠だけはコピーを止めない（長い後片づけのコードなど、写すより貼るほうがいいもの）
+            copy_ok = "copy" in tokens
+            tokens = [t for t in tokens if t != "copy"]
             include = tokens[0] if tokens else None
             marks = tokens[1:]
             i += 1
@@ -352,8 +370,8 @@ def render(md, headings, base_line=1):
             for word in marks:
                 code = code.replace(esc(word), "<mark>%s</mark>" % esc(word))
             out.append(
-                '<div class="code" data-lang="%s">'
-                '<pre><code>%s</code></pre></div>' % (esc(label), code)
+                '<div class="code%s" data-lang="%s">'
+                '<pre><code>%s</code></pre></div>' % (" copy-ok" if copy_ok else "", esc(label), code)
             )
             continue
 
@@ -530,9 +548,9 @@ def read_page(slug):
 def nav_html(current):
     rows = []
     num = 0
-    for part, slugs in PARTS:
+    for k, (part, slugs) in enumerate(PARTS):
         if part:
-            rows.append('<p class="nav-part">%s</p><ul>' % esc(part))
+            rows.append('<p class="nav-part" id="part-%d">%s</p><ul>' % (k, esc(part)))
         else:
             rows.append("<ul>")
         for slug in slugs:
@@ -556,8 +574,8 @@ PAGE = """<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title} | {site}</title>
-<meta name="description" content="{desc}">
+<title>{doctitle}</title>
+{head}
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
@@ -600,6 +618,312 @@ PAGE = """<!DOCTYPE html>
 """
 
 
+# --------------------------------------------- 検索・AI・SNS向けの情報を作る
+def attr(text):
+    """属性値に入れる文字のエスケープ（" も & に変える）。"""
+    return html.escape(text, quote=True)
+
+
+def plain(md_text):
+    """lead などのMarkdownから記法を取り除いて、ただの文にする。"""
+    t = md_text
+    t = re.sub(r"\{\{[?!]\s*(.+?)\s*\}\}", r"\1", t)          # 要検討・メモの印
+    t = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", t)           # リンク・画像
+    t = re.sub(r"``\s*(.+?)\s*``|`([^`]+)`",
+               lambda m: m.group(1) or m.group(2), t)          # コード
+    t = re.sub(r"\*\*([^*]+)\*\*", r"\1", t)                   # 太字
+    t = re.sub(r"\\\((.+?)\\\)", r"\1", t)                     # 数式
+    t = re.sub(r"<[^>]+>", "", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def clip(text, limit=120):
+    """説明文を limit 字までに縮める。はみ出すときは、なるべく文の切れ目で切る。"""
+    if len(text) <= limit:
+        return text
+    head = text[:limit]
+    cut = max(head.rfind("。"), head.rfind("！"), head.rfind("？"))
+    if cut >= limit * 0.6:
+        return head[:cut + 1]
+    return head[:limit - 1] + "…"
+
+
+def page_url(slug):
+    return SITE_URL if slug == "index" else SITE_URL + slug + ".html"
+
+
+def page_file(slug):
+    return "index.html" if slug == "index" else slug + ".html"
+
+
+def part_of(slug):
+    for k, (part, slugs) in enumerate(PARTS):
+        if slug in slugs:
+            return k, part
+    return None, None
+
+
+def git_dates():
+    """content/*.md ごとに（最初のコミット日, 最後のコミット日）を返す。
+    まだコミットしていない変更があるファイルは、最後の日付をファイルの更新日時にする。"""
+    dates = {}
+    try:
+        log = subprocess.run(
+            ["git", "log", "--format=@%cI", "--name-only", "--", "content"],
+            cwd=BASE, capture_output=True, text=True, encoding="utf-8", check=True).stdout
+        status = subprocess.run(
+            ["git", "status", "--porcelain", "--", "content"],
+            cwd=BASE, capture_output=True, text=True, encoding="utf-8", check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        log, status = "", ""
+    when = None
+    for line in log.splitlines():          # 新しいコミットから順に出てくる
+        if line.startswith("@"):
+            when = line[1:11]
+        elif line.startswith("content/") and line.endswith(".md"):
+            slug = line[len("content/"):-3]
+            first, last = dates.get(slug, (when, when))
+            dates[slug] = (when, last)       # いちばん古いものが最後に残る
+    dirty = {re.sub(r"^content/|\.md$", "", l[3:].strip().strip('"'))
+             for l in status.splitlines()}
+    for slug in ORDER:
+        path = os.path.join(CONTENT, slug + ".md")
+        mtime = datetime.date.fromtimestamp(os.path.getmtime(path)).isoformat()
+        first, last = dates.get(slug, (None, None))
+        if last is None or slug in dirty:
+            last = max(last or mtime, mtime)
+        dates[slug] = (first or last, last)
+    return dates
+
+
+def make_og_images():
+    """SNS用の画像を作り直す（Pillowと日本語フォントがあるときだけ）。"""
+    sys.path.insert(0, os.path.join(BASE, "tools"))
+    try:
+        import make_og
+    except ImportError:
+        make_og = None
+    if make_og is None or not make_og.available():
+        print("（Pillow か日本語フォントが無いので、SNS用の画像は作り直さず、いまあるものを使います）")
+        return
+    pages = [(slug, PAGES[slug][0].get("kicker", ""), PAGES[slug][0].get("title", slug))
+             for slug in ORDER]
+    n = make_og.make_all(pages, OG_DIR)
+    if n:
+        print("SNS用の画像を %d 枚作り直しました（assets/og/）。" % n)
+
+
+def og_image(slug):
+    """そのページのSNS用画像のURL。章の画像が無ければトップの画像を使う。"""
+    for name in (slug, "index"):
+        if os.path.exists(os.path.join(OG_DIR, name + ".png")):
+            return SITE_URL + "assets/og/%s.png" % name
+    return None
+
+
+def jsonld(data):
+    text = json.dumps(data, ensure_ascii=False, indent=1)
+    return '<script type="application/ld+json">\n%s\n</script>' % text.replace("</", "<\\/")
+
+
+PERSON = {
+    "@type": "Person",
+    "@id": SITE_URL + "#author",
+    "name": AUTHOR,
+    "url": X_URL,
+    "sameAs": [X_URL],
+    "affiliation": {"@type": "Organization", "name": AUTHOR_ORG},
+}
+
+
+def structured_data(slug, title, desc, image, dates):
+    course_ref = {"@type": "Course", "@id": SITE_URL + "#course",
+                  "name": SITE_TITLE, "url": SITE_URL}
+    if slug == "index":
+        chapters = [s for s in ORDER if s != "index"]
+        graph = [
+            {"@type": "WebSite", "@id": SITE_URL + "#website", "url": SITE_URL,
+             "name": SITE_TITLE, "alternateName": "%s　%s" % (SITE_TITLE, SITE_SUB),
+             "description": desc, "inLanguage": "ja",
+             "author": {"@id": PERSON["@id"]}, "publisher": {"@id": PERSON["@id"]}},
+            dict(course_ref, **{
+                "description": desc, "inLanguage": "ja",
+                "provider": {"@id": PERSON["@id"]}, "author": {"@id": PERSON["@id"]},
+                "educationalLevel": "初心者",
+                "audience": {"@type": "Audience", "audienceType": "記者・編集者"},
+                "about": ["R", "tidyverse", "データジャーナリズム", "データ分析"],
+                "isAccessibleForFree": True,
+                "image": image,
+                "hasPart": [{"@type": "LearningResource", "name": PAGES[s][0].get("title", s),
+                             "url": page_url(s)} for s in chapters],
+            }),
+            PERSON,
+        ]
+    else:
+        k, part = part_of(slug)
+        crumbs = [{"@type": "ListItem", "position": 1, "name": SITE_TITLE, "item": SITE_URL}]
+        # 部（「第1部」など）は独立したページがないので、パンくずには入れない（#つきのURLは同じページと見なされるため）
+        crumbs.append({"@type": "ListItem", "position": len(crumbs) + 1, "name": title,
+                       "item": page_url(slug)})
+        first, last = dates[slug]
+        graph = [
+            {"@type": ["Article", "LearningResource"], "@id": page_url(slug) + "#article",
+             "headline": title, "name": title, "description": desc,
+             "url": page_url(slug), "mainEntityOfPage": page_url(slug),
+             "inLanguage": "ja", "image": image,
+             "datePublished": first, "dateModified": last,
+             "author": PERSON, "publisher": {"@id": PERSON["@id"]},
+             "isPartOf": course_ref, "learningResourceType": "講座の章",
+             "educationalLevel": "初心者", "isAccessibleForFree": True},
+            {"@type": "BreadcrumbList", "itemListElement": crumbs},
+        ]
+    for node in graph:
+        if node.get("image") is None:
+            node.pop("image", None)
+    return jsonld({"@context": "https://schema.org", "@graph": graph})
+
+
+def head_html(slug, title, desc, dates):
+    """<head> に入れる説明・canonical・OGP・Xのカード・構造化データ。"""
+    url = page_url(slug)
+    image = og_image(slug)
+    og_title = SITE_TITLE if slug == "index" else "%s | %s" % (title, SITE_TITLE)
+    rows = [
+        '<meta name="description" content="%s">' % attr(desc),
+        '<meta name="author" content="%s">' % attr(AUTHOR),
+        '<meta name="robots" content="index, follow, max-image-preview:large">',
+        '<link rel="canonical" href="%s">' % url,
+        '<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">',
+        '<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">',
+        '<link rel="sitemap" type="application/xml" href="sitemap.xml">',
+        '<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">',
+        '<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">',
+        '<meta property="og:type" content="%s">' % ("website" if slug == "index" else "article"),
+        '<meta property="og:site_name" content="%s">' % attr(SITE_TITLE),
+        '<meta property="og:locale" content="ja_JP">',
+        '<meta property="og:title" content="%s">' % attr(og_title),
+        '<meta property="og:description" content="%s">' % attr(desc),
+        '<meta property="og:url" content="%s">' % url,
+    ]
+    if slug != "index":
+        first, last = dates[slug]
+        rows += ['<meta property="article:author" content="%s">' % X_URL,
+                 '<meta property="article:section" content="%s">'
+                 % attr(part_of(slug)[1] or SITE_TITLE),
+                 '<meta property="article:published_time" content="%s">' % first,
+                 '<meta property="article:modified_time" content="%s">' % last]
+    alt = SITE_TITLE if slug == "index" else "%s：%s" % (SITE_TITLE, title)
+    if image:
+        rows += ['<meta property="og:image" content="%s">' % image,
+                 '<meta property="og:image:type" content="image/png">',
+                 '<meta property="og:image:width" content="1200">',
+                 '<meta property="og:image:height" content="630">',
+                 '<meta property="og:image:alt" content="%s">' % attr(alt)]
+    rows += ['<meta name="twitter:card" content="summary_large_image">',
+             '<meta name="twitter:site" content="%s">' % X_HANDLE,
+             '<meta name="twitter:creator" content="%s">' % X_HANDLE,
+             '<meta name="twitter:title" content="%s">' % attr(og_title),
+             '<meta name="twitter:description" content="%s">' % attr(desc)]
+    if image:
+        rows += ['<meta name="twitter:image" content="%s">' % image,
+                 '<meta name="twitter:image:alt" content="%s">' % attr(alt)]
+    rows.append(structured_data(slug, title, desc, image, dates))
+    return "\n".join(rows)
+
+
+def html_to_text(body):
+    """本文のHTMLを、AI向けのただのテキスト（Markdownふう）にする。
+    手元でしか出ない「要検討」の札やメモ、図の中身（SVG）は落とす。"""
+    t = body
+    t = re.sub(r"(?s)<(script|style|svg)\b.*?</\1>", "", t)
+    t = re.sub(r'(?s)<div class="(page-memo|page-review)">.*?</div>', "", t)
+    t = re.sub(r'(?s)<p class="memo-mark[^"]*">.*?</p>', "", t)
+    t = re.sub(r'(?s)<span class="(review-tag|memo-inline-tag)">.*?</span>', "", t)
+    t = re.sub(r'(?s)<div class="chat-(tools|input)"[^>]*>.*?</div>', "", t)
+    blocks = []   # コードの枠は中身をそのまま残したいので、いったんよけておく
+
+    def keep(m):
+        blocks.append("\n```\n%s\n```\n" % re.sub(r"<[^>]+>", "", m.group(1)))
+        return "\x02%d\x02" % (len(blocks) - 1)
+
+    t = re.sub(r'(?s)<div class="code"[^>]*><pre><code>(.*?)</code></pre></div>', keep, t)
+    t = re.sub(r"(?s)<code>(.*?)</code>", r"`\1`", t)
+    for lv in (2, 3, 4):
+        t = re.sub(r"<h%d[^>]*>" % lv, "\n\n" + "#" * lv + " ", t)
+    t = re.sub(r'(?s)<p class="box-title">(.*?)</p>', r"\n\n【\1】\n", t)
+    t = re.sub(r"<li[^>]*>", "\n- ", t)
+    t = re.sub(r"<br\s*/?>", "\n", t)
+    t = re.sub(r"</(p|h\d|ul|ol|table|tr|blockquote|figure|aside|div)>", "\n", t)
+    t = re.sub(r"</t[dh]>", " | ", t)
+    t = re.sub(r"<img [^>]*alt=\"([^\"]*)\"[^>]*>", r"［図：\1］", t)
+    t = re.sub(r"<[^>]+>", "", t)
+    t = re.sub(r"\x02(\d+)\x02", lambda m: blocks[int(m.group(1))], t)
+    t = html.unescape(t)
+    t = re.sub(r"[ \t]+\n", "\n", t)
+    t = re.sub(r"\n{3,}", "\n\n", t)
+    return t.strip()
+
+
+def write_text(name, text):
+    with open(os.path.join(OUT, name), "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+
+def write_discovery_files(descs, dates, texts):
+    """sitemap.xml・robots.txt・llms.txt・llms-full.txt・.nojekyll を毎回書き直す。"""
+    # sitemap.xml
+    rows = ['<?xml version="1.0" encoding="UTF-8"?>',
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for slug in ORDER:
+        rows.append("  <url><loc>%s</loc><lastmod>%s</lastmod></url>"
+                    % (html.escape(page_url(slug)), dates[slug][1]))
+    rows.append("</urlset>")
+    write_text("sitemap.xml", "\n".join(rows) + "\n")
+
+    # robots.txt（GitHub Pages のプロジェクトサイトでは、検索エンジンが見るのは
+    # ドメイン直下の robots.txt だけ。ここに置くのは目印。sitemap は Search Console から登録する）
+    write_text("robots.txt", "User-agent: *\nAllow: /\n\nSitemap: %ssitemap.xml\n" % SITE_URL)
+
+    # llms.txt（https://llmstxt.org/ の書き方）
+    rows = ["# %s" % SITE_TITLE, "",
+            "> %s" % SITE_DESC, "",
+            ("%s（%s）が書いた、記者向けのRの入門講座です。RとRStudioの準備から、tidyverseを使った"
+             "データの読み込み・加工（select、mutate、filter、group_by、pivot、join）、ggplot2での"
+             "グラフ、rvestでのスクレイピング、扱いにくいExcelの組み替えまでを、国勢調査の人口データなど"
+             "実際の公的データで順に学びます。コードはすべて日本語の説明つきで、つまずきやすい点も"
+             "書き添えています。講座で使うデータは %sfiles/r-course-data.zip から一括で入手できます。"
+             "本文はすべて日本語です。") % (AUTHOR, AUTHOR_ORG, SITE_URL),
+            ""]
+    for part, slugs in PARTS:
+        rows.append("## %s" % (part or "トップ"))
+        rows.append("")
+        for slug in slugs:
+            title = PAGES[slug][0].get("title", slug)
+            rows.append("- [%s](%s): %s" % (title, page_url(slug), descs[slug]))
+        rows.append("")
+    rows += ["## Optional", "",
+             "- [全文テキスト](%sllms-full.txt): すべての章の本文をつなげたテキスト" % SITE_URL,
+             "- [サイトマップ](%ssitemap.xml)" % SITE_URL, ""]
+    write_text("llms.txt", "\n".join(rows))
+
+    # llms-full.txt（全章の本文。大きくなりすぎたら書かない）
+    parts = ["# %s\n\n> %s\n\n著者：%s（%s）\n%s" % (SITE_TITLE, SITE_DESC, AUTHOR, AUTHOR_ORG, SITE_URL)]
+    for slug in ORDER:
+        meta = PAGES[slug][0]
+        parts.append("\n\n---\n\n# %s\n\nURL: %s\n%s\n\n%s" % (
+            meta.get("title", slug), page_url(slug),
+            ("\n" + plain(meta["lead"])) if meta.get("lead") else "", texts[slug]))
+    full = "".join(parts) + "\n"
+    path = os.path.join(OUT, "llms-full.txt")
+    if len(full.encode("utf-8")) < 1_500_000:
+        write_text("llms-full.txt", full)
+    elif os.path.exists(path):
+        os.remove(path)
+
+    # GitHub Pages に Jekyll を通さず、そのまま配信してもらう
+    write_text(".nojekyll", "")
+
+
 ZIP_NAME = "r-course-data.zip"
 
 
@@ -623,6 +947,9 @@ def build():
 
     # 中身だけ作り直す（フォルダごと消すと、ブラウザで開いている間に失敗することがある）
     os.makedirs(OUT, exist_ok=True)
+    make_og_images()   # assets/og/ に作るので、assets をコピーする前に
+    dates = git_dates()
+    descs, texts = {}, {}
     for name in os.listdir(OUT):
         if name.endswith(".html"):
             os.remove(os.path.join(OUT, name))
@@ -670,24 +997,33 @@ def build():
                       'この章について</p><p>%s</p></div>' % inline(meta["review"]))
         lead = '<p class="lead">%s</p>' % inline(meta["lead"]) if meta.get("lead") else ""
         lead = banner + lead
+        title = meta.get("title", slug)
+        desc = clip(plain(meta["lead"])) if meta.get("lead") else SITE_DESC
+        descs[slug] = desc
+        texts[slug] = html_to_text(body)
         html_out = PAGE.format(
-            title=esc(meta.get("title", slug)),
+            doctitle=esc("%s | %s" % (SITE_TITLE, SITE_SUB) if slug == "index"
+                         else "%s | %s" % (title, SITE_TITLE)),
+            head=head_html(slug, title, desc, dates),
+            title=esc(title),
             site=esc(SITE_TITLE),
             sitesub=esc(SITE_SUB),
-            desc=esc(meta.get("lead", SITE_SUB))[:120],
             nav=nav_html(slug),
             kicker=esc(meta.get("kicker", "")),
             lead=lead,
             inpage=inpage,
             body=body,
             pager=prev_link + next_link,
-            pagecls="home" if slug == "index" else "chapter",
+            # frontmatter に copy: ok と書いた章（付録など）は、ページのコードを全部コピーできる
+            pagecls=("home" if slug == "index" else "chapter")
+                    + (" copy-ok" if meta.get("copy", "").strip() == "ok" else ""),
         )
         name = "index.html" if slug == "index" else slug + ".html"
         with open(os.path.join(OUT, name), "w", encoding="utf-8") as f:
             f.write(html_out)
 
-    print("%d ページを %s に書き出しました。" % (len(ORDER), OUT))
+    write_discovery_files(descs, dates, texts)
+    print("%d ページを %s に書き出しました（sitemap.xml・llms.txt なども）。" % (len(ORDER), OUT))
     if WIP:
         print("（うち %d ページは「工事中」として本文を出していません：%s）"
               % (len(WIP), "、".join(sorted(WIP_PARTS))))

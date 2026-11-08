@@ -3,8 +3,223 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>記者のためのR講座 | 記者のためのR講座</title>
-<meta name="description" content="データを自分の手で確かめるために">
+<title>記者のためのR講座 | データを自分の手で確かめるために</title>
+<meta name="description" content="Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。">
+<meta name="author" content="小宮山亮磨">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ryomakom.github.io/r-course/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="記者のためのR講座">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="記者のためのR講座">
+<meta property="og:description" content="Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。">
+<meta property="og:url" content="https://ryomakom.github.io/r-course/">
+<meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/index.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="記者のためのR講座">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ryomakom">
+<meta name="twitter:creator" content="@ryomakom">
+<meta name="twitter:title" content="記者のためのR講座">
+<meta name="twitter:description" content="Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。">
+<meta name="twitter:image" content="https://ryomakom.github.io/r-course/assets/og/index.png">
+<meta name="twitter:image:alt" content="記者のためのR講座">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebSite",
+   "@id": "https://ryomakom.github.io/r-course/#website",
+   "url": "https://ryomakom.github.io/r-course/",
+   "name": "記者のためのR講座",
+   "alternateName": "記者のためのR講座　データを自分の手で確かめるために",
+   "description": "Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。",
+   "inLanguage": "ja",
+   "author": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "publisher": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   }
+  },
+  {
+   "@type": "Course",
+   "@id": "https://ryomakom.github.io/r-course/#course",
+   "name": "記者のためのR講座",
+   "url": "https://ryomakom.github.io/r-course/",
+   "description": "Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。",
+   "inLanguage": "ja",
+   "provider": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "author": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "educationalLevel": "初心者",
+   "audience": {
+    "@type": "Audience",
+    "audienceType": "記者・編集者"
+   },
+   "about": [
+    "R",
+    "tidyverse",
+    "データジャーナリズム",
+    "データ分析"
+   ],
+   "isAccessibleForFree": true,
+   "image": "https://ryomakom.github.io/r-course/assets/og/index.png",
+   "hasPart": [
+    {
+     "@type": "LearningResource",
+     "name": "Rとは何か",
+     "url": "https://ryomakom.github.io/r-course/01-hajimeni.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "RとRStudioを入れる",
+     "url": "https://ryomakom.github.io/r-course/02-install.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "プロジェクトとパッケージ",
+     "url": "https://ryomakom.github.io/r-course/03-project.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "データを読み込む",
+     "url": "https://ryomakom.github.io/r-course/04-import.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "列を選ぶ、名前を変える、計算する",
+     "url": "https://ryomakom.github.io/r-course/05-select-mutate.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "文字を切り分ける、行を絞り込む",
+     "url": "https://ryomakom.github.io/r-course/06-strings-filter.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "集計する",
+     "url": "https://ryomakom.github.io/r-course/07-group.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "データを縦にくっつける",
+     "url": "https://ryomakom.github.io/r-course/08-bind.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "縦長と横長を行き来する",
+     "url": "https://ryomakom.github.io/r-course/09-pivot.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "データ型でつまずく",
+     "url": "https://ryomakom.github.io/r-course/10-datatype.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "データを横にくっつける",
+     "url": "https://ryomakom.github.io/r-course/11-join.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "折れ線グラフ",
+     "url": "https://ryomakom.github.io/r-course/12-line.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "棒グラフ",
+     "url": "https://ryomakom.github.io/r-course/13-col.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "散布図",
+     "url": "https://ryomakom.github.io/r-course/14-point.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "グラフを仕上げて外に出す",
+     "url": "https://ryomakom.github.io/r-course/15-finish.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "ウェブのページから表を取る",
+     "url": "https://ryomakom.github.io/r-course/16-scraping.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "全国の裁判所を一気に集める",
+     "url": "https://ryomakom.github.io/r-course/17-loop.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "ファイルをまとめてダウンロードする",
+     "url": "https://ryomakom.github.io/r-course/18-download.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "神の頭を切り落とす",
+     "url": "https://ryomakom.github.io/r-course/19-kami-excel.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "もっといろんなことをやるには",
+     "url": "https://ryomakom.github.io/r-course/20-more.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "AIの時代に自分でコードを書く意味",
+     "url": "https://ryomakom.github.io/r-course/21-ai.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "付録A　記号と用語のミニ辞典",
+     "url": "https://ryomakom.github.io/r-course/a1-kigou.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "付録B　関数早見表",
+     "url": "https://ryomakom.github.io/r-course/a2-functions.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "付録C　宿題と作例",
+     "url": "https://ryomakom.github.io/r-course/a3-shukudai.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "付録D　データの準備",
+     "url": "https://ryomakom.github.io/r-course/a4-data.html"
+    }
+   ]
+  },
+  {
+   "@type": "Person",
+   "@id": "https://ryomakom.github.io/r-course/#author",
+   "name": "小宮山亮磨",
+   "url": "https://x.com/ryomakom",
+   "sameAs": [
+    "https://x.com/ryomakom"
+   ],
+   "affiliation": {
+    "@type": "Organization",
+    "name": "朝日新聞デジタル企画報道部"
+   }
+  }
+ ]
+}
+</script>
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
@@ -27,12 +242,12 @@
 <ul>
 <li class="here"><a href="index.html">トップ</a></li>
 </ul>
-<p class="nav-part">はじめに</p><ul>
+<p class="nav-part" id="part-1">はじめに</p><ul>
 <li><a href="01-hajimeni.html">01 Rとは何か</a></li>
 <li><a href="02-install.html">02 RとRStudioを入れる</a></li>
 <li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
 </ul>
-<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<p class="nav-part" id="part-2">第1部　データを読む・加工する</p><ul>
 <li><a href="04-import.html">04 データを読み込む</a></li>
 <li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
 <li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
@@ -42,23 +257,23 @@
 <li><a href="10-datatype.html">10 データ型でつまずく</a></li>
 <li><a href="11-join.html">11 横にくっつける</a></li>
 </ul>
-<p class="nav-part">第2部　データを見る</p><ul>
+<p class="nav-part" id="part-3">第2部　データを見る</p><ul>
 <li><a href="12-line.html">12 折れ線グラフ</a></li>
 <li><a href="13-col.html">13 棒グラフ</a></li>
 <li><a href="14-point.html">14 散布図</a></li>
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
-<p class="nav-part">第3部　データを集める</p><ul>
+<p class="nav-part" id="part-4">第3部　データを集める</p><ul>
 <li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
 <li><a href="17-loop.html">17 まとめて集める</a></li>
 <li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを扱いやすく</a></li>
+<li><a href="19-kami-excel.html">19 神の頭を切り落とす</a></li>
 </ul>
-<p class="nav-part">第4部　さらに先へ</p><ul>
+<p class="nav-part" id="part-5">第4部　さらに先へ</p><ul>
 <li><a href="20-more.html">20 もっといろんなことを</a></li>
 <li><a href="21-ai.html">21 AIの時代に</a></li>
 </ul>
-<p class="nav-part">付録</p><ul>
+<p class="nav-part" id="part-6">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
 <li><a href="a2-functions.html">B 関数早見表</a></li>
 <li><a href="a3-shukudai.html">C 宿題と作例</a></li>

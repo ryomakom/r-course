@@ -5,6 +5,101 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>データ型でつまずく | 記者のためのR講座</title>
 <meta name="description" content="Excelファイルを読み込みます。ついでに、「数字が数字として認識されない」という定番の落とし穴を体験し、落ちないための方法を学びます。">
+<meta name="author" content="小宮山亮磨">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ryomakom.github.io/r-course/10-datatype.html">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="記者のためのR講座">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="データ型でつまずく | 記者のためのR講座">
+<meta property="og:description" content="Excelファイルを読み込みます。ついでに、「数字が数字として認識されない」という定番の落とし穴を体験し、落ちないための方法を学びます。">
+<meta property="og:url" content="https://ryomakom.github.io/r-course/10-datatype.html">
+<meta property="article:author" content="https://x.com/ryomakom">
+<meta property="article:section" content="第1部　データを読む・加工する">
+<meta property="article:published_time" content="2026-08-10">
+<meta property="article:modified_time" content="2026-11-09">
+<meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/10-datatype.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="記者のためのR講座：データ型でつまずく">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ryomakom">
+<meta name="twitter:creator" content="@ryomakom">
+<meta name="twitter:title" content="データ型でつまずく | 記者のためのR講座">
+<meta name="twitter:description" content="Excelファイルを読み込みます。ついでに、「数字が数字として認識されない」という定番の落とし穴を体験し、落ちないための方法を学びます。">
+<meta name="twitter:image" content="https://ryomakom.github.io/r-course/assets/og/10-datatype.png">
+<meta name="twitter:image:alt" content="記者のためのR講座：データ型でつまずく">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": [
+    "Article",
+    "LearningResource"
+   ],
+   "@id": "https://ryomakom.github.io/r-course/10-datatype.html#article",
+   "headline": "データ型でつまずく",
+   "name": "データ型でつまずく",
+   "description": "Excelファイルを読み込みます。ついでに、「数字が数字として認識されない」という定番の落とし穴を体験し、落ちないための方法を学びます。",
+   "url": "https://ryomakom.github.io/r-course/10-datatype.html",
+   "mainEntityOfPage": "https://ryomakom.github.io/r-course/10-datatype.html",
+   "inLanguage": "ja",
+   "image": "https://ryomakom.github.io/r-course/assets/og/10-datatype.png",
+   "datePublished": "2026-08-10",
+   "dateModified": "2026-11-09",
+   "author": {
+    "@type": "Person",
+    "@id": "https://ryomakom.github.io/r-course/#author",
+    "name": "小宮山亮磨",
+    "url": "https://x.com/ryomakom",
+    "sameAs": [
+     "https://x.com/ryomakom"
+    ],
+    "affiliation": {
+     "@type": "Organization",
+     "name": "朝日新聞デジタル企画報道部"
+    }
+   },
+   "publisher": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "isPartOf": {
+    "@type": "Course",
+    "@id": "https://ryomakom.github.io/r-course/#course",
+    "name": "記者のためのR講座",
+    "url": "https://ryomakom.github.io/r-course/"
+   },
+   "learningResourceType": "講座の章",
+   "educationalLevel": "初心者",
+   "isAccessibleForFree": true
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "記者のためのR講座",
+     "item": "https://ryomakom.github.io/r-course/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "データ型でつまずく",
+     "item": "https://ryomakom.github.io/r-course/10-datatype.html"
+    }
+   ]
+  }
+ ]
+}
+</script>
 <link rel="stylesheet" href="assets/style.css">
 <script>
 // 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
@@ -27,12 +122,12 @@
 <ul>
 <li><a href="index.html">トップ</a></li>
 </ul>
-<p class="nav-part">はじめに</p><ul>
+<p class="nav-part" id="part-1">はじめに</p><ul>
 <li><a href="01-hajimeni.html">01 Rとは何か</a></li>
 <li><a href="02-install.html">02 RとRStudioを入れる</a></li>
 <li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
 </ul>
-<p class="nav-part">第1部　データを読む・加工する</p><ul>
+<p class="nav-part" id="part-2">第1部　データを読む・加工する</p><ul>
 <li><a href="04-import.html">04 データを読み込む</a></li>
 <li><a href="05-select-mutate.html">05 選ぶ・名前を変える・計算する</a></li>
 <li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
@@ -42,23 +137,23 @@
 <li class="here"><a href="10-datatype.html">10 データ型でつまずく</a></li>
 <li><a href="11-join.html">11 横にくっつける</a></li>
 </ul>
-<p class="nav-part">第2部　データを見る</p><ul>
+<p class="nav-part" id="part-3">第2部　データを見る</p><ul>
 <li><a href="12-line.html">12 折れ線グラフ</a></li>
 <li><a href="13-col.html">13 棒グラフ</a></li>
 <li><a href="14-point.html">14 散布図</a></li>
 <li><a href="15-finish.html">15 仕上げて外に出す</a></li>
 </ul>
-<p class="nav-part">第3部　データを集める</p><ul>
+<p class="nav-part" id="part-4">第3部　データを集める</p><ul>
 <li><a href="16-scraping.html">16 ウェブから表を取る</a></li>
 <li><a href="17-loop.html">17 まとめて集める</a></li>
 <li><a href="18-download.html">18 一括ダウンロード</a></li>
-<li><a href="19-kami-excel.html">19 神エクセルを扱いやすく</a></li>
+<li><a href="19-kami-excel.html">19 神の頭を切り落とす</a></li>
 </ul>
-<p class="nav-part">第4部　さらに先へ</p><ul>
+<p class="nav-part" id="part-5">第4部　さらに先へ</p><ul>
 <li><a href="20-more.html">20 もっといろんなことを</a></li>
 <li><a href="21-ai.html">21 AIの時代に</a></li>
 </ul>
-<p class="nav-part">付録</p><ul>
+<p class="nav-part" id="part-6">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
 <li><a href="a2-functions.html">B 関数早見表</a></li>
 <li><a href="a3-shukudai.html">C 宿題と作例</a></li>
@@ -146,7 +241,7 @@ read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指
 <p>まあいろんなデータ型があるんですが、仕事の上では<strong>数値と文字列の区別がいちばん大事です</strong>。<code>"100"</code> と <code>100</code> は、人間の目には同じでもRには別物。文字列として認識されたままでは足し算も引き算もできませんし、並べ替えをすると「1、10、100、2、20」のように、数値としての大きさではなく、先頭にある数字の大きさに従って並んでしまいます。</p>
 <h2 id="なぜ数値が文字列として読まれたのか">なぜ数値が文字列として読まれたのか</h2>
 <p>合体ができなかった理由はわかりました。でもそもそも、同じ名前の列なのに、数値として読まれたり文字列として読まれたりするのはなぜなのか。</p>
-<p>ファイルを開くとわかります。2010年以降の三つのファイルでは、人口データが入った列には数字しか入っていません。だから数値として認識されました。でも2000年と2005年のファイルでは、一部の自治体で数値以外にハイフン（-）とかアスタリスク（*）が入っていたりするのです。</p>
+<p>ファイルを開くとわかります。2015年と2020年のファイルでは、人口データが入った列には数字しか入っていません。だから数値として認識されました。でも2000年と2005年のファイルでは、一部の自治体で数字の代わりにハイフン（-）が入っているのです。じつは2010年のファイルにも、ファイルの終わりのほうにハイフンが五つあるのですが、<code>read_csv()</code> は最初の1000行だけを見てデータ型を決めるので、数値として読み込まれていました（ハイフンのところはNAになります）。</p>
 <p>ファイルの冒頭（読み込むときにskipしてすっ飛ばした部分）に書かれている凡例を思い出してください。<a href="04-import.html">04章</a>で見たあの3行です。</p>
 <div class="table-wrap"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>***</code></td><td>調査又は集計していないもの</td></tr><tr><td><code>-</code></td><td>データが得られないもの</td></tr><tr><td><code>X</code></td><td>数値が秘匿されているもの</td></tr></tbody></table></div>
 <p>つまり、人口をそもそも集計していなかったり、データが得られなかったり、秘匿されていたりした場合に、この記号が入っているわけです。このように、数値以外の余計な文字が入っているから、Rには「ああ、これは数値じゃなくて、ひとまずただの文字列として読みこんどこうか」と判断されてしまったわけです。</p>
@@ -212,7 +307,7 @@ read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指
   mutate(population = as.double(population))</code></pre></div>
 <p><code>as.double()</code> が、文字列を数値に変換する関数です。ここで、こんな警告が出ることがあります。</p>
 <div class="code" data-lang="画面に出るもの"><pre><code>Warning: NAs introduced by coercion</code></pre></div>
-<p>「変換の過程でNAが生まれました」という意味です。さっき出てきたハイフンやアスタリスクは数値にできないので、NAに置き換えられたわけです。</p>
+<p>「変換の過程でNAが生まれました」という意味です。さっき出てきたハイフンは数値にできないので、NAに置き換えられたわけです。</p>
 <p>気持ち悪いですが、これはまあOKです。「集計していない」という情報を「数値ではない」というかたちで持ち越したことになります。ただし、いくつNAになったか確かめておくと、より安心でしょう。</p>
 <div class="code" data-lang="R"><pre><code>df_simple %&gt;%
   filter(is.na(population)) %&gt;%
@@ -223,7 +318,7 @@ read_excel("data/人口データ2000.xlsx", sheet = "北海道")  # 名前で指
 1 2000年度    47
 2 2005年度    34
 3 2010年度     5</code></pre></div>
-<p>2000年度は47、2005年度は34、2010年度は5。思っていたより多ければ、変換の指定が間違っているか、そもそも読み込み方がおかしい可能性があります。それぞれの年でNAになるデータがなぜあったのか、もとのExcelファイルを開いて確かめておけば安心です。</p>
+<p>2000年度は47、2005年度は34、2010年度は5。中身はどれもハイフン（-）で、調査の時点ではまだ政令指定都市になっておらず、区がなかった市の区の行です（2010年度の5件は、2012年に区ができた熊本市の五つの区）。思っていたより多ければ、変換の指定が間違っているか、そもそも読み込み方がおかしい可能性があります。それぞれの年でNAになるデータがなぜあったのか、もとのExcelファイルを開いて確かめておけば安心です。</p>
 <aside class="box box-tips"><p class="box-title">数字に混ざったカンマや単位を落とす</p><p>役所のデータでは、数字が <code>"1,234"</code> や <code>"1,234人"</code> のような文字列で入っていることがよくあります。これは <code>as.double()</code> ではNAになってしまうので、先に余計な文字を取り除きます。</p>
 <div class="code" data-lang="R"><pre><code>mutate(population = parse_number(population))</code></pre></div>
 <p><code>parse_number()</code> は、カンマや単位のような余計な文字を捨てて数字だけを取り出してくれる関数です。<code>as.double("1,234")</code> はNAになりますが、<code>parse_number("1,234")</code> は1234になります。</p>

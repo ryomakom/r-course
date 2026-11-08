@@ -1,7 +1,7 @@
 # 記者のためのR講座（ウェブサイト）
 
 `content/` に置いたMarkdownから、`docs/` に静的なHTMLを書き出す仕組みです。
-ビルドに必要なのはPythonだけ（外部ライブラリなし）。
+ビルドに必要なのはPythonだけ（外部ライブラリなし）。SNS用の画像を作り直すときだけ Pillow を使います（無ければ作り直しを飛ばして、いまある画像を使います。下の「検索・AI・SNS向けの整備」を参照）。
 
 ## 使い方
 
@@ -30,9 +30,14 @@ r-course/
 ├── outputs/          Rの実行結果（テキスト。make-figures.Rが作る）
 ├── images/           グラフと画面写真
 ├── files/            読者にダウンロードしてもらうデータ
+├── tools/
+│   └── make_og.py    SNS用の画像（OGP画像）を作るスクリプト。build.py が毎回呼ぶ
 ├── assets/
 │   ├── style.css     見た目。明るい画面と暗い画面の両方に対応
-│   └── site.js       目次の開閉と、コードのコピー止め
+│   ├── site.js       目次の開閉と、コードのコピー止め
+│   ├── favicon.svg   ブラウザのタブに出るアイコン（手で書いたSVG）
+│   ├── apple-touch-icon.png  スマホのホーム画面用（make_og.py が作る）
+│   └── og/           SNS用の画像。ページごとに1枚（make_og.py が作る）
 └── docs/             書き出されたHTML（自動生成。編集しない。GitHub Pagesがここを配信する）
 ```
 
@@ -71,6 +76,33 @@ PARTS = [
 - **コードはコピーできません。** 自分で打ち込んだほうが身につくので、コードの枠のなかは選択・コピー・右クリックができないようにしてあります（ページのソースを見れば読めるので、あくまで「手間をかける」ための仕掛けです）。
 - **「要検討」の印と、原稿に直接書いたメモ（`{{! }}` など）は、手元で開いたときだけ出ます。** `docs/index.html` をファイルとして直接開いたときと、localhost で開いたときが「手元」です。GitHub Pages で公開しているサイトでは表示されません（印のついた文は、ふつうの文として読めます）。
 
+## 検索・AI・SNS向けの整備
+
+`python build.py` を実行するたびに、次のものが全部作り直されます。手で直す必要はありません。
+公開先のURLや著者の情報は `build.py` の冒頭（`SITE_URL`・`SITE_DESC`・`AUTHOR`・`X_HANDLE` など）にまとめてあります。
+
+| 作られるもの | 中身 |
+|---|---|
+| 各ページの `<head>` | 説明文（`lead` から記法を除いて120字まで。トップは `SITE_DESC`）、`canonical`、OGP（Facebookなど）、Xのカード（大きな画像つき）、favicon、`theme-color` |
+| 構造化データ（JSON-LD） | トップは WebSite・Course・Person（著者。Xのアカウントにひもづけ）。各章は Article／LearningResource（どの講座の一部か、公開日・更新日つき）とパンくずリスト（トップ→部→章） |
+| `assets/og/*.png` | SNSでシェアされたときに出る画像（1200×630）。章ごとに、部の名前と章の題を入れて作る |
+| `docs/sitemap.xml` | 全ページのURLと更新日（gitの最後のコミット日。まだコミットしていない変更があればファイルの更新日） |
+| `docs/robots.txt` | すべて許可し、sitemap.xml の場所を書く |
+| `docs/llms.txt` | AI向けの案内（[llms.txt](https://llmstxt.org/) の書き方）。講座の要約と、全ページのURL・リードを部ごとに並べたもの |
+| `docs/llms-full.txt` | AI向けに、全章の本文をただのテキストにしてつなげたもの。「要検討」の札や原稿のメモは入れない |
+| `docs/.nojekyll` | GitHub Pages に、ファイルをそのまま配信させるための空のファイル |
+
+SNS用の画像は `tools/make_og.py` が Pillow と日本語フォント（Windowsなら游明朝・游ゴシック）で描きます。
+章の題や部の名前を変えると、次のビルドでその章の画像だけが描き直されます（中身が同じなら書き換えません）。
+Pillow が無いパソコンでビルドしたときは、画像の作り直しを飛ばして、いまある画像をそのまま使います。
+入れるときは `pip install pillow`。画像だけを作り直したいときは `python tools/make_og.py` でも動きます。
+
+公開したあとにやっておくとよいこと：
+
+- [Google Search Console](https://search.google.com/search-console) に `https://ryomakom.github.io/r-course/` を登録し、`sitemap.xml` を送る。
+  GitHub Pages のこの形のサイトでは、検索エンジンが読む robots.txt はドメイン直下（`ryomakom.github.io/robots.txt`）だけなので、`docs/robots.txt` は目印にとどまります。sitemap は Search Console から直接知らせるのが確実です。
+- シェアしたときの見え方は、Xなら投稿画面に、Facebookなら[シェアデバッガー](https://developers.facebook.com/tools/debug/)にURLを貼って確かめられます。
+
 ## 各ページの先頭に書くもの
 
 ```markdown
@@ -87,7 +119,7 @@ lead: この章で何をやるかの一文。ページの冒頭に大きめの�
 | `title` | ページの見出し（h1）とブラウザのタブ |
 | `nav` | 左の目次に出す短い名前。省略すると `title` を使う |
 | `kicker` | 見出しの上に小さく出る部（省略可） |
-| `lead` | 冒頭のリード（省略可） |
+| `lead` | 冒頭のリード（省略可）。検索結果やSNSのカードに出る説明文、llms.txt の説明にも使われる |
 
 ## 使えるMarkdownの書き方
 

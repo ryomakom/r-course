@@ -1,0 +1,57 @@
+# 記者のためのR講座
+
+> Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。
+
+小宮山亮磨（朝日新聞デジタル企画報道部）が書いた、記者向けのRの入門講座です。RとRStudioの準備から、tidyverseを使ったデータの読み込み・加工（select、mutate、filter、group_by、pivot、join）、ggplot2でのグラフ、rvestでのスクレイピング、扱いにくいExcelの組み替えまでを、国勢調査の人口データなど実際の公的データで順に学びます。コードはすべて日本語の説明つきで、つまずきやすい点も書き添えています。講座で使うデータは https://ryomakom.github.io/r-course/files/r-course-data.zip から一括で入手できます。本文はすべて日本語です。
+
+## トップ
+
+- [記者のためのR講座](https://ryomakom.github.io/r-course/): Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。
+
+## はじめに
+
+- [Rとは何か](https://ryomakom.github.io/r-course/01-hajimeni.html): Excelでもできるのに、なぜわざわざコードを書くのか。まずはそこから。
+- [RとRStudioを入れる](https://ryomakom.github.io/r-course/02-install.html): どちらも無料です。入れたら、四つに区切られた画面の見方をおさえましょう。
+- [プロジェクトとパッケージ](https://ryomakom.github.io/r-course/03-project.html): 作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この二つを用意すれば準備は終わりです。
+
+## 第1部　データを読む・加工する
+
+- [データを読み込む](https://ryomakom.github.io/r-course/04-import.html): read_csvでファイルを読み、オブジェクトに入れて、中身を見る。ついでにR最大の発明「パイプ演算子」を覚えます。
+- [列を選ぶ、名前を変える、計算する](https://ryomakom.github.io/r-course/05-select-mutate.html): select、rename、mutate、arrange。この四つで「高齢化率の高い自治体ランキング」がもうできます。
+- [文字を切り分ける、行を絞り込む](https://ryomakom.github.io/r-course/06-strings-filter.html): 「北海道 札幌市 豊平区」という形式で表現されている自治体名を三つの列に切り分け、そこからたとえば東京都だけを、人口10万人以上だけを、「市」だけを取り出します。
+- [集計する](https://ryomakom.github.io/r-course/07-group.html): group_byとsummarize。市区町村のデータを都道府県ごとに足し上げます。二重計上をどう防ぐかも一緒に。
+- [データを縦にくっつける](https://ryomakom.github.io/r-course/08-bind.html): bind_rowsで複数年のデータを合体させます。ここで役所のcsvの「クセ」に初めて正面からぶつかります。
+- [縦長と横長を行き来する](https://ryomakom.github.io/r-course/09-pivot.html): データを横長に変えるpivot_widerと、縦長にするpivot_longer。私は理解するのにたいへん時間がかかりましたが、とてもよく使う関数でもあります。
+- [データ型でつまずく](https://ryomakom.github.io/r-course/10-datatype.html): Excelファイルを読み込みます。ついでに、「数字が数字として認識されない」という定番の落とし穴を体験し、落ちないための方法を学びます。
+- [データを横にくっつける](https://ryomakom.github.io/r-course/11-join.html): 別々の統計データをleft_joinという関数でくっつけます。いわゆる「ケ・ヶ問題」で苦しむことで、表記ゆれのないコードによる管理のありがたさを学びます。
+
+## 第2部　データを見る
+
+- [折れ線グラフ](https://ryomakom.github.io/r-course/12-line.html): グラフを描く関数、ggplotの基本から。キャンバスを用意して、どのデータをどう描くかを指示する。それだけです。
+- [棒グラフ](https://ryomakom.github.io/r-course/13-col.html): 棒グラフを描くには、折れ線のときにgeom_lineと書いていたところをgeom_colに変えるだけ。ただし色分けはcolorではなくfillで、そのために縦長への変形が必要になります。
+- [散布図](https://ryomakom.github.io/r-course/14-point.html): データ量が多いときに、傾向をざっくりと知るのに役立つグラフ。1700あまりの市区町村をいちどに眺めて、「東京だけ子どもが増えている」ことの意味を調べます。
+- [グラフを仕上げて外に出す](https://ryomakom.github.io/r-course/15-finish.html): 日本語が四角に化ける問題、画像として保存する方法、デザイナーに渡すcsvの作り方、ついでにマウスで触れるグラフも。
+
+## 第3部　データを集める
+
+- [ウェブのページから表を取る](https://ryomakom.github.io/r-course/16-scraping.html): ウェブサイトに貼られている表を、手で写さずにそのままtibbleにします。使うのはrvestというパッケージです。
+- [全国の裁判所を一気に集める](https://ryomakom.github.io/r-course/17-loop.html): 同じ形式のデータが、複数のページに分けて置かれています。読みたいURLのリストを作ってから、一気にデータを集めます。
+- [ファイルをまとめてダウンロードする](https://ryomakom.github.io/r-course/18-download.html): 衆院選の市区町村別得票データを総務省が出しています。ただしファイルは都道府県ごとに分かれている。これをまとめていっぺんにダウンロードします。
+- [神の頭を切り落とす](https://ryomakom.github.io/r-course/19-kami-excel.html): 物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。
+
+## 第4部　さらに先へ
+
+- [もっといろんなことをやるには](https://ryomakom.github.io/r-course/20-more.html): データ分析のための道具は、前章までにほぼそろいました。ここでは、その先に広がるRの世界を、私が使ったことのあるものから少しだけ紹介します。
+- [AIの時代に自分でコードを書く意味](https://ryomakom.github.io/r-course/21-ai.html): 賢くなったAIは、人間よりもずっと上手にRのコードを書いてくれます。それでもなぜ私は自分で書くのか。書けたほうがいいと思うのか。いまの考えを記しておきます。
+
+## 付録
+
+- [付録A　記号と用語のミニ辞典](https://ryomakom.github.io/r-course/a1-kigou.html): 「この記号、なんだっけ」を引くためのページ。読み物ではないので、必要なときに戻ってきてください。
+- [付録B　関数早見表](https://ryomakom.github.io/r-course/a2-functions.html): 「あれ、何だっけ」の8割はここで済むように並べました。tidyverseを呼び出していれば、日付以外は全部そのまま使えます。
+- [付録C　宿題と作例](https://ryomakom.github.io/r-course/a3-shukudai.html): 各章の宿題と、その作例です。答えは一つではないので、自分のコードが違っていても、同じ結果が出ていれば正解です。
+- [付録D　データの準備](https://ryomakom.github.io/r-course/a4-data.html): この講座で使うファイルは、ここから全部ダウンロードできます。もとの入手先と、加工済みファイルの作り方も書いておきます。
+
+## Optional
+
+- [全文テキスト](https://ryomakom.github.io/r-course/llms-full.txt): すべての章の本文をつなげたテキスト
+- [サイトマップ](https://ryomakom.github.io/r-course/sitemap.xml)

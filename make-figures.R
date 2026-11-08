@@ -243,10 +243,16 @@ working2020 <- read_csv(paste0(DATA, "労働人口データ2020.csv"), skip = 8,
          primary = `F2201_第1次産業就業者数【人】`) %>%
   select(code, region, primary)
 
+# 本文と同じく、10章の5年分（year, code, region, population）から2020年度だけを使う
+df_simple11 <- df %>%
+  rename(year = 調査年, code = `地域 コード`, region = 地域,
+         population = `A1101_総人口【人】`) %>%
+  select(year, code, region, population)
+
 save_out("11-anti-join",
-         df2020_simple %>%
-           anti_join(working2020 %>% select(-code), by = join_by(region)) %>%
-           select(region, population), n = 10)
+         df_simple11 %>%
+           filter(year == "2020年度") %>%
+           anti_join(working2020, by = join_by(region)), n = 10)
 
 # =========================================================================
 # 第2部　データを見る

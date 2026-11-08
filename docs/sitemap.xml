@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://ryomakom.github.io/r-course/</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/01-hajimeni.html</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/02-install.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/03-project.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/04-import.html</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/05-select-mutate.html</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/06-strings-filter.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/07-group.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/08-bind.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/09-pivot.html</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/10-datatype.html</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/11-join.html</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/12-line.html</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/13-col.html</loc><lastmod>2026-10-17</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/14-point.html</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/15-finish.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/16-scraping.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/17-loop.html</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/18-download.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/19-kami-excel.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/20-more.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/21-ai.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/a1-kigou.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/a2-functions.html</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/a3-shukudai.html</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://ryomakom.github.io/r-course/a4-data.html</loc><lastmod>2026-11-09</lastmod></url>
+</urlset>
