@@ -167,7 +167,7 @@ mutate(seireki = case_when(
 |---|---|
 | `ifelse(条件, 合うとき, 合わないとき)` | 二つに振り分ける |
 | `case_when(条件1 ~ 値1, 条件2 ~ 値2, .default = 値3)` | 三つ以上に振り分ける |
-| `if_else()` | ifelseの厳しい版（型のずれを見つけてくれる） |
+| `if_else()` | `ifelse()` の厳しい版（型のずれを見つけてくれる） |
 
 ## グラフを描く（ggplot2）
 

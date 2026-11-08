@@ -70,7 +70,7 @@
       <p class="kicker">第3部　データを集める</p>
       <h1>ウェブのページから表を取る</h1>
       <p class="lead">ウェブサイトに貼られている表を、手で写さずにそのままtibbleにします。使うのはrvestというパッケージです。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#表を読み込む">表を読み込む</a></li><li><a href="#場所を絞り込む">場所を絞り込む</a></li><li><a href="#少しだけお掃除を">少しだけお掃除を</a></li></ul></nav>
+      
       <p>これまでやってきたのは、すでに手元にあるデータ、誰かが分析用に整えてくれたデータを分析したり、あるいは可視化したりするといった作業でした。ただ実際には、そういった準備や下ごしらえがすんだデータが存在しない、といったことがあります。</p>
 <p>そういうときには、データを自分で集めなくてはいけません。たとえばウェブサイトに何か表があって、これを分析したいなと思ったとしましょう。</p>
 <p>文字や数字は確かにそこにあります。一つひとつ、Excelに手入力することだってできます。が、めんどくさい。運が良ければ、表部分をExcelにコピペしたときに、その表形式がそのままうまく保存されてくれますが、形がガタガタに崩れてしまうこともよくあります。</p>
@@ -83,7 +83,7 @@ library(rvest)</code></pre></div>
   read_html() %&gt;%
   html_element("table") %&gt;%
   html_table()</code></pre></div>
-<p>まず最初にURLを二重引用符つきで書いて、パイプ演算子で次に回します。受け取った <code>read_html()</code> という関数で、そのURLにあるhtmlの文章を丸ごと読み込みます。</p>
+<p>まず最初にURLを二重引用符つきで書いて、パイプ演算子で次に回します。受け取った <code>read_html()</code> という関数で、そのURLにあるHTMLの文章を丸ごと読み込みます。</p>
 <p>その次にある <code>html_element("table")</code> は、受け取った文章のなかからtableつまり表になっている要素を見つけて、そこだけを抜き出しなさいという命令。さらに <code>html_table()</code> という関数で、その抜き出した表をtibbleに変えるというわけです。</p>
 <div class="code" data-lang="実行結果"><pre><code># A tibble: 14 × 5
   裁判所名                                 郵便番号 所在地 電話番号 電話番号
@@ -98,16 +98,16 @@ library(rvest)</code></pre></div>
 <h2 id="場所を絞り込む">場所を絞り込む</h2>
 <p>で、今回はこれでうまくいきました。ただ実際には、一つのページに複数の表が載っていたりするケースもあります。</p>
 <p>気にせずに、ページに載ってる表をぜんぶ抜き出して、そのうち必要なものだけを後から選ぶという手順もあって、それでもまあOK、ではあるんですが、もうちょっとスマートな手順もあります。<code>html_element()</code> の段階で、もっと絞り込んでしまうというやりかたです。</p>
-<p>絞り込むにはまず、htmlのソースを確認する必要があります。ちょっとだけめんどくさいんですが、急がば回れと申しますし、なれれば実はたいした手間でもありません。</p>
+<p>絞り込むにはまず、HTMLのソースを確認する必要があります。ちょっとだけめんどくさいんですが、急がば回れと申しますし、なれれば実はたいした手間でもありません。</p>
 <p>ブラウザで先ほどの<a href="https://www.courts.go.jp/tokyo/about/syozai/index.html">ページ</a>を開いて、画面のどこかで右クリックすると、ウィンドーが出てきます。そのなかに「検証」とか「開発者ツールで調査する」という項目がありますよね。これを選択してください。</p>
 <figure class="fig"><img src="images/16-step1.png" alt="右クリックしたときのメニュー。いちばん下に「検証」がある" loading="lazy"><figcaption>ページの上で右クリックすると出てくるメニュー。いちばん下の「検証」を選ぶ</figcaption></figure>
 <aside class="box box-tips"><p class="box-title">ブラウザによって名前が違う</p><p>右クリックしたときのメニューの名前は、ブラウザによって違います。</p>
 <div class="table-wrap"><table><thead><tr><th>ブラウザ</th><th>メニューの名前</th></tr></thead><tbody><tr><td>Google Chrome</td><td>検証</td></tr><tr><td>Microsoft Edge</td><td>開発者ツールで調査する</td></tr><tr><td>Firefox</td><td>調査</td></tr><tr><td>Safari（Mac）</td><td>要素の詳細を表示</td></tr></tbody></table></div>
 <p>英語の画面なら、どれも「Inspect」（Safariは「Inspect Element」）です。Safariだけは最初に、「Safari」→「設定」→「詳細」で「Webデベロッパ用の機能を表示」をオンにしておかないと、メニューに出てきません。</p>
 <p>キーボードでも開けます。F12 か Ctrl＋Shift＋I（Macは Cmd＋Option＋I）で開発者ツールが開きます。Ctrl＋Shift＋C（Macは Cmd＋Shift＋C）なら、開発者ツールが開いたうえで、ページの上でクリックしたところのコードにすぐ飛べます。右クリックができないようにしてあるサイトでも使えます。</p></aside>
-<p>すると、右側にhtmlのコードが出てきます。右側のコードにカーソルを合わせるとサイトを表示した左側の部分に青っぽい色がついて、カーソルを移動させると青っぽい色がかかる部分も動きます。これによって、いまカーソルを合わせているコードが、ページのどこを記述しているものなのかが分かるわけです。</p>
+<p>すると、右側にHTMLのコードが出てきます。右側のコードにカーソルを合わせるとサイトを表示した左側の部分に青っぽい色がついて、カーソルを移動させると青っぽい色がかかる部分も動きます。これによって、いまカーソルを合わせているコードが、ページのどこを記述しているものなのかが分かるわけです。</p>
 <figure class="fig"><img src="images/16-step2.png" alt="開発者ツールで main の行にカーソルを合わせ、ページの本文部分が青くなっている画面" loading="lazy"><figcaption>① HTMLの行（ここでは <code>&lt;main&gt;</code>）にカーソルを合わせると、② ページのその部分が青くなり、名前の札も出る。③ 「…」をクリックすると、その中身が開く</figcaption></figure>
-<p>htmlのコードは最初、「折りたたまれた」状態で出てきますが、左の三角（▶）や「...」の部分をクリックすると、中身を確認できるようになっています。その作業を繰り返すことで、表に対応したコードの容器のことを示す記号<code>&lt;div class="xxxxx"&gt;</code> というのを探します。今回の場合、xxxxxには「module-sub-page-parts-table」という名前が入っているのが分かります。</p>
+<p>HTMLのコードは最初、「折りたたまれた」状態で出てきますが、左の三角（▶）や「...」の部分をクリックすると、中身を確認できるようになっています。その作業を繰り返すことで、表に対応したコードの容器のことを示す記号<code>&lt;div class="xxxxx"&gt;</code> というのを探します。今回の場合、xxxxxには「module-sub-page-parts-table」という名前が入っているのが分かります。</p>
 <figure class="fig fig-switch">
 <svg class="svg-wide" viewBox="0 0 720 1018" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="開発者ツールでHTMLの行にカーソルを合わせ、外側の容器から順に開いて、表だけを囲む容器を探す流れの模式図">
 <defs><marker id="ar16" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
@@ -398,7 +398,7 @@ library(rvest)</code></pre></div>
 <figcaption>東京地裁のページで「検証」を開き、HTMLの行に順にカーソルを合わせて、表を囲む容器を探していく（約40秒、音声なし）。最後に表だけが青くなったとき、ページの側に出ている「div.module-sub-page-parts-table」が、このあとコードに書く場所の指定です。</figcaption>
 </figure>
 </details>
-<p>つまり、スクレイピングしたい表は「module-sub-page-parts-table」と名付けられた容器（div）の中に入れられているということなのです。<strong>html全体ではなく、この容器だけを指定</strong>したうえで、その中に入っているtableを抜き出してtibbleにしなさい、というのが以下のコードです。</p>
+<p>つまり、スクレイピングしたい表は「module-sub-page-parts-table」と名付けられた容器（div）の中に入れられているということなのです。<strong>HTML全体ではなく、この容器だけを指定</strong>したうえで、その中に入っているtableを抜き出してtibbleにしなさい、というのが以下のコードです。</p>
 <div class="code" data-lang="R"><pre><code>"https://www.courts.go.jp/tokyo/about/syozai/index.html" %&gt;%
   read_html() %&gt;%
   html_element("div.module-sub-page-parts-table table") %&gt;%
@@ -427,7 +427,7 @@ tokyo %&gt;%
 5 東京簡易裁判所                              100-8971 東京都千代… "代表"… 03-3581…
 6 東京簡易裁判所墨田庁舎                      130-863… 東京都墨田… "訟廷事… 03-5819…
 # ℹ 7 more rows</code></pre></div>
-<aside class="box box-homework"><p class="box-title">宿題</p><p>関心があるサイト（たとえば記者として担当している役所とか）から、表が貼られているページを一つ探して、<code>html_element("table")</code> と <code>html_table()</code> で取れるかどうか試して下さい。うまく取れなかった場合は「検証」でソースを見て、表を囲んでいる容器の名前を調べ、<code>html_element()</code> で指定してみましょう。</p></aside>
+<aside class="box box-homework"><p class="box-title">宿題</p><p>関心があるサイト（たとえば記者として担当している役所とか）から、表が貼られているページを一つ探して、<code>html_element("table")</code> と <code>html_table()</code> で取れるかどうか試してください。うまく取れなかった場合は「検証」でソースを見て、表を囲んでいる容器の名前を調べ、<code>html_element()</code> で指定してみましょう。</p></aside>
 <p>次の章では、東京地裁の管内だけでなく、全国の裁判所の連絡先を一気に集めます。ページごとに同じコードを書く代わりに、読みたいページのURLのリストを作って、for文で回します。</p>
     </article>
     <nav class="pager"><a class="prev" href="15-finish.html"><span>前へ</span>15 仕上げて外に出す</a><a class="next" href="17-loop.html"><span>次へ</span>17 まとめて集める</a></nav>

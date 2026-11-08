@@ -70,7 +70,7 @@
       <p class="kicker">第1部　データを読む・加工する</p>
       <h1>集計する</h1>
       <p class="lead">group_byとsummarize。市区町村のデータを都道府県ごとに足し上げます。二重計上をどう防ぐかも一緒に。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#group_byとsummarize">group_byとsummarize</a></li><li><a href="#二重計上に気をつける">二重計上に気をつける</a></li><li><a href="#summarizeで使えるもの">summarizeで使えるもの</a></li><li><a href="#group_byを解除する">group_byを解除する</a></li></ul></nav>
+      
       <p>では次に、都道府県別の高齢化率を見ていきましょう。</p>
 <p>ただ、今のデータでは市区町村ごとの人口データはありますが、都道府県別にまとまってはいません。各市区町村を都道府県別に割り振り、人口を足し上げてやる必要があるわけです。</p>
 <h2 id="group_byとsummarize">group_byとsummarize</h2>
@@ -96,7 +96,7 @@
 <h2 id="二重計上に気をつける">二重計上に気をつける</h2>
 <p>また、ちょっと話がそれますが、2行目で <code>filter(is.na(ward))</code> という操作をしているのは、<strong>二重計上を防ぐため</strong>です。なぜかというと、政令指定都市があるから。たとえば札幌市をみると、市全体の人口と、中央区、北区、東区、といった区それぞれの人口がいずれも記録されています。何も考えずに足し上げると、札幌市の人口が2倍になってしまうわけです。</p>
 <p><code>is.na(ward)</code> というのは、「<code>ward</code> という列がNAつまり欠損値（Not Available）である」という意味です。この条件に合う行だけを抽出することによって、政令指定都市の区を除外しているわけです。</p>
-<p>そうして作った都道府県別の人口データを、<code>df2020_pref</code> というデータフレームに格納する。上記のコードは、そういう命令を書き記したものです。</p>
+<p>そうして作った都道府県別の人口データを、<code>df2020_pref</code> というtibbleに格納する。上記のコードは、そういう命令を書き記したものです。</p>
 <aside class="box box-warn"><p class="box-title">合計は必ず答え合わせする</p><p>足し算をしたら、答えが合っているかを外の数字と照らし合わせる。これは絶対にやってください。</p>
 <div class="code" data-lang="R"><pre><code>df2020_pref %&gt;%
   summarize(zenkoku = sum(pref_population))</code></pre></div>

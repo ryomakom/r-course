@@ -70,7 +70,7 @@
       <p class="kicker">付録</p>
       <h1>付録C　宿題と作例</h1>
       <p class="lead">各章の宿題と、その作例です。答えは一つではないので、自分のコードが違っていても、同じ結果が出ていれば正解です。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#1若者率のランキング05章05-select-mutatehtml">1．若者率のランキング（[05章](05-select-mutate.html)）</a></li><li><a href="#2都道府県別の高齢化率ランキング07章07-grouphtml">2．都道府県別の高齢化率ランキング（[07章](07-group.html)）</a></li><li><a href="#3ExcelファイルもふくめてまとめてbindRowsする10章10-datatypehtml">3．ExcelファイルもふくめてまとめてbindRowsする（[10章](10-datatype.html)）</a></li><li><a href="#4pivotで往復する09章09-pivothtml">4．pivotで往復する（[09章](09-pivot.html)）</a></li><li><a href="#5年と自治体の両方で突合する11章11-joinhtml">5．年と自治体の両方で突合する（[11章](11-join.html)）</a></li><li><a href="#6宮城県の年齢層別人口13章13-colhtml">6．宮城県の年齢層別人口（[13章](13-col.html)）</a></li><li><a href="#7東京の子どもが減っていないを可視化する14章14-pointhtml">7．東京の子どもが減っていない、を可視化する（[14章](14-point.html)）</a></li><li><a href="#8一つのファイルの全シートを処理する19章19-kami-excelhtml">8．一つのファイルの全シートを処理する（[19章](19-kami-excel.html)）</a></li></ul></nav>
+      
       <aside class="box box-warn"><p class="box-title">先に自分で書いてください</p><p>コードを写しても手は覚えません。<strong>うまくいかなくても、エラーを見ながら20分は粘る。</strong> そのうえで見てください。エラーと格闘した時間が、そのまま実力になります。</p></aside>
 <h2 id="1若者率のランキング05章05-select-mutatehtml">1．若者率のランキング（<a href="05-select-mutate.html">05章</a>）</h2>
 <blockquote>人口に占める若者の割合を示す列を作って、「若者率が高い自治体」「低い自治体」それぞれのランキングを作りなさい。</blockquote>
@@ -123,7 +123,7 @@
 <p><code>group_by</code> と <code>summarize</code> で足し上げてから、<code>mutate</code> で割り算する。<strong>この順番が大事です。</strong> 先に市区町村ごとの高齢化率を出して、それを都道府県ごとに平均してしまうと、答えが変わります（人口1000人の村と人口100万人の市が、同じ重みで平均されてしまうからです）。</p>
 <p>いわゆる「平均の平均」問題です。比率を集計するときは、<strong>分子と分母をそれぞれ足し上げてから割る</strong>。これは覚えておいてください。</p>
 <h2 id="3ExcelファイルもふくめてまとめてbindRowsする10章10-datatypehtml">3．ExcelファイルもふくめてまとめてbindRowsする（<a href="10-datatype.html">10章</a>）</h2>
-<blockquote>2000年と2005年の人口データも読み込んでください。csvじゃなくてexcelファイルだったりするので、これまでに使っていない関数を使って読み込む必要があります。また、<code>bind_rows()</code> 関数で合体させようとしても、ふつうにやるとエラーが出ます。原因を考えて、できれば解決してみてください。</blockquote>
+<blockquote>2000年と2005年の人口データも読み込んでください。csvじゃなくてExcelファイルだったりするので、これまでに使っていない関数を使って読み込む必要があります。また、<code>bind_rows()</code> 関数で合体させようとしても、ふつうにやるとエラーが出ます。原因を考えて、できれば解決してみてください。</blockquote>
 <p>答えは<a href="10-datatype.html">10章</a>の本文にあります。読み込みは <code>read_excel()</code>（readxlパッケージ）、エラーの原因はデータ型の不一致、解決は全部いったん文字列として読み込むこと。</p>
 <div class="code" data-lang="R"><pre><code>library(readxl)
 
@@ -139,7 +139,7 @@ df &lt;- bind_rows(read_csv("data/人口データ2020.csv", skip = 8) %&gt;%
                 read_excel("data/人口データ2000.xlsx", skip = 8) %&gt;%
                   mutate(across(everything(), as.character)))</code></pre></div>
 <h2 id="4pivotで往復する09章09-pivothtml">4．pivotで往復する（<a href="09-pivot.html">09章</a>）</h2>
-<blockquote><code>df_simple</code> のデータフレームについて、<code>region</code> の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず <code>pivot_wider</code> をかけ、それをまた <code>pivot_longer</code> で元に戻してください。</blockquote>
+<blockquote><code>df_simple</code> というtibbleについて、<code>region</code> の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず <code>pivot_wider</code> をかけ、それをまた <code>pivot_longer</code> で元に戻してください。</blockquote>
 <div class="code" data-lang="R"><pre><code># まず三つの列に分ける
 df_split &lt;- df_simple %&gt;%
   mutate(prefecture = str_split_i(region, " ", 1),
@@ -317,7 +317,7 @@ for (i in sheet_names) {
   vote_data &lt;- bind_rows(vote_data, vote_data_temporaly)
 }</code></pre></div>
 <p>ポイントは三つ。空っぽの <code>tibble()</code> を先に用意すること、<code>filter(sheet == i)</code> でそのシートだけに絞ること、選挙区名を <code>behead("up-left", "district")</code> でシートの中のA3から取ること。</p>
-<p>できあがった <code>vote_data</code> には、合計の行と得票数計の列から来た行も入っています。数えたり足したりするときは、19章の「数え上げて確かめる」のように、それを除いてから使って下さい。</p>
+<p>できあがった <code>vote_data</code> には、合計の行と得票数計の列から来た行も入っています。数えたり足したりするときは、19章の「数え上げて確かめる」のように、それを除いてから使ってください。</p>
 <p><strong>発展。</strong> 同じファイルを何度も <code>xlsx_cells()</code> で読み直しているので、シートが多いと遅くなります。先に1回だけ読んでおくと速くなります。</p>
 <div class="code" data-lang="R"><pre><code>all_cells &lt;- xlsx_cells("download/000979538.xlsx")   # 1回だけ読む
 

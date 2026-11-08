@@ -345,7 +345,8 @@ def render(md, headings, base_line=1):
                     MISSING.append(include)
             label = {"r": "R", "text": "画面に出るもの", "console": "コンソール",
                      "out": "実行結果", "file": "ファイルの中身",
-                     "html": "ページのソース"}.get(lang, lang)
+                     "html": "ページのソース",
+                     "tree": "フォルダの中身"}.get(lang, lang)
             # «ここ» で囲んだ部分、および fence で指定された文字に色をつける
             code = esc(body).replace("«", "<mark>").replace("»", "</mark>")
             for word in marks:
@@ -644,10 +645,7 @@ def build():
             for m in re.finditer(r"TODO[^\n<]*", raw):
                 todos.append((slug, m.group(0)))
 
-        inpage = ""
-        if len(headings) >= 3 and slug != "index":
-            items = "".join('<li><a href="#%s">%s</a></li>' % (h, esc(t)) for h, t in headings)
-            inpage = '<nav class="inpage"><p>このページの中身</p><ul>%s</ul></nav>' % items
+        inpage = ""   # 章の頭の「このページの中身」（見出しの一覧）は出さないことにした
 
         prev_link = next_link = ""
         if idx > 0:

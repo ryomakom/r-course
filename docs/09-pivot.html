@@ -70,7 +70,7 @@
       <p class="kicker">第1部　データを読む・加工する</p>
       <h1>縦長と横長を行き来する</h1>
       <p class="lead">データを横長に変えるpivot_widerと、縦長にするpivot_longer。私は理解するのにたいへん時間がかかりましたが、とてもよく使う関数でもあります。</p>
-      <nav class="inpage"><p>このページの中身</p><ul><li><a href="#機械に読みやすい形人間に読みやすい形">機械に読みやすい形、人間に読みやすい形</a></li><li><a href="#pivot_wider横長にする">pivot_wider——横長にする</a></li><li><a href="#横長にすると計算ができる">横長にすると計算ができる</a></li><li><a href="#pivot_longer縦長に戻す">pivot_longer——縦長に戻す</a></li><li><a href="#整然データという考え方">整然データ、という考え方</a></li></ul></nav>
+      
       <h2 id="機械に読みやすい形人間に読みやすい形">機械に読みやすい形、人間に読みやすい形</h2>
 <p>いまの <code>df_simple</code> というデータ形式だと、「年」「自治体名」「人口」が横に並んでいますね。1行に一つの数字が入っている形です。これが「縦長」で、コンピューターに読みやすい形式のデータです。</p>
 <div class="code" data-lang="実行結果"><pre><code># A tibble: 5,748 × 3
@@ -394,13 +394,13 @@
 </figure>
 <aside class="box box-note"><p class="box-title">覚え方</p><p>私はこう考えるようにしています。</p>
 <ul>
-<li>pivot_longer：列の名前を、データの中身に降ろす。だから行が増えて縦に長くなる。</li>
-<li>pivot_wider：データの中身を、列の名前に持ち上げる。だから列が増えて横に広くなる。</li>
+<li><code>pivot_longer()</code>：列の名前を、データの中身に降ろす。だから行が増えて縦に長くなる。</li>
+<li><code>pivot_wider()</code>：データの中身を、列の名前に持ち上げる。だから列が増えて横に広くなる。</li>
 </ul>
 <p>そして引数の指定は、この対応で覚えます。</p>
 <div class="table-wrap"><table><thead><tr><th></th><th>列の名前</th><th>中身の数字</th></tr></thead><tbody><tr><td>longer（降ろす）</td><td><code>names_to = "year"</code></td><td><code>values_to = "population"</code></td></tr><tr><td>wider（持ち上げる）</td><td><code>names_from = year</code></td><td><code>values_from = population</code></td></tr></tbody></table></div>
 <p><code>_to</code> はこれから作る列（だから引用符でくくる。まだ存在しないので）、<code>_from</code> はいまある列（だから引用符はいらない）。ここが混乱の元です。</p></aside>
-<aside class="box box-homework"><p class="box-title">宿題</p><p><code>df_simple</code> のデータフレームについて、<code>region</code> の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず <code>pivot_wider</code> をかけ、それをまた <code>pivot_longer</code> で元に戻してください。<code>df_simple</code> はyear、region、populationの三つの列だけで構成されたデータフレームです。</p>
+<aside class="box box-homework"><p class="box-title">宿題</p><p><code>df_simple</code> というtibbleについて、<code>region</code> の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず <code>pivot_wider</code> をかけ、それをまた <code>pivot_longer</code> で元に戻してください。<code>df_simple</code> はyear、region、populationの三つの列だけで構成されたtibbleです。</p>
 <p>作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
 <h2 id="整然データという考え方">整然データ、という考え方</h2>
 <p>いま説明した「縦長」の形には、tidy data（整然データ）という名前がついています。tidyverseというパッケージ名の「tidy」はここから来ています。決まりごとは三つだけです。</p>

@@ -356,8 +356,8 @@ df_simple_wide %>%
 :::note 覚え方
 私はこう考えるようにしています。
 
-- pivot_longer：列の名前を、データの中身に降ろす。だから行が増えて縦に長くなる。
-- pivot_wider：データの中身を、列の名前に持ち上げる。だから列が増えて横に広くなる。
+- `pivot_longer()`：列の名前を、データの中身に降ろす。だから行が増えて縦に長くなる。
+- `pivot_wider()`：データの中身を、列の名前に持ち上げる。だから列が増えて横に広くなる。
 
 そして引数の指定は、この対応で覚えます。
 
@@ -370,7 +370,7 @@ df_simple_wide %>%
 :::
 
 :::homework 宿題
-`df_simple` のデータフレームについて、`region` の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず `pivot_wider` をかけ、それをまた `pivot_longer` で元に戻してください。`df_simple` はyear、region、populationの三つの列だけで構成されたデータフレームです。
+`df_simple` というtibbleについて、`region` の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず `pivot_wider` をかけ、それをまた `pivot_longer` で元に戻してください。`df_simple` はyear、region、populationの三つの列だけで構成されたtibbleです。
 
 作例は[付録C](a3-shukudai.html)にあります。
 :::
