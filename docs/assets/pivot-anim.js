@@ -75,7 +75,18 @@ function pivotAnim() {
   var fig = document.createElement('figure');
   fig.className = 'fig pivot-fig anim-fig';
   var svg = document.createElementNS(SVGNS, 'svg');
-  svg.setAttribute('viewBox', '0 0 720 ' + (TOP + H * (data.length + 1) + 10));
+  // 図の範囲。せまい画面（入れ物の幅が600px未満）では、表のあるところ（x = X0 から右へ330）だけを切り出して大きく見せる。
+  // 720の幅のまま縮めると、スマホでは文字が6px ほどになって読めないため
+  var VH = TOP + H * (data.length + 1) + 10;
+  // 切り出したときは、本文（16px）との釣り合いをとって、図の文字（13px）が約11.5px になる幅までに抑え、中央に置く
+  function fit() {
+    var narrow = host.clientWidth < 600, vw = W0 + W * 3 + 16;
+    svg.setAttribute('viewBox', narrow ? (X0 - 8) + ' 0 ' + vw + ' ' + VH : '0 0 720 ' + VH);
+    svg.style.maxWidth = narrow ? Math.round(vw * 11.5 / 13) + 'px' : '';
+    svg.style.margin = narrow ? '0 auto' : '';
+  }
+  fit();
+  window.addEventListener('resize', fit);
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', 'pivot_wider() と pivot_longer() で、表のセルがどう動くかを示すアニメーション');
   fig.appendChild(svg);

@@ -7,7 +7,7 @@
 <meta name="description" content="物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。">
 <link rel="stylesheet" href="assets/style.css">
 <script>
-// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+// 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
 (function () {
   var h = location.hostname;
   if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
@@ -71,490 +71,764 @@
       <h1>神の頭を切り落とす</h1>
       <p class="lead">物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。</p>
       <nav class="inpage"><p>このページの中身</p><ul><li><a href="#神エクセルとは">神エクセルとは</a></li><li><a href="#二つの武器で戦う">二つの武器で戦う</a></li><li><a href="#シートを全部処理する">シートを全部処理する</a></li><li><a href="#ファイルもシートも全部処理する">ファイルもシートも全部処理する</a></li><li><a href="#数え上げて確かめる">数え上げて確かめる</a></li></ul></nav>
-      <h2 id="神エクセルとは" data-src="19-kami-excel:8">神エクセルとは</h2>
-<p data-src="19-kami-excel:12">役所（だけではないですが）が公表するExcelファイルには、独特の様式があります。上のほうに表題やら注釈やらがあって、データのラベルに当たるものが2段や3段に分かれて書いてあって、おまけにセルが結合されている。Excelが表計算ソフトではなく「方眼紙」として使われた結果です。</p>
-<p data-src="19-kami-excel:14">こうした資料は基本的に、紙に印刷して人が見るために作られています。<a href="09-pivot.html">09章</a>でも説明しましたが、人間にとってはこういうスタイルのほうが見やすいし分かりやすい。その意味では理にかなっているわけです。</p>
-<p data-src="19-kami-excel:16">でも <code>read_excel()</code> で読むと悲惨なことになります。結合されたセルの二つめ以降はNAになり、ラベルの2段目はデータの1行目として読まれる。もうぐちゃぐちゃ。その筋では「紙＝神」をもじって「神エクセル」「ネ申エクセル」と呼ばれ、はっきり言って忌み嫌われます。</p>
-<p data-src="19-kami-excel:18">こういうファイルを読み込んで、分析可能な形に力技で直そうとすると、<code>rename</code> と <code>mutate</code> と <code>filter</code> を延々と書くことになります。しかもシートが何十枚もあれば、それぞれ微妙に形が違ったりするわけで、一つひとつプログラムを書き換えなくてはいけない。つらい。</p>
-<p data-src="19-kami-excel:20">でも、もっとマシなやり方があります。</p>
-<h2 id="二つの武器で戦う" data-src="19-kami-excel:22">二つの武器で戦う</h2>
-<p data-src="19-kami-excel:24">使うのはtidyxlとunpivotrという二つのパッケージです。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:26"><pre><code>install.packages("tidyxl")
+      <h2 id="神エクセルとは">神エクセルとは</h2>
+<p>役所（だけではないですが）が公表するExcelファイルには、独特の様式があります。上のほうに表題やら注釈やらがあって、データのラベルに当たるものが2段や3段に分かれて書いてあって、おまけにセルが結合されている。Excelが表計算ソフトではなく「方眼紙」として使われた結果です。</p>
+<p>こうした資料は基本的に、紙に印刷して人が見るために作られています。<a href="09-pivot.html">09章</a>でも説明しましたが、人間にとってはこういうスタイルのほうが見やすいし分かりやすい。その意味では理にかなっているわけです。</p>
+<p>でも <code>read_excel()</code> で読むと悲惨なことになります。結合されたセルの二つめ以降はNAになり、ラベルの2段目はデータの1行目として読まれる。もうぐちゃぐちゃ。その筋では「紙＝神」をもじって「神エクセル」「ネ申エクセル」と呼ばれ、はっきり言って忌み嫌われます。</p>
+<p>こういうファイルを読み込んで、分析可能な形に力技で直そうとすると、<code>rename</code> と <code>mutate</code> と <code>filter</code> を延々と書くことになります。しかもシートが何十枚もあれば、それぞれ微妙に形が違ったりするわけで、一つひとつプログラムを書き換えなくてはいけない。つらい。</p>
+<p>でも、もっとマシなやり方があります。</p>
+<h2 id="二つの武器で戦う">二つの武器で戦う</h2>
+<p>使うのはtidyxlとunpivotrという二つのパッケージです。</p>
+<div class="code" data-lang="R"><pre><code>install.packages("tidyxl")
 install.packages("unpivotr")
 library(tidyxl)
 library(unpivotr)</code></pre></div>
-<aside class="box box-data" data-src="19-kami-excel:33"><p class="box-title">この章で使うデータ</p><p data-src="19-kami-excel:34"><a href="18-download.html">18章</a>の手順でダウンロードしたファイルを使いますが、うまく落ちてこなかった人は、北海道のぶんをここから取って下さい。</p>
-<p data-src="19-kami-excel:36"><a class="dl" href="files/000979538.xlsx" download>000979538.xlsx<span class="dl-size">46 KB</span></a>　2024年にあった第50回衆院選の小選挙区の市区町村別得票（北海道）</p>
-<p data-src="19-kami-excel:38"><code>download</code> フォルダに入れると、この章のコードがそのまま動きます。総務省が公表しているファイルの写しです。</p></aside>
-<p data-src="19-kami-excel:41">北海道の市区町村別得票データをExcelで開くと、「北海道第１区」のシートはこんな感じでした。</p>
-<figure class="fig" data-src="19-kami-excel:43"><img src="images/19-excel.png" alt="Excelで開いた「北海道第１区」のシート。上に日付と表題と選挙区名があり、その下に候補者名・政党名の2段のラベル、左に市区町村名が並び、いちばん下が合計の行、いちばん右が得票数計の列になっている" loading="lazy"><figcaption>000979538.xlsx の「北海道第１区」のシートを、Excelで開いたところ</figcaption></figure>
-<p data-src="19-kami-excel:45">最初の3行はデータではなく注釈。数字のうち、たとえば一番左上にある「10,260」は、「日本維新の会」所属の「小林さとる氏」が「札幌市中央区」で獲得した得票数を示しています。これは人間の目には一目瞭然なのですが、人間の常識を持ち合わせないコンピューターには読み取ることができません。</p>
-<p data-src="19-kami-excel:47">そこで、以下のような形に加工していくことが必要なわけです。縦長の、いわゆる整然（tidy）データです。</p>
-<div class="table-wrap" data-src="19-kami-excel:49"><table><thead><tr><th>市区町村</th><th>候補者</th><th>政党</th><th>得票</th></tr></thead><tbody><tr><td>札幌市中央区</td><td>小林　さとる</td><td>日本維新の会</td><td>10260</td></tr><tr><td>札幌市中央区</td><td>道下　大樹</td><td>立憲民主党</td><td>49131</td></tr><tr><td>札幌市北区第１区</td><td>小林　さとる</td><td>日本維新の会</td><td>334</td></tr></tbody></table></div>
-<p data-src="19-kami-excel:55"><code>tidyxl</code>パッケージの<code>xlsx_cells()</code>という関数で表をセルごとにバラしたうえで、<code>unpivotr</code>パッケージの<code>behead()</code>関数でうまいことラベルを取り出してやると、この加工が簡単にできます。こんなイメージです。</p>
-<figure class="fig">
-<svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="シートのどのセルが、整然データのどの列になるかを色で示した図">
+<aside class="box box-data"><p class="box-title">この章で使うデータ</p><p><a href="18-download.html">18章</a>の手順でダウンロードしたファイルを使いますが、うまく落ちてこなかった人は、北海道のぶんをここから取って下さい。</p>
+<p><a class="dl" href="files/000979538.xlsx" download>000979538.xlsx<span class="dl-size">46 KB</span></a>　2024年にあった第50回衆院選の小選挙区の市区町村別得票（北海道）</p>
+<p><code>download</code> フォルダに入れると、この章のコードがそのまま動きます。総務省が公表しているファイルの写しです。</p></aside>
+<p>北海道の市区町村別得票データをExcelで開くと、「北海道第１区」のシートはこんな感じでした。</p>
+<figure class="fig"><img src="images/19-excel.png" alt="Excelで開いた「北海道第１区」のシート。上に日付と表題と選挙区名があり、その下に候補者名・政党名の2段のラベル、左に市区町村名が並び、いちばん下が合計の行、いちばん右が得票数計の列になっている" loading="lazy"><figcaption>000979538.xlsx の「北海道第１区」のシートを、Excelで開いたところ</figcaption></figure>
+<p>最初の2行（日付と表題）はデータではなく注釈。3行目の「北海道第１区」は選挙区の名前で、これはデータの一部です。数字のうち、たとえば一番左上にある「10,260」は、「日本維新の会」所属の「小林さとる氏」が、北海道第１区の「札幌市中央区」で獲得した得票数を示しています。これは人間の目には一目瞭然なのですが、人間の常識を持ち合わせないコンピューターには読み取ることができません。</p>
+<p>そこで、以下のような形に加工していくことが必要なわけです。縦長の、いわゆる整然（tidy）データです。</p>
+<div class="table-wrap"><table><thead><tr><th>選挙区</th><th>市区町村</th><th>候補者</th><th>政党</th><th>得票</th></tr></thead><tbody><tr><td>北海道第１区</td><td>札幌市中央区</td><td>小林　さとる</td><td>日本維新の会</td><td>10260</td></tr><tr><td>北海道第１区</td><td>札幌市中央区</td><td>道下　大樹</td><td>立憲民主党</td><td>49131</td></tr><tr><td>北海道第１区</td><td>札幌市北区第１区</td><td>小林　さとる</td><td>日本維新の会</td><td>334</td></tr></tbody></table></div>
+<p><code>tidyxl</code>パッケージの<code>xlsx_cells()</code>という関数で表をセルごとにバラしたうえで、<code>unpivotr</code>パッケージの<code>behead()</code>関数でうまいことラベルを取り出してやると、この加工が簡単にできます。こんなイメージです。</p>
+<figure class="fig fig-switch">
+<svg class="svg-wide" viewBox="0 0 746 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="シートのどのセルが、整然データのどの列になるかを色で示した図">
 <defs><marker id="ar19" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
 <text class="f-label" x="10" y="18">Excelのシート（北海道第１区）</text>
-<rect class="f-head" x="32" y="28" width="108" height="26"/>
-<text class="f-note" x="86.0" y="46.2" text-anchor="middle">A</text>
-<rect class="f-head" x="140" y="28" width="74" height="26"/>
-<text class="f-note" x="177.0" y="46.2" text-anchor="middle">B</text>
-<rect class="f-head" x="214" y="28" width="74" height="26"/>
-<text class="f-note" x="251.0" y="46.2" text-anchor="middle">C</text>
-<rect class="f-head" x="288" y="28" width="18" height="26"/>
-<text class="f-note" x="297.0" y="46.2" text-anchor="middle">…</text>
-<rect class="f-head" x="306" y="28" width="52" height="26"/>
-<text class="f-note" x="332.0" y="46.2" text-anchor="middle">G</text>
+<rect class="f-head" x="32" y="28" width="104" height="26"/>
+<text class="f-note" x="84" y="46.2" text-anchor="middle">A</text>
+<rect class="f-head" x="136" y="28" width="72" height="26"/>
+<text class="f-note" x="172" y="46.2" text-anchor="middle">B</text>
+<rect class="f-head" x="208" y="28" width="72" height="26"/>
+<text class="f-note" x="244" y="46.2" text-anchor="middle">C</text>
+<rect class="f-head" x="280" y="28" width="12" height="26"/>
+<text class="f-note" x="286" y="46.2" text-anchor="middle">…</text>
+<rect class="f-head" x="292" y="28" width="54" height="26"/>
+<text class="f-note" x="319" y="46.2" text-anchor="middle">G</text>
 <rect class="f-head" x="10" y="54" width="22" height="26"/>
-<text class="f-note" x="21" y="72.2" text-anchor="middle">4</text>
-<rect class="f-off" x="32" y="54" width="108" height="26"/>
-<text x="36" y="72.2" style="font-size:11px">候補者名</text>
-<rect class="f-mark" x="140" y="54" width="74" height="26"/>
-<text x="144" y="72.2" style="font-size:11px">小林　さとる</text>
-<rect class="f-mark" x="214" y="54" width="74" height="26"/>
-<text x="218" y="72.2" style="font-size:11px">道下　大樹</text>
-<rect class="f-off" x="306" y="54" width="52" height="26"/>
-<text x="310" y="72.2" style="font-size:11px">得票数計</text>
-<text class="f-note" x="297.0" y="72.2" text-anchor="middle">…</text>
+<text class="f-note" x="21" y="72.2" text-anchor="middle">3</text>
+<rect class="f-mark4" x="32" y="54" width="104" height="26"/>
+<text x="36" y="72.2" style="font-size:11px">北海道第１区</text>
+<rect class="f-cell" x="136" y="54" width="72" height="26"/>
+<rect class="f-cell" x="208" y="54" width="72" height="26"/>
+<rect class="f-off" x="292" y="54" width="54" height="26"/>
+<text x="295" y="72.2" style="font-size:10px">[単位：票]</text>
 <rect class="f-head" x="10" y="80" width="22" height="26"/>
-<text class="f-note" x="21" y="98.2" text-anchor="middle">5</text>
-<rect class="f-off" x="32" y="80" width="108" height="26"/>
-<text x="36" y="98.2" style="font-size:11px">市区町村名＼政党名</text>
-<rect class="f-mark2" x="140" y="80" width="74" height="26"/>
-<text x="144" y="98.2" style="font-size:11px">日本維新の会</text>
-<rect class="f-mark2" x="214" y="80" width="74" height="26"/>
-<text x="218" y="98.2" style="font-size:11px">立憲民主党</text>
-<rect class="f-off" x="306" y="80" width="52" height="26"/>
-<text class="f-note" x="297.0" y="98.2" text-anchor="middle">…</text>
+<text class="f-note" x="21" y="98.2" text-anchor="middle">4</text>
+<rect class="f-off" x="32" y="80" width="104" height="26"/>
+<text x="36" y="98.2" style="font-size:11px">候補者名</text>
+<rect class="f-mark" x="136" y="80" width="72" height="26"/>
+<text x="140" y="98.2" style="font-size:11px">小林　さとる</text>
+<rect class="f-mark" x="208" y="80" width="72" height="26"/>
+<text x="212" y="98.2" style="font-size:11px">道下　大樹</text>
+<rect class="f-off" x="292" y="80" width="54" height="26"/>
+<text x="296" y="98.2" style="font-size:11px">得票数計</text>
+<text class="f-note" x="286" y="98.2" text-anchor="middle">…</text>
 <rect class="f-head" x="10" y="106" width="22" height="26"/>
-<text class="f-note" x="21" y="124.2" text-anchor="middle">6</text>
-<rect class="f-mark3" x="32" y="106" width="108" height="26"/>
-<text x="36" y="124.2" style="font-size:11px">札幌市中央区</text>
-<rect class="f-cell" x="140" y="106" width="74" height="26"/>
-<text x="144" y="124.2" style="font-size:11px">10260</text>
-<rect class="f-cell" x="214" y="106" width="74" height="26"/>
-<text x="218" y="124.2" style="font-size:11px">49131</text>
-<rect class="f-off" x="306" y="106" width="52" height="26"/>
-<text x="310" y="124.2" style="font-size:11px">114596</text>
-<text class="f-note" x="297.0" y="124.2" text-anchor="middle">…</text>
+<text class="f-note" x="21" y="124.2" text-anchor="middle">5</text>
+<rect class="f-off" x="32" y="106" width="104" height="26"/>
+<text x="36" y="124.2" style="font-size:10px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="136" y="106" width="72" height="26"/>
+<text x="140" y="124.2" style="font-size:11px">日本維新の会</text>
+<rect class="f-mark2" x="208" y="106" width="72" height="26"/>
+<text x="212" y="124.2" style="font-size:11px">立憲民主党</text>
+<rect class="f-off" x="292" y="106" width="54" height="26"/>
+<text class="f-note" x="286" y="124.2" text-anchor="middle">…</text>
 <rect class="f-head" x="10" y="132" width="22" height="26"/>
-<text class="f-note" x="21" y="150.2" text-anchor="middle">7</text>
-<rect class="f-mark3" x="32" y="132" width="108" height="26"/>
-<text x="36" y="150.2" style="font-size:11px">札幌市北区第１区</text>
-<rect class="f-cell" x="140" y="132" width="74" height="26"/>
-<text x="144" y="150.2" style="font-size:11px">334</text>
-<rect class="f-cell" x="214" y="132" width="74" height="26"/>
-<text x="218" y="150.2" style="font-size:11px">1399</text>
-<rect class="f-off" x="306" y="132" width="52" height="26"/>
-<text x="310" y="150.2" style="font-size:11px">3418</text>
-<text class="f-note" x="297.0" y="150.2" text-anchor="middle">…</text>
+<text class="f-note" x="21" y="150.2" text-anchor="middle">6</text>
+<rect class="f-mark3" x="32" y="132" width="104" height="26"/>
+<text x="36" y="150.2" style="font-size:11px">札幌市中央区</text>
+<rect class="f-cell" x="136" y="132" width="72" height="26"/>
+<text x="140" y="150.2" style="font-size:11px">10260</text>
+<rect class="f-cell" x="208" y="132" width="72" height="26"/>
+<text x="212" y="150.2" style="font-size:11px">49131</text>
+<rect class="f-off" x="292" y="132" width="54" height="26"/>
+<text x="296" y="150.2" style="font-size:11px">114596</text>
+<text class="f-note" x="286" y="150.2" text-anchor="middle">…</text>
 <rect class="f-head" x="10" y="158" width="22" height="26"/>
-<text class="f-note" x="21" y="176.2" text-anchor="middle">8</text>
-<rect class="f-mark3" x="32" y="158" width="108" height="26"/>
-<text x="36" y="176.2" style="font-size:11px">札幌市南区</text>
-<rect class="f-cell" x="140" y="158" width="74" height="26"/>
-<text x="144" y="176.2" style="font-size:11px">4480</text>
-<rect class="f-cell" x="214" y="158" width="74" height="26"/>
-<text x="218" y="176.2" style="font-size:11px">27833</text>
-<rect class="f-off" x="306" y="158" width="52" height="26"/>
-<text x="310" y="176.2" style="font-size:11px">65810</text>
-<text class="f-note" x="297.0" y="176.2" text-anchor="middle">…</text>
+<text class="f-note" x="21" y="176.2" text-anchor="middle">7</text>
+<rect class="f-mark3" x="32" y="158" width="104" height="26"/>
+<text x="36" y="176.2" style="font-size:11px">札幌市北区第１区</text>
+<rect class="f-cell" x="136" y="158" width="72" height="26"/>
+<text x="140" y="176.2" style="font-size:11px">334</text>
+<rect class="f-cell" x="208" y="158" width="72" height="26"/>
+<text x="212" y="176.2" style="font-size:11px">1399</text>
+<rect class="f-off" x="292" y="158" width="54" height="26"/>
+<text x="296" y="176.2" style="font-size:11px">3418</text>
+<text class="f-note" x="286" y="176.2" text-anchor="middle">…</text>
 <rect class="f-head" x="10" y="184" width="22" height="26"/>
-<text class="f-note" x="21" y="202.2" text-anchor="middle">9</text>
-<rect class="f-mark3" x="32" y="184" width="108" height="26"/>
-<text x="36" y="202.2" style="font-size:11px">札幌市西区第１区</text>
-<rect class="f-cell" x="140" y="184" width="74" height="26"/>
-<text x="144" y="202.2" style="font-size:11px">4926</text>
-<rect class="f-cell" x="214" y="184" width="74" height="26"/>
-<text x="218" y="202.2" style="font-size:11px">30031</text>
-<rect class="f-off" x="306" y="184" width="52" height="26"/>
-<text x="310" y="202.2" style="font-size:11px">66251</text>
-<text class="f-note" x="297.0" y="202.2" text-anchor="middle">…</text>
+<text class="f-note" x="21" y="202.2" text-anchor="middle">8</text>
+<rect class="f-mark3" x="32" y="184" width="104" height="26"/>
+<text x="36" y="202.2" style="font-size:11px">札幌市南区</text>
+<rect class="f-cell" x="136" y="184" width="72" height="26"/>
+<text x="140" y="202.2" style="font-size:11px">4480</text>
+<rect class="f-cell" x="208" y="184" width="72" height="26"/>
+<text x="212" y="202.2" style="font-size:11px">27833</text>
+<rect class="f-off" x="292" y="184" width="54" height="26"/>
+<text x="296" y="202.2" style="font-size:11px">65810</text>
+<text class="f-note" x="286" y="202.2" text-anchor="middle">…</text>
 <rect class="f-head" x="10" y="210" width="22" height="26"/>
-<text class="f-note" x="21" y="228.2" text-anchor="middle">10</text>
-<rect class="f-off" x="32" y="210" width="108" height="26"/>
-<text x="36" y="228.2" style="font-size:11px">北海道第１区 合計</text>
-<rect class="f-off" x="140" y="210" width="74" height="26"/>
-<text x="144" y="228.2" style="font-size:11px">20000</text>
-<rect class="f-off" x="214" y="210" width="74" height="26"/>
-<text x="218" y="228.2" style="font-size:11px">108394</text>
-<rect class="f-off" x="306" y="210" width="52" height="26"/>
-<text x="310" y="228.2" style="font-size:11px">250075</text>
-<text class="f-note" x="297.0" y="228.2" text-anchor="middle">…</text>
-<path class="f-arrow" d="M362 132 H412" marker-end="url(#ar19)"/>
-<text class="f-code" x="360" y="122">behead()</text>
-<text class="f-label" x="420" y="18">整然データ</text>
-<rect class="f-mark3" x="420" y="28" width="96" height="24"/>
-<text class="f-th" x="424" y="44" style="font-size:11px">municipality</text>
-<rect class="f-mark" x="516" y="28" width="72" height="24"/>
-<text class="f-th" x="520" y="44" style="font-size:11px">name</text>
-<rect class="f-mark2" x="588" y="28" width="76" height="24"/>
-<text class="f-th" x="592" y="44" style="font-size:11px">party</text>
-<rect class="f-head" x="664" y="28" width="50" height="24"/>
-<text class="f-th" x="668" y="44" style="font-size:11px">vote</text>
-<rect class="f-cell" x="420" y="52" width="96" height="24"/>
-<text x="424" y="68" style="font-size:11px">札幌市中央区</text>
-<rect class="f-cell" x="516" y="52" width="72" height="24"/>
-<text x="520" y="68" style="font-size:11px">小林　さとる</text>
-<rect class="f-cell" x="588" y="52" width="76" height="24"/>
-<text x="592" y="68" style="font-size:11px">日本維新の会</text>
-<rect class="f-cell" x="664" y="52" width="50" height="24"/>
-<text x="668" y="68" style="font-size:11px">10260</text>
-<rect class="f-cell" x="420" y="76" width="96" height="24"/>
-<text x="424" y="92" style="font-size:11px">札幌市中央区</text>
-<rect class="f-cell" x="516" y="76" width="72" height="24"/>
-<text x="520" y="92" style="font-size:11px">道下　大樹</text>
-<rect class="f-cell" x="588" y="76" width="76" height="24"/>
-<text x="592" y="92" style="font-size:11px">立憲民主党</text>
-<rect class="f-cell" x="664" y="76" width="50" height="24"/>
-<text x="668" y="92" style="font-size:11px">49131</text>
-<rect class="f-cell" x="420" y="100" width="96" height="24"/>
-<text x="424" y="116" style="font-size:11px">札幌市北区第１区</text>
-<rect class="f-cell" x="516" y="100" width="72" height="24"/>
-<text x="520" y="116" style="font-size:11px">小林　さとる</text>
-<rect class="f-cell" x="588" y="100" width="76" height="24"/>
-<text x="592" y="116" style="font-size:11px">日本維新の会</text>
-<rect class="f-cell" x="664" y="100" width="50" height="24"/>
-<text x="668" y="116" style="font-size:11px">334</text>
-<rect class="f-cell" x="420" y="124" width="96" height="24"/>
-<text x="424" y="140" style="font-size:11px">札幌市北区第１区</text>
-<rect class="f-cell" x="516" y="124" width="72" height="24"/>
-<text x="520" y="140" style="font-size:11px">道下　大樹</text>
-<rect class="f-cell" x="588" y="124" width="76" height="24"/>
-<text x="592" y="140" style="font-size:11px">立憲民主党</text>
-<rect class="f-cell" x="664" y="124" width="50" height="24"/>
-<text x="668" y="140" style="font-size:11px">1399</text>
-<text class="f-note" x="420" y="172">……</text>
-<text class="f-note" x="10" y="268">赤（候補者名）→ name、青（政党名）→ party、黄（A列）→ municipality、白い数字 → vote</text>
+<text class="f-note" x="21" y="228.2" text-anchor="middle">9</text>
+<rect class="f-mark3" x="32" y="210" width="104" height="26"/>
+<text x="36" y="228.2" style="font-size:11px">札幌市西区第１区</text>
+<rect class="f-cell" x="136" y="210" width="72" height="26"/>
+<text x="140" y="228.2" style="font-size:11px">4926</text>
+<rect class="f-cell" x="208" y="210" width="72" height="26"/>
+<text x="212" y="228.2" style="font-size:11px">30031</text>
+<rect class="f-off" x="292" y="210" width="54" height="26"/>
+<text x="296" y="228.2" style="font-size:11px">66251</text>
+<text class="f-note" x="286" y="228.2" text-anchor="middle">…</text>
+<rect class="f-head" x="10" y="236" width="22" height="26"/>
+<text class="f-note" x="21" y="254.2" text-anchor="middle">10</text>
+<rect class="f-off" x="32" y="236" width="104" height="26"/>
+<text x="36" y="254.2" style="font-size:11px">北海道第１区 合計</text>
+<rect class="f-off" x="136" y="236" width="72" height="26"/>
+<text x="140" y="254.2" style="font-size:11px">20000</text>
+<rect class="f-off" x="208" y="236" width="72" height="26"/>
+<text x="212" y="254.2" style="font-size:11px">108394</text>
+<rect class="f-off" x="292" y="236" width="54" height="26"/>
+<text x="296" y="254.2" style="font-size:11px">250075</text>
+<text class="f-note" x="286" y="254.2" text-anchor="middle">…</text>
+<path class="f-arrow" d="M352 206 H378" marker-end="url(#ar19)"/>
+<text class="f-code" x="350" y="196">behead()</text>
+<text class="f-label" x="384" y="18">整然データ</text>
+<rect class="f-mark4" x="384" y="28" width="74" height="24"/>
+<text class="f-th" x="388" y="44" style="font-size:11px">district</text>
+<rect class="f-cell" x="384" y="52" width="74" height="24"/>
+<text x="388" y="68" style="font-size:11px">北海道第１区</text>
+<rect class="f-cell" x="384" y="76" width="74" height="24"/>
+<text x="388" y="92" style="font-size:11px">北海道第１区</text>
+<rect class="f-cell" x="384" y="100" width="74" height="24"/>
+<text x="388" y="116" style="font-size:11px">北海道第１区</text>
+<rect class="f-cell" x="384" y="124" width="74" height="24"/>
+<text x="388" y="140" style="font-size:11px">北海道第１区</text>
+<rect class="f-mark3" x="458" y="28" width="96" height="24"/>
+<text class="f-th" x="462" y="44" style="font-size:11px">municipality</text>
+<rect class="f-cell" x="458" y="52" width="96" height="24"/>
+<text x="462" y="68" style="font-size:11px">札幌市中央区</text>
+<rect class="f-cell" x="458" y="76" width="96" height="24"/>
+<text x="462" y="92" style="font-size:11px">札幌市中央区</text>
+<rect class="f-cell" x="458" y="100" width="96" height="24"/>
+<text x="462" y="116" style="font-size:11px">札幌市北区第１区</text>
+<rect class="f-cell" x="458" y="124" width="96" height="24"/>
+<text x="462" y="140" style="font-size:11px">札幌市北区第１区</text>
+<rect class="f-mark" x="554" y="28" width="72" height="24"/>
+<text class="f-th" x="558" y="44" style="font-size:11px">name</text>
+<rect class="f-cell" x="554" y="52" width="72" height="24"/>
+<text x="558" y="68" style="font-size:11px">小林　さとる</text>
+<rect class="f-cell" x="554" y="76" width="72" height="24"/>
+<text x="558" y="92" style="font-size:11px">道下　大樹</text>
+<rect class="f-cell" x="554" y="100" width="72" height="24"/>
+<text x="558" y="116" style="font-size:11px">小林　さとる</text>
+<rect class="f-cell" x="554" y="124" width="72" height="24"/>
+<text x="558" y="140" style="font-size:11px">道下　大樹</text>
+<rect class="f-mark2" x="626" y="28" width="74" height="24"/>
+<text class="f-th" x="630" y="44" style="font-size:11px">party</text>
+<rect class="f-cell" x="626" y="52" width="74" height="24"/>
+<text x="630" y="68" style="font-size:11px">日本維新の会</text>
+<rect class="f-cell" x="626" y="76" width="74" height="24"/>
+<text x="630" y="92" style="font-size:11px">立憲民主党</text>
+<rect class="f-cell" x="626" y="100" width="74" height="24"/>
+<text x="630" y="116" style="font-size:11px">日本維新の会</text>
+<rect class="f-cell" x="626" y="124" width="74" height="24"/>
+<text x="630" y="140" style="font-size:11px">立憲民主党</text>
+<rect class="f-head" x="700" y="28" width="44" height="24"/>
+<text class="f-th" x="704" y="44" style="font-size:11px">vote</text>
+<rect class="f-cell" x="700" y="52" width="44" height="24"/>
+<text x="704" y="68" style="font-size:11px">10260</text>
+<rect class="f-cell" x="700" y="76" width="44" height="24"/>
+<text x="704" y="92" style="font-size:11px">49131</text>
+<rect class="f-cell" x="700" y="100" width="44" height="24"/>
+<text x="704" y="116" style="font-size:11px">334</text>
+<rect class="f-cell" x="700" y="124" width="44" height="24"/>
+<text x="704" y="140" style="font-size:11px">1399</text>
+<text class="f-note" x="384" y="172">……</text>
+<text class="f-note" x="10" y="290">緑（選挙区名）→ district、赤（候補者名）→ name、青（政党名）→ party、黄（A列）→ municipality、白い数字 → vote</text>
+</svg>
+<svg class="svg-narrow" viewBox="0 0 370 552" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="シートのどのセルが、整然データのどの列になるかを色で示した図">
+<defs><marker id="ar19n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
+<text class="f-label" x="4" y="18">Excelのシート（北海道第１区）</text>
+<rect class="f-head" x="26" y="28" width="104" height="26"/>
+<text class="f-note" x="78" y="46.2" text-anchor="middle">A</text>
+<rect class="f-head" x="130" y="28" width="72" height="26"/>
+<text class="f-note" x="166" y="46.2" text-anchor="middle">B</text>
+<rect class="f-head" x="202" y="28" width="72" height="26"/>
+<text class="f-note" x="238" y="46.2" text-anchor="middle">C</text>
+<rect class="f-head" x="274" y="28" width="12" height="26"/>
+<text class="f-note" x="280" y="46.2" text-anchor="middle">…</text>
+<rect class="f-head" x="286" y="28" width="54" height="26"/>
+<text class="f-note" x="313" y="46.2" text-anchor="middle">G</text>
+<rect class="f-head" x="4" y="54" width="22" height="26"/>
+<text class="f-note" x="15" y="72.2" text-anchor="middle">3</text>
+<rect class="f-mark4" x="26" y="54" width="104" height="26"/>
+<text x="30" y="72.2" style="font-size:11px">北海道第１区</text>
+<rect class="f-cell" x="130" y="54" width="72" height="26"/>
+<rect class="f-cell" x="202" y="54" width="72" height="26"/>
+<rect class="f-off" x="286" y="54" width="54" height="26"/>
+<text x="289" y="72.2" style="font-size:10px">[単位：票]</text>
+<rect class="f-head" x="4" y="80" width="22" height="26"/>
+<text class="f-note" x="15" y="98.2" text-anchor="middle">4</text>
+<rect class="f-off" x="26" y="80" width="104" height="26"/>
+<text x="30" y="98.2" style="font-size:11px">候補者名</text>
+<rect class="f-mark" x="130" y="80" width="72" height="26"/>
+<text x="134" y="98.2" style="font-size:11px">小林　さとる</text>
+<rect class="f-mark" x="202" y="80" width="72" height="26"/>
+<text x="206" y="98.2" style="font-size:11px">道下　大樹</text>
+<rect class="f-off" x="286" y="80" width="54" height="26"/>
+<text x="290" y="98.2" style="font-size:11px">得票数計</text>
+<text class="f-note" x="280" y="98.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="106" width="22" height="26"/>
+<text class="f-note" x="15" y="124.2" text-anchor="middle">5</text>
+<rect class="f-off" x="26" y="106" width="104" height="26"/>
+<text x="30" y="124.2" style="font-size:10px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="130" y="106" width="72" height="26"/>
+<text x="134" y="124.2" style="font-size:11px">日本維新の会</text>
+<rect class="f-mark2" x="202" y="106" width="72" height="26"/>
+<text x="206" y="124.2" style="font-size:11px">立憲民主党</text>
+<rect class="f-off" x="286" y="106" width="54" height="26"/>
+<text class="f-note" x="280" y="124.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="132" width="22" height="26"/>
+<text class="f-note" x="15" y="150.2" text-anchor="middle">6</text>
+<rect class="f-mark3" x="26" y="132" width="104" height="26"/>
+<text x="30" y="150.2" style="font-size:11px">札幌市中央区</text>
+<rect class="f-cell" x="130" y="132" width="72" height="26"/>
+<text x="134" y="150.2" style="font-size:11px">10260</text>
+<rect class="f-cell" x="202" y="132" width="72" height="26"/>
+<text x="206" y="150.2" style="font-size:11px">49131</text>
+<rect class="f-off" x="286" y="132" width="54" height="26"/>
+<text x="290" y="150.2" style="font-size:11px">114596</text>
+<text class="f-note" x="280" y="150.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="158" width="22" height="26"/>
+<text class="f-note" x="15" y="176.2" text-anchor="middle">7</text>
+<rect class="f-mark3" x="26" y="158" width="104" height="26"/>
+<text x="30" y="176.2" style="font-size:11px">札幌市北区第１区</text>
+<rect class="f-cell" x="130" y="158" width="72" height="26"/>
+<text x="134" y="176.2" style="font-size:11px">334</text>
+<rect class="f-cell" x="202" y="158" width="72" height="26"/>
+<text x="206" y="176.2" style="font-size:11px">1399</text>
+<rect class="f-off" x="286" y="158" width="54" height="26"/>
+<text x="290" y="176.2" style="font-size:11px">3418</text>
+<text class="f-note" x="280" y="176.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="184" width="22" height="26"/>
+<text class="f-note" x="15" y="202.2" text-anchor="middle">8</text>
+<rect class="f-mark3" x="26" y="184" width="104" height="26"/>
+<text x="30" y="202.2" style="font-size:11px">札幌市南区</text>
+<rect class="f-cell" x="130" y="184" width="72" height="26"/>
+<text x="134" y="202.2" style="font-size:11px">4480</text>
+<rect class="f-cell" x="202" y="184" width="72" height="26"/>
+<text x="206" y="202.2" style="font-size:11px">27833</text>
+<rect class="f-off" x="286" y="184" width="54" height="26"/>
+<text x="290" y="202.2" style="font-size:11px">65810</text>
+<text class="f-note" x="280" y="202.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="210" width="22" height="26"/>
+<text class="f-note" x="15" y="228.2" text-anchor="middle">9</text>
+<rect class="f-mark3" x="26" y="210" width="104" height="26"/>
+<text x="30" y="228.2" style="font-size:11px">札幌市西区第１区</text>
+<rect class="f-cell" x="130" y="210" width="72" height="26"/>
+<text x="134" y="228.2" style="font-size:11px">4926</text>
+<rect class="f-cell" x="202" y="210" width="72" height="26"/>
+<text x="206" y="228.2" style="font-size:11px">30031</text>
+<rect class="f-off" x="286" y="210" width="54" height="26"/>
+<text x="290" y="228.2" style="font-size:11px">66251</text>
+<text class="f-note" x="280" y="228.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="236" width="22" height="26"/>
+<text class="f-note" x="15" y="254.2" text-anchor="middle">10</text>
+<rect class="f-off" x="26" y="236" width="104" height="26"/>
+<text x="30" y="254.2" style="font-size:11px">北海道第１区 合計</text>
+<rect class="f-off" x="130" y="236" width="72" height="26"/>
+<text x="134" y="254.2" style="font-size:11px">20000</text>
+<rect class="f-off" x="202" y="236" width="72" height="26"/>
+<text x="206" y="254.2" style="font-size:11px">108394</text>
+<rect class="f-off" x="286" y="236" width="54" height="26"/>
+<text x="290" y="254.2" style="font-size:11px">250075</text>
+<text class="f-note" x="280" y="254.2" text-anchor="middle">…</text>
+<path class="f-arrow" d="M150 270 V308" marker-end="url(#ar19n)"/>
+<text class="f-code" x="160" y="294">behead()</text>
+<text class="f-label" x="4" y="330">整然データ</text>
+<rect class="f-mark4" x="4" y="340" width="74" height="24"/>
+<text class="f-th" x="8" y="356" style="font-size:11px">district</text>
+<rect class="f-cell" x="4" y="364" width="74" height="24"/>
+<text x="8" y="380" style="font-size:11px">北海道第１区</text>
+<rect class="f-cell" x="4" y="388" width="74" height="24"/>
+<text x="8" y="404" style="font-size:11px">北海道第１区</text>
+<rect class="f-cell" x="4" y="412" width="74" height="24"/>
+<text x="8" y="428" style="font-size:11px">北海道第１区</text>
+<rect class="f-cell" x="4" y="436" width="74" height="24"/>
+<text x="8" y="452" style="font-size:11px">北海道第１区</text>
+<rect class="f-mark3" x="78" y="340" width="96" height="24"/>
+<text class="f-th" x="82" y="356" style="font-size:11px">municipality</text>
+<rect class="f-cell" x="78" y="364" width="96" height="24"/>
+<text x="82" y="380" style="font-size:11px">札幌市中央区</text>
+<rect class="f-cell" x="78" y="388" width="96" height="24"/>
+<text x="82" y="404" style="font-size:11px">札幌市中央区</text>
+<rect class="f-cell" x="78" y="412" width="96" height="24"/>
+<text x="82" y="428" style="font-size:11px">札幌市北区第１区</text>
+<rect class="f-cell" x="78" y="436" width="96" height="24"/>
+<text x="82" y="452" style="font-size:11px">札幌市北区第１区</text>
+<rect class="f-mark" x="174" y="340" width="72" height="24"/>
+<text class="f-th" x="178" y="356" style="font-size:11px">name</text>
+<rect class="f-cell" x="174" y="364" width="72" height="24"/>
+<text x="178" y="380" style="font-size:11px">小林　さとる</text>
+<rect class="f-cell" x="174" y="388" width="72" height="24"/>
+<text x="178" y="404" style="font-size:11px">道下　大樹</text>
+<rect class="f-cell" x="174" y="412" width="72" height="24"/>
+<text x="178" y="428" style="font-size:11px">小林　さとる</text>
+<rect class="f-cell" x="174" y="436" width="72" height="24"/>
+<text x="178" y="452" style="font-size:11px">道下　大樹</text>
+<rect class="f-mark2" x="246" y="340" width="74" height="24"/>
+<text class="f-th" x="250" y="356" style="font-size:11px">party</text>
+<rect class="f-cell" x="246" y="364" width="74" height="24"/>
+<text x="250" y="380" style="font-size:11px">日本維新の会</text>
+<rect class="f-cell" x="246" y="388" width="74" height="24"/>
+<text x="250" y="404" style="font-size:11px">立憲民主党</text>
+<rect class="f-cell" x="246" y="412" width="74" height="24"/>
+<text x="250" y="428" style="font-size:11px">日本維新の会</text>
+<rect class="f-cell" x="246" y="436" width="74" height="24"/>
+<text x="250" y="452" style="font-size:11px">立憲民主党</text>
+<rect class="f-head" x="320" y="340" width="44" height="24"/>
+<text class="f-th" x="324" y="356" style="font-size:11px">vote</text>
+<rect class="f-cell" x="320" y="364" width="44" height="24"/>
+<text x="324" y="380" style="font-size:11px">10260</text>
+<rect class="f-cell" x="320" y="388" width="44" height="24"/>
+<text x="324" y="404" style="font-size:11px">49131</text>
+<rect class="f-cell" x="320" y="412" width="44" height="24"/>
+<text x="324" y="428" style="font-size:11px">334</text>
+<rect class="f-cell" x="320" y="436" width="44" height="24"/>
+<text x="324" y="452" style="font-size:11px">1399</text>
+<text class="f-note" x="4" y="484">……</text>
+<text class="f-note" x="4" y="506">緑（選挙区名）→ district、赤（候補者名）→ name、</text>
+<text class="f-note" x="4" y="524">青（政党名）→ party、黄（A列）→ municipality、</text>
+<text class="f-note" x="4" y="542">白い数字 → vote</text>
 </svg>
 </figure>
-<p data-src="19-kami-excel:195">コードはこんな感じ。<code>behead()</code>が最重要なわけですが、これは市区町村名や候補者名など、データのラベルに当たるものを切り離して、しかるべきところへ格納するための関数です。「首をはねる」という意味の英語から来ています（たぶん）。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:197"><pre><code>"download/000979538.xlsx" %&gt;%
+<p>コードはこんな感じ。<code>behead()</code>が最重要なわけですが、これは市区町村名や候補者名など、データのラベルに当たるものを切り離して、しかるべきところへ格納するための関数です。「首をはねる」という意味の英語から来ています（たぶん）。</p>
+<div class="code" data-lang="R"><pre><code>"download/000979538.xlsx" %&gt;%
   xlsx_cells() %&gt;%
-  filter(sheet == "北海道第１区", row &gt;= 4, !is_blank) %&gt;%
+  filter(sheet == "北海道第１区", row &gt;= 4 | address == "A3", !is_blank) %&gt;%
+  behead("up-left", "district") %&gt;%
   behead("up", "name") %&gt;%
   behead("up", "party") %&gt;%
   behead("left", "municipality") %&gt;%
-  select(municipality, name, party, numeric)</code></pre></div>
-<p data-src="19-kami-excel:207">それぞれのコードが何をしているのか、順番に見ていきましょう。</p>
-<p data-src="19-kami-excel:209"><code>xlsx_cells()</code> はExcelの各セルを行にばらす関数です。たとえば3行×4列の表なら、12行のtibbleに変換します。それぞれの行には、もとのExcelでのセルの位置（行番号・列番号）や、セルに入力されている値、データの種類などが記録されます。</p>
-<p data-src="19-kami-excel:211">次に<code>filter()</code> で「北海道第１区」のシートだけに絞っています。そのうえで <code>row &gt;= 4</code> で、上の3行（日付と表題と選挙区名）を捨てています。</p>
-<p data-src="19-kami-excel:214"><code>is_blank</code> は<code>xlsx_cells()</code>関数で生成され、セルが空っぽのときに <code>TRUE</code> になる列です。頭に <code>!</code> をつけると「〜でない」という意味になる（<a href="06-strings-filter.html">6章</a>）ので、ここでは空っぽでないセルだけを抽出しています。見た目は空白でも罫線などの書式がついていれば、<code>xlsx_cells()</code> はそれを一つのセルとして読み込みます。このファイルでは表のすぐ下に、そういう空っぽのセルが何行ぶんも並んでいるので、先に落としておかないと、中身のない行がまじってしまいます。</p>
-<p data-src="19-kami-excel:216">そのあとに <code>behead()</code> が3回出てきます。丸括弧の中には二つの要素が記述されています。データのラベルに当たるセルが、そのデータの入ったセルから見てどこにあるかを<code>up</code>とか<code>left</code>とかで示すのが、一つめの要素。そのラベルを何という名前の列に入れるかを決めるのが、二つめです。</p>
-<p data-src="19-kami-excel:218">一つめの要素では以下のような指定ができます。</p>
-<div class="table-wrap" data-src="19-kami-excel:220"><table><thead><tr><th>指定</th><th>各セルから見た探し方</th></tr></thead><tbody><tr><td><code>"up"</code></td><td>上に進み、表の上端にあるセルを探す</td></tr><tr><td><code>"left"</code></td><td>左に進み、表の左端にあるセルを探す</td></tr><tr><td><code>"up-left"</code></td><td>上端まで進み、そこが空白なら左に進んで値のあるセルを探す</td></tr><tr><td><code>"left-up"</code></td><td>左端まで進み、そこが空白なら上に進んで値のあるセルを探す</td></tr></tbody></table></div>
-<p data-src="19-kami-excel:227">上のコードでは、<code>"up"</code> で候補者名と政党名を上から一つずつ切り離し、そのあと <code>"left"</code> で左の市区町村名を切り離しています。1枚ずつ皮をむくように、外側から順番にはがしていくイメージです。<strong>はがす順番が大事です。</strong></p>
-<p data-src="19-kami-excel:229">1枚ずつはがされていく様子を、動きで見てみましょう。</p>
+  select(district, municipality, name, party, numeric)</code></pre></div>
+<p>それぞれのコードが何をしているのか、順番に見ていきましょう。</p>
+<p><code>xlsx_cells()</code> はExcelの各セルを行にばらす関数です。たとえば3行×4列の表なら、12行のtibbleに変換します。それぞれの行には、もとのExcelでのセルの位置（行番号・列番号）や、セルに入力されている値、データの種類などが記録されます。</p>
+<p>次に<code>filter()</code> で「北海道第１区」のシートだけに絞っています。そのうえで、上の2行（日付と表題）を捨てています。</p>
+<p><code>row &gt;= 4 | address == "A3"</code> は、「4行目から下か、またはA3のセル」という意味です。<code>|</code> は<a href="06-strings-filter.html">6章</a>で出てきた「または」。<code>address</code> は <code>xlsx_cells()</code> が作る列で、A3やB6といったセルの番地が入っています。本当は3行目を丸ごと残す <code>row &gt;= 3</code> にしたいところですが、3行目の右端には「[単位：票]」という注釈もある。なので3行目からは、選挙区名の入ったA3だけを残しているわけです。</p>
+<p><code>is_blank</code> は<code>xlsx_cells()</code>関数で生成され、セルが空っぽのときに <code>TRUE</code> になる列です。頭に <code>!</code> をつけると「〜でない」という意味になる（<a href="06-strings-filter.html">6章</a>）ので、ここでは空っぽでないセルだけを抽出しています。見た目は空白でも罫線などの書式がついていれば、<code>xlsx_cells()</code> はそれを一つのセルとして読み込みます。このファイルでは表のすぐ下に、そういう空っぽのセルが何行ぶんも並んでいるので、先に落としておかないと、中身のない行がまじってしまいます。</p>
+<p>そのあとに <code>behead()</code> が4回出てきます。丸括弧の中には二つの要素が記述されています。データのラベルに当たるセルが、そのデータの入ったセルから見てどこにあるかを<code>up</code>とか<code>left</code>とかで示すのが、一つめの要素。そのラベルを何という名前の列に入れるかを決めるのが、二つめです。</p>
+<p>一つめの要素では以下のような指定ができます。</p>
+<div class="table-wrap"><table><thead><tr><th>指定</th><th>各セルから見た探し方</th></tr></thead><tbody><tr><td><code>"up"</code></td><td>上に進み、表の上端にあるセルを探す</td></tr><tr><td><code>"left"</code></td><td>左に進み、表の左端にあるセルを探す</td></tr><tr><td><code>"up-left"</code></td><td>上端まで進み、そこが空白なら左に進んで値のあるセルを探す</td></tr><tr><td><code>"left-up"</code></td><td>左端まで進み、そこが空白なら上に進んで値のあるセルを探す</td></tr></tbody></table></div>
+<p>上のコードでは、まず <code>"up-left"</code> で選挙区名を切り離しています。数字のセルから上に進むと、いちばん上の3行目に着きます。でも <code>filter()</code> で残した3行目にあるのはA3だけで、数字のセルの真上は空白。そこで左に進んで、A3の「北海道第１区」にたどり着きます。こうして、どの数字のセルにも同じ選挙区名が配られるわけです。</p>
+<p>次に <code>"up"</code> で候補者名と政党名を上から一つずつ切り離し、最後に <code>"left"</code> で左の市区町村名を切り離しています。1枚ずつ皮をむくように、外側から順番にはがしていくイメージです。<strong>はがす順番が大事です。</strong></p>
+<p>1枚ずつはがされていく様子を、動きで見てみましょう。</p>
 <div class="behead-anim anim-host"></div>
 <script src="assets/behead-anim.js"></script>
 <figure class="fig fig-behead-static fig-anim-static">
-<svg viewBox="0 0 720 746" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="札幌市中央区の49131というセル一つに、beheadのたびにラベルがついていく様子を示した図">
+<svg viewBox="0 0 720 1018" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="札幌市中央区の49131というセル一つに、beheadのたびにラベルがついていく様子を示した図">
 <text class="f-label" x="10" y="18">札幌市中央区・道下さんの「49131」のセルを追いかける</text>
 <rect class="f-head" x="32" y="36" width="108" height="18"/>
-<text class="f-note" x="86.0" y="48.6" text-anchor="middle">A</text>
+<text class="f-note" x="86" y="48.6" text-anchor="middle">A</text>
 <rect class="f-head" x="140" y="36" width="76" height="18"/>
-<text class="f-note" x="178.0" y="48.6" text-anchor="middle">B</text>
+<text class="f-note" x="178" y="48.6" text-anchor="middle">B</text>
 <rect class="f-head" x="216" y="36" width="76" height="18"/>
-<text class="f-note" x="254.0" y="48.6" text-anchor="middle">C</text>
+<text class="f-note" x="254" y="48.6" text-anchor="middle">C</text>
 <rect class="f-head" x="10" y="54" width="22" height="18"/>
-<text class="f-note" x="21" y="66.6" text-anchor="middle">4</text>
-<rect class="f-off" x="32" y="54" width="108" height="18"/>
-<text x="36" y="66.6" style="font-size:11px">候補者名</text>
-<rect class="f-mark" x="140" y="54" width="76" height="18"/>
-<text x="144" y="66.6" style="font-size:11px">小林　さとる</text>
-<rect class="f-mark" x="216" y="54" width="76" height="18"/>
-<text x="220" y="66.6" style="font-size:11px">道下　大樹</text>
+<text class="f-note" x="21" y="66.6" text-anchor="middle">3</text>
+<rect class="f-mark4" x="32" y="54" width="108" height="18"/>
+<text x="36" y="66.6" style="font-size:11px">北海道第１区</text>
+<rect class="f-gone" x="140" y="54" width="76" height="18"/>
+<rect class="f-gone" x="216" y="54" width="76" height="18"/>
 <rect class="f-head" x="10" y="72" width="22" height="18"/>
-<text class="f-note" x="21" y="84.6" text-anchor="middle">5</text>
+<text class="f-note" x="21" y="84.6" text-anchor="middle">4</text>
 <rect class="f-off" x="32" y="72" width="108" height="18"/>
-<text x="36" y="84.6" style="font-size:11px">市区町村名＼政党名</text>
-<rect class="f-mark2" x="140" y="72" width="76" height="18"/>
-<text x="144" y="84.6" style="font-size:11px">日本維新の会</text>
-<rect class="f-mark2" x="216" y="72" width="76" height="18"/>
-<text x="220" y="84.6" style="font-size:11px">立憲民主党</text>
+<text x="36" y="84.6" style="font-size:11px">候補者名</text>
+<rect class="f-mark" x="140" y="72" width="76" height="18"/>
+<text x="144" y="84.6" style="font-size:11px">小林　さとる</text>
+<rect class="f-mark" x="216" y="72" width="76" height="18"/>
+<text x="220" y="84.6" style="font-size:11px">道下　大樹</text>
 <rect class="f-head" x="10" y="90" width="22" height="18"/>
-<text class="f-note" x="21" y="102.6" text-anchor="middle">6</text>
-<rect class="f-mark3" x="32" y="90" width="108" height="18"/>
-<text x="36" y="102.6" style="font-size:11px">札幌市中央区</text>
-<rect class="f-cell" x="140" y="90" width="76" height="18"/>
-<text x="144" y="102.6" style="font-size:11px">10260</text>
-<rect class="f-cell" x="216" y="90" width="76" height="18"/>
-<text x="220" y="102.6" style="font-size:11px">49131</text>
+<text class="f-note" x="21" y="102.6" text-anchor="middle">5</text>
+<rect class="f-off" x="32" y="90" width="108" height="18"/>
+<text x="36" y="102.6" style="font-size:11px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="140" y="90" width="76" height="18"/>
+<text x="144" y="102.6" style="font-size:11px">日本維新の会</text>
+<rect class="f-mark2" x="216" y="90" width="76" height="18"/>
+<text x="220" y="102.6" style="font-size:11px">立憲民主党</text>
 <rect class="f-head" x="10" y="108" width="22" height="18"/>
-<text class="f-note" x="21" y="120.6" text-anchor="middle">7</text>
+<text class="f-note" x="21" y="120.6" text-anchor="middle">6</text>
 <rect class="f-mark3" x="32" y="108" width="108" height="18"/>
-<text x="36" y="120.6" style="font-size:11px">札幌市北区第１区</text>
+<text x="36" y="120.6" style="font-size:11px">札幌市中央区</text>
 <rect class="f-cell" x="140" y="108" width="76" height="18"/>
-<text x="144" y="120.6" style="font-size:11px">334</text>
+<text x="144" y="120.6" style="font-size:11px">10260</text>
 <rect class="f-cell" x="216" y="108" width="76" height="18"/>
-<text x="220" y="120.6" style="font-size:11px">1399</text>
+<text x="220" y="120.6" style="font-size:11px">49131</text>
 <rect class="f-head" x="10" y="126" width="22" height="18"/>
-<text class="f-note" x="21" y="138.6" text-anchor="middle">8</text>
+<text class="f-note" x="21" y="138.6" text-anchor="middle">7</text>
 <rect class="f-mark3" x="32" y="126" width="108" height="18"/>
-<text x="36" y="138.6" style="font-size:11px">札幌市南区</text>
+<text x="36" y="138.6" style="font-size:11px">札幌市北区第１区</text>
 <rect class="f-cell" x="140" y="126" width="76" height="18"/>
-<text x="144" y="138.6" style="font-size:11px">4480</text>
+<text x="144" y="138.6" style="font-size:11px">334</text>
 <rect class="f-cell" x="216" y="126" width="76" height="18"/>
-<text x="220" y="138.6" style="font-size:11px">27833</text>
+<text x="220" y="138.6" style="font-size:11px">1399</text>
 <rect class="f-head" x="10" y="144" width="22" height="18"/>
-<text class="f-note" x="21" y="156.6" text-anchor="middle">9</text>
+<text class="f-note" x="21" y="156.6" text-anchor="middle">8</text>
 <rect class="f-mark3" x="32" y="144" width="108" height="18"/>
-<text x="36" y="156.6" style="font-size:11px">札幌市西区第１区</text>
+<text x="36" y="156.6" style="font-size:11px">札幌市南区</text>
 <rect class="f-cell" x="140" y="144" width="76" height="18"/>
-<text x="144" y="156.6" style="font-size:11px">4926</text>
+<text x="144" y="156.6" style="font-size:11px">4480</text>
 <rect class="f-cell" x="216" y="144" width="76" height="18"/>
-<text x="220" y="156.6" style="font-size:11px">30031</text>
+<text x="220" y="156.6" style="font-size:11px">27833</text>
 <rect class="f-head" x="10" y="162" width="22" height="18"/>
-<text class="f-note" x="21" y="174.6" text-anchor="middle">10</text>
+<text class="f-note" x="21" y="174.6" text-anchor="middle">9</text>
 <rect class="f-mark3" x="32" y="162" width="108" height="18"/>
-<text x="36" y="174.6" style="font-size:11px">北海道第１区 合計</text>
+<text x="36" y="174.6" style="font-size:11px">札幌市西区第１区</text>
 <rect class="f-cell" x="140" y="162" width="76" height="18"/>
-<text x="144" y="174.6" style="font-size:11px">20000</text>
+<text x="144" y="174.6" style="font-size:11px">4926</text>
 <rect class="f-cell" x="216" y="162" width="76" height="18"/>
-<text x="220" y="174.6" style="font-size:11px">108394</text>
-<rect class="f-hl" x="216" y="90" width="76" height="18"/>
+<text x="220" y="174.6" style="font-size:11px">30031</text>
+<rect class="f-head" x="10" y="180" width="22" height="18"/>
+<text class="f-note" x="21" y="192.6" text-anchor="middle">10</text>
+<rect class="f-mark3" x="32" y="180" width="108" height="18"/>
+<text x="36" y="192.6" style="font-size:11px">北海道第１区 合計</text>
+<rect class="f-cell" x="140" y="180" width="76" height="18"/>
+<text x="144" y="192.6" style="font-size:11px">20000</text>
+<rect class="f-cell" x="216" y="180" width="76" height="18"/>
+<text x="220" y="192.6" style="font-size:11px">108394</text>
+<rect class="f-hl" x="216" y="108" width="76" height="18"/>
 <text class="f-label" x="330" y="50">① 最初</text>
-<text class="f-code" x="330" y="70">filter(row >= 4, !is_blank)</text>
+<text class="f-code" x="330" y="70">filter(row &gt;= 4 | address == "A3", !is_blank)</text>
 <text class="f-note" x="330" y="90">セルがバラバラのまま。ラベルはまだない。</text>
 <rect class="f-cell" x="330" y="102" width="370" height="44"/>
 <text class="f-note" x="338" y="118">「49131」についているラベル</text>
 <text class="f-note" x="338" y="136">（なし）</text>
-<line class="f-sep" x1="10" y1="206" x2="710" y2="206"/>
-<rect class="f-head" x="32" y="220" width="108" height="18"/>
-<text class="f-note" x="86.0" y="232.6" text-anchor="middle">A</text>
-<rect class="f-head" x="140" y="220" width="76" height="18"/>
-<text class="f-note" x="178.0" y="232.6" text-anchor="middle">B</text>
-<rect class="f-head" x="216" y="220" width="76" height="18"/>
-<text class="f-note" x="254.0" y="232.6" text-anchor="middle">C</text>
-<rect class="f-head" x="10" y="238" width="22" height="18"/>
-<text class="f-note" x="21" y="250.6" text-anchor="middle">4</text>
-<rect class="f-gone" x="32" y="238" width="108" height="18"/>
-<rect class="f-gone" x="140" y="238" width="76" height="18"/>
-<rect class="f-gone" x="216" y="238" width="76" height="18"/>
+<line class="f-sep" x1="10" y1="224" x2="710" y2="224"/>
+<rect class="f-head" x="32" y="238" width="108" height="18"/>
+<text class="f-note" x="86" y="250.6" text-anchor="middle">A</text>
+<rect class="f-head" x="140" y="238" width="76" height="18"/>
+<text class="f-note" x="178" y="250.6" text-anchor="middle">B</text>
+<rect class="f-head" x="216" y="238" width="76" height="18"/>
+<text class="f-note" x="254" y="250.6" text-anchor="middle">C</text>
 <rect class="f-head" x="10" y="256" width="22" height="18"/>
-<text class="f-note" x="21" y="268.6" text-anchor="middle">5</text>
-<rect class="f-off" x="32" y="256" width="108" height="18"/>
-<text x="36" y="268.6" style="font-size:11px">市区町村名＼政党名</text>
-<rect class="f-mark2" x="140" y="256" width="76" height="18"/>
-<text x="144" y="268.6" style="font-size:11px">日本維新の会</text>
-<rect class="f-mark2" x="216" y="256" width="76" height="18"/>
-<text x="220" y="268.6" style="font-size:11px">立憲民主党</text>
+<text class="f-note" x="21" y="268.6" text-anchor="middle">3</text>
+<rect class="f-gone" x="32" y="256" width="108" height="18"/>
+<rect class="f-gone" x="140" y="256" width="76" height="18"/>
+<rect class="f-gone" x="216" y="256" width="76" height="18"/>
 <rect class="f-head" x="10" y="274" width="22" height="18"/>
-<text class="f-note" x="21" y="286.6" text-anchor="middle">6</text>
-<rect class="f-mark3" x="32" y="274" width="108" height="18"/>
-<text x="36" y="286.6" style="font-size:11px">札幌市中央区</text>
-<rect class="f-cell" x="140" y="274" width="76" height="18"/>
-<text x="144" y="286.6" style="font-size:11px">10260</text>
-<rect class="f-cell" x="216" y="274" width="76" height="18"/>
-<text x="220" y="286.6" style="font-size:11px">49131</text>
+<text class="f-note" x="21" y="286.6" text-anchor="middle">4</text>
+<rect class="f-off" x="32" y="274" width="108" height="18"/>
+<text x="36" y="286.6" style="font-size:11px">候補者名</text>
+<rect class="f-mark" x="140" y="274" width="76" height="18"/>
+<text x="144" y="286.6" style="font-size:11px">小林　さとる</text>
+<rect class="f-mark" x="216" y="274" width="76" height="18"/>
+<text x="220" y="286.6" style="font-size:11px">道下　大樹</text>
 <rect class="f-head" x="10" y="292" width="22" height="18"/>
-<text class="f-note" x="21" y="304.6" text-anchor="middle">7</text>
-<rect class="f-mark3" x="32" y="292" width="108" height="18"/>
-<text x="36" y="304.6" style="font-size:11px">札幌市北区第１区</text>
-<rect class="f-cell" x="140" y="292" width="76" height="18"/>
-<text x="144" y="304.6" style="font-size:11px">334</text>
-<rect class="f-cell" x="216" y="292" width="76" height="18"/>
-<text x="220" y="304.6" style="font-size:11px">1399</text>
+<text class="f-note" x="21" y="304.6" text-anchor="middle">5</text>
+<rect class="f-off" x="32" y="292" width="108" height="18"/>
+<text x="36" y="304.6" style="font-size:11px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="140" y="292" width="76" height="18"/>
+<text x="144" y="304.6" style="font-size:11px">日本維新の会</text>
+<rect class="f-mark2" x="216" y="292" width="76" height="18"/>
+<text x="220" y="304.6" style="font-size:11px">立憲民主党</text>
 <rect class="f-head" x="10" y="310" width="22" height="18"/>
-<text class="f-note" x="21" y="322.6" text-anchor="middle">8</text>
+<text class="f-note" x="21" y="322.6" text-anchor="middle">6</text>
 <rect class="f-mark3" x="32" y="310" width="108" height="18"/>
-<text x="36" y="322.6" style="font-size:11px">札幌市南区</text>
+<text x="36" y="322.6" style="font-size:11px">札幌市中央区</text>
 <rect class="f-cell" x="140" y="310" width="76" height="18"/>
-<text x="144" y="322.6" style="font-size:11px">4480</text>
+<text x="144" y="322.6" style="font-size:11px">10260</text>
 <rect class="f-cell" x="216" y="310" width="76" height="18"/>
-<text x="220" y="322.6" style="font-size:11px">27833</text>
+<text x="220" y="322.6" style="font-size:11px">49131</text>
 <rect class="f-head" x="10" y="328" width="22" height="18"/>
-<text class="f-note" x="21" y="340.6" text-anchor="middle">9</text>
+<text class="f-note" x="21" y="340.6" text-anchor="middle">7</text>
 <rect class="f-mark3" x="32" y="328" width="108" height="18"/>
-<text x="36" y="340.6" style="font-size:11px">札幌市西区第１区</text>
+<text x="36" y="340.6" style="font-size:11px">札幌市北区第１区</text>
 <rect class="f-cell" x="140" y="328" width="76" height="18"/>
-<text x="144" y="340.6" style="font-size:11px">4926</text>
+<text x="144" y="340.6" style="font-size:11px">334</text>
 <rect class="f-cell" x="216" y="328" width="76" height="18"/>
-<text x="220" y="340.6" style="font-size:11px">30031</text>
+<text x="220" y="340.6" style="font-size:11px">1399</text>
 <rect class="f-head" x="10" y="346" width="22" height="18"/>
-<text class="f-note" x="21" y="358.6" text-anchor="middle">10</text>
+<text class="f-note" x="21" y="358.6" text-anchor="middle">8</text>
 <rect class="f-mark3" x="32" y="346" width="108" height="18"/>
-<text x="36" y="358.6" style="font-size:11px">北海道第１区 合計</text>
+<text x="36" y="358.6" style="font-size:11px">札幌市南区</text>
 <rect class="f-cell" x="140" y="346" width="76" height="18"/>
-<text x="144" y="358.6" style="font-size:11px">20000</text>
+<text x="144" y="358.6" style="font-size:11px">4480</text>
 <rect class="f-cell" x="216" y="346" width="76" height="18"/>
-<text x="220" y="358.6" style="font-size:11px">108394</text>
-<rect class="f-hl" x="216" y="274" width="76" height="18"/>
-<text class="f-label" x="330" y="234">② 候補者名を剥がす</text>
-<text class="f-code" x="330" y="254">behead("up", "name")</text>
-<text class="f-note" x="330" y="274">いちばん上の4行目を剥がして、真上のラベルを配る。</text>
-<rect class="f-cell" x="330" y="286" width="370" height="44"/>
-<text class="f-note" x="338" y="302">「49131」についているラベル</text>
-<text class="f-code" x="338" y="320">name = 道下　大樹</text>
-<line class="f-sep" x1="10" y1="390" x2="710" y2="390"/>
-<rect class="f-head" x="32" y="404" width="108" height="18"/>
-<text class="f-note" x="86.0" y="416.6" text-anchor="middle">A</text>
-<rect class="f-head" x="140" y="404" width="76" height="18"/>
-<text class="f-note" x="178.0" y="416.6" text-anchor="middle">B</text>
-<rect class="f-head" x="216" y="404" width="76" height="18"/>
-<text class="f-note" x="254.0" y="416.6" text-anchor="middle">C</text>
-<rect class="f-head" x="10" y="422" width="22" height="18"/>
-<text class="f-note" x="21" y="434.6" text-anchor="middle">4</text>
-<rect class="f-gone" x="32" y="422" width="108" height="18"/>
-<rect class="f-gone" x="140" y="422" width="76" height="18"/>
-<rect class="f-gone" x="216" y="422" width="76" height="18"/>
-<rect class="f-head" x="10" y="440" width="22" height="18"/>
-<text class="f-note" x="21" y="452.6" text-anchor="middle">5</text>
-<rect class="f-gone" x="32" y="440" width="108" height="18"/>
-<rect class="f-gone" x="140" y="440" width="76" height="18"/>
-<rect class="f-gone" x="216" y="440" width="76" height="18"/>
+<text x="220" y="358.6" style="font-size:11px">27833</text>
+<rect class="f-head" x="10" y="364" width="22" height="18"/>
+<text class="f-note" x="21" y="376.6" text-anchor="middle">9</text>
+<rect class="f-mark3" x="32" y="364" width="108" height="18"/>
+<text x="36" y="376.6" style="font-size:11px">札幌市西区第１区</text>
+<rect class="f-cell" x="140" y="364" width="76" height="18"/>
+<text x="144" y="376.6" style="font-size:11px">4926</text>
+<rect class="f-cell" x="216" y="364" width="76" height="18"/>
+<text x="220" y="376.6" style="font-size:11px">30031</text>
+<rect class="f-head" x="10" y="382" width="22" height="18"/>
+<text class="f-note" x="21" y="394.6" text-anchor="middle">10</text>
+<rect class="f-mark3" x="32" y="382" width="108" height="18"/>
+<text x="36" y="394.6" style="font-size:11px">北海道第１区 合計</text>
+<rect class="f-cell" x="140" y="382" width="76" height="18"/>
+<text x="144" y="394.6" style="font-size:11px">20000</text>
+<rect class="f-cell" x="216" y="382" width="76" height="18"/>
+<text x="220" y="394.6" style="font-size:11px">108394</text>
+<rect class="f-hl" x="216" y="310" width="76" height="18"/>
+<text class="f-label" x="330" y="252">② 選挙区名を剥がす</text>
+<text class="f-code" x="330" y="272">behead("up-left", "district")</text>
+<text class="f-note" x="330" y="292">3行目まで上がり、空白なら左へ。A3の選挙区名を配る。</text>
+<rect class="f-cell" x="330" y="304" width="370" height="44"/>
+<text class="f-note" x="338" y="320">「49131」についているラベル</text>
+<text class="f-code" x="338" y="338">district = 北海道第１区</text>
+<line class="f-sep" x1="10" y1="426" x2="710" y2="426"/>
+<rect class="f-head" x="32" y="440" width="108" height="18"/>
+<text class="f-note" x="86" y="452.6" text-anchor="middle">A</text>
+<rect class="f-head" x="140" y="440" width="76" height="18"/>
+<text class="f-note" x="178" y="452.6" text-anchor="middle">B</text>
+<rect class="f-head" x="216" y="440" width="76" height="18"/>
+<text class="f-note" x="254" y="452.6" text-anchor="middle">C</text>
 <rect class="f-head" x="10" y="458" width="22" height="18"/>
-<text class="f-note" x="21" y="470.6" text-anchor="middle">6</text>
-<rect class="f-mark3" x="32" y="458" width="108" height="18"/>
-<text x="36" y="470.6" style="font-size:11px">札幌市中央区</text>
-<rect class="f-cell" x="140" y="458" width="76" height="18"/>
-<text x="144" y="470.6" style="font-size:11px">10260</text>
-<rect class="f-cell" x="216" y="458" width="76" height="18"/>
-<text x="220" y="470.6" style="font-size:11px">49131</text>
+<text class="f-note" x="21" y="470.6" text-anchor="middle">3</text>
+<rect class="f-gone" x="32" y="458" width="108" height="18"/>
+<rect class="f-gone" x="140" y="458" width="76" height="18"/>
+<rect class="f-gone" x="216" y="458" width="76" height="18"/>
 <rect class="f-head" x="10" y="476" width="22" height="18"/>
-<text class="f-note" x="21" y="488.6" text-anchor="middle">7</text>
-<rect class="f-mark3" x="32" y="476" width="108" height="18"/>
-<text x="36" y="488.6" style="font-size:11px">札幌市北区第１区</text>
-<rect class="f-cell" x="140" y="476" width="76" height="18"/>
-<text x="144" y="488.6" style="font-size:11px">334</text>
-<rect class="f-cell" x="216" y="476" width="76" height="18"/>
-<text x="220" y="488.6" style="font-size:11px">1399</text>
+<text class="f-note" x="21" y="488.6" text-anchor="middle">4</text>
+<rect class="f-gone" x="32" y="476" width="108" height="18"/>
+<rect class="f-gone" x="140" y="476" width="76" height="18"/>
+<rect class="f-gone" x="216" y="476" width="76" height="18"/>
 <rect class="f-head" x="10" y="494" width="22" height="18"/>
-<text class="f-note" x="21" y="506.6" text-anchor="middle">8</text>
-<rect class="f-mark3" x="32" y="494" width="108" height="18"/>
-<text x="36" y="506.6" style="font-size:11px">札幌市南区</text>
-<rect class="f-cell" x="140" y="494" width="76" height="18"/>
-<text x="144" y="506.6" style="font-size:11px">4480</text>
-<rect class="f-cell" x="216" y="494" width="76" height="18"/>
-<text x="220" y="506.6" style="font-size:11px">27833</text>
+<text class="f-note" x="21" y="506.6" text-anchor="middle">5</text>
+<rect class="f-off" x="32" y="494" width="108" height="18"/>
+<text x="36" y="506.6" style="font-size:11px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="140" y="494" width="76" height="18"/>
+<text x="144" y="506.6" style="font-size:11px">日本維新の会</text>
+<rect class="f-mark2" x="216" y="494" width="76" height="18"/>
+<text x="220" y="506.6" style="font-size:11px">立憲民主党</text>
 <rect class="f-head" x="10" y="512" width="22" height="18"/>
-<text class="f-note" x="21" y="524.6" text-anchor="middle">9</text>
+<text class="f-note" x="21" y="524.6" text-anchor="middle">6</text>
 <rect class="f-mark3" x="32" y="512" width="108" height="18"/>
-<text x="36" y="524.6" style="font-size:11px">札幌市西区第１区</text>
+<text x="36" y="524.6" style="font-size:11px">札幌市中央区</text>
 <rect class="f-cell" x="140" y="512" width="76" height="18"/>
-<text x="144" y="524.6" style="font-size:11px">4926</text>
+<text x="144" y="524.6" style="font-size:11px">10260</text>
 <rect class="f-cell" x="216" y="512" width="76" height="18"/>
-<text x="220" y="524.6" style="font-size:11px">30031</text>
+<text x="220" y="524.6" style="font-size:11px">49131</text>
 <rect class="f-head" x="10" y="530" width="22" height="18"/>
-<text class="f-note" x="21" y="542.6" text-anchor="middle">10</text>
+<text class="f-note" x="21" y="542.6" text-anchor="middle">7</text>
 <rect class="f-mark3" x="32" y="530" width="108" height="18"/>
-<text x="36" y="542.6" style="font-size:11px">北海道第１区 合計</text>
+<text x="36" y="542.6" style="font-size:11px">札幌市北区第１区</text>
 <rect class="f-cell" x="140" y="530" width="76" height="18"/>
-<text x="144" y="542.6" style="font-size:11px">20000</text>
+<text x="144" y="542.6" style="font-size:11px">334</text>
 <rect class="f-cell" x="216" y="530" width="76" height="18"/>
-<text x="220" y="542.6" style="font-size:11px">108394</text>
-<rect class="f-hl" x="216" y="458" width="76" height="18"/>
-<text class="f-label" x="330" y="418">③ 政党名を剥がす</text>
-<text class="f-code" x="330" y="438">behead("up", "party")</text>
-<text class="f-note" x="330" y="458">次にいちばん上になった5行目を剥がして、真上のラベルを配る。</text>
-<rect class="f-cell" x="330" y="470" width="370" height="62"/>
-<text class="f-note" x="338" y="486">「49131」についているラベル</text>
-<text x="338" y="504">name = 道下　大樹</text>
-<text class="f-code" x="338" y="522">party = 立憲民主党</text>
-<line class="f-sep" x1="10" y1="574" x2="710" y2="574"/>
-<rect class="f-head" x="32" y="588" width="108" height="18"/>
-<text class="f-note" x="86.0" y="600.6" text-anchor="middle">A</text>
-<rect class="f-head" x="140" y="588" width="76" height="18"/>
-<text class="f-note" x="178.0" y="600.6" text-anchor="middle">B</text>
-<rect class="f-head" x="216" y="588" width="76" height="18"/>
-<text class="f-note" x="254.0" y="600.6" text-anchor="middle">C</text>
-<rect class="f-head" x="10" y="606" width="22" height="18"/>
-<text class="f-note" x="21" y="618.6" text-anchor="middle">4</text>
-<rect class="f-gone" x="32" y="606" width="108" height="18"/>
-<rect class="f-gone" x="140" y="606" width="76" height="18"/>
-<rect class="f-gone" x="216" y="606" width="76" height="18"/>
-<rect class="f-head" x="10" y="624" width="22" height="18"/>
-<text class="f-note" x="21" y="636.6" text-anchor="middle">5</text>
-<rect class="f-gone" x="32" y="624" width="108" height="18"/>
-<rect class="f-gone" x="140" y="624" width="76" height="18"/>
-<rect class="f-gone" x="216" y="624" width="76" height="18"/>
-<rect class="f-head" x="10" y="642" width="22" height="18"/>
-<text class="f-note" x="21" y="654.6" text-anchor="middle">6</text>
-<rect class="f-gone" x="32" y="642" width="108" height="18"/>
-<rect class="f-cell" x="140" y="642" width="76" height="18"/>
-<text x="144" y="654.6" style="font-size:11px">10260</text>
-<rect class="f-cell" x="216" y="642" width="76" height="18"/>
-<text x="220" y="654.6" style="font-size:11px">49131</text>
+<text x="220" y="542.6" style="font-size:11px">1399</text>
+<rect class="f-head" x="10" y="548" width="22" height="18"/>
+<text class="f-note" x="21" y="560.6" text-anchor="middle">8</text>
+<rect class="f-mark3" x="32" y="548" width="108" height="18"/>
+<text x="36" y="560.6" style="font-size:11px">札幌市南区</text>
+<rect class="f-cell" x="140" y="548" width="76" height="18"/>
+<text x="144" y="560.6" style="font-size:11px">4480</text>
+<rect class="f-cell" x="216" y="548" width="76" height="18"/>
+<text x="220" y="560.6" style="font-size:11px">27833</text>
+<rect class="f-head" x="10" y="566" width="22" height="18"/>
+<text class="f-note" x="21" y="578.6" text-anchor="middle">9</text>
+<rect class="f-mark3" x="32" y="566" width="108" height="18"/>
+<text x="36" y="578.6" style="font-size:11px">札幌市西区第１区</text>
+<rect class="f-cell" x="140" y="566" width="76" height="18"/>
+<text x="144" y="578.6" style="font-size:11px">4926</text>
+<rect class="f-cell" x="216" y="566" width="76" height="18"/>
+<text x="220" y="578.6" style="font-size:11px">30031</text>
+<rect class="f-head" x="10" y="584" width="22" height="18"/>
+<text class="f-note" x="21" y="596.6" text-anchor="middle">10</text>
+<rect class="f-mark3" x="32" y="584" width="108" height="18"/>
+<text x="36" y="596.6" style="font-size:11px">北海道第１区 合計</text>
+<rect class="f-cell" x="140" y="584" width="76" height="18"/>
+<text x="144" y="596.6" style="font-size:11px">20000</text>
+<rect class="f-cell" x="216" y="584" width="76" height="18"/>
+<text x="220" y="596.6" style="font-size:11px">108394</text>
+<rect class="f-hl" x="216" y="512" width="76" height="18"/>
+<text class="f-label" x="330" y="454">③ 候補者名を剥がす</text>
+<text class="f-code" x="330" y="474">behead("up", "name")</text>
+<text class="f-note" x="330" y="494">いちばん上になった4行目を剥がして、真上のラベルを配る。</text>
+<rect class="f-cell" x="330" y="506" width="370" height="62"/>
+<text class="f-note" x="338" y="522">「49131」についているラベル</text>
+<text x="338" y="540">district = 北海道第１区</text>
+<text class="f-code" x="338" y="558">name = 道下　大樹</text>
+<line class="f-sep" x1="10" y1="628" x2="710" y2="628"/>
+<rect class="f-head" x="32" y="642" width="108" height="18"/>
+<text class="f-note" x="86" y="654.6" text-anchor="middle">A</text>
+<rect class="f-head" x="140" y="642" width="76" height="18"/>
+<text class="f-note" x="178" y="654.6" text-anchor="middle">B</text>
+<rect class="f-head" x="216" y="642" width="76" height="18"/>
+<text class="f-note" x="254" y="654.6" text-anchor="middle">C</text>
 <rect class="f-head" x="10" y="660" width="22" height="18"/>
-<text class="f-note" x="21" y="672.6" text-anchor="middle">7</text>
+<text class="f-note" x="21" y="672.6" text-anchor="middle">3</text>
 <rect class="f-gone" x="32" y="660" width="108" height="18"/>
-<rect class="f-cell" x="140" y="660" width="76" height="18"/>
-<text x="144" y="672.6" style="font-size:11px">334</text>
-<rect class="f-cell" x="216" y="660" width="76" height="18"/>
-<text x="220" y="672.6" style="font-size:11px">1399</text>
+<rect class="f-gone" x="140" y="660" width="76" height="18"/>
+<rect class="f-gone" x="216" y="660" width="76" height="18"/>
 <rect class="f-head" x="10" y="678" width="22" height="18"/>
-<text class="f-note" x="21" y="690.6" text-anchor="middle">8</text>
+<text class="f-note" x="21" y="690.6" text-anchor="middle">4</text>
 <rect class="f-gone" x="32" y="678" width="108" height="18"/>
-<rect class="f-cell" x="140" y="678" width="76" height="18"/>
-<text x="144" y="690.6" style="font-size:11px">4480</text>
-<rect class="f-cell" x="216" y="678" width="76" height="18"/>
-<text x="220" y="690.6" style="font-size:11px">27833</text>
+<rect class="f-gone" x="140" y="678" width="76" height="18"/>
+<rect class="f-gone" x="216" y="678" width="76" height="18"/>
 <rect class="f-head" x="10" y="696" width="22" height="18"/>
-<text class="f-note" x="21" y="708.6" text-anchor="middle">9</text>
+<text class="f-note" x="21" y="708.6" text-anchor="middle">5</text>
 <rect class="f-gone" x="32" y="696" width="108" height="18"/>
-<rect class="f-cell" x="140" y="696" width="76" height="18"/>
-<text x="144" y="708.6" style="font-size:11px">4926</text>
-<rect class="f-cell" x="216" y="696" width="76" height="18"/>
-<text x="220" y="708.6" style="font-size:11px">30031</text>
+<rect class="f-gone" x="140" y="696" width="76" height="18"/>
+<rect class="f-gone" x="216" y="696" width="76" height="18"/>
 <rect class="f-head" x="10" y="714" width="22" height="18"/>
-<text class="f-note" x="21" y="726.6" text-anchor="middle">10</text>
-<rect class="f-gone" x="32" y="714" width="108" height="18"/>
+<text class="f-note" x="21" y="726.6" text-anchor="middle">6</text>
+<rect class="f-mark3" x="32" y="714" width="108" height="18"/>
+<text x="36" y="726.6" style="font-size:11px">札幌市中央区</text>
 <rect class="f-cell" x="140" y="714" width="76" height="18"/>
-<text x="144" y="726.6" style="font-size:11px">20000</text>
+<text x="144" y="726.6" style="font-size:11px">10260</text>
 <rect class="f-cell" x="216" y="714" width="76" height="18"/>
-<text x="220" y="726.6" style="font-size:11px">108394</text>
-<rect class="f-hl" x="216" y="642" width="76" height="18"/>
-<text class="f-label" x="330" y="602">④ 市区町村名を剥がす</text>
-<text class="f-code" x="330" y="622">behead("left", "municipality")</text>
-<text class="f-note" x="330" y="642">いちばん左のA列を剥がして、真横（左）のラベルを配る。</text>
-<rect class="f-cell" x="330" y="654" width="370" height="80"/>
-<text class="f-note" x="338" y="670">「49131」についているラベル</text>
-<text x="338" y="688">name = 道下　大樹</text>
-<text x="338" y="706">party = 立憲民主党</text>
-<text class="f-code" x="338" y="724">municipality = 札幌市中央区</text>
+<text x="220" y="726.6" style="font-size:11px">49131</text>
+<rect class="f-head" x="10" y="732" width="22" height="18"/>
+<text class="f-note" x="21" y="744.6" text-anchor="middle">7</text>
+<rect class="f-mark3" x="32" y="732" width="108" height="18"/>
+<text x="36" y="744.6" style="font-size:11px">札幌市北区第１区</text>
+<rect class="f-cell" x="140" y="732" width="76" height="18"/>
+<text x="144" y="744.6" style="font-size:11px">334</text>
+<rect class="f-cell" x="216" y="732" width="76" height="18"/>
+<text x="220" y="744.6" style="font-size:11px">1399</text>
+<rect class="f-head" x="10" y="750" width="22" height="18"/>
+<text class="f-note" x="21" y="762.6" text-anchor="middle">8</text>
+<rect class="f-mark3" x="32" y="750" width="108" height="18"/>
+<text x="36" y="762.6" style="font-size:11px">札幌市南区</text>
+<rect class="f-cell" x="140" y="750" width="76" height="18"/>
+<text x="144" y="762.6" style="font-size:11px">4480</text>
+<rect class="f-cell" x="216" y="750" width="76" height="18"/>
+<text x="220" y="762.6" style="font-size:11px">27833</text>
+<rect class="f-head" x="10" y="768" width="22" height="18"/>
+<text class="f-note" x="21" y="780.6" text-anchor="middle">9</text>
+<rect class="f-mark3" x="32" y="768" width="108" height="18"/>
+<text x="36" y="780.6" style="font-size:11px">札幌市西区第１区</text>
+<rect class="f-cell" x="140" y="768" width="76" height="18"/>
+<text x="144" y="780.6" style="font-size:11px">4926</text>
+<rect class="f-cell" x="216" y="768" width="76" height="18"/>
+<text x="220" y="780.6" style="font-size:11px">30031</text>
+<rect class="f-head" x="10" y="786" width="22" height="18"/>
+<text class="f-note" x="21" y="798.6" text-anchor="middle">10</text>
+<rect class="f-mark3" x="32" y="786" width="108" height="18"/>
+<text x="36" y="798.6" style="font-size:11px">北海道第１区 合計</text>
+<rect class="f-cell" x="140" y="786" width="76" height="18"/>
+<text x="144" y="798.6" style="font-size:11px">20000</text>
+<rect class="f-cell" x="216" y="786" width="76" height="18"/>
+<text x="220" y="798.6" style="font-size:11px">108394</text>
+<rect class="f-hl" x="216" y="714" width="76" height="18"/>
+<text class="f-label" x="330" y="656">④ 政党名を剥がす</text>
+<text class="f-code" x="330" y="676">behead("up", "party")</text>
+<text class="f-note" x="330" y="696">次にいちばん上になった5行目を剥がして、真上のラベルを配る。</text>
+<rect class="f-cell" x="330" y="708" width="370" height="80"/>
+<text class="f-note" x="338" y="724">「49131」についているラベル</text>
+<text x="338" y="742">district = 北海道第１区</text>
+<text x="338" y="760">name = 道下　大樹</text>
+<text class="f-code" x="338" y="778">party = 立憲民主党</text>
+<line class="f-sep" x1="10" y1="830" x2="710" y2="830"/>
+<rect class="f-head" x="32" y="844" width="108" height="18"/>
+<text class="f-note" x="86" y="856.6" text-anchor="middle">A</text>
+<rect class="f-head" x="140" y="844" width="76" height="18"/>
+<text class="f-note" x="178" y="856.6" text-anchor="middle">B</text>
+<rect class="f-head" x="216" y="844" width="76" height="18"/>
+<text class="f-note" x="254" y="856.6" text-anchor="middle">C</text>
+<rect class="f-head" x="10" y="862" width="22" height="18"/>
+<text class="f-note" x="21" y="874.6" text-anchor="middle">3</text>
+<rect class="f-gone" x="32" y="862" width="108" height="18"/>
+<rect class="f-gone" x="140" y="862" width="76" height="18"/>
+<rect class="f-gone" x="216" y="862" width="76" height="18"/>
+<rect class="f-head" x="10" y="880" width="22" height="18"/>
+<text class="f-note" x="21" y="892.6" text-anchor="middle">4</text>
+<rect class="f-gone" x="32" y="880" width="108" height="18"/>
+<rect class="f-gone" x="140" y="880" width="76" height="18"/>
+<rect class="f-gone" x="216" y="880" width="76" height="18"/>
+<rect class="f-head" x="10" y="898" width="22" height="18"/>
+<text class="f-note" x="21" y="910.6" text-anchor="middle">5</text>
+<rect class="f-gone" x="32" y="898" width="108" height="18"/>
+<rect class="f-gone" x="140" y="898" width="76" height="18"/>
+<rect class="f-gone" x="216" y="898" width="76" height="18"/>
+<rect class="f-head" x="10" y="916" width="22" height="18"/>
+<text class="f-note" x="21" y="928.6" text-anchor="middle">6</text>
+<rect class="f-gone" x="32" y="916" width="108" height="18"/>
+<rect class="f-cell" x="140" y="916" width="76" height="18"/>
+<text x="144" y="928.6" style="font-size:11px">10260</text>
+<rect class="f-cell" x="216" y="916" width="76" height="18"/>
+<text x="220" y="928.6" style="font-size:11px">49131</text>
+<rect class="f-head" x="10" y="934" width="22" height="18"/>
+<text class="f-note" x="21" y="946.6" text-anchor="middle">7</text>
+<rect class="f-gone" x="32" y="934" width="108" height="18"/>
+<rect class="f-cell" x="140" y="934" width="76" height="18"/>
+<text x="144" y="946.6" style="font-size:11px">334</text>
+<rect class="f-cell" x="216" y="934" width="76" height="18"/>
+<text x="220" y="946.6" style="font-size:11px">1399</text>
+<rect class="f-head" x="10" y="952" width="22" height="18"/>
+<text class="f-note" x="21" y="964.6" text-anchor="middle">8</text>
+<rect class="f-gone" x="32" y="952" width="108" height="18"/>
+<rect class="f-cell" x="140" y="952" width="76" height="18"/>
+<text x="144" y="964.6" style="font-size:11px">4480</text>
+<rect class="f-cell" x="216" y="952" width="76" height="18"/>
+<text x="220" y="964.6" style="font-size:11px">27833</text>
+<rect class="f-head" x="10" y="970" width="22" height="18"/>
+<text class="f-note" x="21" y="982.6" text-anchor="middle">9</text>
+<rect class="f-gone" x="32" y="970" width="108" height="18"/>
+<rect class="f-cell" x="140" y="970" width="76" height="18"/>
+<text x="144" y="982.6" style="font-size:11px">4926</text>
+<rect class="f-cell" x="216" y="970" width="76" height="18"/>
+<text x="220" y="982.6" style="font-size:11px">30031</text>
+<rect class="f-head" x="10" y="988" width="22" height="18"/>
+<text class="f-note" x="21" y="1000.6" text-anchor="middle">10</text>
+<rect class="f-gone" x="32" y="988" width="108" height="18"/>
+<rect class="f-cell" x="140" y="988" width="76" height="18"/>
+<text x="144" y="1000.6" style="font-size:11px">20000</text>
+<rect class="f-cell" x="216" y="988" width="76" height="18"/>
+<text x="220" y="1000.6" style="font-size:11px">108394</text>
+<rect class="f-hl" x="216" y="916" width="76" height="18"/>
+<text class="f-label" x="330" y="858">⑤ 市区町村名を剥がす</text>
+<text class="f-code" x="330" y="878">behead("left", "municipality")</text>
+<text class="f-note" x="330" y="898">いちばん左のA列を剥がして、真横（左）のラベルを配る。</text>
+<rect class="f-cell" x="330" y="910" width="370" height="98"/>
+<text class="f-note" x="338" y="926">「49131」についているラベル</text>
+<text x="338" y="944">district = 北海道第１区</text>
+<text x="338" y="962">name = 道下　大樹</text>
+<text x="338" y="980">party = 立憲民主党</text>
+<text class="f-code" x="338" y="998">municipality = 札幌市中央区</text>
 </svg>
-<figcaption>上や左のラベルを1段剥がすたびに、数字のセルにラベルが一つずつつく。最後には、どのセルも「どこの、誰の、何党の票か」が分かる1行になる。シートはD〜G列を省いています。</figcaption>
+<figcaption>上や左のラベルを1段剥がすたびに、数字のセルにラベルが一つずつつく。最後には、どのセルも「どの選挙区の、どこの、誰の、何党の票か」が分かる1行になる。シートはD〜G列を省いています。</figcaption>
 </figure>
-<p data-src="19-kami-excel:503">このコードを1行ずつ、順番に実行してみてください。どんなふうにデータが加工されていくか確かめると、腑に落ちるようになると思います。</p>
-<p data-src="19-kami-excel:505">最後の <code>select()</code> では、ほしい列だけを残しています。得票数は数値なので、<code>numeric</code> の列に入っています。</p>
-<aside class="box box-warn" data-src="19-kami-excel:507"><p class="box-title">tidyxlは.xlsを読めません</p><p data-src="19-kami-excel:508"><code>xlsx_cells()</code> が読めるのは、拡張子が <code>.xlsx</code> と <code>.xlsm</code> のファイルだけです。古い <code>.xls</code> は読めません。</p>
-<p data-src="19-kami-excel:510">古い形式のファイルにぶつかったら、Excelで開いて <code>.xlsx</code> として保存し直すのが手っ取り早いです。「元データは手で触らない」原則と矛盾しますが、元ファイルは残したまま別名で保存すればいいので、実務上は問題になりません。</p></aside>
-<h2 id="シートを全部処理する" data-src="19-kami-excel:513">シートを全部処理する</h2>
-<p data-src="19-kami-excel:515">さて、このファイルには北海道の小選挙区の数だけシートがあります。全部に同じ処理をしたい。<a href="17-loop.html">17章</a>で覚えたfor文の出番です。今回は「ページの一覧」ではなく「シートの一覧」に対してループを回します。</p>
-<p data-src="19-kami-excel:517">まずシート名の一覧を取ります。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:519"><pre><code>sheet_names &lt;- "download/000979538.xlsx" %&gt;%
+<p>このコードを1行ずつ、順番に実行してみてください。どんなふうにデータが加工されていくか確かめると、腑に落ちるようになると思います。</p>
+<p>最後の <code>select()</code> では、ほしい列だけを残しています。得票数は数値なので、<code>numeric</code> の列に入っています。</p>
+<aside class="box box-warn"><p class="box-title">tidyxlは.xlsを読めません</p><p><code>xlsx_cells()</code> が読めるのは、拡張子が <code>.xlsx</code> と <code>.xlsm</code> のファイルだけです。古い <code>.xls</code> は読めません。</p>
+<p>古い形式のファイルにぶつかったら、Excelで開いて <code>.xlsx</code> として保存し直すのが手っ取り早いです。「元データは手で触らない」原則と矛盾しますが、元ファイルは残したまま別名で保存すればいいので、実務上は問題になりません。</p></aside>
+<h2 id="シートを全部処理する">シートを全部処理する</h2>
+<p>さて、このファイルには北海道の小選挙区の数だけシートがあります。全部に同じ処理をしたい。<a href="17-loop.html">17章</a>で覚えたfor文の出番です。今回は「ページの一覧」ではなく「シートの一覧」に対してループを回します。</p>
+<p>まずシート名の一覧を取ります。</p>
+<div class="code" data-lang="R"><pre><code>sheet_names &lt;- "download/000979538.xlsx" %&gt;%
   excel_sheets() # シート名をとる関数
 
 sheet_names</code></pre></div>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:526"><pre><code> [1] "北海道第１区"   "北海道第２区"   "北海道第３区"   "北海道第４区"  
+<div class="code" data-lang="画面に出るもの"><pre><code> [1] "北海道第１区"   "北海道第２区"   "北海道第３区"   "北海道第４区"  
  [5] "北海道第５区"   "北海道第６区"   "北海道第７区"   "北海道第８区"  
  [9] "北海道第９区"   "北海道第１０区" "北海道第１１区" "北海道第１２区"</code></pre></div>
-<p data-src="19-kami-excel:532"><code>excel_sheets()</code> はreadxlの関数です（<code>library(readxl)</code> を忘れずに）。</p>
-<p data-src="19-kami-excel:534">そして回します。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:536"><pre><code>vote_data &lt;- tibble() # まずは空っぽのtibbleを作る
+<p><code>excel_sheets()</code> はreadxlの関数です（<code>library(readxl)</code> を忘れずに）。</p>
+<p>そして回します。</p>
+<div class="code" data-lang="R"><pre><code>vote_data &lt;- tibble() # まずは空っぽのtibbleを作る
 
 for (i in sheet_names) {
   vote_data_temporaly &lt;- "download/000979538.xlsx" %&gt;%
     xlsx_cells() %&gt;%
-    filter(sheet == i, row &gt;= 4, !is_blank) %&gt;%
+    filter(sheet == i, row &gt;= 4 | address == "A3", !is_blank) %&gt;%
+    behead("up-left", "district") %&gt;%
     behead("up", "name") %&gt;%
     behead("up", "party") %&gt;%
     behead("left", "municipality") %&gt;%
-    mutate(district = i) %&gt;%
     select(district, municipality, name, party, vote = numeric)
 
   vote_data &lt;- bind_rows(vote_data, vote_data_temporaly)
 }</code></pre></div>
-<p data-src="19-kami-excel:553">さっきとの違いは二つです。</p>
-<p data-src="19-kami-excel:555">一つは <code>filter(sheet == i)</code> で、「北海道第１区」と決め打ちしていたところを、ループの変数 <code>i</code> にしたこと。ループの1周目では「北海道第１区」、2周目では「北海道第２区」のシートが処理されます。</p>
-<p data-src="19-kami-excel:557">もう一つは <code>mutate(district = i)</code> のところ。変数 <code>i</code> をデータの一部として持ち込んでいます。小選挙区名を格納するための列を足しているわけです。</p>
-<aside class="box box-note" data-src="19-kami-excel:559"><p class="box-title">シート名が情報になっている</p><p data-src="19-kami-excel:560">役所のExcelでは、「シート名」や「ファイル名」そのものが重要な情報を持っていることがよくあります。北海道第１区、北海道第２区……というシート名は、まさにそれです。</p>
-<p data-src="19-kami-excel:562"><code>read_excel()</code> で1枚ずつ読んでいると、この情報はどこにも残りません。だから <code>district = i</code> のように、<strong>明示的にデータの中へ入れてやる必要があります。</strong></p>
-<p data-src="19-kami-excel:564">このファイルのシート名には、都道府県名まで入っています。なので、全国のファイルをまとめても、北海道の第1区と東京都の第1区を取り違えることはありません。シート名が「第1区」だけだったら、シートの中の表題などから都道府県名を取り出して、一緒に持ち込む必要がありました。ファイル名は <code>000979538.xlsx</code> のような番号なので、そこからは分かりません。</p></aside>
-<h2 id="ファイルもシートも全部処理する" data-src="19-kami-excel:567">ファイルもシートも全部処理する</h2>
-<p data-src="19-kami-excel:569">47都道府県分のファイルがあり、それぞれにシートが複数ある。というわけで、for文を二重にします。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:571"><pre><code>excel_files &lt;- list.files("download/") %&gt;%
+<p>さっきとの違いは、<code>filter(sheet == i)</code> のところです。「北海道第１区」と決め打ちしていたところを、ループの変数 <code>i</code> にしました。ループの1周目では「北海道第１区」、2周目では「北海道第２区」のシートが処理されます。ついでに、最後の <code>select()</code> では <code>vote = numeric</code> として、得票数の列の名前を <code>vote</code> に変えています。</p>
+<p>選挙区名は、どのシートでもA3に入っています。なので、さっきと同じ <code>behead("up-left", "district")</code> で、それぞれのシートの選挙区名が取れます。</p>
+<aside class="box box-note"><p class="box-title">シート名が情報になっていることも</p><p>選挙区名は、シート名にも入っています。今回はシートの中のA3から取りましたが、役所のExcelでは、「シート名」や「ファイル名」にしか重要な情報がないこともよくあります。</p>
+<p><code>read_excel()</code> で1枚ずつ読んでいると、シート名はどこにも残りません。そういうときは、<code>mutate(district = i)</code> のようにして、ループの変数を<strong>明示的にデータの中へ入れてやる必要があります。</strong></p>
+<p>ちなみに、A3の選挙区名には都道府県名まで入っています。なので、全国のファイルをまとめても、北海道の第1区と東京都の第1区を取り違えることはありません。「第1区」としか書いていなかったら、表題などから都道府県名を取り出して、一緒に持ち込む必要がありました。ファイル名は <code>000979538.xlsx</code> のような番号なので、そこからは分かりません。</p></aside>
+<h2 id="ファイルもシートも全部処理する">ファイルもシートも全部処理する</h2>
+<p>47都道府県分のファイルがあり、それぞれにシートが複数ある。というわけで、for文を二重にします。</p>
+<div class="code" data-lang="R"><pre><code>excel_files &lt;- list.files("download/") %&gt;%
   str_c("download/", .)
 
 # 空のtibbleを初期化
@@ -568,29 +842,29 @@ for (i in excel_files) {
   # 各シートをループ
   for (j in sheet_names) {
     vote_data_temp &lt;- cells %&gt;%
-      filter(sheet == j, row &gt;= 4, !is_blank) %&gt;%
+      filter(sheet == j, row &gt;= 4 | address == "A3", !is_blank) %&gt;%
+      behead("up-left", "district") %&gt;%
       behead("up", "name") %&gt;%
       behead("up", "party") %&gt;%
       behead("left", "municipality") %&gt;%
-      mutate(district = j,
-             file = basename(i)) %&gt;%
+      mutate(file = basename(i)) %&gt;%
       select(district, municipality, name, party, vote = numeric, file)
 
     vote_data &lt;- bind_rows(vote_data, vote_data_temp)
   }
 }</code></pre></div>
-<p data-src="19-kami-excel:599">外側のループがファイルを一つずつ、内側のループがそのファイルのシートを一つずつ処理します。シートは全部で289枚あるので、内側の処理は289回まわることになります。</p>
-<p data-src="19-kami-excel:601">外側のループの最初で、<code>xlsx_cells(i)</code> の結果を <code>cells</code> に入れています。ファイルを読み込むのは時間がかかるので、シートごとに読み直すのではなく、1回だけ読んでおいて、それを使い回しているわけです。</p>
-<p data-src="19-kami-excel:603"><code>file = basename(i)</code> で、どのファイルから来たデータなのかを記録しています。これがないと、あとで「この行はどこから来たんだ」が追えなくなります。</p>
-<aside class="box box-warn" data-src="19-kami-excel:605"><p class="box-title">全部同じ形だとは限らない</p><p data-src="19-kami-excel:606">これだけ大量に処理すると、たいてい例外が出てきます。今回のファイルは、289枚のシートがどれも同じ形をしていました。4行目が候補者名、5行目が政党名、6行目から市区町村が並び、いちばん下が合計の行、いちばん右が得票数計の列。全部のシートで確かめてあります。</p>
-<p data-src="19-kami-excel:608">でも、これはたまたまです。同じ総務省の同じ種類のファイルでも、第51回（2026年）のものは形が違います。市区町村をA列とB列の2段に分けて書いたシートと、A列だけのシートがまじっていて、途中に小計の行も挟まっています。得票数も、カンマのついた文字として入っています。この章のコードは、そのままでは使えません。ちなみに、比例代表のファイルは形がまったく違います。18章で小選挙区のぶんだけを落としてきたのは、そのためでもあります。</p>
-<p data-src="19-kami-excel:610">一つのシートでうまくいったコードでも、全部に回したあとで、もう一度確かめる必要があるわけです。</p>
-<p data-src="19-kami-excel:612">例外にぶつかったときの対処のしかたはいくつかあります。<a href="17-loop.html">17章</a>でやったように <code>tryCatch()</code> で囲んで、失敗したものを後から個別に処理する。あるいは形が同じファイルだけを先に処理して、残りは別のコードを書く。数が少なければ、例外のほうは手で入力してしまうのがいちばん早いこともあります。</p>
-<p data-src="19-kami-excel:614">どれを選んでもいいのですが、<strong>どのファイルを処理して、どのファイルを除いたのかは記録しておいて下さい。</strong>黙って除くと、あとで「全国のデータ」と言えなくなります。なぜ除いたのかも、メモに残しておきましょう。</p></aside>
-<h2 id="数え上げて確かめる" data-src="19-kami-excel:617">数え上げて確かめる</h2>
-<p data-src="19-kami-excel:619">集まったら、必ず確かめます。ここで、とっておいた合計の行の出番です。</p>
-<p data-src="19-kami-excel:621">市区町村ごとの全候補者の票を足し上げたものと、各シートの合計の行にある「得票数計」（その選挙区の票の総数）を足したものが、一致するかを見てみます。</p>
-<div class="code" data-lang="R" data-src="19-kami-excel:623"><pre><code># 市区町村ごとの、全候補者の票を足す
+<p>外側のループがファイルを一つずつ、内側のループがそのファイルのシートを一つずつ処理します。シートは全部で289枚あるので、内側の処理は289回まわることになります。</p>
+<p>外側のループの最初で、<code>xlsx_cells(i)</code> の結果を <code>cells</code> に入れています。ファイルを読み込むのは時間がかかるので、シートごとに読み直すのではなく、1回だけ読んでおいて、それを使い回しているわけです。</p>
+<p><code>file = basename(i)</code> で、どのファイルから来たデータなのかを記録しています。これがないと、あとで「この行はどこから来たんだ」が追えなくなります。</p>
+<aside class="box box-warn"><p class="box-title">全部同じ形だとは限らない</p><p>これだけ大量に処理すると、たいてい例外が出てきます。今回のファイルは、289枚のシートがどれも同じ形をしていました。3行目のA列が選挙区名で、右端に「[単位：票]」。4行目が候補者名、5行目が政党名、6行目から市区町村が並び、いちばん下が合計の行、いちばん右が得票数計の列。全部のシートで確かめてあります。</p>
+<p>でも、これはたまたまです。同じ総務省の同じ種類のファイルでも、第51回（2026年）のものは形が違います。市区町村をA列とB列の2段に分けて書いたシートと、A列だけのシートがまじっていて、途中に小計の行も挟まっています。得票数も、カンマのついた文字として入っています。この章のコードは、そのままでは使えません。ちなみに、比例代表のファイルは形がまったく違います。18章で小選挙区のぶんだけを落としてきたのは、そのためでもあります。</p>
+<p>一つのシートでうまくいったコードでも、全部に回したあとで、もう一度確かめる必要があるわけです。</p>
+<p>例外にぶつかったときの対処のしかたはいくつかあります。<a href="17-loop.html">17章</a>でやったように <code>tryCatch()</code> で囲んで、失敗したものを後から個別に処理する。あるいは形が同じファイルだけを先に処理して、残りは別のコードを書く。数が少なければ、例外のほうは手で入力してしまうのがいちばん早いこともあります。</p>
+<p>どれを選んでもいいのですが、<strong>どのファイルを処理して、どのファイルを除いたのかは記録しておいて下さい。</strong>黙って除くと、あとで「全国のデータ」と言えなくなります。なぜ除いたのかも、メモに残しておきましょう。</p></aside>
+<h2 id="数え上げて確かめる">数え上げて確かめる</h2>
+<p>集まったら、必ず確かめます。ここで、とっておいた合計の行の出番です。</p>
+<p>市区町村ごとの全候補者の票を足し上げたものと、各シートの合計の行にある「得票数計」（その選挙区の票の総数）を足したものが、一致するかを見てみます。</p>
+<div class="code" data-lang="R"><pre><code># 市区町村ごとの、全候補者の票を足す
 vote_data %&gt;%
   filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
   summarize(gokei = sum(vote))
@@ -599,7 +873,7 @@ vote_data %&gt;%
 vote_data %&gt;%
   filter(name == "得票数計", str_detect(municipality, "合計")) %&gt;%
   summarize(gokei = sum(vote))</code></pre></div>
-<div class="code" data-lang="画面に出るもの" data-src="19-kami-excel:635"><pre><code># A tibble: 1 × 1
+<div class="code" data-lang="画面に出るもの"><pre><code># A tibble: 1 × 1
       gokei
       &lt;dbl&gt;
 1 54261878.
@@ -607,15 +881,15 @@ vote_data %&gt;%
       gokei
       &lt;dbl&gt;
 1 54261878.</code></pre></div>
-<p data-src="19-kami-excel:646">一つめの <code>filter()</code> では、得票数計の列から来た行と、合計の行から来た行を除いて、市区町村ごとの票だけを残しています。二つめは逆に、合計の行の得票数計だけを残しています。<code>str_detect()</code> は<a href="06-strings-filter.html">6章</a>で出てきた、ある文字を含むかどうかを調べる関数でした。</p>
-<p data-src="19-kami-excel:648">どちらも5426万1878票で、一致しました。</p>
-<p data-src="19-kami-excel:650">さらに、総務省が別に公表している、都道府県ごとの有効投票数をまとめた<a href="https://www.soumu.go.jp/main_content/000979129.xls">表</a>を開いてみると、小選挙区の有効投票数の合計は5426万1878票。こちらで足し上げた数字と一致していました。</p>
-<p data-src="19-kami-excel:652">ちなみに、「54261878.」というふうに、数字のおしりに「.」がついているのは、得票数のなかに小数がまじっていて、足し合わせた数字が整数にはなっていないからです。なんで小数が混じった数字があるのかといえば、按分票があるから。按分票とは……説明不要ですよね。</p>
-<aside class="box box-homework" data-src="19-kami-excel:654"><p class="box-title">宿題</p><p data-src="19-kami-excel:655">一つのファイルにある複数のシートに同じ処理を連続的にほどこすコードを、for文を使ってつくりましょう。</p>
-<p data-src="19-kami-excel:657">作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
+<p>一つめの <code>filter()</code> では、得票数計の列から来た行と、合計の行から来た行を除いて、市区町村ごとの票だけを残しています。二つめは逆に、合計の行の得票数計だけを残しています。<code>str_detect()</code> は<a href="06-strings-filter.html">6章</a>で出てきた、ある文字を含むかどうかを調べる関数でした。</p>
+<p>どちらも5426万1878票で、一致しました。</p>
+<p>さらに、総務省が別に公表している、都道府県ごとの有効投票数をまとめた<a href="https://www.soumu.go.jp/main_content/000979129.xls">表</a>を開いてみると、小選挙区の有効投票数の合計は5426万1878票。こちらで足し上げた数字と一致していました。</p>
+<p>ちなみに、「54261878.」というふうに、数字のおしりに「.」がついているのは、得票数のなかに小数がまじっていて、足し合わせた数字が整数にはなっていないからです。なんで小数が混じった数字があるのかといえば、按分票があるから。按分票とは……説明不要ですよね。</p>
+<aside class="box box-homework"><p class="box-title">宿題</p><p>一つのファイルにある複数のシートに同じ処理を連続的にほどこすコードを、for文を使ってつくりましょう。</p>
+<p>作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
 <hr>
-<p data-src="19-kami-excel:662">これで第3部は終わりです。ウェブのページから表を取り、たくさんのページやファイルをfor文でまとめて集め、扱いにくいExcelを分析しやすい形に組み替えるところまでできるようになりました。</p>
-<p data-src="19-kami-excel:664">次の第4部では、この講座の先に広がっているものを紹介します。APIや地図、統計学といった、Rでできるもっといろんなこと。そして、AIの時代にそれでも自分でコードを書くことの意味です。</p>
+<p>これで第3部は終わりです。ウェブのページから表を取り、たくさんのページやファイルをfor文でまとめて集め、扱いにくいExcelを分析しやすい形に組み替えるところまでできるようになりました。</p>
+<p>次の第4部では、この講座の先に広がっているものを紹介します。APIや地図、統計学といった、Rでできるもっといろんなこと。そして、AIの時代にそれでも自分でコードを書くことの意味です。</p>
     </article>
     <nav class="pager"><a class="prev" href="18-download.html"><span>前へ</span>18 一括ダウンロード</a><a class="next" href="20-more.html"><span>次へ</span>20 もっといろんなことを</a></nav>
     <footer class="site-foot">
@@ -625,6 +899,5 @@ vote_data %&gt;%
   </main>
 </div>
 <script src="assets/site.js"></script>
-<script src="assets/notes.js"></script>
 </body>
 </html>

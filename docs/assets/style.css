@@ -750,6 +750,34 @@ td .dl-size { white-space: nowrap; }
 .anim-fig .pv-note { margin: .4rem 0 .6rem; font-size: .9rem; text-align: center; color: var(--ink); min-height: 1.6em; }
 .anim-fig .pv-controls { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
 .behead-fig .pv-controls { margin-bottom: .8rem; }   /* 19章はボタンが図の上にある */
+.behead-fig .pv-buttons { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+.behead-fig .pv-now { display: none; }   /* いまの段のコードの行（スマホの帯だけで出す） */
+@media (max-width: 600px) {
+  /* スマホでは、ボタンの帯をアニメーションのいちばん下に移し、アニメーションが画面に入っているあいだは
+     画面の下に貼りつかせる（どこまで読み進めても「次へ」が押せる）。帯には、いまの段のコードの行も出す */
+  .behead-fig { display: flex; flex-direction: column; }
+  /* 縦に並べたとき、コードの欄が長い行の幅まで広がって画面からはみ出さないよう、幅いっぱいに収めて中で横に送る */
+  .anim-fig.behead-fig .pv-code { align-self: stretch; min-width: 0; max-width: 100%; margin: 0 0 .8rem; }
+  .behead-fig .pv-controls {
+    order: 10;
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    flex-direction: column;
+    gap: .35rem;
+    margin: .4rem -.5rem 0;
+    padding: .45rem .5rem calc(.5rem + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -.3rem .8rem rgba(0, 0, 0, .06);
+  }
+  .behead-fig .pv-controls button { padding: .3rem .8rem; }
+  .behead-fig .pv-now { display: flex; gap: .5rem; align-items: baseline; justify-content: center; font-size: .76rem; line-height: 1.5; }
+  .behead-fig .pv-now-step { flex: none; font-family: var(--mono); color: var(--ink-2); }
+  .behead-fig .pv-now-code { background: var(--mark); color: var(--code-ink); font-size: inherit; overflow-wrap: anywhere; word-break: normal; }
+  .behead-fig .pv-now-code .pv-dir { color: var(--accent); }
+  .behead-fig .pv-now-code.is-plain { background: none; font-family: var(--gothic); color: var(--ink-2); }
+}
 .anim-fig .pv-controls button {
   font: inherit; font-size: .88rem; font-family: var(--mono);
   padding: .4rem .9rem; border-radius: 999px; cursor: pointer;
@@ -770,6 +798,23 @@ td .dl-size { white-space: nowrap; }
 .anim-fig .pv-code .pv-dir { color: var(--accent); }
 .fig .pv-arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
 .fig .pv-arrow-label { fill: var(--accent); font-size: 12px; font-weight: 700; }
+/* 19章：数字のセル一つひとつから矢印を出すので、線は細めにし、始点に点を打つ */
+.behead-fig .pv-arrow { stroke-width: 1.5; }
+.behead-fig .pv-dot { fill: var(--accent); }
+/* 横並びの図と、せまい画面用の縦並びの図を両方置いて、画面の幅で切り替える（19章の対応図）。
+   横並びのまま縮めると、スマホでは文字が5px ほどになって読めないため。印刷は横並び */
+.fig-switch .svg-narrow { display: none; }
+@media (max-width: 600px) {
+  .fig-switch .svg-wide { display: none; }
+  /* 本文（16px）との釣り合いをとるため、図ごとに --narrow-max で最大幅を決められる（決めなければ幅いっぱい） */
+  .fig-switch .svg-narrow { display: block; max-width: var(--narrow-max, none); margin: 0 auto; }
+}
+@media print {
+  .fig-switch .svg-wide { display: block; }
+  .fig-switch .svg-narrow { display: none; }
+}
+/* その段で剥がすラベル（矢印の行き先）を赤い枠で目立たせる */
+.behead-fig .pv-hl { fill: color-mix(in srgb, var(--accent) 7%, transparent); stroke: var(--accent); stroke-width: 2; }
 @media print {
   .anim-host { display: none; }
   .fig-anim-static.is-replaced { display: block; }
@@ -838,68 +883,53 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
 @media (max-width: 900px) {
   body { font-size: 16px; }
   .layout { grid-template-columns: 1fr; }
-  .menu-btn { display: block; }
+  /* せまい画面では、サイトの名前の帯を出さず、「目次」ボタンだけを右上に浮かせる（画面の上を占領しないように） */
+  html { scroll-padding-top: 1rem; }
+  .site-head {
+    position: fixed;
+    top: .6rem;
+    right: .6rem;
+    z-index: 50;
+    padding: 0;
+    background: none;
+    backdrop-filter: none;
+    border: 0;
+  }
+  .brand { display: none; }
+  .menu-btn {
+    display: block;
+    padding: .4rem 1rem;
+    box-shadow: 0 .15rem .6rem rgba(0, 0, 0, .14);
+  }
+  /* 目次は、押したその場の画面に、右から出る板として重ねる（上までスクロールしなくていいように）。
+     後ろは暗くし、板の外を押すか、もう一度ボタンを押すと閉じる（site.js） */
   .toc {
     display: none;
-    position: static;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    width: min(88vw, 22rem);
+    align-self: stretch;   /* 広い画面用の align-self: start が残ると、上下いっぱいに伸びず、中身の高さになってしまう */
     max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 3.6rem 1.1rem 2rem;
+    background: var(--paper);
     border-right: 0;
-    border-bottom: 1px solid var(--line);
-    padding: 1rem 1.2rem 1.6rem;
+    border-left: 1px solid var(--line);
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .35);
   }
   .toc.open { display: block; }
+  html.toc-open, html.toc-open body { overflow: hidden; }   /* 目次を開いているあいだ、後ろの本文は動かさない */
   .page { padding: 1.6rem 1.2rem 3rem; }
   .inpage ul { columns: 1; }
   .pager { flex-direction: column; }
   h2 { margin-top: 2.4rem; }
 }
 
-/* ------------------------------------------------------------ メモの仕組み */
-.memo-bar {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  gap: .4rem;
-  padding: .4rem .5rem;
-  background: var(--paper-2);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  box-shadow: 0 .2rem .8rem rgba(0, 0, 0, .12);
-  font-size: .82rem;
-}
-.memo-bar button {
-  font: inherit;
-  font-size: .82rem;
-  padding: .25rem .7rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--ink);
-  cursor: pointer;
-}
-.memo-bar button:hover { border-color: var(--accent); }
-.memo-bar .memo-toggle { font-weight: 700; }
-.memo-bar .memo-count { color: var(--accent); font-weight: 700; font-size: .78rem; }
-.memo-bar.has-notes .memo-count::before { content: "メモ "; color: var(--ink-2); font-weight: 400; }
-
-body.memo-mode { cursor: crosshair; }
-body.memo-mode [data-src] { position: relative; }
-body.memo-mode [data-src]:hover {
-  outline: 2px dashed var(--accent);
-  outline-offset: .25rem;
-  background: color-mix(in srgb, var(--accent) 5%, transparent);
-}
-body.memo-mode .memo-bar { cursor: default; }
-
-[data-src].memo-has {
-  position: relative;
-  box-shadow: inset .2rem 0 0 #d99000;
-  padding-left: .7rem;
-  background: color-mix(in srgb, #d99000 7%, transparent);
-}
+/* 原稿に直接書き込まれたメモ（{{! }} と @メモ：） */
 .memo-mark {
   margin: .4rem 0 .2rem;
   padding: .35rem .6rem;
@@ -922,79 +952,6 @@ body.memo-mode .memo-bar { cursor: default; }
   border-radius: .2rem;
   vertical-align: .1em;
 }
-
-.memo-editor {
-  margin: .6rem 0;
-  padding: .7rem .8rem;
-  border: 2px solid var(--accent);
-  border-radius: .4rem;
-  background: var(--paper-2);
-  cursor: default;
-}
-.memo-editor-loc {
-  margin: 0 0 .4rem;
-  font-family: var(--mono);
-  font-size: .74rem;
-  color: var(--ink-2);
-}
-.memo-editor textarea {
-  width: 100%;
-  font: inherit;
-  font-size: .9rem;
-  padding: .4rem .5rem;
-  border: 1px solid var(--line);
-  border-radius: .3rem;
-  background: var(--paper);
-  color: var(--ink);
-  resize: vertical;
-}
-.memo-editor-btns { display: flex; gap: .4rem; margin-top: .5rem; }
-.memo-editor-btns button {
-  font: inherit; font-size: .8rem; padding: .25rem .8rem;
-  border: 1px solid var(--line); border-radius: .3rem;
-  background: var(--paper); color: var(--ink); cursor: pointer;
-}
-.memo-editor-btns .memo-save { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
-
-.memo-panel {
-  position: fixed;
-  right: 1rem; bottom: 4rem;
-  width: min(30rem, calc(100vw - 2rem));
-  max-height: 70vh;
-  z-index: 61;
-  display: none;
-  flex-direction: column;
-  background: var(--paper-2);
-  border: 1px solid var(--line);
-  border-radius: .6rem;
-  box-shadow: 0 .4rem 1.6rem rgba(0, 0, 0, .18);
-}
-.memo-panel.open { display: flex; }
-.memo-panel-head, .memo-panel-foot {
-  display: flex; align-items: center; justify-content: space-between; gap: .5rem;
-  padding: .7rem .9rem;
-  border-bottom: 1px solid var(--line);
-  font-size: .9rem;
-}
-.memo-panel-foot { border-bottom: 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
-.memo-panel-head button, .memo-panel-foot button {
-  font: inherit; font-size: .78rem; padding: .25rem .7rem;
-  border: 1px solid var(--line); border-radius: .3rem;
-  background: var(--paper); color: var(--ink); cursor: pointer;
-}
-.memo-panel-foot .memo-clear { color: var(--accent); }
-.memo-panel-body { overflow-y: auto; padding: .5rem .9rem; }
-.memo-item { padding: .5rem 0; border-bottom: 1px solid var(--line); }
-.memo-item-loc { margin: 0 0 .2rem; font-family: var(--mono); font-size: .74rem; }
-.memo-item-note { margin: 0 0 .2rem; font-size: .88rem; white-space: pre-wrap; }
-.memo-item-ex { margin: 0; font-size: .76rem; color: var(--ink-2); }
-.memo-empty { color: var(--ink-2); font-size: .88rem; }
-
-@media print {
-  .memo-bar, .memo-panel, .memo-editor { display: none !important; }
-}
-
-/* 原稿に直接書き込まれたメモ（{{! }} と @メモ：） */
 .memo-inline {
   background: color-mix(in srgb, #d99000 14%, transparent);
   border-bottom: 2px solid #d99000;

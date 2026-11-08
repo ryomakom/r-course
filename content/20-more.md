@@ -52,8 +52,8 @@ lead: データ分析のための道具は、前章までにほぼそろいま�
 
 たとえば、首相が国会で「申し訳ございません」と言ったことが、2018年にどれくらいあったかを調べたいとしましょう。それなら[こんなURL](https://kokkai.ndl.go.jp/api/speech?speakerPosition=%E5%86%85%E9%96%A3%E7%B7%8F%E7%90%86%E5%A4%A7%E8%87%A3&any=%E7%94%B3%E3%81%97%E8%A8%B3%E3%81%94%E3%81%96%E3%81%84%E3%81%BE%E3%81%9B%E3%82%93&from=2018-01-01&until=2018-12-31)でお願いすることになります。
 
-<figure class="fig">
-<svg viewBox="0 0 720 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="国会会議録検索システムのAPIに、肩書と言葉と期間の条件をつけたURLでお願いすると、発言のデータがXMLという形で返ってくる様子を示した図">
+<figure class="fig fig-switch">
+<svg class="svg-wide" viewBox="0 0 720 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="国会会議録検索システムのAPIに、肩書と言葉と期間の条件をつけたURLでお願いすると、発言のデータがXMLという形で返ってくる様子を示した図">
 <defs><marker id="ar20" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
 <text class="f-label" x="10" y="18">お願いする（リクエスト）：URLに条件を書いて送る</text>
 <rect class="f-cell" x="10" y="28" width="700" height="132"/>
@@ -80,6 +80,39 @@ lead: データ分析のための道具は、前章までにほぼそろいま�
 <text class="f-mono" x="22" y="389" style="white-space:pre">            申し訳ございませんでした。……&lt;/speech&gt;</text>
 <text class="f-mono" x="22" y="408" style="white-space:pre">  &lt;/speechRecord&gt; ……</text>
 <text class="f-mono" x="22" y="427" style="white-space:pre">&lt;/data&gt;</text>
+</svg>
+<svg class="svg-narrow" style="--narrow-max: 345px" viewBox="0 0 360 586" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="国会会議録検索システムのAPIに、肩書と言葉と期間の条件をつけたURLでお願いすると、発言のデータがXMLという形で返ってくる様子を示した図">
+<defs><marker id="ar20n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
+<text class="f-label" x="4" y="18">お願いする（リクエスト）：URLに条件を書いて送る</text>
+<rect class="f-cell" x="4" y="28" width="352" height="178"/>
+<text class="f-mono" x="14" y="50">https://kokkai.ndl.go.jp/api/speech?</text>
+<text class="f-code" x="14" y="74">speakerPosition=内閣総理大臣</text>
+<text class="f-note" x="18" y="96">肩書が「内閣総理大臣」で</text>
+<text class="f-code" x="14" y="124">&amp;any=申し訳ございません</text>
+<text class="f-note" x="18" y="146">この言葉を含む発言を</text>
+<text class="f-code" x="14" y="174">&amp;from=2018-01-01</text>
+<text class="f-note" x="18" y="196">この日から</text>
+<text class="f-code" x="178" y="174">&amp;until=2018-12-31</text>
+<text class="f-note" x="182" y="196">この日まで</text>
+<path class="f-arrow" d="M40 212 V264" marker-end="url(#ar20n)"/>
+<text class="f-note" x="56" y="234">国会会議録検索システムのサーバーが、</text>
+<text class="f-note" x="56" y="253">条件に合う発言を探して返してくる</text>
+<text class="f-label" x="4" y="286">返ってくる（レスポンス）：プログラムで扱いやすいデータ</text>
+<rect class="f-cell" x="4" y="296" width="352" height="284"/>
+<text class="f-mono" x="14" y="318" style="white-space:pre">&lt;data&gt;</text>
+<text class="f-mono" x="14" y="337" style="white-space:pre">  &lt;numberOfRecords&gt;6&lt;/numberOfRecords&gt;</text>
+<text class="f-mono" x="14" y="356" style="white-space:pre">  …… &lt;speechRecord&gt;</text>
+<text class="f-mono" x="14" y="375" style="white-space:pre">    &lt;speaker&gt;安倍晋三&lt;/speaker&gt;</text>
+<text class="f-mono" x="14" y="394" style="white-space:pre">    &lt;speakerPosition&gt;内閣総理大臣</text>
+<text class="f-mono" x="14" y="413" style="white-space:pre">    &lt;/speakerPosition&gt;</text>
+<text class="f-mono" x="14" y="432" style="white-space:pre">    &lt;date&gt;2018-03-26&lt;/date&gt;</text>
+<text class="f-mono" x="14" y="451" style="white-space:pre">    &lt;nameOfHouse&gt;参議院&lt;/nameOfHouse&gt;</text>
+<text class="f-mono" x="14" y="470" style="white-space:pre">    &lt;nameOfMeeting&gt;予算委員会&lt;/nameOfMeeting&gt;</text>
+<text class="f-mono" x="14" y="489" style="white-space:pre">    &lt;speech&gt;○内閣総理大臣（安倍晋三君）　</text>
+<text class="f-mono" x="14" y="508" style="white-space:pre">            先ほど、質問の趣旨を取り違えまして</text>
+<text class="f-mono" x="14" y="527" style="white-space:pre">            申し訳ございませんでした。……&lt;/speech&gt;</text>
+<text class="f-mono" x="14" y="546" style="white-space:pre">  &lt;/speechRecord&gt; ……</text>
+<text class="f-mono" x="14" y="565" style="white-space:pre">&lt;/data&gt;</text>
 </svg>
 <figcaption>国会会議録のAPIに、2018年に首相が「申し訳ございません」と言った発言をお願いしたところ。6件の発言が、一つずつ「誰が」「いつ」「どの会議で」「何と言ったか」の形で返ってきた（一部を省略し、見やすいように改行を入れています）。</figcaption>
 </figure>

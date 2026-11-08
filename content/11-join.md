@@ -141,8 +141,8 @@ df_simple %>%
 
 たとえば地域コードをとっかかりにAとBのtibbleを合体させるとして、「東京都新宿区」のデータは両方にあるけれど、「東京都中央区」のデータはAのほうにしかなく、「大阪市浪速区」のデータはBにしかない、といったケースを考えてみましょう。このとき、AをもとにしてそこにBを合体させると、合体後のtibbleに東京都中央区のデータはあっても大阪市浪速区のものはありません。また、BをもとにしてAを合体させると、合体後に大阪市浪速区のデータはあっても東京都中央区はなくなります。
 
-<figure class="fig">
-<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="left_joinで左のtibbleの行だけが残る様子を示した図">
+<figure class="fig fig-switch">
+<svg class="svg-wide" viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="left_joinで左のtibbleの行だけが残る様子を示した図">
   <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
   <text class="f-label" x="10" y="18">A（人口データ）</text>
   <rect class="f-head" x="10" y="28" width="64" height="26"/><text class="f-th" x="18" y="46">code</text>
@@ -171,6 +171,37 @@ df_simple %>%
   <text class="f-note" x="370" y="254">・Aにある行はすべて残る</text>
   <text class="f-note" x="370" y="276">・Bにしかない浪速区の行は消える</text>
   <text class="f-note" x="370" y="298">・突合できなかった中央区の第1次産業はNA になる</text>
+</svg>
+<svg class="svg-narrow" style="--narrow-max: 332px" viewBox="0 0 380 546" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="left_joinで左のtibbleの行だけが残る様子を示した図">
+  <defs><marker id="ar2n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
+  <text class="f-label" x="10" y="18">A（人口データ）</text>
+  <rect class="f-head" x="10" y="28" width="64" height="26"/><text class="f-th" x="18" y="46">code</text>
+  <rect class="f-head" x="74" y="28" width="132" height="26"/><text class="f-th" x="82" y="46">region</text>
+  <rect class="f-head" x="206" y="28" width="56" height="26"/><text class="f-th" x="214" y="46">人口</text>
+  <rect class="f-mark" x="10" y="54" width="64" height="26"/><text x="18" y="72">13102</text><rect class="f-cell" x="74" y="54" width="132" height="26"/><text x="82" y="72">東京都 中央区</text><rect class="f-cell" x="206" y="54" width="56" height="26"/><text x="214" y="72">100</text>
+  <rect class="f-mark" x="10" y="80" width="64" height="26"/><text x="18" y="98">13104</text><rect class="f-cell" x="74" y="80" width="132" height="26"/><text x="82" y="98">東京都 新宿区</text><rect class="f-cell" x="206" y="80" width="56" height="26"/><text x="214" y="98">200</text>
+  <text class="f-note" x="10" y="124">中央区（13102）はBにない</text>
+  <text class="f-label" x="10" y="158">B（労働人口データ）</text>
+  <rect class="f-head" x="10" y="168" width="64" height="26"/><text class="f-th" x="18" y="186">code</text>
+  <rect class="f-head" x="74" y="168" width="160" height="26"/><text class="f-th" x="82" y="186">region</text>
+  <rect class="f-head" x="234" y="168" width="84" height="26"/><text class="f-th" x="242" y="186">第1次産業</text>
+  <rect class="f-mark" x="10" y="194" width="64" height="26"/><text x="18" y="212">13104</text><rect class="f-cell" x="74" y="194" width="160" height="26"/><text x="82" y="212">東京都 新宿区</text><rect class="f-cell" x="234" y="194" width="84" height="26"/><text x="242" y="212">30</text>
+  <rect class="f-off" x="10" y="220" width="64" height="26"/><text x="18" y="238">27111</text><rect class="f-off" x="74" y="220" width="160" height="26"/><text x="82" y="238">大阪府 大阪市 浪速区</text><rect class="f-off" x="234" y="220" width="84" height="26"/><text x="242" y="238">15</text>
+  <text class="f-note" x="10" y="264">浪速区（27111）はAにない</text>
+  <path class="f-arrow" d="M60 282 V352" marker-end="url(#ar2n)"/>
+  <text class="f-code" x="76" y="302">A %&gt;% left_join(B)</text>
+  <text class="f-note" x="76" y="324">code を手がかりに</text>
+  <text class="f-note" x="76" y="342">（Bのregionは、くっつける前に削っておく）</text>
+  <text class="f-label" x="10" y="378">合体したもの</text>
+  <rect class="f-head" x="10" y="388" width="64" height="26"/><text class="f-th" x="18" y="406">code</text>
+  <rect class="f-head" x="74" y="388" width="132" height="26"/><text class="f-th" x="82" y="406">region</text>
+  <rect class="f-head" x="206" y="388" width="56" height="26"/><text class="f-th" x="214" y="406">人口</text>
+  <rect class="f-head" x="262" y="388" width="84" height="26"/><text class="f-th" x="270" y="406">第1次産業</text>
+  <rect class="f-mark" x="10" y="414" width="64" height="26"/><text x="18" y="432">13102</text><rect class="f-cell" x="74" y="414" width="132" height="26"/><text x="82" y="432">東京都 中央区</text><rect class="f-cell" x="206" y="414" width="56" height="26"/><text x="214" y="432">100</text><rect class="f-mark2" x="262" y="414" width="84" height="26"/><text x="270" y="432">NA</text>
+  <rect class="f-mark" x="10" y="440" width="64" height="26"/><text x="18" y="458">13104</text><rect class="f-cell" x="74" y="440" width="132" height="26"/><text x="82" y="458">東京都 新宿区</text><rect class="f-cell" x="206" y="440" width="56" height="26"/><text x="214" y="458">200</text><rect class="f-mark2" x="262" y="440" width="84" height="26"/><text x="270" y="458">30</text>
+  <text class="f-note" x="10" y="490">・Aにある行はすべて残る</text>
+  <text class="f-note" x="10" y="512">・Bにしかない浪速区の行は消える</text>
+  <text class="f-note" x="10" y="534">・突合できなかった中央区の第1次産業はNA になる</text>
 </svg>
 <figcaption>left_joinは「左のtibbleの行を全部残す」。数字は説明のための架空のものです。</figcaption>
 </figure>

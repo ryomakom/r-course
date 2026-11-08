@@ -194,11 +194,6 @@ BOX_LABEL = {
 }
 
 
-def loc(line_no):
-    """その部品がもとの.mdの何行目から来たのかをHTMLに書き込む（メモ機能用）。"""
-    return ' data-src="%s:%d"' % (CURRENT[0], line_no)
-
-
 # ------------------------------------------------ チャットの画面（:::chat）
 # AIとのやりとりを、チャットのサービスの画面ふうに見せる。
 #   @私        ここから自分の発言（右側の吹き出し）
@@ -293,7 +288,7 @@ def render_chat(lines, title, here, review=False, memo=""):
                        % (who_html, inner, tools))
 
     return (
-        '<figure class="chat%s" role="group" aria-label="%s とのやりとり"%s>'
+        '<figure class="chat%s" role="group" aria-label="%s とのやりとり">'
         '<div class="chat-bar"><span class="chat-app" aria-hidden="true">%s</span>%s%s</div>'
         '<div class="chat-log">%s</div>'
         '<div class="chat-input" aria-hidden="true">%s'
@@ -301,7 +296,7 @@ def render_chat(lines, title, here, review=False, memo=""):
         '<span class="chat-send">%s</span></div>'
         '</figure>%s' % (
             " box-review" if review else "",
-            esc(app), loc(here), esc(app), chat_icon(CHAT_ICONS["chev"], "chat-chev"),
+            esc(app), esc(app), chat_icon(CHAT_ICONS["chev"], "chat-chev"),
             '<span class="review-tag">要検討</span>' if review else "",
             "".join(log),
             chat_icon(CHAT_ICONS["plus"]), chat_icon(CHAT_ICONS["mic"]),
@@ -356,8 +351,8 @@ def render(md, headings, base_line=1):
             for word in marks:
                 code = code.replace(esc(word), "<mark>%s</mark>" % esc(word))
             out.append(
-                '<div class="code" data-lang="%s"%s>'
-                '<pre><code>%s</code></pre></div>' % (esc(label), loc(here), code)
+                '<div class="code" data-lang="%s">'
+                '<pre><code>%s</code></pre></div>' % (esc(label), code)
             )
             continue
 
@@ -374,7 +369,7 @@ def render(md, headings, base_line=1):
                 fig = ('<div class="fig-todo"><p>ここに画像を入れる</p>'
                        '<p class="fig-todo-alt">%s</p><p class="fig-todo-path">%s</p></div>'
                        % (inline(alt), esc(src)))
-            out.append('<figure class="fig"%s>%s%s</figure>' % (loc(here),
+            out.append('<figure class="fig">%s%s</figure>' % (
                 fig,
                 '<figcaption>%s</figcaption>' % inline(cap or alt) if (cap or alt) else ""))
             continue
@@ -407,10 +402,9 @@ def render(md, headings, base_line=1):
             label = title or BOX_LABEL.get(kind, "")
             if box_review:
                 REVIEW.append(("box", CURRENT[0], label))
-            out.append('<aside class="box box-%s%s"%s>%s%s</aside>' % (
+            out.append('<aside class="box box-%s%s">%s%s</aside>' % (
                 esc(kind),
                 " box-review" if box_review else "",
-                loc(here),
                 '<p class="box-title">%s%s</p>' % (
                     inline(label),
                     '<span class="review-tag">要検討</span>' if box_review else "")
@@ -429,7 +423,7 @@ def render(md, headings, base_line=1):
             hid = slugify(m.group(2).strip())
             if level == 2:
                 headings.append((hid, m.group(2).strip()))
-            out.append('<h%d id="%s"%s>%s</h%d>' % (level, hid, loc(here), text, level))
+            out.append('<h%d id="%s">%s</h%d>' % (level, hid, text, level))
             i += 1
             continue
 
@@ -452,7 +446,7 @@ def render(md, headings, base_line=1):
             while i < n and lines[i].startswith("|"):
                 rows.append(cells(lines[i]))
                 i += 1
-            t = ['<div class="table-wrap"%s><table><thead><tr>' % loc(here)]
+            t = ['<div class="table-wrap"><table><thead><tr>']
             t += ["<th>%s</th>" % inline(c) for c in head]
             t.append("</tr></thead><tbody>")
             for r in rows:
@@ -470,7 +464,7 @@ def render(md, headings, base_line=1):
             while len(list_stack) > depth:
                 out.append("</%s>" % list_stack.pop())
             if len(list_stack) < depth:
-                out.append("<%s%s>" % (tag, loc(here) if depth == 1 else ""))
+                out.append("<%s>" % tag)
                 list_stack.append(tag)
             out.append("<li>%s</li>" % inline(m.group(3)))
             i += 1
@@ -483,7 +477,7 @@ def render(md, headings, base_line=1):
             while i < n and lines[i].startswith("> "):
                 buf.append(lines[i][2:])
                 i += 1
-            out.append("<blockquote%s>%s</blockquote>" % (loc(here), inline(" ".join(buf))))
+            out.append("<blockquote>%s</blockquote>" % inline(" ".join(buf)))
             continue
 
         # HTMLを直接書いた部分はそのまま通す
@@ -508,7 +502,7 @@ def render(md, headings, base_line=1):
                 r"^(```|:::|#{2,4}\s|---+\s*$|\s*([-*]|\d+\.)\s|>\s|\||\s*<)", lines[i]):
             buf.append(lines[i].strip())
             i += 1
-        out.append("<p%s>%s</p>" % (loc(here), inline("".join(buf))))
+        out.append("<p>%s</p>" % inline("".join(buf)))
 
     close_lists(list_stack)
     return "\n".join(out)
@@ -565,7 +559,7 @@ PAGE = """<!DOCTYPE html>
 <meta name="description" content="{desc}">
 <link rel="stylesheet" href="assets/style.css">
 <script>
-// 手元（ファイルを直接開いたとき・localhost）でだけ、メモ機能と「要検討」の印を出す
+// 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
 (function () {{
   var h = location.hostname;
   if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {{
@@ -600,7 +594,6 @@ PAGE = """<!DOCTYPE html>
   </main>
 </div>
 <script src="assets/site.js"></script>
-<script src="assets/notes.js"></script>
 </body>
 </html>
 """

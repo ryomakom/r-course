@@ -1,11 +1,30 @@
 // 目次の開閉（せまい画面用）と、コードのコピー止め。
 document.addEventListener('DOMContentLoaded', function () {
+  // せまい画面では、目次はいまの画面に重ねて出す（CSS）。開いたら、いま読んでいる章が見える位置まで目次の中を送る。
+  // 閉じるのは、もう一度ボタンを押す・目次の外を押す・Esc キーのどれか
   var btn = document.querySelector('.menu-btn');
   var toc = document.querySelector('.toc');
   if (btn && toc) {
-    btn.addEventListener('click', function () {
-      var open = toc.classList.toggle('open');
+    var setOpen = function (open) {
+      toc.classList.toggle('open', open);
+      document.documentElement.classList.toggle('toc-open', open);
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.textContent = open ? '閉じる' : '目次';
+      if (open) {
+        var here = toc.querySelector('li.here');
+        if (here) toc.scrollTop = here.offsetTop - toc.clientHeight / 3;
+      }
+    };
+    btn.addEventListener('click', function () { setOpen(!toc.classList.contains('open')); });
+    document.addEventListener('click', function (e) {
+      if (toc.classList.contains('open') && !toc.contains(e.target) && !btn.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && toc.classList.contains('open')) setOpen(false);
+    });
+    // 広い画面に戻したら、開いたままの状態を解く（広い画面では目次は左にいつも出ている）
+    window.addEventListener('resize', function () {
+      if (toc.classList.contains('open') && window.innerWidth > 900) setOpen(false);
     });
   }
 

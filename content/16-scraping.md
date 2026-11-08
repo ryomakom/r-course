@@ -69,8 +69,8 @@ library(rvest)
 
 htmlのコードは最初、「折りたたまれた」状態で出てきますが、左の三角（▶）や「...」の部分をクリックすると、中身を確認できるようになっています。その作業を繰り返すことで、表に対応したコードの容器のことを示す記号`<div class="xxxxx">` というのを探します。今回の場合、xxxxxには「module-sub-page-parts-table」という名前が入っているのが分かります。
 
-<figure class="fig">
-<svg viewBox="0 0 720 1018" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="開発者ツールでHTMLの行にカーソルを合わせ、外側の容器から順に開いて、表だけを囲む容器を探す流れの模式図">
+<figure class="fig fig-switch">
+<svg class="svg-wide" viewBox="0 0 720 1018" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="開発者ツールでHTMLの行にカーソルを合わせ、外側の容器から順に開いて、表だけを囲む容器を探す流れの模式図">
 <defs><marker id="ar16" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
 <text class="f-label" x="10" y="18">左：ページ（カーソルを合わせた部分が青くなる。赤い枠が狙っている表）　右：HTMLのコード</text>
 <rect class="f-cell" x="10" y="34" width="280" height="206" rx="3"/>
@@ -205,6 +205,147 @@ htmlのコードは最初、「折りたたまれた」状態で出てきます�
 <path class="f-arrow" d="M60 944 V992 H300" marker-end="url(#ar16)"/>
 <text class="f-note" x="70" y="984">コードでは</text>
 <text class="f-code" x="310" y="997">html_element("div.module-sub-page-parts-table table")</text>
+</svg>
+<svg class="svg-narrow" style="--narrow-max: 351px" viewBox="0 0 366 1746" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="開発者ツールでHTMLの行にカーソルを合わせ、外側の容器から順に開いて、表だけを囲む容器を探す流れの模式図">
+<defs><marker id="ar16n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
+<text class="f-label" x="4" y="16">上：HTMLのコード</text>
+<text class="f-label" x="4" y="34">下：ページ（カーソルを合わせた部分が青くなる。</text>
+<text class="f-label" x="4" y="52">赤い枠が狙っている表）</text>
+<text class="f-label" x="4" y="84">① まず &lt;body&gt; に合わせる</text>
+<text class="f-note" x="4" y="104">ページ全体が青くなる。表はこの中のどこかにある</text>
+<text class="f-tri" x="10" y="134" style="font-size:11px">▼</text>
+<text class="f-mono" x="24" y="134">&lt;body&gt;</text>
+<text class="f-tri" x="24" y="158" style="font-size:11px">▶</text>
+<text class="f-mono" x="38" y="158">&lt;header&gt;…&lt;/header&gt;</text>
+<text class="f-tri" x="24" y="182" style="font-size:11px">▶</text>
+<text class="f-mono" x="38" y="182">&lt;main id="main-contents"&gt;…&lt;/main&gt;</text>
+<text class="f-mono" x="24" y="206">&lt;/body&gt;</text>
+<rect class="f-cell" x="43" y="224" width="280" height="206" rx="3"/>
+<rect class="f-pg" x="53" y="234" width="260" height="24" rx="3"/>
+<rect class="f-pg" x="53" y="266" width="260" height="154" rx="3"/>
+<rect class="f-pg" x="63" y="276" width="240" height="136" rx="3"/>
+<rect class="f-pg" x="73" y="286" width="220" height="12" rx="3"/>
+<rect class="f-pg" x="73" y="303" width="220" height="12" rx="3"/>
+<rect class="f-pg" x="73" y="320" width="220" height="86" rx="3"/>
+<text class="f-pgtext" x="61" y="250" style="font-size:11px">裁判所</text>
+<text class="f-pgtext" x="83" y="336" style="font-size:11px">案内図を表示するには…</text>
+<rect class="f-target" x="83" y="342" width="200" height="58" rx="3"/>
+<rect class="f-targethead" x="84" y="343" width="198" height="15"/>
+<line class="f-targetline" x1="83" y1="358" x2="283" y2="358"/>
+<line class="f-targetline" x1="83" y1="372" x2="283" y2="372"/>
+<line class="f-targetline" x1="83" y1="386" x2="283" y2="386"/>
+<line class="f-targetline" x1="153" y1="358" x2="153" y2="400"/>
+<line class="f-targetline" x1="203" y1="358" x2="203" y2="400"/>
+<rect class="f-blue" x="43" y="224" width="280" height="206" rx="3"/>
+<rect class="f-targetedge" x="83" y="342" width="200" height="58" rx="3"/>
+<text class="f-targettext" x="89" y="354.5" style="font-size:11px">★ 狙っている表</text>
+<rect class="f-tip" x="51" y="406" width="40.8" height="20" rx="3"/>
+<text class="f-tiptext" x="58" y="420">body</text>
+<line class="f-sep" x1="4" y1="446" x2="362" y2="446"/>
+<text class="f-label" x="4" y="472">② &lt;main&gt; に合わせる</text>
+<text class="f-note" x="4" y="492">本文の部分が青くなる。表はまだこの中。</text>
+<text class="f-note" x="4" y="510">「…」をクリックして開く</text>
+<text class="f-tri" x="10" y="540" style="font-size:11px">▼</text>
+<text class="f-mono" x="24" y="540">&lt;body&gt;</text>
+<text class="f-tri" x="24" y="564" style="font-size:11px">▶</text>
+<text class="f-mono" x="38" y="564">&lt;header&gt;…&lt;/header&gt;</text>
+<rect class="f-mark3" x="4" y="572" width="358" height="22"/>
+<text class="f-tri" x="24" y="588" style="font-size:11px">▶</text>
+<text class="f-mono" x="38" y="588" textLength="237.6" lengthAdjust="spacing">&lt;main id="main-contents"&gt;…&lt;/main&gt;</text>
+<text class="f-mono" x="24" y="612">&lt;/body&gt;</text>
+<circle class="f-ring" cx="221.6" cy="583" r="11"/>
+<rect class="f-cell" x="43" y="630" width="280" height="206" rx="3"/>
+<rect class="f-pg" x="53" y="640" width="260" height="24" rx="3"/>
+<rect class="f-pg" x="53" y="672" width="260" height="154" rx="3"/>
+<rect class="f-pg" x="63" y="682" width="240" height="136" rx="3"/>
+<rect class="f-pg" x="73" y="692" width="220" height="12" rx="3"/>
+<rect class="f-pg" x="73" y="709" width="220" height="12" rx="3"/>
+<rect class="f-pg" x="73" y="726" width="220" height="86" rx="3"/>
+<text class="f-pgtext" x="61" y="656" style="font-size:11px">裁判所</text>
+<text class="f-pgtext" x="83" y="742" style="font-size:11px">案内図を表示するには…</text>
+<rect class="f-target" x="83" y="748" width="200" height="58" rx="3"/>
+<rect class="f-targethead" x="84" y="749" width="198" height="15"/>
+<line class="f-targetline" x1="83" y1="764" x2="283" y2="764"/>
+<line class="f-targetline" x1="83" y1="778" x2="283" y2="778"/>
+<line class="f-targetline" x1="83" y1="792" x2="283" y2="792"/>
+<line class="f-targetline" x1="153" y1="764" x2="153" y2="806"/>
+<line class="f-targetline" x1="203" y1="764" x2="203" y2="806"/>
+<rect class="f-blue" x="53" y="672" width="260" height="154" rx="3"/>
+<rect class="f-targetedge" x="83" y="748" width="200" height="58" rx="3"/>
+<text class="f-targettext" x="89" y="760.5" style="font-size:11px">★ 狙っている表</text>
+<rect class="f-tip" x="57" y="830" width="134.6" height="20" rx="3"/>
+<text class="f-tiptext" x="64" y="844">main#main-contents</text>
+<line class="f-sep" x1="4" y1="864" x2="362" y2="864"/>
+<text class="f-label" x="4" y="890">③ 開いては合わせる、をくり返す</text>
+<text class="f-note" x="4" y="910">表を含む &lt;div&gt; だけを開いていく</text>
+<text class="f-tri" x="10" y="940" style="font-size:11px">▼</text>
+<text class="f-mono" x="24" y="940">&lt;main id="main-contents"&gt;</text>
+<text class="f-tri" x="24" y="964" style="font-size:11px">▼</text>
+<text class="f-mono" x="38" y="964">&lt;div class="l-contents"&gt;</text>
+<text class="f-tri" x="38" y="988" style="font-size:11px">▶</text>
+<text class="f-mono" x="52" y="988">&lt;div class="l-container"&gt;…&lt;/div&gt;</text>
+<text class="f-tri" x="38" y="1012" style="font-size:11px">▶</text>
+<text class="f-mono" x="52" y="1012">&lt;div class="l-container"&gt;…&lt;/div&gt;</text>
+<rect class="f-mark3" x="4" y="1020" width="358" height="22"/>
+<text class="f-tri" x="38" y="1036" style="font-size:11px">▶</text>
+<text class="f-mono" x="52" y="1036">&lt;div class="l-container"&gt;…&lt;/div&gt;</text>
+<rect class="f-cell" x="43" y="1054" width="280" height="206" rx="3"/>
+<rect class="f-pg" x="53" y="1064" width="260" height="24" rx="3"/>
+<rect class="f-pg" x="53" y="1096" width="260" height="154" rx="3"/>
+<rect class="f-pg" x="63" y="1106" width="240" height="136" rx="3"/>
+<rect class="f-pg" x="73" y="1116" width="220" height="12" rx="3"/>
+<rect class="f-pg" x="73" y="1133" width="220" height="12" rx="3"/>
+<rect class="f-pg" x="73" y="1150" width="220" height="86" rx="3"/>
+<text class="f-pgtext" x="61" y="1080" style="font-size:11px">裁判所</text>
+<text class="f-pgtext" x="83" y="1166" style="font-size:11px">案内図を表示するには…</text>
+<rect class="f-target" x="83" y="1172" width="200" height="58" rx="3"/>
+<rect class="f-targethead" x="84" y="1173" width="198" height="15"/>
+<line class="f-targetline" x1="83" y1="1188" x2="283" y2="1188"/>
+<line class="f-targetline" x1="83" y1="1202" x2="283" y2="1202"/>
+<line class="f-targetline" x1="83" y1="1216" x2="283" y2="1216"/>
+<line class="f-targetline" x1="153" y1="1188" x2="153" y2="1230"/>
+<line class="f-targetline" x1="203" y1="1188" x2="203" y2="1230"/>
+<rect class="f-blue" x="73" y="1150" width="220" height="86" rx="3"/>
+<rect class="f-targetedge" x="83" y="1172" width="200" height="58" rx="3"/>
+<text class="f-targettext" x="89" y="1184.5" style="font-size:11px">★ 狙っている表</text>
+<rect class="f-tip" x="77" y="1240" width="114.5" height="20" rx="3"/>
+<text class="f-tiptext" x="84" y="1254">div.l-container</text>
+<line class="f-sep" x1="4" y1="1276" x2="362" y2="1276"/>
+<text class="f-label" x="4" y="1302">④ 表だけが青くなったら、そこが目当ての容器</text>
+<text class="f-note" x="4" y="1322">このとき出る名前が、コードに書く場所の指定になる</text>
+<text class="f-tri" x="10" y="1352" style="font-size:11px">▼</text>
+<text class="f-mono" x="24" y="1352">&lt;div class="l-container"&gt;</text>
+<text class="f-mono" x="38" y="1376">&lt;p&gt;案内図を表示するには…&lt;/p&gt;</text>
+<rect class="f-mark3" x="4" y="1384" width="358" height="46"/>
+<text class="f-tri" x="24" y="1400" style="font-size:11px">▶</text>
+<text class="f-mono" x="38" y="1400">&lt;div class="module-sub-page-parts-table"&gt;</text>
+<text class="f-mono" x="38" y="1424">…&lt;/div&gt;</text>
+<text class="f-mono" x="24" y="1448">&lt;/div&gt;</text>
+<rect class="f-cell" x="43" y="1466" width="280" height="206" rx="3"/>
+<rect class="f-pg" x="53" y="1476" width="260" height="24" rx="3"/>
+<rect class="f-pg" x="53" y="1508" width="260" height="154" rx="3"/>
+<rect class="f-pg" x="63" y="1518" width="240" height="136" rx="3"/>
+<rect class="f-pg" x="73" y="1528" width="220" height="12" rx="3"/>
+<rect class="f-pg" x="73" y="1545" width="220" height="12" rx="3"/>
+<rect class="f-pg" x="73" y="1562" width="220" height="86" rx="3"/>
+<text class="f-pgtext" x="61" y="1492" style="font-size:11px">裁判所</text>
+<text class="f-pgtext" x="83" y="1578" style="font-size:11px">案内図を表示するには…</text>
+<rect class="f-target" x="83" y="1584" width="200" height="58" rx="3"/>
+<rect class="f-targethead" x="84" y="1585" width="198" height="15"/>
+<line class="f-targetline" x1="83" y1="1600" x2="283" y2="1600"/>
+<line class="f-targetline" x1="83" y1="1614" x2="283" y2="1614"/>
+<line class="f-targetline" x1="83" y1="1628" x2="283" y2="1628"/>
+<line class="f-targetline" x1="153" y1="1600" x2="153" y2="1642"/>
+<line class="f-targetline" x1="203" y1="1600" x2="203" y2="1642"/>
+<rect class="f-blue" x="83" y="1584" width="200" height="58" rx="3"/>
+<rect class="f-targetedge" x="83" y="1584" width="200" height="58" rx="3"/>
+<text class="f-targettext" x="89" y="1596.5" style="font-size:11px">★ 狙っている表</text>
+<rect class="f-tip" x="87" y="1646" width="221.7" height="20" rx="3"/>
+<text class="f-tiptext" x="94" y="1660">div.module-sub-page-parts-table</text>
+<path class="f-arrow" d="M93 1668 V1702" marker-end="url(#ar16n)"/>
+<text class="f-note" x="103" y="1690">コードでは</text>
+<text class="f-code" x="50" y="1718">html_element(</text>
+<text class="f-code" x="64" y="1736">"div.module-sub-page-parts-table table")</text>
 </svg>
 <figcaption>外側の容器から順に、カーソルを合わせては開いていく。表だけが青くなったところが目当ての容器で、そのとき出る名前を、そのままコードに使う。HTMLは、余計な部分を省いて書いています。</figcaption>
 </figure>

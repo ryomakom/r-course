@@ -301,18 +301,18 @@ vote_data <- tibble()
 for (i in sheet_names) {
   vote_data_temporaly <- "download/000979538.xlsx" %>%
     xlsx_cells() %>%
-    filter(sheet == i, row >= 4, !is_blank) %>%
+    filter(sheet == i, row >= 4 | address == "A3", !is_blank) %>%
+    behead("up-left", "district") %>%
     behead("up", "name") %>%
     behead("up", "party") %>%
     behead("left", "municipality") %>%
-    mutate(district = i) %>%
     select(district, municipality, name, party, vote = numeric)
 
   vote_data <- bind_rows(vote_data, vote_data_temporaly)
 }
 ```
 
-ポイントは三つ。空っぽの `tibble()` を先に用意すること、`filter(sheet == i)` でそのシートだけに絞ること、`district = i` でシート名を情報として持ち込むこと。
+ポイントは三つ。空っぽの `tibble()` を先に用意すること、`filter(sheet == i)` でそのシートだけに絞ること、選挙区名を `behead("up-left", "district")` でシートの中のA3から取ること。
 
 できあがった `vote_data` には、合計の行と得票数計の列から来た行も入っています。数えたり足したりするときは、19章の「数え上げて確かめる」のように、それを除いてから使って下さい。
 
@@ -325,11 +325,11 @@ vote_data <- tibble()
 
 for (i in sheet_names) {
   temp <- all_cells %>%
-    filter(sheet == i, row >= 4, !is_blank) %>%
+    filter(sheet == i, row >= 4 | address == "A3", !is_blank) %>%
+    behead("up-left", "district") %>%
     behead("up", "name") %>%
     behead("up", "party") %>%
     behead("left", "municipality") %>%
-    mutate(district = i) %>%
     select(district, municipality, name, party, vote = numeric)
 
   vote_data <- bind_rows(vote_data, temp)

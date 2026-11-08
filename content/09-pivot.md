@@ -33,8 +33,8 @@ df_simple_wide <- df_simple %>%
 
 縦長と横長の違いを図にすると、こうなります。
 
-<figure class="fig">
-<svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="同じデータを縦長と横長の二つの形で並べた模式図。縦長では年が列の中身になっていて、横長では年が列の名前になっている">
+<figure class="fig fig-switch">
+<svg class="svg-wide" viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="同じデータを縦長と横長の二つの形で並べた模式図。縦長では年が列の中身になっていて、横長では年が列の名前になっている">
 <defs><marker id="ar09" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
 <text class="f-label" x="10" y="24">縦長</text>
 <rect class="f-head" x="10" y="36" width="70" height="28"/>
@@ -112,7 +112,86 @@ df_simple_wide <- df_simple %>%
 <text class="f-note" x="390" y="162">年（赤）が列の名前になり、</text>
 <text class="f-note" x="390" y="180">人口（青）がその下に並ぶ</text>
 </svg>
-<figcaption>縦長と横長。中身は同じデータです。数字は説明のための架空のものです。</figcaption>
+<svg class="svg-narrow" style="--narrow-max: 292px" viewBox="0 0 330 524" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="同じデータを縦長と横長の二つの形で並べた模式図。縦長では年が列の中身になっていて、横長では年が列の名前になっている">
+<defs><marker id="ar09n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
+<text class="f-label" x="10" y="24">縦長</text>
+<rect class="f-head" x="10" y="36" width="70" height="28"/>
+<text class="f-th" x="18" y="55">region</text>
+<rect class="f-head" x="80" y="36" width="64" height="28"/>
+<text class="f-th" x="88" y="55">year</text>
+<rect class="f-head" x="144" y="36" width="100" height="28"/>
+<text class="f-th" x="152" y="55">population</text>
+<rect class="f-cell" x="10" y="64" width="70" height="28"/>
+<text x="18" y="83">A市</text>
+<rect class="f-mark" x="80" y="64" width="64" height="28"/>
+<text x="88" y="83">2010</text>
+<rect class="f-mark2" x="144" y="64" width="100" height="28"/>
+<text x="152" y="83">80</text>
+<rect class="f-cell" x="10" y="92" width="70" height="28"/>
+<text x="18" y="111">A市</text>
+<rect class="f-mark" x="80" y="92" width="64" height="28"/>
+<text x="88" y="111">2015</text>
+<rect class="f-mark2" x="144" y="92" width="100" height="28"/>
+<text x="152" y="111">90</text>
+<rect class="f-cell" x="10" y="120" width="70" height="28"/>
+<text x="18" y="139">A市</text>
+<rect class="f-mark" x="80" y="120" width="64" height="28"/>
+<text x="88" y="139">2020</text>
+<rect class="f-mark2" x="144" y="120" width="100" height="28"/>
+<text x="152" y="139">100</text>
+<rect class="f-cell" x="10" y="148" width="70" height="28"/>
+<text x="18" y="167">B市</text>
+<rect class="f-mark" x="80" y="148" width="64" height="28"/>
+<text x="88" y="167">2010</text>
+<rect class="f-mark2" x="144" y="148" width="100" height="28"/>
+<text x="152" y="167">170</text>
+<rect class="f-cell" x="10" y="176" width="70" height="28"/>
+<text x="18" y="195">B市</text>
+<rect class="f-mark" x="80" y="176" width="64" height="28"/>
+<text x="88" y="195">2015</text>
+<rect class="f-mark2" x="144" y="176" width="100" height="28"/>
+<text x="152" y="195">180</text>
+<rect class="f-cell" x="10" y="204" width="70" height="28"/>
+<text x="18" y="223">B市</text>
+<rect class="f-mark" x="80" y="204" width="64" height="28"/>
+<text x="88" y="223">2020</text>
+<rect class="f-mark2" x="144" y="204" width="100" height="28"/>
+<text x="152" y="223">200</text>
+<text class="f-note" x="10" y="256">1行に数字が一つだけ。</text>
+<text class="f-note" x="10" y="274">同じ自治体が、年の数だけ行に並ぶ</text>
+<path class="f-arrow" d="M110 290 V332" marker-start="url(#ar09n)" marker-end="url(#ar09n)"/>
+<text class="f-note" x="124" y="316">同じデータ</text>
+<g transform="translate(-380 330)">
+<text class="f-label" x="390" y="24">横長</text>
+<rect class="f-head" x="390" y="36" width="70" height="28"/>
+<text class="f-th" x="398" y="55">region</text>
+<rect class="f-mark" x="460" y="36" width="80" height="28"/>
+<text class="f-th" x="468" y="55">2010</text>
+<rect class="f-mark" x="540" y="36" width="80" height="28"/>
+<text class="f-th" x="548" y="55">2015</text>
+<rect class="f-mark" x="620" y="36" width="80" height="28"/>
+<text class="f-th" x="628" y="55">2020</text>
+<rect class="f-cell" x="390" y="64" width="70" height="28"/>
+<text x="398" y="83">A市</text>
+<rect class="f-mark2" x="460" y="64" width="80" height="28"/>
+<text x="468" y="83">80</text>
+<rect class="f-mark2" x="540" y="64" width="80" height="28"/>
+<text x="548" y="83">90</text>
+<rect class="f-mark2" x="620" y="64" width="80" height="28"/>
+<text x="628" y="83">100</text>
+<rect class="f-cell" x="390" y="92" width="70" height="28"/>
+<text x="398" y="111">B市</text>
+<rect class="f-mark2" x="460" y="92" width="80" height="28"/>
+<text x="468" y="111">170</text>
+<rect class="f-mark2" x="540" y="92" width="80" height="28"/>
+<text x="548" y="111">180</text>
+<rect class="f-mark2" x="620" y="92" width="80" height="28"/>
+<text x="628" y="111">200</text>
+<text class="f-note" x="390" y="144">自治体ごとに1行。</text>
+<text class="f-note" x="390" y="162">年（赤）が列の名前になり、</text>
+<text class="f-note" x="390" y="180">人口（青）がその下に並ぶ</text>
+</g>
+</svg>
 </figure>
 
 あまり見ないタイプですが、いちばん左側に「調査年度」の列があって、その横に自治体名の列がずらりと並んでいる、というような表も考えられます。こんなコードで書けます。
