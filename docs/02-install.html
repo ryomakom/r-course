@@ -8,7 +8,7 @@
 <meta name="author" content="小宮山亮磨">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://ryomakom.github.io/r-course/02-install.html">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="sitemap" type="application/xml" href="sitemap.xml">
 <meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
@@ -22,7 +22,7 @@
 <meta property="article:author" content="https://x.com/ryomakom">
 <meta property="article:section" content="はじめに">
 <meta property="article:published_time" content="2026-08-10">
-<meta property="article:modified_time" content="2026-11-08">
+<meta property="article:modified_time" content="2026-11-09">
 <meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/02-install.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
@@ -53,7 +53,7 @@
    "inLanguage": "ja",
    "image": "https://ryomakom.github.io/r-course/assets/og/02-install.png",
    "datePublished": "2026-08-10",
-   "dateModified": "2026-11-08",
+   "dateModified": "2026-11-09",
    "author": {
     "@type": "Person",
     "@id": "https://ryomakom.github.io/r-course/#author",
@@ -166,7 +166,12 @@
       <h1>RとRStudioを入れる</h1>
       <p class="lead">どちらも無料です。入れたら、四つに区切られた画面の見方をおさえましょう。</p>
       
-      <h2 id="Rを入れる">Rを入れる</h2>
+      <p>ではさっそく、必要な二つの道具をゲットしていきましょう。いずれも無料、オンラインでとれます。</p>
+<p>Rは、計算をする本体です。データを読み込んだりグラフを描いたりするのは、すべてRがやっています。ただRだけだと、画面は命令を打ち込む欄がぽつんとあるだけの、なんとも素っ気ないものです。</p>
+<p>RStudioは、そのRを使いやすくするための作業台です。コードを書く欄、読み込んだデータの一覧、描いたグラフ、フォルダの中身などを一つの画面に並べて、Rへの命令を手助けしてくれます。</p>
+<p>車にたとえるなら、Rがエンジン、RStudioが運転席といえばいいでしょうか。</p>
+<p>入れる順番は「R → RStudio」です。RStudioだけ入れても、エンジンがないので動きません。そして実際に使うときに開くのは、RStudioのほうだけ。RStudioを開けば、裏でRが自動的に呼び出されます。</p>
+<h2 id="Rを入れる">Rを入れる</h2>
 <ol>
 <li>まず、Rの公式サイト（<a href="https://cran.r-project.org/">CRAN</a>＝シーラン）にアクセスします。</li>
 <li>自分のコンピューターのOS（WindowsやMacなど）に合ったインストーラーをダウンロードします。</li>
@@ -192,10 +197,10 @@
 <h3 id="右下FilesPlotsPackages">右下——Files、Plots、Packages</h3>
 <p>「Files」では、作業中のフォルダの構造やファイルが確認できます。「Plots」ではデータから作成したグラフや表などが、「Packages」では、インストール済みで利用可能なパッケージの一覧が見られます（パッケージとは何かというのは<a href="03-project.html">次の章</a>で説明しますので、ひとまず忘れてください）。</p>
 <h3 id="もう一つ必要な区画コードを書き残す場所">もう一つ必要な区画——コードを書き残す場所</h3>
-<p>作業にはもう一つの区画が必要になります。データ処理や分析の手順を一連のコードとして書き残し、保存するための場所です。R MarkdownやR Scriptなどの形で保存しておくことができますが、ここではR Markdownでのやり方を書いていきます。</p>
+<p>作業にはもう一つの区画が必要になります。データ処理や分析の手順を一連のコードとして書き残し、保存するための場所です。R MarkdownやR Scriptなどのファイル形式で保存できますが、ここではR Markdownでのやり方を書いていきます。</p>
 <figure class="fig"><img src="images/02-new-rmd.png" alt="RStudioのFileメニューからNew File→R Markdownを選ぶ操作を示した画面" loading="lazy"><figcaption>File → New File → R Markdown</figcaption></figure>
 <p>左上にある「File」をクリックし、さらに「New File」→「R Markdown」と進んでいくと、ファイル名の最後の部分（拡張子）が <code>.Rmd</code> となっているR Markdownの新しいファイルを開くことができます。</p>
-<p>この区画は、コードを保存しておくための場所です。データ分析の過程は試行錯誤の連続ですので、コンソールの区画を使っていろいろなコードを実行して、結果がどうなるかをみてみる必要がありますが、試した結果うまくいって、<strong>後に残しておきたくなったコードをR Markdownのほうに書いておく</strong>わけです。</p>
+<p>データ分析の過程は試行錯誤の連続。コンソールの区画を使っていろいろなコードを実行して、結果がどうなるかをみてみる必要がありますが、試した結果うまくいって、<strong>後に残しておきたくなったコードをR Markdownのほうに書いておく</strong>わけです。</p>
 <p>また、R Markdownはコンピューターに実行させる命令を書いておくコードの部分と、人間のための（コンピューターには読ませない）メモを書いておくMarkdown部分に分かれています。保存したうえで、HTMLやPDFなどの形式で出力することもできます。</p>
 <aside class="box box-note"><p class="box-title">コードの部分の作り方</p><p>R Markdownのなかで、コードを書く場所（チャンクと呼びます）はこんな形をしています。</p>
 <div class="code" data-lang="画面に出るもの"><pre><code>```{r}
@@ -206,7 +211,7 @@ library(tidyverse)
 <p>最初のうちはマウスでちまちま実行してもいいのですが、この三つだけは早めに覚えると作業がラクになります。</p>
 <div class="table-wrap"><table><thead><tr><th>キー</th><th>何が起きるか</th></tr></thead><tbody><tr><td>Ctrl＋Enter</td><td>カーソルがある行（または選択した範囲）のコードを実行する</td></tr><tr><td>Ctrl＋Shift＋M</td><td>パイプ演算子 <code>%&gt;%</code> が出てくる（これが何をするものかはまた後ほど）</td></tr><tr><td>Ctrl＋Shift＋Enter</td><td>いま書いているチャンクを丸ごと実行する</td></tr></tbody></table></div>
 <p>MacではCtrlをCmdに読み替えてください。</p>
-<p>それからもう一つ。このサイトでは、コードを書いている部分はコピペができないようにしています。コードをよく見て、自分で手を動かして同じものを書くという訓練が、Rの各種コマンドや文法を覚えるうえでとても役に立つと思うからです。</p>
+<p>それからもう一つ。この講座では、コードを書いている部分はコピペができないようにしています。コードをよく見て、自分で手を動かして同じものを書くという訓練が、Rの各種コマンドや文法を覚えるうえでとても役に立つと思うからです。</p>
 <p>Rに限らずプログラミング言語は、ちょっとした文法ミスでエラーが頻発します。それはたとえば変な場所に意図しない記号が紛れ込んでいたりとか、半角にすべきところを全角にしてたりとか、非常にささいなものです。何でエラーが出るんじゃぁといらいらすることは多々ありますが、そういうのを繰り返すうちにはまりやすいパターンもわかり、また文法やコマンドがだんだんと身についてくるわけです。</p>
 <p>寺子屋みたいな古い学習法のようにも思えますが、<strong>とにかくまずは手を動かす</strong>。我慢しておつきあいください。</p>
 <p>次の章では、作業場所をひとまとめにする「プロジェクト」をつくり、道具箱にあたる「パッケージ」を入れます。</p>

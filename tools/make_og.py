@@ -156,13 +156,51 @@ def home_card():
     return img
 
 
-def touch_icon():
-    """スマホのホーム画面用のアイコン（180×180）。favicon.svg と同じ図柄。"""
-    img = Image.new("RGB", (180, 180), PAPER)
+ARIAL_B = "C:/Windows/Fonts/arialbd.ttf"
+
+
+def brand_icon(size, rounded=True):
+    """サイトのアイコン。赤地に大きく「R」と「J」、そのまん中に小さく「for」を重ねる（R for Journalists）。
+    512px で描いてから縮める。rounded=False はスマホのホーム画面用（角はスマホが丸める）。"""
+    big = 512
+    img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rectangle([40, 34, 66, 146], fill=ACCENT)
-    d.text((118, 92), "R", font=font("mincho", 120), fill=INK, anchor="mm")
-    return img
+    if rounded:
+        d.rounded_rectangle([0, 0, big - 1, big - 1], radius=110, fill=ACCENT)
+    else:
+        d.rectangle([0, 0, big - 1, big - 1], fill=ACCENT)
+    path = ARIAL_B if os.path.exists(ARIAL_B) else FONTS["gothic_b"]
+    # R と J は縦長に引き伸ばして、上下の空きを埋める（字を別の絵に描いてから、高さだけ伸ばして貼る）
+    letters = ImageFont.truetype(path, 330)
+    for ch, cx in (("R", 150), ("J", 366)):
+        glyph = Image.new("L", (400, 400), 0)
+        ImageDraw.Draw(glyph).text((200, 200), ch, font=letters, fill=255, anchor="mm")
+        glyph = glyph.crop(glyph.getbbox())
+        w, h = glyph.size
+        glyph = glyph.resize((w, 392), Image.LANCZOS)          # 高さだけ伸ばす（上下に60pxずつの余白）
+        img.paste(Image.new("RGBA", glyph.size, PAPER + (255,)), (int(cx - w / 2), 60), glyph)
+    # 「for」は正方形のまん中に小さく、R と J の両方に重ねる。白い字の上でも読めるよう、赤でふちどる
+    # 半透明にして、下の R と J が透けて見えるようにする（別の層に描いて重ねる）
+    layer = Image.new("RGBA", (big, big), (0, 0, 0, 0))
+    ImageDraw.Draw(layer).text((256, 262), "for", font=ImageFont.truetype(path, 208),
+                               fill=(0xf2, 0xc9, 0x8f, 190), anchor="mm",
+                               stroke_width=18, stroke_fill=ACCENT + (110,))
+    img = Image.alpha_composite(img, layer)
+    return img.resize((size, size), Image.LANCZOS)
+
+
+def save_icon(img, path):
+    """アイコンは透明な角を残したいので、色を減らさずにそのままPNGで書く。中身が変わったときだけ書く。"""
+    buf = io.BytesIO()
+    img.save(buf, "PNG", optimize=True)
+    data = buf.getvalue()
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            if f.read() == data:
+                return False
+    with open(path, "wb") as f:
+        f.write(data)
+    return True
 
 
 def png_bytes(img):
@@ -192,7 +230,8 @@ def make_all(pages, outdir):
     for slug, kicker, title in pages:
         img = home_card() if slug == "index" else card(kicker, title)
         n += save(img, os.path.join(outdir, slug + ".png"))
-    n += save(touch_icon(), os.path.join(outdir, "..", "apple-touch-icon.png"))
+    n += save_icon(brand_icon(180, rounded=False).convert("RGB"), os.path.join(outdir, "..", "apple-touch-icon.png"))
+    n += save_icon(brand_icon(64), os.path.join(outdir, "..", "favicon.png"))
     return n
 
 

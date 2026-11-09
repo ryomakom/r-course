@@ -793,7 +793,7 @@ def head_html(slug, title, desc, dates):
         '<meta name="author" content="%s">' % attr(AUTHOR),
         '<meta name="robots" content="index, follow, max-image-preview:large">',
         '<link rel="canonical" href="%s">' % url,
-        '<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">',
+        '<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">',
         '<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">',
         '<link rel="sitemap" type="application/xml" href="sitemap.xml">',
         '<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">',

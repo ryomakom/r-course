@@ -35,7 +35,7 @@ r-course/
 ├── assets/
 │   ├── style.css     見た目。明るい画面と暗い画面の両方に対応
 │   ├── site.js       目次の開閉と、コードのコピー止め
-│   ├── favicon.svg   ブラウザのタブに出るアイコン（手で書いたSVG）
+│   ├── favicon.png   ブラウザのタブに出るアイコン（赤地に「RJ」と小さな「for」。tools/make_og.py が作る）
 │   ├── apple-touch-icon.png  スマホのホーム画面用（make_og.py が作る）
 │   └── og/           SNS用の画像。ページごとに1枚（make_og.py が作る）
 └── docs/             書き出されたHTML（自動生成。編集しない。GitHub Pagesがここを配信する）
