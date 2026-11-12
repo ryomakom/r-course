@@ -710,10 +710,49 @@ td .dl-size { white-space: nowrap; }
   color: var(--ink-2);
   text-align: center;
 }
+/* 図のセルの4色（赤・青・黄・緑）。塗りは --cell-*、濃い色（セルの左の帯や、コードの語の札の線）は --bar-*。
+   ダークモードでは、薄い塗りが灰色に沈まないよう濃いめにする。緑は赤と見分けにくい人がいるので、青緑に寄せてある */
+:root {
+  --cell-red: color-mix(in srgb, var(--accent) 14%, var(--paper-2));
+  --cell-blue: color-mix(in srgb, var(--accent-2) 14%, var(--paper-2));
+  --cell-yellow: color-mix(in srgb, var(--mark) 85%, var(--paper-2));
+  --cell-green: color-mix(in srgb, #1f8f7a 16%, var(--paper-2));
+  --bar-red: var(--accent);
+  --bar-blue: var(--accent-2);
+  --bar-yellow: #b8962e;
+  --bar-green: #1f8f7a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cell-red: color-mix(in srgb, #e0736c 34%, var(--paper-2));
+    --cell-blue: color-mix(in srgb, #7fb0e0 30%, var(--paper-2));
+    --cell-yellow: color-mix(in srgb, #d9b93a 30%, var(--paper-2));
+    --cell-green: color-mix(in srgb, #5cc8bf 26%, var(--paper-2));
+    --bar-yellow: #d9b93a;
+    --bar-green: #5cc8bf;
+  }
+}
+/* セルの左端につける濃い色の帯（アニメーションで、色つきのセルに重ねる細い四角） */
+.fig .f-bar-red { fill: var(--bar-red); }
+.fig .f-bar-blue { fill: var(--bar-blue); }
+.fig .f-bar-yellow { fill: var(--bar-yellow); }
+.fig .f-bar-green { fill: var(--bar-green); }
+/* コードや説明文のなかの語につける色札。図のセルと同じ塗りと帯で、「この語がこのセル」と結ぶ */
+.k-red, .k-blue, .k-yellow, .k-green {
+  padding: .05em .3em .05em .35em;
+  border-left: 3px solid;
+  border-radius: .15rem;
+  color: var(--ink);
+  font-weight: inherit;
+}
+.k-red { background: var(--cell-red); border-left-color: var(--bar-red); }
+.k-blue { background: var(--cell-blue); border-left-color: var(--bar-blue); }
+.k-yellow { background: var(--cell-yellow); border-left-color: var(--bar-yellow); }
+.k-green { background: var(--cell-green); border-left-color: var(--bar-green); }
 .fig .f-cell { fill: var(--paper-2); stroke: var(--line); }
 .fig .f-head { fill: var(--code-bg); stroke: var(--line); }
-.fig .f-mark { fill: color-mix(in srgb, var(--accent) 14%, var(--paper-2)); stroke: var(--line); }
-.fig .f-mark2 { fill: color-mix(in srgb, var(--accent-2) 14%, var(--paper-2)); stroke: var(--line); }
+.fig .f-mark { fill: var(--cell-red); stroke: var(--line); }
+.fig .f-mark2 { fill: var(--cell-blue); stroke: var(--line); }
 .fig .f-off { fill: var(--code-bg); stroke: var(--line); opacity: .55; }
 .fig text { fill: var(--ink); font-family: var(--gothic); font-size: 13px; }
 .fig .f-th { font-weight: 700; }
@@ -722,8 +761,8 @@ td .dl-size { white-space: nowrap; }
 .fig .f-code2 { font-family: var(--mono); font-size: 12px; fill: var(--accent-2); }
 .fig .f-arrow { fill: none; stroke: var(--ink-2); stroke-width: 1.6; }
 .fig .f-label { fill: var(--ink); font-size: 13px; font-weight: 700; }
-.fig .f-mark3 { fill: color-mix(in srgb, var(--mark) 85%, var(--paper-2)); stroke: var(--line); }
-.fig .f-mark4 { fill: color-mix(in srgb, #2e8b57 16%, var(--paper-2)); stroke: var(--line); }
+.fig .f-mark3 { fill: var(--cell-yellow); stroke: var(--line); }
+.fig .f-mark4 { fill: var(--cell-green); stroke: var(--line); }
 .fig .f-aside { fill: color-mix(in srgb, #2e8b57 8%, var(--paper-2)); stroke: #2e8b57; stroke-dasharray: 3 3; }
 .fig .f-gone { fill: none; stroke: var(--line); stroke-dasharray: 3 3; }
 .fig .f-hl { fill: none; stroke: var(--accent); stroke-width: 2.5; }
@@ -796,6 +835,24 @@ td .dl-size { white-space: nowrap; }
 .anim-fig .pv-code .is-now { background: var(--mark); font-weight: 700; }
 .anim-fig .pv-code .is-done { opacity: .45; }
 .anim-fig .pv-code .pv-dir { color: var(--accent); }
+/* ==== 09章のアニメーション：表の下に出すコードの行（ここから） ====
+   二つの向きのコードを同じ場所に重ねて置き、片方だけを見せる（切り替えても下のボタンが動かない）。
+   せまい画面では、引数の切れ目で折り返す */
+.pivot-fig .pv-call {
+  display: grid; width: fit-content; max-width: 100%; box-sizing: border-box;
+  margin: .5rem auto 0; padding: .45rem .9rem;
+  background: var(--code-bg); border-radius: .4rem;
+}
+.pivot-fig .pv-call code {
+  justify-self: center;   /* 短いほうのコードも、枠のまん中に置く */
+  grid-area: 1 / 1; align-self: center; padding: 0; border: 0; background: none;
+  font-family: var(--mono); font-size: .82rem; line-height: 1.9; color: var(--code-ink);
+  white-space: normal; overflow-wrap: anywhere; word-break: normal; text-align: left;
+}
+.pivot-fig .pv-call code.is-off { visibility: hidden; }
+.pivot-fig .pv-call .pv-arg { display: inline-block; white-space: pre-wrap; }
+.pivot-fig .pv-call .k-red, .pivot-fig .pv-call .k-blue { margin: 0; padding: .05em .15em .05em .2em; }
+/* ==== 09章のアニメーション：表の下に出すコードの行（ここまで） ==== */
 .fig .pv-arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
 .fig .pv-arrow-label { fill: var(--accent); font-size: 12px; font-weight: 700; }
 /* 19章：数字のセル一つひとつから矢印を出すので、線は細めにし、始点に点を打つ */
@@ -815,6 +872,12 @@ td .dl-size { white-space: nowrap; }
 }
 /* その段で剥がすラベル（矢印の行き先）を赤い枠で目立たせる */
 .behead-fig .pv-hl { fill: color-mix(in srgb, var(--accent) 7%, transparent); stroke: var(--accent); stroke-width: 2; }
+/* ==== 19章のアニメーション：コードの列名の色札（ここから） ====
+   列名（"district" など）に、その列のセルと同じ色の札（.k-*）をつける。札で行が区切られるぶん、
+   行の中の区切りごとの余白はなくして、コードの字の並びを崩さない */
+.behead-fig .pv-code span span { padding: 0; }
+.behead-fig .pv-key { padding: 0 .2em 0 .25em; }
+/* ==== 19章のアニメーション：コードの列名の色札（ここまで） ==== */
 @media print {
   .anim-host { display: none; }
   .fig-anim-static.is-replaced { display: block; }
@@ -878,6 +941,41 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
   font-size: .92rem;
 }
 .cards a:hover { border-color: var(--accent); }
+
+/* ===== トップの見本の帯（.showcase）・カードの並び・ダークモードの画像 ここから =====
+   見本の帯：この講座で作るものを4枚並べる。広い画面は4列、せまい画面は横に送る1列で、次の1枚が右からのぞく */
+.showcase { display: grid; grid-template-columns: repeat(4, 1fr); gap: .7rem; margin: 0 0 1.8rem; }
+.showcase a { display: block; min-width: 0; text-decoration: none; color: var(--ink); }
+.showcase img {
+  display: block; width: 100%; aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid var(--line); border-radius: .4rem;
+  background: #fff;
+}
+.showcase span { display: block; margin-top: .35rem; font-size: .8rem; line-height: 1.4; color: var(--ink-2); text-align: center; }
+.showcase a:hover img { border-color: var(--accent); }
+.showcase a:hover span { color: var(--accent); }
+@media (max-width: 600px) {
+  .showcase {
+    display: flex; gap: .6rem;
+    overflow-x: auto; overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: .5rem;
+  }
+  .showcase a { flex: 0 0 62%; scroll-snap-align: start; }
+}
+/* 「どこから読むか」のカード：2列×2段（同じ段は同じ高さ）、せまい画面は1列 */
+.cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 600px) {
+  .cards { grid-template-columns: 1fr; }
+}
+/* ダークモードでは、白地のグラフや画面写真がまぶしいので少し暗くする（SVGの図や動くグラフはそのまま。印刷には効かせない） */
+@media screen and (prefers-color-scheme: dark) {
+  .fig img, .showcase img { filter: brightness(.85) contrast(1.05); border-color: color-mix(in srgb, var(--line) 70%, var(--ink-2)); }
+  .fig img[src$=".jpg"] { filter: brightness(.93); }   /* 写真は控えめに */
+}
+/* ===== トップの見本の帯・カードの並び・ダークモードの画像 ここまで ===== */
 
 /* ------------------------------------------------------------ せまい画面 */
 @media (max-width: 900px) {

@@ -4,6 +4,13 @@ nav: トップ
 kicker: 
 ---
 
+<div class="showcase">
+<a href="12-line.html"><img src="images/12-line-color.png" alt="五つの都府県の人口の移り変わりを、色分けした折れ線で描いたグラフ" loading="lazy" style="object-position: 0% 50%"><span>折れ線グラフ（12章）</span></a>
+<a href="14-point.html"><img src="images/14-point-color47.png" alt="47都道府県の子どもの割合を、年ごとに色分けした点で描いた散布図" loading="lazy" style="object-position: 0% 50%"><span>散布図（14章）</span></a>
+<a href="20-more.html"><img src="images/20-exdeaths-map.png" alt="都道府県ごとに、死者数が予測とどれだけ違ったかを赤と青で塗り分けた日本地図" loading="lazy" style="object-position: 90% 50%"><span>色分け地図（20章）</span></a>
+<a href="19-kami-excel.html"><img src="images/19-excel.png" alt="見出しが何段にも分かれた、選挙の得票数のExcelの表" loading="lazy" style="object-position: 0% 0%"><span>神Excelを整える（19章）</span></a>
+</div>
+
 デジタル化が進み、さまざまなデータが公開されるようになってきました。政府による各種の統計も、アクセスへの敷居が少しずつ下がってきています。
 
 ただ、データが何百行もあったり、シートが何十個にも分かれていたりするファイルには、技術がなければ容易に手出しができません。分析したらおもしろいことがわかりそうなのに、手作業ではとても無理！　そうやってあきらめたことがある人は、少なくないのではないでしょうか。

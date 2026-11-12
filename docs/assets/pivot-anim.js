@@ -92,6 +92,7 @@ function pivotAnim() {
   fig.appendChild(svg);
 
   var CLS = { head: 'f-head', cell: 'f-cell', year: 'f-mark', value: 'f-mark2' };
+  var BAR = { year: 'f-bar-red', value: 'f-bar-blue' };   // 色のついたセルの左端に入れる帯（色の見分けがつきにくくても区別できるように）
   var nodes = cells.map(function (c) {
     var g = document.createElementNS(SVGNS, 'g');
     g.setAttribute('class', 'pv-cell');
@@ -105,10 +106,54 @@ function pivotAnim() {
     if (c.kind === 'head') t.setAttribute('class', 'f-th');
     t.textContent = c.text;
     g.appendChild(r);
+    if (BAR[c.kind]) {
+      // 帯はセルと同じ <g> に入れて、セルと一緒に動かす（年が列の名前になっても、赤い帯はついたまま）
+      var b = document.createElementNS(SVGNS, 'rect');
+      b.setAttribute('class', BAR[c.kind]);
+      b.setAttribute('width', 3);
+      b.setAttribute('height', H);
+      g.appendChild(b);
+    }
     g.appendChild(t);
     svg.appendChild(g);
     return g;
   });
+
+  // 表の下に、いまの向きのコードを1行で出す。year と population には、セルと同じ色の札をつける。
+  // 二つの向きのコードを同じ場所に重ねて置き、片方だけを見せる（切り替えても、下のボタンの位置が動かないように）
+  var code = document.createElement('div');
+  code.className = 'pv-call';
+  function call(fn, args) {
+    var c = document.createElement('code');
+    c.appendChild(document.createTextNode(fn + '('));
+    args.forEach(function (a, i) {
+      // 引数ごとにまとめておき、せまい画面では引数の切れ目で折り返す
+      var s = document.createElement('span');
+      s.className = 'pv-arg';
+      a.forEach(function (part) {
+        if (typeof part === 'string') { s.appendChild(document.createTextNode(part)); return; }
+        var k = document.createElement('span');
+        k.className = part[1];
+        k.textContent = part[0];
+        s.appendChild(k);
+      });
+      s.appendChild(document.createTextNode(i < args.length - 1 ? ',' : ')'));
+      c.appendChild(s);
+      if (i < args.length - 1) c.appendChild(document.createTextNode(' '));
+    });
+    code.appendChild(c);
+    return c;
+  }
+  var YEAR = ['year', 'k-red'], POP = ['population', 'k-blue'];
+  var cWide = call('pivot_wider', [['names_from = ', YEAR], ['values_from = ', POP]]);
+  var cLong = call('pivot_longer', [['cols = -region'], ['names_to = "', YEAR, '"'], ['values_to = "', POP, '"']]);
+  function showCall(wide) {
+    cWide.classList.toggle('is-off', !wide);
+    cLong.classList.toggle('is-off', wide);
+    cWide.setAttribute('aria-hidden', wide ? 'false' : 'true');
+    cLong.setAttribute('aria-hidden', wide ? 'true' : 'false');
+  }
+  fig.appendChild(code);
 
   var note = document.createElement('p');
   note.className = 'pv-note';
@@ -156,6 +201,7 @@ function pivotAnim() {
   function run(to) {
     if (busy || stage === to) return;
     var forward = to > stage;
+    showCall(forward);
     busy = true;
     buttons();
     (function next() {
@@ -175,6 +221,7 @@ function pivotAnim() {
   bWide.addEventListener('click', function () { run(LAST); });
   bLong.addEventListener('click', function () { run(0); });
   show(0, false, FWD[0]);
+  showCall(true);
   buttons();
 }
 

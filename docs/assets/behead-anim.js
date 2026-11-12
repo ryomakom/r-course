@@ -66,15 +66,25 @@ function beheadAnim(startStage) {
     { code: [4], note: '"up"：その次に「上」にあるラベル（政党名）を、party の列に入れる' },
     { code: [5], note: '"left"：数字のセルから見て「左」にあるラベル（A列）を、municipality の列に入れる' }
   ];
-  // コードの行。[文字, 強調するか] の並び
+  // 色つきのセルの、左端の帯の色（CSS の f-bar-*）と、コードの列名につける色札（k-*）。図のセルとコードの語を同じ色で結ぶ
+  var BAR = { 'f-mark4': 'green', 'f-mark': 'red', 'f-mark2': 'blue', 'f-mark3': 'yellow' };
+  var COLCOLOR = { district: 'green', name: 'red', party: 'blue', municipality: 'yellow' };
+  // コードの行。[文字, 種類] の並び。種類は 0＝ふつう、1＝向きの語（強調）、'k-…'＝列名（その列のセルと同じ色の札）
   var CODE = [
     [['"download/000979538.xlsx" %>% xlsx_cells() %>%', 0]],
     [['  filter(sheet == "北海道第１区", row >= 4 | address == "A3", !is_blank) %>%', 0]],
-    [['  behead(', 0], ['"up-left"', 1], [', "district") %>%', 0]],
-    [['  behead(', 0], ['"up"', 1], [', "name") %>%', 0]],
-    [['  behead(', 0], ['"up"', 1], [', "party") %>%', 0]],
-    [['  behead(', 0], ['"left"', 1], [', "municipality")', 0]]
+    [['  behead(', 0], ['"up-left"', 1], [', ', 0], ['"district"', 'k-green'], [') %>%', 0]],
+    [['  behead(', 0], ['"up"', 1], [', ', 0], ['"name"', 'k-red'], [') %>%', 0]],
+    [['  behead(', 0], ['"up"', 1], [', ', 0], ['"party"', 'k-blue'], [') %>%', 0]],
+    [['  behead(', 0], ['"left"', 1], [', ', 0], ['"municipality"', 'k-yellow'], [')', 0]]
   ];
+  // コードの一区切りを要素にする（コードの欄と、スマホの帯の両方で使う）
+  function codeSeg(kind, text) {
+    var e = document.createElement(kind ? 'b' : 'span');
+    if (kind) e.className = kind === 1 ? 'pv-dir' : 'pv-key ' + kind;
+    e.textContent = text;
+    return e;
+  }
 
   // ---- セルの定義：段ごとの位置・濃さ（0〜LAST）
   var cells = [];
@@ -135,22 +145,25 @@ function beheadAnim(startStage) {
     copy(MUNI[v[0]], 'f-mark3', 'municipality', i, sx('A'), sy(v[0]), 5);
   });
 
-  // ---- 矢印：その段のあいだだけ出す。[段, 線の形（path の d）, 始点x, 始点y]
-  // 数字のセル一つひとつから、点を始点にした矢印を出す（どのセルも自分でラベルを探しにいく、と見えるように）。
-  // 同じ列のセルの矢印が重ならないよう、行ごとに少しずつ横にずらす。left は、B列を少し上、C列を少し下に通す
+  // ---- 矢印：前に進む段で、写しが飛んでいくあいだだけ出す（着いたら消す）。[段, 線の形（path の d）, 始点x, 始点y]
+  // 数字のセル一つひとつに始点の点を打ち、そこから矢印を出す（どのセルも自分でラベルを探しにいく、と見えるように）。
+  // 線が数字やラベルの文字にかぶらないよう、点は数字の右の空いたところに打ち、線はセルの辺に沿わせる。
+  // 上へ行く矢印は列の右の辺を、左へ行く矢印は行の下の辺を通る（同じ列・同じ行のセルの線は、そこで1本に重なる）
   var arrows = [];
+  var EDGE = 2;                   // 線を通す位置（セルの辺から内側へ）
   ['B', 'C'].forEach(function (c) {
     [6, 7, 8, 9, 10].forEach(function (r) {
-      var x = sx(c) + 12 + (r - 6) * 12, y = sy(r) + RH / 2;
-      // up-left（選挙区名）：上端の3行目まで上がり、真上が空白なので左のA3へ
-      arrows.push([2, 'M' + x + ' ' + y + ' V' + (sy(3) + RH / 2) + ' H' + (sx('A') + SW.A + 2), x, y]);
-      // up（候補者名）：真上のラベルの行へ
-      arrows.push([3, 'M' + x + ' ' + y + ' V' + (sy(4) + RH + 2), x, y]);
+      var x = sx(c) + SW[c] - 9, y = sy(r) + RH / 2;      // 始点（数字は左寄せなので、右端の近くは空いている）
+      var vx = sx(c) + SW[c] - EDGE;                      // 列の右の辺
+      var up = 'M' + x + ' ' + y + ' H' + vx + ' V';
+      // up-left（選挙区名）：上端の3行目まで上がり、真上が空白なので左のA3へ（B列は少し上、C列は少し下を通す）
+      arrows.push([2, up + (sy(3) + RH / 2 + (c === 'B' ? -4 : 4)) + ' H' + (sx('A') + SW.A + 1), x, y]);
+      // up（候補者名）：真上のラベルの行のすぐ下まで
+      arrows.push([3, up + (sy(4) + RH), x, y]);
       // up（政党名）
-      arrows.push([4, 'M' + x + ' ' + y + ' V' + (sy(5) + RH + 2), x, y]);
-      // left（市区町村名）：真横（左）のA列へ
-      var lx = sx(c) + SW[c] / 2, ly = y + (c === 'B' ? -5 : 5);   // 始点はセルのまん中
-      arrows.push([5, 'M' + lx + ' ' + ly + ' H' + (sx('A') + SW.A + 2), lx, ly]);
+      arrows.push([4, up + (sy(5) + RH), x, y]);
+      // left（市区町村名）：行の下の辺に沿って、左のA列へ
+      arrows.push([5, 'M' + x + ' ' + y + ' V' + (sy(r) + RH - (narrow ? EDGE : EDGE + 1)) + ' H' + (sx('A') + SW.A - 3), x, y]);
     });
   });
   var arrowLabels = [
@@ -169,7 +182,7 @@ function beheadAnim(startStage) {
   svg.setAttribute('aria-label', 'behead() でラベルを剥がし、数字のセルの1行ずつに配っていく様子のアニメーション');
   fig.appendChild(svg);
   var defs = document.createElementNS(SVGNS, 'defs');
-  defs.innerHTML = '<marker id="bh-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
+  defs.innerHTML = '<marker id="bh-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">' +
                    '<path d="M0 0 L10 5 L0 10 z" style="fill:var(--accent)"/></marker>';
   svg.appendChild(defs);
 
@@ -204,6 +217,22 @@ function beheadAnim(startStage) {
     r.setAttribute('width', c.w);
     r.setAttribute('height', c.h);
     g.appendChild(r);
+    // 色つきのセルは、左端に濃い色の帯をつける（同じ <g> の中なので、セルといっしょに動き、いっしょにうすくなる）。
+    // 右の表の列名のセルは、下の辺にその列の色の線を引く（numeric は色なし）
+    var band = BAR[c.cls], under = c.cls === 'f-head' && COLCOLOR[c.text];
+    if (band || under) {
+      var b = document.createElementNS(SVGNS, 'rect');
+      b.setAttribute('class', 'f-bar-' + (band || under));
+      if (band) {
+        b.setAttribute('width', 3);
+        b.setAttribute('height', c.h);
+      } else {
+        b.setAttribute('y', c.h - 2.5);
+        b.setAttribute('width', c.w);
+        b.setAttribute('height', 2.5);
+      }
+      g.appendChild(b);
+    }
     if (c.text) {
       var t = document.createElementNS(SVGNS, 'text');
       t.setAttribute('x', 5);
@@ -216,7 +245,7 @@ function beheadAnim(startStage) {
     return g;
   });
 
-  // ---- その段で剥がすラベル（矢印の行き先）を、その段のあいだだけ赤い枠で目立たせる。[枠を出す段, 列, 行]
+  // ---- その段で剥がすラベル（矢印の行き先）を、その段のあいだだけ赤い枠で目立たせる（矢印が消えたあとも、次の段まで残る）。[枠を出す段, 列, 行]
   var hls = [];
   ['B', 'C'].forEach(function (c) {
     hls.push([[3], c, 4]);                                                    // 候補者名
@@ -232,6 +261,7 @@ function beheadAnim(startStage) {
   var perStep = {};
   var arrowNodes = arrows.map(function (a) {
     var g = document.createElementNS(SVGNS, 'g');
+    g.style.opacity = 0;          // 矢印は、前に進む段で出すときまで見せない
     var line = document.createElementNS(SVGNS, 'path');
     line.setAttribute('class', 'pv-arrow');
     line.setAttribute('d', a[1]);
@@ -248,7 +278,9 @@ function beheadAnim(startStage) {
     return { k: a[0], e: g, order: perStep[a[0]] - 1 };
   });
   var labelNodes = arrowLabels.map(function (a) {
-    return { k: a[0], e: el('text', { 'class': 'pv-arrow-label', x: a[2], y: a[3] }, a[1]) };
+    var e = el('text', { 'class': 'pv-arrow-label', x: a[2], y: a[3] }, a[1]);
+    e.style.opacity = 0;
+    return { k: a[0], e: e };
   });
 
   var note = document.createElement('p');
@@ -260,10 +292,7 @@ function beheadAnim(startStage) {
   var lines = CODE.map(function (segs) {
     var line = document.createElement('span');
     segs.forEach(function (sg) {
-      var span = document.createElement(sg[1] ? 'b' : 'span');
-      if (sg[1]) span.className = 'pv-dir';
-      span.textContent = sg[0];
-      line.appendChild(span);
+      line.appendChild(codeSeg(sg[1], sg[0]));
     });
     code.appendChild(line);
     code.appendChild(document.createTextNode('\n'));
@@ -328,8 +357,12 @@ function beheadAnim(startStage) {
       g.style.opacity = p.o;
     });
     hlNodes.forEach(function (h) { fade(h.e, h.ks.indexOf(k) >= 0, animate); });
-    arrowNodes.forEach(function (a) { fade(a.e, a.k === k, animate, a.order * STEP_GAP); });
-    labelNodes.forEach(function (a) { fade(a.e, a.k === k, animate); });
+    // 矢印・始点の点・矢印の説明は、前に進む段で写しが飛んでいるあいだだけ出す。写しが着いたら（step() が
+    // animate なしで呼び直す）消すので、止まっている絵に矢印は残らない。戻るとき、最初から、組み立て直しでも出さない。
+    // 動きを減らす設定（FLY が 0）のときは、出してもすぐ消えるだけなので、はじめから出さない（赤い枠は出る）
+    var withArrows = animate && FLY && k > stage;
+    arrowNodes.forEach(function (a) { fade(a.e, withArrows && a.k === k, true, a.order * STEP_GAP); });
+    labelNodes.forEach(function (a) { fade(a.e, withArrows && a.k === k, true); });
     note.textContent = STEPS[k].note;
     // 帯（スマホ用）に、いまの段のコードの行を出す。行頭の空白と行末の %>% は省く
     nowStep.textContent = (k + 1) + ' / ' + (LAST + 1);
@@ -345,10 +378,7 @@ function beheadAnim(startStage) {
         var t = sg[0];
         if (j === 0) t = t.replace(/^\s+/, '');
         if (j === segs.length - 1) t = t.replace(/\s*%>%\s*$/, '');
-        var e = document.createElement(sg[1] ? 'b' : 'span');
-        if (sg[1]) e.className = 'pv-dir';
-        e.textContent = t;
-        nowCode.appendChild(e);
+        nowCode.appendChild(codeSeg(sg[1], t));
       });
     }
     // いまの段のコードは光らせ、それより前の段で済んだコードはうすくする
@@ -369,7 +399,12 @@ function beheadAnim(startStage) {
     busy = true;
     var total = leadFor(to, stage) + FLY;
     show(to, true);
-    setTimeout(function () { busy = false; show(stage, false); }, total);
+    setTimeout(function () {
+      busy = false;
+      show(stage, false);
+      // 動いているあいだに幅が境目をまたいでいたら、ここで組み立て直す
+      if (host._bhResize) host._bhResize();
+    }, total);
   }
   bNext.addEventListener('click', function () { step(1); });
   bPrev.addEventListener('click', function () { step(-1); });
