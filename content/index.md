@@ -4,12 +4,12 @@ nav: トップ
 kicker: 
 ---
 
-<div class="showcase">
-<a href="12-line.html"><img src="images/12-line-color.png" alt="五つの都府県の人口の移り変わりを、色分けした折れ線で描いたグラフ" loading="lazy" style="object-position: 0% 50%"><span>折れ線グラフ（12章）</span></a>
-<a href="14-point.html"><img src="images/14-point-color47.png" alt="47都道府県の子どもの割合を、年ごとに色分けした点で描いた散布図" loading="lazy" style="object-position: 0% 50%"><span>散布図（14章）</span></a>
-<a href="20-more.html"><img src="images/20-exdeaths-map.png" alt="都道府県ごとに、死者数が予測とどれだけ違ったかを赤と青で塗り分けた日本地図" loading="lazy" style="object-position: 90% 50%"><span>色分け地図（20章）</span></a>
-<a href="19-kami-excel.html"><img src="images/19-excel.png" alt="見出しが何段にも分かれた、選挙の得票数のExcelの表" loading="lazy" style="object-position: 0% 0%"><span>神Excelを整える（19章）</span></a>
-</div>
+<div class="top-demo"></div>
+<script src="assets/top-demo.js"></script>
+<figure class="fig fig-top-static fig-anim-static">
+<img src="images/00-aging-years.png" alt="全国の市区町村の人口と高齢化率の散布図。2000年と2020年を色分けして重ねてあり、2020年のほうが全体に上にある">
+<figcaption>全国の市区町村の人口と高齢化率。赤が2000年、青が2020年（国勢調査）</figcaption>
+</figure>
 
 デジタル化が進み、さまざまなデータが公開されるようになってきました。政府による各種の統計も、アクセスへの敷居が少しずつ下がってきています。
 

@@ -369,7 +369,7 @@ save_fig("14-change-plain",
 save_fig("14-change-log",
          all_municipality_change %>% ggplot() +
            geom_point(aes(x = population_2020, y = change_under15)) +
-           scale_x_log10())
+           scale_x_log10(), w = 5.4, h = 3.6)
 
 save_fig("14-change-tokyo",
          all_municipality_change %>%
@@ -377,7 +377,7 @@ save_fig("14-change-tokyo",
            ggplot() +
            geom_point(aes(x = population_2020, y = change_under15, color = area),
                       alpha = .3) +
-           scale_x_log10())
+           scale_x_log10(), w = 5.4, h = 3.6)
 
 save_fig("14-change-labs",
          all_municipality_change %>%
@@ -596,4 +596,213 @@ court_contacts_clean <- court_contacts %>%
 
 save_out("17-clean", court_contacts_clean, n = 6)
 
-cat("\n終わりました。python build.py でサイトを組み立て直してください。\n")
+# =========================================================================
+# トップページの実演（assets/top-demo.js）
+# 市町村別人口.csv（国勢調査）の列を五つに絞ったものから高齢化率を出し、次のものを作る。
+#   表3枚       outputs/00-aging-all・rate・rank.txt（1〜3段目の結果）
+#   流す行      outputs/00-aging-stream.txt・stream-all.txt（1・2段目の、表の中を行が流れる動き）
+#   グラフ2枚   images/00-aging-log.png（4段目）、00-aging-years.png（5段目）
+#   軸だけの絵  images/00-aging-log-axes.png、00-aging-years-axes.png（4・5段目の、点を打っていく動きの下絵）
+#   点の位置    outputs/00-aging-points.json、00-aging-points-years.json（その動きで打つ点。画像の中のピクセル）
+#   補助線3枚   images/00-aging-log-line.png、00-aging-years-lines.png、00-aging-years-arrows.png（グラフに重ねる透明な絵）
+# 表・流す行・点の位置は assets/top-demo.js に埋め込んである（T_ALL・T_RATE・T_RANK・T_STREAM・PTS・PTS_Y）。
+# 作り直したときは、手で直さずに、作業場所で
+#   python tools/fill_top_demo.py
+#   python build.py
+# の順に実行して写し直す。グラフと絵は top-demo.js が images/ から読むので、写す必要はない。
+# グラフは小さな枠に出すので、ほかより小さく描いて字を大きく見せる。
+# =========================================================================
+
+local({
+  old <- options(width = 80)
+  on.exit(options(old))
+
+  # 実演では、列を五つに絞り、都道府県と市区町村の列名を短くしたものを「市町村の人口.csv」として見せる
+  # （スマホでも表の字が小さくなりすぎないように）
+  all <- read_csv(paste0(DATA, "市町村別人口.csv"), show_col_types = FALSE) %>%
+    select(year, pref = prefecture, city = municipality, population, population_over65)
+  aging <- all %>%
+    mutate(rate_over65 = population_over65 / population * 100)
+
+  save_out("00-aging-all", all, n = 8)
+  save_out("00-aging-rate", aging, n = 8)
+  save_out("00-aging-rank", aging %>%
+    arrange(desc(year), desc(rate_over65)), n = 8)   # 全部の年を高い順に並べると、避難で人口が41人だった2015年の飯舘村（100%）が先頭に来るので、新しい年を先にする
+
+  # 1段目（読み込み）と2段目（いっぺんに計算）の動きで、表の中を流れていく行（top-demo.js の T_STREAM に写す）。
+  # 最初の8行、全8,705行からデータの並びのまま等間隔に選んだ130行ほど、終わりの8行、の順に並べ、表と同じ列の幅にそろえて書き出す。
+  # tibble は表示する行に合わせて列の幅を決めるので、選んだ行だけを print すると幅が変わってしまう。だから幅を決めて自分で並べる。
+  # 列の幅（全角3字）に収まらない名前の行は選ばず、すぐ後ろの収まる行に替える（名前を切り詰めないため）。
+  # 終わりの8行は、収まる行のうち最後の8行。動きはここで減速して止まり、いちばん読める場面になるので、
+  # 番号が数え札（8,705 に近づいていく）と食い違わないよう、データの終わりぎわの行を詰めて置く。
+  # 1行は「行番号 残り」の形。残りは、表の1行から行番号の欄（左の3字）を除いたものとまったく同じ形。行番号は本来の番号。
+  # 00-aging-stream.txt は2段目の表（rate_over65 まで6列）、00-aging-stream-all.txt は1段目の表（5列）の形。
+  # 6列の行は、5列の行の後ろに rate_over65 の欄（12字）を足しただけなので、top-demo.js では6列のほうだけを持ち、5列は後ろを切って作る
+  wid <- function(x) nchar(x, type = "width")
+  pad_l <- function(x, w) paste0(strrep(" ", pmax(0, w - wid(x))), x)
+  pad_r <- function(x, w) paste0(x, strrep(" ", pmax(0, w - wid(x))))
+  rows <- aging %>%
+    mutate(n = row_number(),
+           fits = wid(pref) <= 6 & wid(city) <= 6,
+           rest_all = paste(year, pad_r(pref, 6), pad_r(city, 6),
+                            pad_l(sprintf("%.0f", population), 10),
+                            pad_l(sprintf("%.0f", population_over65), 17)),
+           rest = paste(rest_all, pad_l(sprintf("%.1f", rate_over65), 11)))   # 表の rate_over65 と同じ小数1桁
+  ok_n <- rows$n[rows$fits]
+  last8 <- tail(ok_n, 8)
+  mid <- ok_n[ok_n > 8 & ok_n < last8[1]]
+  pick <- unique(sapply(round(seq(9, last8[1] - 1, length.out = 130)), function(t) mid[mid >= t][1]))
+  pick <- c(1:8, pick[!is.na(pick)], last8)
+  stream <- function(name, table, col) {
+    out <- paste(rows$n[pick], rows[[col]][pick])
+    # 自分で並べた最初の8行が、tibble の表示（table）と1字も違わないことを確かめる（行番号の欄は「1  」の3字）
+    shown <- read_lines(file.path(OUT_TXT, paste0(table, ".txt")))[4:11]
+    stopifnot(identical(sub("^(\\d) ", "\\1  ", out[1:8]), shown))
+    writeLines(out, file.path(OUT_TXT, paste0(name, ".txt")), useBytes = TRUE)
+    cat("○ outputs/", name, ".txt\n", sep = "")
+  }
+  stream("00-aging-stream", "00-aging-rate", "rest")
+  stream("00-aging-stream-all", "00-aging-all", "rest_all")
+
+  W <- 5.4; H <- 3.6
+  y2020 <- aging %>% filter(year == 2020)
+  both <- aging %>% filter(year %in% c(2000, 2020))
+
+  # 2020年の双葉町は人口が0人で、割合が計算できない。その1点が外れるという警告は出さない
+  suppressWarnings({
+    save_fig("00-aging-log", y2020 %>%
+      ggplot() +
+      geom_point(aes(x = population, y = rate_over65)) +
+      scale_x_log10(), w = W, h = H)
+
+    save_fig("00-aging-years", both %>%
+      ggplot() +
+      geom_point(aes(x = population, y = rate_over65, color = factor(year))) +
+      scale_x_log10(), w = W, h = H)
+
+    # ---- 4段目の動き（点が打たれていく）のための、点のない絵と、点の位置。
+    # 00-aging-log.png と同じ組み立てのまま点だけを透明にした「軸と目盛りだけ」の絵を描き、その上に、
+    # ブラウザが点を一つずつ打っていく（top-demo.js の startDots）。打ち終わった絵が 00-aging-log.png と見分けがつかないよう、
+    # 点の位置は、ggplot の目盛りの範囲と、この大きさで描いたときのパネルの位置から、画像の中のピクセルで出す。
+    # 透明の点を残しておくのは、目盛りの範囲（どこからどこまでを描くか）を元の絵と同じにするため
+    p_axes <- y2020 %>%
+      ggplot() +
+      geom_point(aes(x = population, y = rate_over65), alpha = 0) +
+      scale_x_log10()
+    save_fig("00-aging-log-axes", p_axes, w = W, h = H)
+    DPI <- 150
+    # 点の中心を、画像の左上を原点にしたピクセルで出す（4段目と5段目で共通）。
+    # パネルの位置は、ggsave と同じ装置（ragg）・同じ大きさで描いて測る（目盛りの字の幅や凡例で、パネルの位置が決まるため）
+    dot_px <- function(p) {
+      tmp <- tempfile(fileext = ".png")
+      ragg::agg_png(tmp, width = W, height = H, units = "in", res = DPI)
+      grid::grid.newpage()
+      # 描いた表（gtable）と同じ升目を組んで、パネルの升に入る（gtable は描き終えると升目を片づけるので、自分で組み直す）
+      g <- ggplotGrob(p)
+      grid::pushViewport(grid::viewport(layout = grid::grid.layout(
+        length(g$heights), length(g$widths), widths = g$widths, heights = g$heights, respect = g$respect)))
+      pan <- g$layout[g$layout$name == "panel", ]
+      grid::pushViewport(grid::viewport(layout.pos.row = pan$t:pan$b, layout.pos.col = pan$l:pan$r))
+      lo <- grid::deviceLoc(unit(0, "npc"), unit(0, "npc"))
+      hi <- grid::deviceLoc(unit(1, "npc"), unit(1, "npc"))
+      dev.off()
+      unlink(tmp)
+      lo <- sapply(lo, grid::convertUnit, "in", valueOnly = TRUE)
+      hi <- sapply(hi, grid::convertUnit, "in", valueOnly = TRUE)
+      pp <- ggplot_build(p)$layout$panel_params[[1]]
+      d <- layer_data(p) %>% filter(is.finite(x), is.finite(y))   # 人口0人の双葉町などは、元の絵でも描かれない
+      # x は log10 の値で目盛りの範囲に当てはめる。y は下から上へ増えるので、上から測り直す。
+      # 行の並びは layer_data のまま（＝ggplot が点を描く順）
+      d %>% mutate(px = (lo[1] + (x - pp$x.range[1]) / diff(pp$x.range) * (hi[1] - lo[1])) * DPI,
+                   py = (H - (lo[2] + (y - pp$y.range[1]) / diff(pp$y.range) * (hi[2] - lo[2]))) * DPI)
+    }
+    xy_json <- function(d) paste(sprintf("%.1f,%.1f", d$px, d$py), collapse = ",")
+    # 点の半径。ggplot の点（形19、大きさ1.5、ふち0.5）は、R の描画では「半径 0.375×（字の大きさ×1.2）」の円に、
+    # ふちの線（太さ1が1/96インチ）を半分ぶん足したもの。元の絵との差分で確かめてある（約5.6ピクセル）
+    fs <- 1.5 * .pt + 0.5 * .stroke / 2
+    r <- 0.375 * 1.2 * fs / 72 * DPI + (0.5 * .stroke / 2) / 96 * DPI / 2
+    d4 <- dot_px(p_axes)
+    writeLines(sprintf('{"w":%d,"h":%d,"r":%.2f,"xy":[%s]}', W * DPI, H * DPI, r, xy_json(d4)),
+               file.path(OUT_TXT, "00-aging-points.json"), useBytes = TRUE)
+    cat("○ outputs/00-aging-points.json（", nrow(d4), "点）\n", sep = "")
+
+    # ---- 5段目の動き（2000年の点、続けて2020年の点が打たれていく）のための、点のない絵と、点の位置。
+    # 00-aging-years.png と同じ組み立てのまま点だけを透明にする。凡例の見本の点は、透明にすると凡例が読めなくなるので、元の濃さに戻す。
+    p_axes5 <- both %>%
+      ggplot() +
+      geom_point(aes(x = population, y = rate_over65, color = factor(year)), alpha = 0) +
+      scale_x_log10() +
+      guides(color = guide_legend(override.aes = list(alpha = 1)))
+    save_fig("00-aging-years-axes", p_axes5, w = W, h = H)
+    d5 <- dot_px(p_axes5) %>% mutate(year = levels(factor(both$year))[group])
+    # ggplot はデータの並びのまま1点ずつ描く。データは新しい年から並んでいるので、2020年の点を全部描いたあとに2000年の点が重なる。
+    # 年ごとにひとかたまりで描かれていることを確かめ、その順（draw）を書き出す。ブラウザはこの順に重ねて、打ち終わりの絵を元の絵と同じにする
+    runs <- rle(d5$year)$values
+    stopifnot(!anyDuplicated(runs))
+    grp <- sapply(c("2000", "2020"), function(yr) {
+      g <- d5 %>% filter(year == yr)
+      sprintf('{"year":%s,"colour":"%s","xy":[%s]}', yr, unique(g$colour), xy_json(g))
+    })
+    writeLines(sprintf('{"w":%d,"h":%d,"r":%.2f,"draw":[%s],"groups":[%s]}', W * DPI, H * DPI, r,
+                       paste(runs, collapse = ","), paste(grp, collapse = ",")),
+               file.path(OUT_TXT, "00-aging-points-years.json"), useBytes = TRUE)
+    cat("○ outputs/00-aging-points-years.json（", paste(table(d5$year), collapse = "＋"), "点）\n", sep = "")
+
+    # ---- グラフに重ねる補助線（透明な地の画像）。
+    # 元のグラフと同じ組み立てのまま、点も字も目盛りも透明にして、線だけを描く。こうすると、重ねたときに位置がぴったり合う
+    ghost <- theme(
+      text = element_text(colour = "transparent"),
+      axis.text = element_text(colour = "transparent"),
+      axis.ticks = element_line(colour = "transparent"),
+      panel.background = element_rect(fill = "transparent", colour = NA),
+      panel.grid = element_line(colour = "transparent"),
+      plot.background = element_rect(fill = "transparent", colour = NA),
+      legend.background = element_rect(fill = "transparent", colour = NA),
+      legend.key = element_rect(fill = "transparent", colour = NA))
+    save_layer <- function(name, plot) {
+      ggsave(file.path(OUT_IMG, paste0(name, ".png")), plot + ghost,
+             width = W, height = H, dpi = 150, bg = "transparent")
+      cat("○ images/", name, ".png\n", sep = "")
+    }
+    ok <- function(d) d %>% filter(population > 0)
+    # 線は、白いふちどりの上に色の線を重ねて、点の群れの上でも見えるようにする
+    trend <- function(d, colour) list(
+      geom_smooth(aes(x = population, y = rate_over65), data = d, method = "lm", formula = y ~ x,
+                  se = FALSE, colour = "white", linewidth = 2.6),
+      geom_smooth(aes(x = population, y = rate_over65), data = d, method = "lm", formula = y ~ x,
+                  se = FALSE, colour = colour, linewidth = 1.3))
+
+    # 4段目：2020年の傾向の線（右下がり）
+    save_layer("00-aging-log-line", ok(y2020) %>%
+      ggplot() +
+      geom_point(aes(x = population, y = rate_over65), alpha = 0) +
+      trend(ok(y2020), "#c0392b") +
+      scale_x_log10())
+
+    # 5段目：2000年と2020年、それぞれの傾向の線
+    base5 <- ok(both) %>%
+      ggplot() +
+      geom_point(aes(x = population, y = rate_over65, color = factor(year)), alpha = 0) +
+      scale_x_log10()
+    save_layer("00-aging-years-lines", base5 +
+      trend(ok(both) %>% filter(year == 2000), "#9c2b26") +
+      trend(ok(both) %>% filter(year == 2020), "#0b6b6e"))
+
+    # 5段目：2000年の線から2020年の線へ向かう、上向きの矢印（人口1万人と10万人のところ）
+    at <- function(yr, x) {
+      m <- lm(rate_over65 ~ log10(population), data = ok(both) %>% filter(year == yr))
+      unname(predict(m, tibble(population = x)))
+    }
+    xs <- c(1e4, 1e5)
+    arrows <- tibble(x = xs, y0 = at(2000, xs) + 0.8, y1 = at(2020, xs) - 0.8)
+    save_layer("00-aging-years-arrows", base5 +
+      geom_segment(aes(x = x, xend = x, y = y0, yend = y1), data = arrows,
+                   colour = "white", linewidth = 2.8, lineend = "round",
+                   arrow = arrow(length = unit(0.13, "in"), type = "closed")) +
+      geom_segment(aes(x = x, xend = x, y = y0, yend = y1), data = arrows,
+                   colour = "#1d1c1a", linewidth = 1.3,
+                   arrow = arrow(length = unit(0.11, "in"), type = "closed")))
+  })
+})
+
+cat("\n終わりました。python tools/fill_top_demo.py と python build.py を実行して、サイトを組み立て直してください。\n")

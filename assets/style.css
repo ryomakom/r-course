@@ -928,7 +928,6 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
 
 /* ------------------------------------------------------------- トップ */
 .home article { max-width: 46rem; }
-.home h1 { font-size: clamp(1.9rem, 1.2rem + 2.4vw, 3rem); }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .9rem; margin: 1.6rem 0 2.4rem; list-style: none; padding: 0; }
 .cards li { margin: 0; }
 .cards a {
@@ -942,28 +941,288 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
 }
 .cards a:hover { border-color: var(--accent); }
 
-/* ===== トップの見本の帯（.showcase）・カードの並び・ダークモードの画像 ここから =====
-   見本の帯：この講座で作るものを4枚並べる。広い画面は4列、せまい画面は横に送る1列で、次の1枚が右からのぞく */
-.showcase { display: grid; grid-template-columns: repeat(4, 1fr); gap: .7rem; margin: 0 0 1.8rem; }
-.showcase a { display: block; min-width: 0; text-decoration: none; color: var(--ink); }
-.showcase img {
-  display: block; width: 100%; aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border: 1px solid var(--line); border-radius: .4rem;
-  background: #fff;
+/* ===== トップの実演（.top-demo）・カードの並び・ダークモードの画像 ここから =====
+   実演：最初の画面に置く、スクロールで進む見せ場（assets/top-demo.js）。
+   実行結果（.sc-stage）が画面に留まり、その上を、見出しとコードを書いた札（.sc-card）が下から上へ流れていく。
+   トップページでは、この実演を最初の画面の主役にしたいので、題名は小さな札書き程度にして、上の余白も詰める */
+.home.page { padding-top: 1.1rem; }
+.home h1 {
+  margin: 0 0 .4rem;
+  font-size: .9rem; line-height: 1.4; letter-spacing: .1em;
+  color: var(--ink-2);
 }
-.showcase span { display: block; margin-top: .35rem; font-size: .8rem; line-height: 1.4; color: var(--ink-2); text-align: center; }
-.showcase a:hover img { border-color: var(--accent); }
-.showcase a:hover span { color: var(--accent); }
+.home h1::before {
+  content: ""; display: inline-block; width: .26rem; height: .8rem; margin-right: .45rem;
+  background: var(--accent); vertical-align: -.05rem;
+}
+/* 三つ（結果・札の列・帯）を同じマス目に重ねる。マス目の高さは、いちばん長い札の列で決まり、結果と帯はその中で留まる。
+   長さを .scrolly の余白（padding）で作ると、その中では留まらないので、札の列の中の余白で作っている */
+.scrolly {
+  --sc-top: 4rem;                    /* 留まる位置（上の帯の下）。実際の帯の高さを top-demo.js が測って入れ直す */
+  --sc-bar: 2.5rem;                  /* 進み具合と「飛ばして本文へ」の帯の高さ */
+  --sc-lead: 3.2rem;                 /* 開いたときの、上の帯から実演までの間（題名のぶん）。最初の画面に結果が収まるよう、高さから引く */
+  /* 札と札の間。結果の枠の高さ（--sc-h。top-demo.js が測る）より広くとり、前の札が抜けてから次の札がかかるまで、
+     結果の全体が見える間（画面の高さの3割5分）を作る。枠の高さと同じにすると、いつもどこかに札がかかってしまう */
+  --sc-gap: calc(var(--sc-h, 60svh) + 35svh);
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  margin: 0 0 2.4rem;
+}
+.sc-bar, .sc-stage, .sc-steps { grid-area: 1 / 1; min-width: 0; }
+/* 帯：札より手前。地を塗って、札は帯の下にもぐって消える。「飛ばして本文へ」はここにあるので、札に隠れない */
+.sc-bar {
+  position: sticky; top: var(--sc-top); z-index: 3; align-self: start;
+  display: flex; align-items: center; gap: .8rem;
+  height: var(--sc-bar);
+  background: var(--paper);
+  font-family: var(--gothic); font-size: .8rem; line-height: 1.4; color: var(--ink-2);
+}
+.sc-count { flex: none; font-weight: 700; letter-spacing: .06em; color: var(--accent); }
+.sc-dots { display: inline-flex; gap: .35rem; }
+.sc-dots i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--line); transition: background .3s; }
+.sc-dots i.is-on { background: var(--accent); }
+.sc-hint { transition: opacity .3s; white-space: nowrap; }
+.sc-hint::after { content: " ↓"; }
+.sc-hint.is-off { opacity: 0; }
+.sc-skip {
+  margin-left: auto; font: inherit; cursor: pointer; white-space: nowrap;
+  padding: .3rem 1rem; border-radius: 2rem; color: var(--ink-2); background: var(--paper-2); border: 1px solid var(--line);
+}
+.sc-skip:hover { border-color: var(--accent); color: var(--accent); }
+/* 結果：帯のすぐ下に留まる。札より奥 */
+.sc-stage {
+  position: sticky; top: calc(var(--sc-top) + var(--sc-bar)); z-index: 1; align-self: start;
+  margin-top: var(--sc-bar);
+}
+.sc-frame {
+  padding: .8rem .8rem .6rem;
+  border: 1px solid var(--line); border-radius: .5rem;
+  background: var(--paper-2);
+}
+.sc-notes, .sc-view { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.sc-layer { grid-area: 1 / 1; min-width: 0; opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s; }
+.sc-layer.is-on { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+/* 結果に添える説明文。図のキャプションとして、結果の下に置く。
+   先に目に入ってほしいのは札の見出し（明朝・1.75rem）なので、それよりは小さく、ゴシックにして格を下げる。
+   ただし小さすぎると読み飛ばされるので、本文に近い大きさと濃さにする。段が替わるときは、結果より少し遅れて出す */
+.sc-note {
+  margin: .6rem 0 0;
+  font-family: var(--gothic); font-size: 1.02rem; font-weight: 600; line-height: 1.5; color: var(--ink);
+}
+.sc-note.is-on { transition: opacity .35s ease .4s; }
+/* 高さは、重ねた中でいちばん背の高いもの（グラフ）に合う。表はその中ほどに置く。
+   表の字の大きさを枠の幅から決めるので、幅の物差し（cqw）の入れ物にする */
+.sc-view { align-items: center; container-type: inline-size; }
+/* グラフ：本体と補助線を、縦横比 3:2 の同じ入れ物いっぱいに重ねる（同じ大きさ・同じ位置なので、どの幅でもずれない）。
+   入れ物は枠の幅いっぱい。背の低い画面では、最初の画面に収まる高さから逆算した幅まで縮める */
+.sc-plot {
+  --sc-plot-h: max(9rem, calc(100svh - var(--sc-top) - var(--sc-bar) - var(--sc-lead) - 5.4rem));
+  position: relative; justify-self: center;
+  width: min(100%, calc(var(--sc-plot-h) * 1.5)); aspect-ratio: 3 / 2;
+  overflow: hidden; border-radius: .2rem;
+}
+.sc-plot img {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+  margin: 0; border: 0; border-radius: 0;
+}
+/* 補助線の現れ方。段に入って少ししてから、見える範囲（clip-path）を広げて、線が引かれていくように見せる。
+   範囲の始まりと終わりは、絵の中で線や矢印がある所に合わせてある（何もない所を広げている時間を作らないため）。
+   段を離れたら、結果が消えるのを待って（.35秒）元に戻すので、入り直すともう一度動く */
+.sc-over { transition: clip-path 0s .35s; }
+.sc-wipe-x { clip-path: inset(0 88% 0 0); }          /* 4段目の線：左から右へ */
+.sc-wipe-x2 { clip-path: inset(0 88% 0 0); }         /* 5段目の2本の線：左から右へ（線は絵の7割のところで終わる） */
+.sc-wipe-up { clip-path: inset(69% 0 0 0); }         /* 5段目の矢印：下から上へ。線が引き終わってから */
+.sc-plot.is-on .sc-wipe-x { clip-path: inset(0 3% 0 0); transition: clip-path 1s ease-in-out .5s; }
+.sc-plot.is-on .sc-wipe-x2 { clip-path: inset(0 27% 0 0); transition: clip-path .9s ease-in-out .5s; }
+.sc-plot.is-on .sc-wipe-up { clip-path: inset(41% 0 0 0); transition: clip-path .55s ease-out 1.5s; }
+.scrolly pre {
+  margin: 0; border: 0; background: none; overflow: hidden;
+  font-family: var(--mono); color: var(--code-ink);
+  white-space: pre;
+}
+/* 表（tibble）の文字。日本語1字が英数字2字ぶんの幅になる書体を先に指定して、列をそろえる。
+   表はいちばん広い行で半角64字ぶん（＝32字ぶんの幅）あるので、字の大きさを枠の幅の33分の1までにして、必ず枠に収める
+   （スマホでは10px前後になるが、切れたり横に動いたりするよりよい）。
+   1行目は cqw を知らないブラウザ用の控えで、画面の幅から見積もる */
+.scrolly pre.sc-out {
+  --sc-lh: 1.7;
+  --sc-out-max: 16px;
+  padding: 0;
+  font-family: "BIZ UDGothic", "MS Gothic", "Osaka-Mono", "Noto Sans Mono CJK JP", var(--mono);
+  font-size: clamp(7px, calc((100vw - 4rem) / 33), 12px);
+  font-size: min(var(--sc-out-max), calc(100cqw / 33));
+  line-height: var(--sc-lh);
+  -webkit-user-select: none; user-select: none;
+}
+.sc-row, .sc-reel, .sc-line { display: block; }
+.sc-hl { background: var(--mark); font-weight: 700; }
+/* 並べ替えの動き（top-demo.js の startSort が、流れ去る行を各行の上に足して .is-sorting をつける）。
+   各行を1行ぶんの高さの窓にして、その中で行の列を上へ送り、並べ替えたあとの行で止める。
+   送っているあいだは、ぼかして薄くする（速く流れて読めない感じを出しつつ、ちらつきを抑える）。
+   止まったら、rate_over65 のところを一瞬だけ強い色にして、何の順に並んだのかに目を向けてもらう */
+.sc-out.is-sorting .sc-row { height: calc(var(--sc-lh) * 1em); overflow: hidden; }
+.sc-out.is-sorting .sc-reel { animation: sc-reel var(--dur, .8s) cubic-bezier(.45, .05, .2, 1) both; will-change: transform; }
+.sc-out.is-sorting .sc-reel > .sc-line:last-child .sc-hl { animation: sc-flash .55s ease-out var(--dur, .8s) backwards; }
+@keyframes sc-reel {
+  from { transform: translateY(0); filter: blur(0); opacity: 1; }
+  15% { filter: blur(1.5px); opacity: .55; }
+  75% { filter: blur(1.2px); opacity: .6; }
+  to { transform: translateY(calc(var(--n, 10) * var(--sc-lh) * -1em)); filter: blur(0); opacity: 1; }
+}
+@keyframes sc-flash {
+  from { background: var(--accent); color: var(--paper-2); }
+  to { background: var(--mark); }
+}
+/* 表の中を行が流れる動き（top-demo.js の startFlow が、帯 .sc-strip を足して .is-flow をつける。1段目の読み込みは .is-load、2段目の計算は .is-calc も）。
+   データの8行（.sc-body）を窓にして、その中で本物の行の帯を上へ流す。窓の高さは元の8行のままなので、枠の高さは変わらない。
+   流しているあいだ、元の行は場所だけ取って隠す。帯の上下は、速さに合わせて JS が --m を変え、かすれさせる（止まると 0）。
+   計算の段では、rate_over65 の列が右から入ってくる（いま計算してできた列だと分かるように） */
+.sc-body { display: block; position: relative; }
+.sc-out.is-flow { position: relative; }
+.sc-out.is-flow .sc-body {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--m, 0%), #000 calc(100% - var(--m, 0%)), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 var(--m, 0%), #000 calc(100% - var(--m, 0%)), transparent);
+}
+.sc-out.is-flow .sc-body > .sc-row { opacity: 0; }
+.sc-strip { position: absolute; left: 0; right: 0; top: 0; display: block; will-change: transform; }
+.sc-strip .sc-line { position: relative; }
+/* 帯の行番号：表と同じ3字ぶんの空白の上に重ねる。4桁の番号は、横だけ縮めて収める（--k） */
+.sc-rn { position: absolute; left: 0; top: 0; transform: scaleX(var(--k, 1)); transform-origin: 0 50%; }
+.sc-out.is-calc .sc-hl { display: inline-block; animation: sc-col-in .45s cubic-bezier(.2, .7, .3, 1) .05s backwards; }
+@keyframes sc-col-in {
+  from { transform: translateX(4em); opacity: 0; }
+}
+/* 止まったら、帯から元の行へ短いクロスフェードで戻す（帯は最後の本物の行で止めてあり、元の表は最初の8行なので、ふっと替わるように）。
+   計算の段では、rate_over65 の列を一瞬光らせる（並べ替えのときと同じ光） */
+.sc-out.is-landed .sc-strip { opacity: 0; transition: opacity .3s ease; }
+.sc-out.is-landed .sc-body > .sc-row { opacity: 1; transition: opacity .3s ease; }
+.sc-out.is-calc.is-landed .sc-body .sc-hl { animation: sc-flash .55s ease-out .15s backwards; }
+/* 読み込みの段：読み終わるまで、表の1行目（# A tibble …）と最後の行（# ℹ 8,697 more rows）を隠し（R も読み終えてから表を出すので）、
+   1行目の左に進み具合の棒（.sc-meter）を出す。右には数え札があり、棒はその左に収まる長さにしてある（top-demo.js の meterText）。
+   以前は最後の行に棒を出していたが、広い画面では、開いた直後に1枚目の札が表の下のほうにかかり、棒の右半分（%）が隠れた。1行目には札がかからない。
+   止まったら、100% を少し見せてから棒を消し、元の2行を出す（同じ場所で字が重なって見えないよう、消えてから出す）。
+   どちらも片づけ（.8秒）より前に終わる長さにする */
+.sc-out.is-load .sc-cap > .sc-line, .sc-out.is-load .sc-foot > .sc-line { opacity: 0; }
+.sc-out.is-load.is-landed .sc-cap > .sc-line,
+.sc-out.is-load.is-landed .sc-foot > .sc-line { opacity: 1; transition: opacity .3s ease .4s; }
+.sc-meter { position: absolute; left: 0; top: 0; white-space: pre; color: var(--ink-2); }
+.sc-out.is-landed .sc-meter { opacity: 0; transition: opacity .2s ease .2s; }
+/* 数え札：表の1行目（# A tibble …）の右、表の右端にそろえて置く（1行目の右は空いているので、表とも説明文ともぶつからない）。
+   幅は表の行と同じ字数（ch。JS が入れる）にして右寄せ */
+.sc-tally {
+  position: absolute; left: 0; top: 0; width: 62ch;
+  text-align: right; white-space: pre;
+  color: var(--accent); font-weight: 700;
+  animation: sc-tally-in .2s ease-out;
+  transition: opacity .3s ease;
+}
+.sc-tally.is-done { color: var(--ink); }
+.sc-tally.is-out { opacity: 0; }
+@keyframes sc-tally-in { from { opacity: 0; } }
+/* 点が打たれていく動き（4段目と5段目。top-demo.js の startDots が .is-dotting をつける）。
+   本体の絵を隠して、点のない「軸と目盛り（5段目は凡例も）だけ」の絵（.sc-axes）と、点を打つ canvas（.sc-dotcv）を見せる。
+   補助線は、点を打っているあいだは引き始めの位置で止めておき、打ち終わって（.is-dotted）から数えて引く。
+   遅れは、ふだん（.is-on）の .5秒・1.5秒ではなく、打ち終わりから .15秒。5段目の矢印は、2本の線（.9秒）を引き終えてから */
+.sc-plot .sc-axes, .sc-plot .sc-dotcv { display: none; }
+.sc-plot.is-dotting .sc-axes { display: block; }
+.sc-plot.is-dotting .sc-dotcv { display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.sc-plot.is-dotting > img:first-child { opacity: 0; }
+.sc-plot.is-on.is-dotting .sc-wipe-x,
+.sc-plot.is-on.is-dotting .sc-wipe-x2 { clip-path: inset(0 88% 0 0); transition: none; }
+.sc-plot.is-on.is-dotting .sc-wipe-up { clip-path: inset(69% 0 0 0); transition: none; }
+.sc-plot.is-on.is-dotted .sc-wipe-x,
+.sc-plot.is-on.is-dotted .sc-wipe-x2 { transition-delay: .15s; }
+.sc-plot.is-on.is-dotted .sc-wipe-up { transition-delay: 1.15s; }
+/* 札の列：結果より手前を流れる。列そのものはクリックを受けず（空いているところで下のものを押せるように）、札だけが受ける。
+   1枚目は、開いたときに画面の下のほうに見えている位置から始める */
+.sc-steps {
+  position: relative; z-index: 2; pointer-events: none;
+  padding-top: max(11rem, calc(100svh - var(--sc-top) - var(--sc-lead) - 14.5rem));
+  /* 最後の札が上へ抜けたあとも、結果がしばらく留まるだけの長さ（結果の高さ＋画面の3割） */
+  padding-bottom: calc(var(--sc-h, 60svh) + 30svh);
+}
+.sc-step + .sc-step { margin-top: var(--sc-gap); }
+/* 札の幅は、mutate の行（3段目からは後ろに「 %>%」がついて半角64字）が1行で収まる幅。「1行のコードで」と言っているので、広い画面では折り返さない。
+   幅を ch（その書体の数字1字の幅）で言えるよう、札そのものの書体をコードと同じ等幅・同じ大きさにしてある（見出しは別に指定）。
+   3.5rem は札とコードの左右の余白。札は、コードの字の大きさを決める物差し（cqw）の入れ物にもする */
+.sc-card {
+  pointer-events: auto;
+  font-family: var(--mono); font-size: .8rem;
+  width: min(100%, calc(65ch + 3.5rem + 2px)); margin-left: auto;
+  container-type: inline-size;
+  padding: .9rem 1rem 1rem;
+  border: 1px solid var(--line); border-radius: .6rem;
+  background: var(--paper-2);
+  box-shadow: 0 .5rem 1.6rem rgba(0, 0, 0, .16), 0 .1rem .3rem rgba(0, 0, 0, .08);
+}
+.sc-card.is-on { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+/* 見出し：札の中で、そして最初の画面の中で、いちばん先に目に入るように大きく強くする */
+.sc-title {
+  margin: 0 0 .7rem;
+  font-family: var(--mincho); font-size: 1.75rem; font-weight: 700; line-height: 1.35; letter-spacing: .03em; color: var(--ink);
+}
+.sc-num {
+  display: block; margin-bottom: .15rem;
+  font-family: var(--gothic); font-size: .72rem; font-weight: 400; letter-spacing: .08em; color: var(--accent);
+}
+.scrolly pre.sc-code {
+  -webkit-user-select: none; user-select: none;   /* サイトのほかのコードと同じく、コピーさせない */
+  padding: .6rem .75rem; border-radius: .35rem;
+  background: var(--code-bg);
+  font-size: .8rem; line-height: 1.75;
+}
+.sc-new { color: var(--accent); font-weight: 700; }
+/* コードは、広い画面用（長い行を1行で）と、せまい画面用（半角42字以内に折り返して字下げ）の二つを札に入れてあり、片方だけ出す。
+   広い画面用が札に収まらないとき、top-demo.js が .is-narrow をつける。
+   せまい画面用は、札の幅から字の大きさを決める（半角42字が、字幅 0.6em の書体でも収まる大きさ。2.9rem は左右の余白）。
+   cqw を知らないブラウザでは決まった大きさになるので、それでもはみ出さないよう、折り返しを許しておく */
+.sc-code-narrow { display: none; }
+.scrolly.is-narrow .sc-code-wide { display: none; }
+.scrolly.is-narrow .sc-code-narrow { display: block; }
+.scrolly.is-narrow .sc-card { width: min(100%, 26rem); }
+.scrolly.is-narrow pre.sc-code {
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  font-size: 11px;
+  font-size: min(.8rem, calc((100cqw - 2.9rem) / 25.5));
+}
+@media (max-width: 900px) {
+  .home.page { padding-top: .8rem; }
+  /* サイトの帯は出ない。右上に浮く「目次」ボタンと同じ高さに実演の帯を留め、ボタンのぶん右を空ける */
+  .scrolly { --sc-top: 0px; --sc-bar: 3.3rem; --sc-lead: 2.7rem; }
+  .sc-bar { padding-right: 4.2rem; }
+}
 @media (max-width: 600px) {
-  .showcase {
-    display: flex; gap: .6rem;
-    overflow-x: auto; overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: .5rem;
-  }
-  .showcase a { flex: 0 0 62%; scroll-snap-align: start; }
+  .sc-bar { gap: .6rem; font-size: .74rem; }
+  .sc-hint { display: none; }        /* 帯に入りきらないので出さない */
+  .sc-skip { padding: .3rem .8rem; }
+  .sc-frame { padding: .6rem .6rem .5rem; }
+  .sc-note { margin-top: .45rem; font-size: .92rem; }
+  .scrolly pre.sc-out { --sc-lh: 1.6; }
+  .sc-card { padding: .75rem .75rem .8rem; }
+  .sc-title { font-size: 1.45rem; margin-bottom: .55rem; }
+  .scrolly pre.sc-code { padding: .5rem .6rem; line-height: 1.7; }
+  .scrolly.is-narrow pre.sc-code { font-size: 10px; font-size: min(.8rem, calc((100cqw - 2.7rem) / 25.5)); }
+}
+/* 横向きのスマホなど背の低い画面では、表の全部の行が画面に収まるように、字と行送りを詰める */
+@media (max-height: 480px) {
+  .scrolly pre.sc-out { --sc-lh: 1.5; --sc-out-max: 11.5px; }
+}
+@media (max-width: 359px) {
+  .sc-title { font-size: 1.22rem; }
+}
+@media print {
+  /* 印刷では実演が出ないので、題名を元の大きさに戻す */
+  .home h1 { font-size: 1.9rem; letter-spacing: 0; color: var(--ink); }
+  .home h1::before { display: none; }
+}
+/* 動きを減らす設定では、切り替えを一瞬にし、補助線は最初から出しておく（読み込み・計算・並べ替え・点を打つ動きは、top-demo.js が始めない） */
+@media (prefers-reduced-motion: reduce) {
+  .sc-layer, .sc-layer.is-on, .sc-note.is-on { transition: none; }
+  .sc-over, .sc-plot.is-on .sc-over { transition: none; clip-path: none; }
+  .sc-out.is-sorting .sc-reel, .sc-out.is-sorting .sc-hl { animation: none; }
+}
+@media print {
+  .top-demo { display: none; }
 }
 /* 「どこから読むか」のカード：2列×2段（同じ段は同じ高さ）、せまい画面は1列 */
 .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -972,10 +1231,12 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
 }
 /* ダークモードでは、白地のグラフや画面写真がまぶしいので少し暗くする（SVGの図や動くグラフはそのまま。印刷には効かせない） */
 @media screen and (prefers-color-scheme: dark) {
-  .fig img, .showcase img { filter: brightness(.85) contrast(1.05); border-color: color-mix(in srgb, var(--line) 70%, var(--ink-2)); }
+  /* 実演のグラフは、補助線を重ねた入れ物（.sc-plot）ごと暗くする（本体だけ暗くすると、線だけが明るく浮く） */
+  .fig img, .sc-plot { filter: brightness(.85) contrast(1.05); }
+  .fig img { border-color: color-mix(in srgb, var(--line) 70%, var(--ink-2)); }
   .fig img[src$=".jpg"] { filter: brightness(.93); }   /* 写真は控えめに */
 }
-/* ===== トップの見本の帯・カードの並び・ダークモードの画像 ここまで ===== */
+/* ===== トップの実演・カードの並び・ダークモードの画像 ここまで ===== */
 
 /* ------------------------------------------------------------ せまい画面 */
 @media (max-width: 900px) {
@@ -1020,7 +1281,10 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
     box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .35);
   }
   .toc.open { display: block; }
-  html.toc-open, html.toc-open body { overflow: hidden; }   /* 目次を開いているあいだ、後ろの本文は動かさない */
+  /* 目次を開いているあいだ、後ろの本文は動かさない。body は clip にする（hidden だと body がスクロールの入れ物になり、
+     トップの実演の留まる枠が、目次を開いたとたんに消えてしまう） */
+  html.toc-open { overflow: hidden; }
+  html.toc-open body { overflow: clip; }
   .page { padding: 1.6rem 1.2rem 3rem; }
   .inpage ul { columns: 1; }
   .pager { flex-direction: column; }

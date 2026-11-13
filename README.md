@@ -31,7 +31,8 @@ r-course/
 ├── images/           グラフと画面写真
 ├── files/            読者にダウンロードしてもらうデータ
 ├── tools/
-│   └── make_og.py    SNS用の画像（OGP画像）を作るスクリプト。build.py が毎回呼ぶ
+│   ├── make_og.py    SNS用の画像（OGP画像）を作るスクリプト。build.py が毎回呼ぶ
+│   └── fill_top_demo.py  トップの実演（assets/top-demo.js）の表と点の位置を、make-figures.R の書き出しから写し直す
 ├── assets/
 │   ├── style.css     見た目。明るい画面と暗い画面の両方に対応
 │   ├── site.js       目次の開閉と、コードのコピー止め
@@ -45,10 +46,11 @@ r-course/
 
 ```bash
 Rscript make-figures.R
+python tools/fill_top_demo.py
 python build.py
 ```
 
-の順に実行すれば、本文中の実行結果とグラフが全部入れ替わります。手で貼り直す必要はありません。
+の順に実行すれば、本文中の実行結果とグラフが全部入れ替わります（2行目は、トップページの実演に埋め込んだ表と点の位置を写し直すもの）。手で貼り直す必要はありません。
 スクリプトの冒頭にある `DATA` の行を、自分のデータの置き場所に書き換えてから使ってください。
 
 ## 章を増やす・順番を変える
