@@ -665,6 +665,9 @@ local({
   stream("00-aging-stream-all", "00-aging-all", "rest_all")
 
   W <- 5.4; H <- 3.6
+  # 横軸（人口）の目盛りは、そのままだと 1e+03 のような指数で出て、記者には読みにくい。
+  # 1,000 / 10,000 … と桁区切りで出すよう、どの絵も scale_x_log10(labels = scales::label_comma()) にそろえる
+  # （軸だけの絵・補助線の絵・点の位置も同じ組み立てにしないと、目盛りの字の幅でパネルの位置がずれる）
   y2020 <- aging %>% filter(year == 2020)
   both <- aging %>% filter(year %in% c(2000, 2020))
 
@@ -673,12 +676,12 @@ local({
     save_fig("00-aging-log", y2020 %>%
       ggplot() +
       geom_point(aes(x = population, y = rate_over65)) +
-      scale_x_log10(), w = W, h = H)
+      scale_x_log10(labels = scales::label_comma()), w = W, h = H)
 
     save_fig("00-aging-years", both %>%
       ggplot() +
       geom_point(aes(x = population, y = rate_over65, color = factor(year))) +
-      scale_x_log10(), w = W, h = H)
+      scale_x_log10(labels = scales::label_comma()), w = W, h = H)
 
     # ---- 4段目の動き（点が打たれていく）のための、点のない絵と、点の位置。
     # 00-aging-log.png と同じ組み立てのまま点だけを透明にした「軸と目盛りだけ」の絵を描き、その上に、
@@ -688,7 +691,7 @@ local({
     p_axes <- y2020 %>%
       ggplot() +
       geom_point(aes(x = population, y = rate_over65), alpha = 0) +
-      scale_x_log10()
+      scale_x_log10(labels = scales::label_comma())
     save_fig("00-aging-log-axes", p_axes, w = W, h = H)
     DPI <- 150
     # 点の中心を、画像の左上を原点にしたピクセルで出す（4段目と5段目で共通）。
@@ -731,7 +734,7 @@ local({
     p_axes5 <- both %>%
       ggplot() +
       geom_point(aes(x = population, y = rate_over65, color = factor(year)), alpha = 0) +
-      scale_x_log10() +
+      scale_x_log10(labels = scales::label_comma()) +
       guides(color = guide_legend(override.aes = list(alpha = 1)))
     save_fig("00-aging-years-axes", p_axes5, w = W, h = H)
     d5 <- dot_px(p_axes5) %>% mutate(year = levels(factor(both$year))[group])
@@ -777,13 +780,13 @@ local({
       ggplot() +
       geom_point(aes(x = population, y = rate_over65), alpha = 0) +
       trend(ok(y2020), "#c0392b") +
-      scale_x_log10())
+      scale_x_log10(labels = scales::label_comma()))
 
     # 5段目：2000年と2020年、それぞれの傾向の線
     base5 <- ok(both) %>%
       ggplot() +
       geom_point(aes(x = population, y = rate_over65, color = factor(year)), alpha = 0) +
-      scale_x_log10()
+      scale_x_log10(labels = scales::label_comma())
     save_layer("00-aging-years-lines", base5 +
       trend(ok(both) %>% filter(year == 2000), "#9c2b26") +
       trend(ok(both) %>% filter(year == 2020), "#0b6b6e"))

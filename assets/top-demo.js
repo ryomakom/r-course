@@ -1,4 +1,5 @@
-// トップページの最初の画面に置く、スクロールで進む実演。Rでどんなことができるのかを、まず見てもらうためのもの。
+// トップページの本文の3段落目（「R（アール）」…しかも無料で使えます。）のすぐあとに置く、スクロールで進む実演。
+// Rでどんなことができるのかを、本文の流れの中で見てもらうためのもの。
 // 実行結果（表かグラフ）と、その説明文は画面に留まり、その上を、段ごとの札（見出しと、それを実行するコード）が下から上へ流れていく。
 // 札が画面のある高さを越えたら、留まっている結果と説明文を、その札の段のものに切り替える。
 // ・題材は、国勢調査の市町村別人口（講座で配っている 市町村別人口.csv の列を五つに絞ったもの）から見る高齢化。
@@ -7,8 +8,10 @@
 //   python tools/fill_top_demo.py でこのファイルに写したもの。作り直したときは、手で直さずに写し直す。
 // ・グラフに重ねる補助線（00-aging-log-line.png など）は、元のグラフと同じ大きさ・同じ組み立てで描いた透明な絵。
 //   同じ入れ物に同じ大きさで重ねるだけで位置が合う。
-// ・動き：開いたときの読み込み（1段目）、計算（2段目）、並べ替え（3段目）、点を打つ（4段目と5段目）。どれも本物のデータだけを使い、
-//   前の段から進んできたとき（読み込みは開いたとき）だけ動かす。段を替えるときは show(k) で必ず片づける。
+// ・本文の途中にあるので、上の帯（進み具合と「飛ばして先へ」）は、実演の領域に入って上に留まり始めてから見せる（.is-live）。
+// ・動き：読み込み（1段目）、計算（2段目）、並べ替え（3段目）、点を打つ（4段目と5段目）。どれも本物のデータだけを使い、
+//   前の段から進んできたとき（読み込みは、本文から進んできて、1段目の結果が画面に留まり始めたとき）だけ動かす。
+//   段を替えるときは show(k) で必ず片づける。
 // ・外部のライブラリは使わない。スクリプトが動かないときと印刷では、ページに置いてある静的な図（.fig-top-static）が出る。
 function topDemo() {
   var host = document.querySelector('.top-demo');
@@ -221,37 +224,41 @@ function topDemo() {
   var CSV = 'read_csv("市町村の人口.csv")';
   var READ = CSV + ' %>%\n  mutate(rate_over65 = population_over65 / population * 100)';
   var READ_N = CSV + ' %>%\n  mutate(rate_over65 =\n    population_over65 / population * 100)';
+  // 横軸（人口）の目盛りを 1,000 / 10,000 … と桁区切りで出す指定。描いた絵（make-figures.R）とまったく同じ書き方にする。
+  // せまい画面用は、半角42字に収まらないので、引数の前で折り返す
+  var LOGX = 'scale_x_log10(labels = scales::label_comma())';
+  var LOGX_N = 'scale_x_log10(\n    labels = scales::label_comma())';
   // 段ごとの、札の見出し（head）・結果に添える説明文（note）・コード・結果
   var STEPS = [
-    { head: '膨大なデータでも',
-      note: '全市区町村、5回の国勢調査',
+    { head: '膨大なデータを軽々と処理',
+      note: '国勢調査5回分、全市区町村の数字を読み込む',
       code: '«' + CSV + '»',
       narrow: '«' + CSV + '»',
       text: T_ALL, load: true },
-    { head: 'いっぺんに計算',
-      note: '「高齢化率＝65歳以上の人口÷総人口」を1行のコードで',
+    { head: '大量の計算も1行のコードで',
+      note: '65歳以上の人口と総人口から高齢化率を算出',
       code: CSV + ' %>%\n«  mutate(rate_over65 = population_over65 / population * 100)»',
       narrow: CSV + ' %>%\n«  mutate(rate_over65 =\n    population_over65 / population * 100)»',
       text: T_RATE, hl: true, calc: true },
-    { head: '数字で並べ替えも',
-      note: '高齢化率の高い自治体ランキング',
+    { head: '並べ替えてランキングも',
+      note: '自治体を高齢化率の高い順に表示',
       code: READ + ' %>%\n«  arrange(desc(year), desc(rate_over65))»',
       narrow: READ_N + ' %>%\n«  arrange(desc(year), desc(rate_over65))»',
       text: T_RANK, hl: true, sort: true },
     { head: '全体像を見るなら散布図',
-      note: '小さな自治体ほど高齢化率が高い',
-      code: READ + ' %>%\n«  filter(year == 2020) %>%\n  ggplot() +\n  geom_point(aes(x = population, y = rate_over65)) +\n  scale_x_log10()»',
-      narrow: READ_N + ' %>%\n«  filter(year == 2020) %>%\n  ggplot() +\n  geom_point(aes(x = population,\n                 y = rate_over65)) +\n  scale_x_log10()»',
+      note: '人口の少ない自治体ほど高齢化率が高い',
+      code: READ + ' %>%\n«  filter(year == 2020) %>%\n  ggplot() +\n  geom_point(aes(x = population, y = rate_over65)) +\n  ' + LOGX + '»',
+      narrow: READ_N + ' %>%\n«  filter(year == 2020) %>%\n  ggplot() +\n  geom_point(aes(x = population,\n                 y = rate_over65)) +\n  ' + LOGX_N + '»',
       img: 'images/00-aging-log.png',
       dots: 'images/00-aging-log-axes.png',   // 点を打っていく動きの下絵（点のない、軸と目盛りだけの絵）
       pts: PTS, durs: [1400],                 // 打つ点と、打っている時間（ミリ秒）
       alt: '2020年の全国の市区町村を、横軸に人口（対数）、縦軸に高齢化率をとって点で描いた散布図。点の集まりは右下がりで、人口の少ない自治体ほど高齢化率が高い',
       // 重ねる補助線。wipe は現れ方（x＝左から右へ引く、up＝下から上へ伸びる）
       over: [{ src: 'images/00-aging-log-line.png', wipe: 'x' }] },
-    { head: '色を分ければ変化も見える',
-      note: '全国的な高齢化が進行中',
-      code: READ + ' %>%\n  filter(year «%in% c(2000, 2020)») %>%\n  ggplot() +\n  geom_point(aes(x = population, y = rate_over65,\n«                 color = factor(year)»)) +\n  scale_x_log10()',
-      narrow: READ_N + ' %>%\n  filter(year «%in% c(2000, 2020)») %>%\n  ggplot() +\n  geom_point(aes(x = population,\n                 y = rate_over65,\n«                 color = factor(year)»)) +\n  scale_x_log10()',
+    { head: '色を分けると変化も見える',
+      note: '全国的な高齢化が過去20年で進行中',
+      code: READ + ' %>%\n  filter(year «%in% c(2000, 2020)») %>%\n  ggplot() +\n  geom_point(aes(x = population, y = rate_over65,\n«                 color = factor(year)»)) +\n  ' + LOGX,
+      narrow: READ_N + ' %>%\n  filter(year «%in% c(2000, 2020)») %>%\n  ggplot() +\n  geom_point(aes(x = population,\n                 y = rate_over65,\n«                 color = factor(year)»)) +\n  ' + LOGX_N,
       img: 'images/00-aging-years.png',
       dots: 'images/00-aging-years-axes.png', // 点のない、軸と目盛りと凡例だけの絵
       // 2000年、2020年の順に、それぞれ 0.85 秒。待ち（.15秒）と最後の点が縮むまで（.14秒）を入れて、全体で2秒ほど
@@ -366,7 +373,7 @@ function topDemo() {
 
   // ---- 組み立て
   // .scrolly の同じマス目に三つを重ねる。下から順に、留まる結果（.sc-stage）、流れる札の列（.sc-steps）、留まる帯（.sc-bar）。
-  // 帯を結果と別にしているのは、「飛ばして本文へ」を札より手前に置いて、いつでも押せるようにするため
+  // 帯を結果と別にしているのは、「飛ばして先へ」を札より手前に置いて、いつでも押せるようにするため
   // （留まる要素はそれだけで重なりのまとまりを作るので、結果の中にボタンを入れると札の下に隠れてしまう）
   var root = el('div', 'scrolly');
   root.setAttribute('role', 'group');
@@ -382,7 +389,7 @@ function topDemo() {
   bar.appendChild(dots);
   var hint = el('span', 'sc-hint', 'スクロールで進みます');
   bar.appendChild(hint);
-  var skip = el('button', 'sc-skip', '飛ばして本文へ');
+  var skip = el('button', 'sc-skip', '飛ばして先へ');   // 本文の途中にあるので「本文へ」ではなく「先へ」
   skip.type = 'button';
   bar.appendChild(skip);
 
@@ -533,7 +540,9 @@ function topDemo() {
     var w = 16, q = Math.floor(n / TOTAL * w);
     return '|' + '='.repeat(q) + ' '.repeat(w - q) + '|' + String(Math.floor(n / TOTAL * 100)).padStart(4, ' ') + '%';
   }
-  function startFlow(k, o) {
+  // hold のときは、流れ出す前の形（窓は空、棒は 0%、数え札は 0 行）まで組み立てて、そこで止めておく（runFlow で流し始める）。
+  // 1段目の読み込みを、実演の領域に入るまで待たせるため
+  function startFlow(k, o, hold) {
     var pre = resEls[k];
     var strip = el('span', 'sc-strip');
     strip.setAttribute('aria-hidden', 'true');
@@ -556,12 +565,21 @@ function topDemo() {
       pre.appendChild(meter);
     }
     pre.classList.add('is-flow', o.cls);
+    // 待っているあいだは、数え札と進み具合の棒を隠しておく（「0 / 8,705 行」が止まったまま見えると、読み込みに失敗したように見えるため）
+    if (hold) pre.classList.add('is-hold');
     flow = { k: k, o: o, pre: pre, body: bodies[k], strip: strip, tally: tally, meter: meter, nums: nums,
-             p0: o.from, p1: nums.length - 8, t0: -1, raf: 0, timers: [] };
+             p0: o.from, p1: nums.length - 8, t0: -1, raf: 0, timers: [], run: false };
     paint(o.from, 0);
-    flow.raf = requestAnimationFrame(tick);
+    if (!hold) runFlow();
+  }
+  function runFlow() {
+    var f = flow;
+    if (!f || f.run) return;
+    f.run = true;
+    f.pre.classList.remove('is-hold');
+    f.raf = requestAnimationFrame(tick);
     // 描画の合図が来ない（タブが裏にある）ときも、決まった時刻には必ず止まるようにしておく
-    flow.timers.push(setTimeout(land, o.delay + o.dur + 20));
+    f.timers.push(setTimeout(land, f.o.delay + f.o.dur + 20));
   }
   // p だけ送ったとき、窓の下端から入ってきた行の番号（＝何行目まで進んだか）
   function countAt(f, p) {
@@ -622,7 +640,7 @@ function topDemo() {
     cancelAnimationFrame(f.raf);
     f.timers.forEach(clearTimeout);
     [f.strip, f.tally, f.meter].forEach(function (e) { if (e && e.parentNode) e.parentNode.removeChild(e); });
-    f.pre.classList.remove('is-flow', 'is-landed', f.o.cls);
+    f.pre.classList.remove('is-flow', 'is-landed', 'is-hold', f.o.cls);
     f.body.style.removeProperty('--m');
   }
 
@@ -724,11 +742,19 @@ function topDemo() {
     d.ctx.clearRect(0, 0, d.cv.width, d.cv.height);
     d.cv.width = d.cv.height = 0;   // 描いた絵のぶんのメモリを手放す
   }
-  // 実演が画面に見えているか（開いたときの読み込みの動きは、見えているときだけ）
-  function inView() {
-    var r = stage.getBoundingClientRect();
-    return r.bottom > 0 && r.top < window.innerHeight;
+  // 実演の領域に入ったか（＝実演の頭が、上の帯（.site-head）の下端まで上がってきて、実演の帯と1段目の結果が留まり始めたか）。
+  // 帯と結果は同じマス目の頭に並んでいて、留まる前も後も、結果の上端は帯の下端に接している。だから両者を比べても分からず、
+  // 実演の入れ物の上端と、留まる位置（topPx。measure が測る）を比べる
+  var topPx = 0;
+  function stuck() {
+    return root.getBoundingClientRect().top - topPx < 1.5;
   }
+  // 読み込みの動きの「待ち」：本文から進んできて、1段目の結果が留まり始めたときに1回だけ動かす。
+  // 待っているあいだは、読み込みの動きを流れ出す前の形で止めておく（startFlow の hold。窓は空、棒は 0%、数え札は 0 行）。
+  // 結果は、本文を読んでいるうちから画面の下のほうに見えているので、出来上がった表がいったん見えてから空になる、というちぐはぐを避けるため。
+  // ただ空の枠を見せるのではなく、0% の棒と数え札を出しておくと、「これから読み込む」ところに見える。
+  // 実演を通り過ぎた位置で開いたとき、動きを減らす設定のとき、待たずに別の段へ進んだとき（「飛ばして先へ」など。show が止めた形を片づける）は、動かさずにやめる
+  var loadArmed = false;
 
   // ---- 動かす
   var now = -1;
@@ -746,6 +772,7 @@ function topDemo() {
     dotEls.forEach(function (d, i) { d.classList.toggle('is-on', i <= k); });
     count.textContent = (k + 1) + ' / ' + N;
     hint.classList.toggle('is-off', k > 0);
+    fitStage();
     stopSort();
     stopFlow();
     stopDots();
@@ -756,31 +783,71 @@ function topDemo() {
     if (k === CALC && fwd) startFlow(k, FLOW.calc);
     if (k === SORT && fwd) startSort();
     if (STEPS[k].plan && fwd) startDots(k);
-    // 読み込みの動きは、ページを開いて1段目が見えているときに1回だけ（2段目から戻ってきたときは動かさない）
-    if (k === LOAD && prev < 0 && inView()) startFlow(k, FLOW.load);
+    // 読み込みの動きは、ここではなく update() が、1段目の結果が留まり始めたときに始める
   }
   // 留まる位置と長さを、いまの画面に合わせる。
   // ・上の帯（.site-head）の高さは、字の折り返しで変わるので測る。せまい画面では帯が出ない（「目次」ボタンだけが浮く）ので 0。
   // ・コードは、広い画面用（1行が長い）が札に収まるかを測り、収まらなければ、せまい画面用（折り返したもの）に替える。
   //   画面の幅で決め打ちにしないのは、等幅の書体の字幅が端末によって違うため。
-  // ・結果の枠の高さ（--sc-h）は、最後の札が通り過ぎたあとも結果がしばらく留まるよう、札の列の末尾の余白に使う。
+  // ・結果の枠の高さ（--sc-h）は、札と札の間と、最後の札が通り過ぎたあとも結果がしばらく留まるための札の列の末尾の余白に使う。
+  //   表の段では枠を表の高さまで詰めるが、--sc-h は、いちばん高い段（グラフ）の高さのままにする（段によって札の流れが変わらないように）。
   function measure() {
     var sh = document.querySelector('.site-head');
     var top = 0;
     if (sh && getComputedStyle(sh).position === 'sticky') top = Math.max(0, Math.floor(sh.getBoundingClientRect().height) - 1);
+    topPx = top;
     root.style.setProperty('--sc-top', top + 'px');
     root.classList.remove('is-narrow');
     if (wideEls.some(function (p) { return p.scrollWidth > p.clientWidth + 1; })) root.classList.add('is-narrow');
-    root.style.setProperty('--sc-h', stage.offsetHeight + 'px');
+    fitStage();
+  }
+  // 結果の入れ物（.sc-view）の高さを、いまの段の結果の高さにする（表の段で、表の上下に空白ができないように）。
+  // 重ねた結果は、それぞれ自分の高さのまま上にそろえてあり（CSS の align-items: start）、入れ物からはみ出たぶん（隠れている背の高いグラフ）は見せない。
+  // 高さが変わるときは CSS の transition でなめらかに変える。--sc-h は、いちばん背の高い結果の場合の枠の高さ
+  var viewH = -1;
+  function fitStage() {
+    if (now < 0) return;
+    var hs = resEls.map(function (v) { return v.offsetHeight; });
+    var h = hs[now];
+    var extra = stage.offsetHeight - resStack.offsetHeight;   // 枠の上下の余白と説明文のぶん
+    root.style.setProperty('--sc-h', (extra + Math.max.apply(null, hs)) + 'px');
+    if (h !== viewH) {
+      viewH = h;
+      resStack.style.height = h + 'px';
+    }
+  }
+  // 書体が入ったり、幅が変わったりして結果の高さが変わったら、合わせ直す（表の字の大きさは枠の幅で決まるため）
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(function () { fitStage(); });
+    resEls.forEach(function (v) { ro.observe(v); });
   }
   // いまの段＝画面の上から4分の3の高さを、頭が越えた札のうち、いちばん後ろのもの（1枚目は最初から「いま」）。
-  // 毎回、札の位置を測って決めるので、スクロールを戻しても、画面の大きさを変えても合う
+  // 毎回、札の位置を測って決めるので、スクロールを戻しても、画面の大きさを変えても合う。
+  // あわせて、上の帯を見せるか（実演の領域に入ったか）と、読み込みの動きの始まりを決める
+  var first = true;
   function update() {
     if (host._scLock) return;   // 確認用：段を固定しているあいだは、スクロールで動かさない
     var line = window.innerHeight * 0.75;
     var k = 0;
     cardEls.forEach(function (c, i) { if (c.getBoundingClientRect().top < line) k = i; });
-    show(k);
+    var inStage = stuck();
+    root.classList.toggle('is-live', inStage);
+    show(k);   // 段が替わったときは、ここで止めてあった読み込みの形も片づく
+    if (first) {
+      first = false;
+      // 実演の手前（本文を読んでいるところ）で開いたときだけ、読み込みの動きを待つ。
+      // 実演を通り過ぎた位置で開いたとき（k が 1 以上になる）、動きを減らす設定のときは待たない。
+      // show より後で組み立てる（show は最初に、前の動きを片づけるため）
+      if (LOAD >= 0 && k === LOAD && !inStage && !reduced()) {
+        loadArmed = true;
+        startFlow(LOAD, FLOW.load, true);
+      }
+    }
+    if (loadArmed && (k !== LOAD || !flow)) loadArmed = false;
+    if (loadArmed && inStage) {
+      loadArmed = false;
+      runFlow();
+    }
   }
   var waiting = false;
   function onScroll() {
@@ -791,14 +858,16 @@ function topDemo() {
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', function () { measure(); onScroll(); });
   window.addEventListener('load', function () { measure(); update(); });   // 書体や画像が入って高さが変わったあとに測り直す
-  // 実演のすぐ下に見えているもの（本文の頭）が、上の帯に隠れない位置に来るところまで進める。
-  // 実演の入れ物の下端ではなく、次の要素の頭を目当てにする（間の余白の取り方が変わっても、本文の頭がそろうように）
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); onScroll(); });
+  // 実演のすぐあとの本文（「記者自身が…」の段落）の頭が、上の帯（.site-head）のすぐ下に来るところまで進める。
+  // 実演の入れ物の下端ではなく、次の要素の頭を目当てにする（間の余白の取り方が変わっても、本文の頭がそろうように）。
+  // 帯の高さ（topPx）に、ページの頭の余白と同じくらいのゆとり（1rem）を足す。せまい画面では帯がないので、画面の上から 1rem
   function skipTo() {
     var next = host.nextElementSibling;
     while (next && !next.offsetHeight) next = next.nextElementSibling;   // script や、隠した静的な図は飛ばす
     var edge = next ? next.getBoundingClientRect().top : root.getBoundingClientRect().bottom;
-    var pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
-    return Math.max(0, window.scrollY + edge - pad - 8);
+    var rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    return Math.max(0, Math.round(window.scrollY + edge - topPx - rem));
   }
   skip.addEventListener('click', function () {
     window.scrollTo({ top: skipTo(), behavior: reduced() ? 'auto' : 'smooth' });

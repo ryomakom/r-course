@@ -1,6 +1,10 @@
 @charset "utf-8";
 
 :root {
+  /* 明るい画面と暗い画面の両方を、このサイト自身が用意していると、ブラウザに伝える。
+     これがないと、端末の「強制ダークモード」（Android の Chrome や Samsung Internet など）が、
+     サイトの色を勝手に塗り替え、色をつけた表の列などが読めなくなることがある */
+  color-scheme: light dark;
   --paper: #fbf9f5;
   --paper-2: #ffffff;
   --ink: #1d1c1a;
@@ -942,25 +946,27 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
 .cards a:hover { border-color: var(--accent); }
 
 /* ===== トップの実演（.top-demo）・カードの並び・ダークモードの画像 ここから =====
-   実演：最初の画面に置く、スクロールで進む見せ場（assets/top-demo.js）。
+   実演：本文の3段落目（「R（アール）」…しかも無料で使えます。）のすぐあとに置く、スクロールで進む見せ場（assets/top-demo.js）。
    実行結果（.sc-stage）が画面に留まり、その上を、見出しとコードを書いた札（.sc-card）が下から上へ流れていく。
-   トップページでは、この実演を最初の画面の主役にしたいので、題名は小さな札書き程度にして、上の余白も詰める */
+   スクリプトが動かないときと印刷では、同じ位置に静的な図が出る */
 .home.page { padding-top: 1.1rem; }
-.home h1 {
-  margin: 0 0 .4rem;
-  font-size: .9rem; line-height: 1.4; letter-spacing: .1em;
-  color: var(--ink-2);
-}
-.home h1::before {
-  content: ""; display: inline-block; width: .26rem; height: .8rem; margin-right: .45rem;
-  background: var(--accent); vertical-align: -.05rem;
+/* トップの題名：ページの頭に置いたまま、ほかの章の h1 より一回り大きい明朝の太字にする（大きめの文字で、という指示）。
+   すぐ下から本文が始まり、最初の画面で題名と本文の頭がいっしょに見えるよう、余白は詰めておく。
+   せまい画面（320px）でも1行に収まる大きさを下限にする（途中で切れて1字だけ次の行に落ちると読みにくい）。
+   印刷では、ほかの章と同じふつうの h1 でよいので、画面のときだけ */
+@media screen {
+  .home h1 {
+    font-weight: 700;
+    font-size: clamp(1.85rem, 1.25rem + 3vw, 2.9rem); line-height: 1.35; letter-spacing: .04em;
+    margin: 0 0 1.3rem;
+  }
 }
 /* 三つ（結果・札の列・帯）を同じマス目に重ねる。マス目の高さは、いちばん長い札の列で決まり、結果と帯はその中で留まる。
    長さを .scrolly の余白（padding）で作ると、その中では留まらないので、札の列の中の余白で作っている */
 .scrolly {
   --sc-top: 4rem;                    /* 留まる位置（上の帯の下）。実際の帯の高さを top-demo.js が測って入れ直す */
-  --sc-bar: 2.5rem;                  /* 進み具合と「飛ばして本文へ」の帯の高さ */
-  --sc-lead: 3.2rem;                 /* 開いたときの、上の帯から実演までの間（題名のぶん）。最初の画面に結果が収まるよう、高さから引く */
+  --sc-bar: 2.5rem;                  /* 進み具合と「飛ばして先へ」の帯の高さ */
+  --sc-lead: 3.2rem;                 /* グラフの高さを決めるときに、画面の高さから余分に引くぶん（グラフの下に少しゆとりを残す） */
   /* 札と札の間。結果の枠の高さ（--sc-h。top-demo.js が測る）より広くとり、前の札が抜けてから次の札がかかるまで、
      結果の全体が見える間（画面の高さの3割5分）を作る。枠の高さと同じにすると、いつもどこかに札がかかってしまう */
   --sc-gap: calc(var(--sc-h, 60svh) + 35svh);
@@ -968,14 +974,21 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
   margin: 0 0 2.4rem;
 }
 .sc-bar, .sc-stage, .sc-steps { grid-area: 1 / 1; min-width: 0; }
-/* 帯：札より手前。地を塗って、札は帯の下にもぐって消える。「飛ばして本文へ」はここにあるので、札に隠れない */
+/* 帯：札より手前。地を塗って、札は帯の下にもぐって消える。「飛ばして先へ」はここにあるので、札に隠れない。
+   実演は本文の途中にあるので、実演の領域に入って帯が上に留まり始めるまで（.is-live。top-demo.js がつける）は見せない
+   （本文を読んでいるあいだ、実演の頭に帯だけがぽつんと見えたり、本文に重なったりしないように）。
+   場所は取ったままなので、出し入れで結果や札の位置は動かない。
+   キーボードでボタンに来たとき（:focus-within）は、領域の外でも見せる */
 .sc-bar {
   position: sticky; top: var(--sc-top); z-index: 3; align-self: start;
   display: flex; align-items: center; gap: .8rem;
   height: var(--sc-bar);
   background: var(--paper);
   font-family: var(--gothic); font-size: .8rem; line-height: 1.4; color: var(--ink-2);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
 }
+.scrolly.is-live .sc-bar, .sc-bar:focus-within { opacity: 1; pointer-events: auto; }
 .sc-count { flex: none; font-weight: 700; letter-spacing: .06em; color: var(--accent); }
 .sc-dots { display: inline-flex; gap: .35rem; }
 .sc-dots i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--line); transition: background .3s; }
@@ -1009,9 +1022,15 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
   font-family: var(--gothic); font-size: 1.02rem; font-weight: 600; line-height: 1.5; color: var(--ink);
 }
 .sc-note.is-on { transition: opacity .35s ease .4s; }
-/* 高さは、重ねた中でいちばん背の高いもの（グラフ）に合う。表はその中ほどに置く。
+/* 重ねた結果は、それぞれ自分の高さのまま上にそろえる。入れ物の高さは、top-demo.js（fitStage）が、いまの段の結果の高さにする
+   （表の段で、グラフに合わせた高さのまま表の上下に空白ができないように）。高さが変わるときはなめらかに。
+   はみ出たぶん（隠れている、背の高いグラフ）は見せない。
    表の字の大きさを枠の幅から決めるので、幅の物差し（cqw）の入れ物にする */
-.sc-view { align-items: center; container-type: inline-size; }
+.sc-view {
+  align-items: start; container-type: inline-size;
+  overflow: hidden;
+  transition: height .35s ease;
+}
 /* グラフ：本体と補助線を、縦横比 3:2 の同じ入れ物いっぱいに重ねる（同じ大きさ・同じ位置なので、どの幅でもずれない）。
    入れ物は枠の幅いっぱい。背の低い画面では、最初の画面に収まる高さから逆算した幅まで縮める */
 .sc-plot {
@@ -1054,7 +1073,20 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
   -webkit-user-select: none; user-select: none;
 }
 .sc-row, .sc-reel, .sc-line { display: block; }
-.sc-hl { background: var(--mark); font-weight: 700; }
+/* rate_over65 の列の色。地（--sc-hl-bg）と字（--sc-hl-ink）を、明・暗それぞれ組にして決め、字の色も受け継がずにじかに指定する
+   （ダークモードのスマホで、この列の数字が読めないという指摘があった。端末によっては字の色の受け継ぎや、
+   光らせる動きの途中の色がうまく出ないことがあるので、どの場面でも、この組の字の色だけで読めるようにする）。
+   光らせる動き（sc-flash）も、地の色だけを変え、字の色は変えない。以前は、地を赤から、字を白から戻していたので、
+   戻る途中で地と字が同じくらいの明るさになり、一瞬読めなくなっていた。
+   コントラスト比は、明：地 14 以上・光 10 以上、暗：地 9 以上・光 5 以上（字が 4.5 を下回らない） */
+.scrolly { --sc-hl-bg: #fdf3c9; --sc-hl-ink: #1d1c1a; --sc-hl-flash: #f2c14e; }
+@media (prefers-color-scheme: dark) {
+  .scrolly { --sc-hl-bg: #4a4526; --sc-hl-ink: #fff6dc; --sc-hl-flash: #74590c; }
+}
+.sc-hl {
+  background: var(--sc-hl-bg); font-weight: 700;
+  color: var(--sc-hl-ink); -webkit-text-fill-color: var(--sc-hl-ink);
+}
 /* 並べ替えの動き（top-demo.js の startSort が、流れ去る行を各行の上に足して .is-sorting をつける）。
    各行を1行ぶんの高さの窓にして、その中で行の列を上へ送り、並べ替えたあとの行で止める。
    送っているあいだは、ぼかして薄くする（速く流れて読めない感じを出しつつ、ちらつきを抑える）。
@@ -1069,8 +1101,8 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
   to { transform: translateY(calc(var(--n, 10) * var(--sc-lh) * -1em)); filter: blur(0); opacity: 1; }
 }
 @keyframes sc-flash {
-  from { background: var(--accent); color: var(--paper-2); }
-  to { background: var(--mark); }
+  from { background: var(--sc-hl-flash); }
+  to { background: var(--sc-hl-bg); }
 }
 /* 表の中を行が流れる動き（top-demo.js の startFlow が、帯 .sc-strip を足して .is-flow をつける。1段目の読み込みは .is-load、2段目の計算は .is-calc も）。
    データの8行（.sc-body）を窓にして、その中で本物の行の帯を上へ流す。窓の高さは元の8行のままなので、枠の高さは変わらない。
@@ -1106,6 +1138,8 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
 .sc-out.is-load.is-landed .sc-cap > .sc-line,
 .sc-out.is-load.is-landed .sc-foot > .sc-line { opacity: 1; transition: opacity .3s ease .4s; }
 .sc-meter { position: absolute; left: 0; top: 0; white-space: pre; color: var(--ink-2); }
+/* 1段目が読み込みを待っているあいだ（top-demo.js の is-hold）は、数え札と棒を出さない。流れ出すときに現れる */
+.sc-out.is-hold .sc-meter, .sc-out.is-hold .sc-tally { visibility: hidden; animation: none; }
 .sc-out.is-landed .sc-meter { opacity: 0; transition: opacity .2s ease .2s; }
 /* 数え札：表の1行目（# A tibble …）の右、表の右端にそろえて置く（1行目の右は空いているので、表とも説明文ともぶつからない）。
    幅は表の行と同じ字数（ch。JS が入れる）にして右寄せ */
@@ -1134,10 +1168,10 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
 .sc-plot.is-on.is-dotted .sc-wipe-x2 { transition-delay: .15s; }
 .sc-plot.is-on.is-dotted .sc-wipe-up { transition-delay: 1.15s; }
 /* 札の列：結果より手前を流れる。列そのものはクリックを受けず（空いているところで下のものを押せるように）、札だけが受ける。
-   1枚目は、開いたときに画面の下のほうに見えている位置から始める */
+   1枚目は、結果が留まり始めたときに、画面の下のほうに見えている位置から始める */
 .sc-steps {
   position: relative; z-index: 2; pointer-events: none;
-  padding-top: max(11rem, calc(100svh - var(--sc-top) - var(--sc-lead) - 14.5rem));
+  padding-top: max(11rem, calc(100svh - var(--sc-top) - 14.5rem));
   /* 最後の札が上へ抜けたあとも、結果がしばらく留まるだけの長さ（結果の高さ＋画面の3割） */
   padding-bottom: calc(var(--sc-h, 60svh) + 30svh);
 }
@@ -1186,7 +1220,9 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
   font-size: min(.8rem, calc((100cqw - 2.9rem) / 25.5));
 }
 @media (max-width: 900px) {
-  .home.page { padding-top: .8rem; }
+  /* 題名は大きく1行で置くので、右上に浮く「目次」ボタンと重ならないよう、ボタンの下から始める */
+  .home.page { padding-top: 3.3rem; }
+  @media print { .home.page { padding-top: 0; } }   /* 印刷では「目次」ボタンがないので、上を空けない */
   /* サイトの帯は出ない。右上に浮く「目次」ボタンと同じ高さに実演の帯を留め、ボタンのぶん右を空ける */
   .scrolly { --sc-top: 0px; --sc-bar: 3.3rem; --sc-lead: 2.7rem; }
   .sc-bar { padding-right: 4.2rem; }
@@ -1210,19 +1246,16 @@ th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
 @media (max-width: 359px) {
   .sc-title { font-size: 1.22rem; }
 }
-@media print {
-  /* 印刷では実演が出ないので、題名を元の大きさに戻す */
-  .home h1 { font-size: 1.9rem; letter-spacing: 0; color: var(--ink); }
-  .home h1::before { display: none; }
-}
 /* 動きを減らす設定では、切り替えを一瞬にし、補助線は最初から出しておく（読み込み・計算・並べ替え・点を打つ動きは、top-demo.js が始めない） */
 @media (prefers-reduced-motion: reduce) {
+  .sc-bar, .sc-view { transition: none; }
   .sc-layer, .sc-layer.is-on, .sc-note.is-on { transition: none; }
   .sc-over, .sc-plot.is-on .sc-over { transition: none; clip-path: none; }
   .sc-out.is-sorting .sc-reel, .sc-out.is-sorting .sc-hl { animation: none; }
 }
+/* 印刷では実演を出さない（同じ位置に静的な図が出る） */
 @media print {
-  .top-demo { display: none; }
+  .scrolly { display: none !important; }
 }
 /* 「どこから読むか」のカード：2列×2段（同じ段は同じ高さ）、せまい画面は1列 */
 .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
