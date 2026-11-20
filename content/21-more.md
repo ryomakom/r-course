@@ -2,7 +2,7 @@
 title: もっといろんなことをやるには
 nav: 21 もっといろんなことを
 kicker: 第4部　さらに先へ
-lead: データ分析のための道具は、前章までにほぼそろいました。ここでは、その先に広がるRの世界を、私が使ったことのあるものから少しだけ紹介します。
+lead: Rでできるのは、ここまでやってきたような基本的なデータ分析だけではありません。その先に広がる世界を少しだけ紹介します。
 ---
 
 データ分析のために必要なツールは、前章まででほぼすべて紹介しました。ここまでついてきた人なら、データ報道をするうえで、やりたいことのほとんどができるようになっているはずです。
@@ -24,7 +24,7 @@ lead: データ分析のための道具は、前章までにほぼそろいま�
 <div class="xc-actor"><svg class="xc-icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="15" r="9"/><path d="M6 46c0-11 8-18 18-18s18 7 18 18z"/></svg><span class="xc-name">人間</span></div>
 <div class="xc-talk">
 <div class="xc-msg xc-req"><span class="xc-say">「人口のファイルをください」</span></div>
-<div class="xc-msg xc-res"><span class="xc-say">用意してあるファイルを丸ごと渡す</span><span class="xc-item xc-file">人口データ2020.csv<small>全国の市区町村ぶん。人が見るための表</small></span></div>
+<div class="xc-msg xc-res"><span class="xc-say">用意してあるファイルを丸ごと渡す</span><span class="xc-item xc-file">人口データ2020.csv</span></div>
 </div>
 <div class="xc-actor"><svg class="xc-icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="7" width="42" height="34" rx="4" class="xc-win"/><rect x="3" y="7" width="42" height="9" rx="4"/><circle cx="9" cy="11.5" r="1.6" class="xc-dot"/><circle cx="14" cy="11.5" r="1.6" class="xc-dot"/><rect x="9" y="22" width="30" height="3" rx="1.5"/><rect x="9" y="29" width="22" height="3" rx="1.5"/></svg><span class="xc-name">ウェブサイト</span><span class="xc-note">全国の人口をまとめたファイルが、あらかじめ置いてある</span></div>
 </div>
@@ -36,7 +36,7 @@ lead: データ分析のための道具は、前章までにほぼそろいま�
 <div class="xc-actor"><svg class="xc-icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="15" r="9"/><path d="M6 46c0-11 8-18 18-18s18 7 18 18z"/></svg><span class="xc-name">人間</span></div>
 <div class="xc-talk">
 <div class="xc-msg xc-req"><span class="xc-say">「2020年の札幌市の人口をください」</span></div>
-<div class="xc-msg xc-res"><span class="xc-say">条件に合うデータだけを返す</span><span class="xc-item xc-data">札幌市｜2020年｜1973395<small>プログラムで扱いやすい形</small></span></div>
+<div class="xc-msg xc-res"><span class="xc-say">条件に合うデータだけを返す</span><span class="xc-item xc-data">札幌市｜2020年｜1,973,395人</span></div>
 </div>
 <div class="xc-actor"><svg class="xc-icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="3" y="7" width="42" height="34" rx="4" class="xc-win"/><rect x="3" y="7" width="42" height="9" rx="4"/><circle cx="9" cy="11.5" r="1.6" class="xc-dot"/><circle cx="14" cy="11.5" r="1.6" class="xc-dot"/><rect x="9" y="22" width="30" height="3" rx="1.5"/><rect x="9" y="29" width="22" height="3" rx="1.5"/></svg><span class="xc-name">ウェブサイト</span><span class="xc-note">注文を受けてから、条件に合うものを探す</span></div>
 </div>
