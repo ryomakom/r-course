@@ -1,0 +1,15 @@
+# テキストは改行をLFでそろえる（WindowsとMacで混ざらないように）
+*.md   text eol=lf
+*.py   text eol=lf
+*.R    text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.txt  text eol=lf
+*.html text eol=lf
+
+# データとして配るものは、中身をいっさい触らない
+*.csv  -text
+*.xls  -text
+*.xlsx -text
+*.zip  -text
+*.png  -text

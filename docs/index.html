@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>記者のためのR講座 | データを自分の手で確かめるために</title>
+<meta name="description" content="Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。">
+<meta name="author" content="小宮山亮磨">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ryomakom.github.io/r-course/">
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="記者のためのR講座">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="記者のためのR講座">
+<meta property="og:description" content="Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。">
+<meta property="og:url" content="https://ryomakom.github.io/r-course/">
+<meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/index.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="記者のためのR講座">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ryomakom">
+<meta name="twitter:creator" content="@ryomakom">
+<meta name="twitter:title" content="記者のためのR講座">
+<meta name="twitter:description" content="Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。">
+<meta name="twitter:image" content="https://ryomakom.github.io/r-course/assets/og/index.png">
+<meta name="twitter:image:alt" content="記者のためのR講座">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebSite",
+   "@id": "https://ryomakom.github.io/r-course/#website",
+   "url": "https://ryomakom.github.io/r-course/",
+   "name": "記者のためのR講座",
+   "alternateName": "記者のためのR講座　データを自分の手で確かめるために",
+   "description": "Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。",
+   "inLanguage": "ja",
+   "author": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "publisher": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   }
+  },
+  {
+   "@type": "Course",
+   "@id": "https://ryomakom.github.io/r-course/#course",
+   "name": "記者のためのR講座",
+   "url": "https://ryomakom.github.io/r-course/",
+   "description": "Rをまったく触ったことのない記者のための入門講座。国勢調査や選挙のデータを使い、読み込み・加工・グラフ・スクレイピングまでを、つまずきどころと一緒に解説します。",
+   "inLanguage": "ja",
+   "provider": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "author": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "educationalLevel": "初心者",
+   "audience": {
+    "@type": "Audience",
+    "audienceType": "記者・編集者"
+   },
+   "about": [
+    "R",
+    "tidyverse",
+    "データジャーナリズム",
+    "データ分析"
+   ],
+   "isAccessibleForFree": true,
+   "datePublished": "2026-11-21",
+   "dateModified": "2026-11-21",
+   "image": "https://ryomakom.github.io/r-course/assets/og/index.png",
+   "hasPart": [
+    {
+     "@type": "LearningResource",
+     "name": "1章　Rとは何か",
+     "url": "https://ryomakom.github.io/r-course/01-hajimeni.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "2章　RとRStudioを入れる",
+     "url": "https://ryomakom.github.io/r-course/02-install.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "3章　プロジェクトとパッケージ",
+     "url": "https://ryomakom.github.io/r-course/03-project.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "4章　データを読み込む",
+     "url": "https://ryomakom.github.io/r-course/04-import.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "5章　列を選ぶ・計算する",
+     "url": "https://ryomakom.github.io/r-course/05-select-mutate.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "6章　文字を切り分ける、行を絞り込む",
+     "url": "https://ryomakom.github.io/r-course/06-strings-filter.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "7章　集計する",
+     "url": "https://ryomakom.github.io/r-course/07-group.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "8章　データを縦にくっつける",
+     "url": "https://ryomakom.github.io/r-course/08-bind.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "9章　縦長と横長を行き来する",
+     "url": "https://ryomakom.github.io/r-course/09-pivot.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "10章　データ型でつまずく",
+     "url": "https://ryomakom.github.io/r-course/10-datatype.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "11章　データを横にくっつける",
+     "url": "https://ryomakom.github.io/r-course/11-join.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "12章　折れ線グラフ",
+     "url": "https://ryomakom.github.io/r-course/12-line.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "13章　棒グラフ",
+     "url": "https://ryomakom.github.io/r-course/13-col.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "14章　散布図",
+     "url": "https://ryomakom.github.io/r-course/14-point.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "15章　グラフを仕上げて外に出す",
+     "url": "https://ryomakom.github.io/r-course/15-finish.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "16章　ガソリン価格の不自然な動きを見つける",
+     "url": "https://ryomakom.github.io/r-course/16-gasoline.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "17章　ウェブのページから表を取る",
+     "url": "https://ryomakom.github.io/r-course/17-scraping.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "18章　全国の裁判所を一気に集める",
+     "url": "https://ryomakom.github.io/r-course/18-loop.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "19章　ファイルをまとめてダウンロードする",
+     "url": "https://ryomakom.github.io/r-course/19-download.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "20章　神の頭を切り落とす",
+     "url": "https://ryomakom.github.io/r-course/20-kami-excel.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "21章　もっといろんなことをやるには",
+     "url": "https://ryomakom.github.io/r-course/21-more.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "22章　AIの時代に自分でコードを書く意味",
+     "url": "https://ryomakom.github.io/r-course/22-ai.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "付録A　記号と用語のミニ辞典",
+     "url": "https://ryomakom.github.io/r-course/a1-kigou.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "付録B　関数早見表",
+     "url": "https://ryomakom.github.io/r-course/a2-functions.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "付録C　宿題と作例",
+     "url": "https://ryomakom.github.io/r-course/a3-shukudai.html"
+    },
+    {
+     "@type": "LearningResource",
+     "name": "付録D　データの準備",
+     "url": "https://ryomakom.github.io/r-course/a4-data.html"
+    }
+   ]
+  },
+  {
+   "@type": "Person",
+   "@id": "https://ryomakom.github.io/r-course/#author",
+   "name": "小宮山亮磨",
+   "url": "https://x.com/ryomakom",
+   "sameAs": [
+    "https://x.com/ryomakom"
+   ],
+   "affiliation": {
+    "@type": "Organization",
+    "name": "朝日新聞デジタル企画報道部"
+   }
+  }
+ ]
+}
+</script>
+<link rel="stylesheet" href="assets/style.css?v=6dd3d74d6f">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
+</head>
+<body class="is-home">
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li class="here"><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part" id="part-1">はじめに</p><ul>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part" id="part-2">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 列を選ぶ・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
+</ul>
+<p class="nav-part" id="part-3">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part" id="part-4">実践編</p><ul>
+<li><a href="16-gasoline.html">16 ガソリン価格を分析する</a></li>
+</ul>
+<p class="nav-part" id="part-5">第3部　データを集める</p><ul>
+<li><a href="17-scraping.html">17 ウェブから表を取る</a></li>
+<li><a href="18-loop.html">18 まとめて集める</a></li>
+<li><a href="19-download.html">19 一括ダウンロード</a></li>
+<li><a href="20-kami-excel.html">20 神の頭を切り落とす</a></li>
+</ul>
+<p class="nav-part" id="part-6">第4部　さらに先へ</p><ul>
+<li><a href="21-more.html">21 もっといろんなことを</a></li>
+<li><a href="22-ai.html">22 AIの時代に</a></li>
+</ul>
+<p class="nav-part" id="part-7">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page home">
+    <article>
+      <p class="kicker"></p>
+      <h1>記者のためのR講座<span class="h1-sub">データを自分の手で確かめるために</span></h1>
+      <p class="pub-date"><time datetime="2026-11-21">2026年11月21日公開</time></p>
+      
+      <p>社会のデジタル化が進み、さまざまなデータがネットで公開されるようになってきました。政府による各種の統計も、アクセスへの敷居が少しずつ下がってきています。</p>
+<p>分析すれば、何かおもしろいことが分かるかもしれません。宝の山なわけです。</p>
+<p>ただ、データが何百行もあったり、シートが何十個にも分かれていたりするファイルには、技術がなければ容易に手出しができません。データ量が多すぎて、手作業ではとても無理！　そうやってあきらめたことがある人は、少なくないのではないでしょうか。</p>
+<p>「R（アール）」というプログラミング言語を覚えると、そのハードルを越えられます。データが何百行どころか何百万行あっても平気です。しかも無料で使えます。</p>
+<div class="top-demo"></div>
+<script src="assets/scrolly.js?v=71da5e13ef"></script>
+<script src="assets/top-demo.js?v=7d269d0c95"></script>
+<figure class="fig fig-top-static fig-anim-static">
+<img src="images/00-aging-years.png" alt="全国の市区町村の人口と高齢化率の散布図。2000年と2020年を色分けして重ねてあり、2020年のほうが全体に上にある">
+<figcaption>全国の市区町村の人口と高齢化率。赤が2000年、青緑が2020年（国勢調査）</figcaption>
+</figure>
+<p>データをいじくり回し、分析し、発見したことを記事にして伝える。私は朝日新聞でそうした仕事をしています。「データ報道」「データジャーナリズム」などと呼ばれるものです。Rはその大きな武器です。</p>
+<p>この講座は、Rをまったく触ったことのない人を想定して書いています。統計の知識も、プログラミングの経験もいりません。使うのはいわゆるオープンデータ。国勢調査や選挙の得票といった、多くの人に関係のあるものを選びました。</p>
+<aside class="box box-note"><p class="box-title">この講座の進み方</p><p>第1部でデータを読み込んで加工し、第2部でグラフにして眺めます。ここまでは初級編。その後の実践編では、実際の取材でどんな分析をしたかを見てもらい、第3部は中級編として、ウェブから自分でデータを集めてきます。もっと前に進みたい方は、第4部を。付録には記号の意味や関数の早見表、宿題の作例、データの準備のしかたを置いています。</p></aside>
+<h2 id="どこから読むか">どこから読むか</h2>
+<ul class="cards">
+<li><a href="01-hajimeni.html"><strong>はじめて触る人</strong><br>まずは「はじめに」から順番に。第1部の最後まで来れば、たいていのデータは加工できるようになります。</a></li>
+<li><a href="12-line.html"><strong>グラフを描きたい人</strong><br>第2部から。折れ線・棒・散布図の3種類だけで、記者の仕事はほぼ足ります。</a></li>
+<li><a href="16-gasoline.html"><strong>Rの威力を知りたい人</strong><br>実践編。高知県のガソリン価格で独禁法抵触が疑われる、という朝日新聞報道で、Rの分析がどう使われたかを説明します。</a></li>
+<li><a href="17-scraping.html"><strong>データを集めたい人</strong><br>第3部から。ウェブのページに貼られた表を取るところから始めて、扱いにくいExcelを分析しやすい形に組み替えるところまで。</a></li>
+</ul>
+<h2 id="この講座で使うもの">この講座で使うもの</h2>
+<ul>
+<li>RとRStudio（どちらも無料）。入れ方は<a href="02-install.html">RとRStudioを入れる</a>で説明します。</li>
+<li>tidyverseというパッケージ。データ加工とグラフはほぼこれで済みます。</li>
+<li>データは主に国勢調査（政府統計の総合窓口 e-Stat）から取ってきたものを使います。<strong>この講座で使うファイルは全部ダウンロードできます</strong>ので、手元にデータがなくても始められます。</li>
+</ul>
+<p><a class="dl" href="files/r-course-data.zip" download>データ一式（zip）<span class="dl-size">3.7 MB</span></a></p>
+<p>一つずつ落としたい人、もとの入手先を知りたい人は<a href="a4-data.html">付録D</a>へ。各章にも、その章で使うファイルへのリンクを置いてあります。</p>
+<h2 id="Rと私">Rと私</h2>
+<p>私自身、40歳を過ぎてRを使いはじめたときは、何がなんだかわかりませんでした。プログラミングというものの具体的な接点は、大学生のときの教養課程でCを教わって「Hello World」と出力した記憶がかすかにあるのみ、といった状態でした。</p>
+<p>やりたいことをプログラミング言語として表現するという作業は、なじみのない人にはとっつきにくいものです。だからこの講座では、「なぜそう書くのか」と「どこでつまずくのか」をできるだけ書き残すようにしました。</p>
+<p>この講座のもとにしたのは2024年の春、データ報道を急に担当することになった記者のために開いた勉強会です。週に1度、毎回2時間。つまずきながらも自分で考えて、とにかくプログラムを書く。まったく未経験だった同僚たちにこれを続けてもらったら、2カ月後には基本が身についていました。</p>
+<p>わからないところは、飛ばして先に進んでかまいません。ただ、読んだだけで分かった気にはならないでください。何より大切なのは手を動かすこと。まずは書く。何をやっているのかは、やりながら腑に落ちていきます。</p>
+<p>では先へ進みましょう。Rとはそもそも何なのか、から始めます。</p>
+    </article>
+    <nav class="pager"><a class="next" href="01-hajimeni.html"><span>次へ</span>01 Rとは何か</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">©小宮山亮磨 朝日新聞デジタル企画報道部　<a href="https://x.com/ryomakom">@ryomakom</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js?v=d9de072757"></script>
+</body>
+</html>

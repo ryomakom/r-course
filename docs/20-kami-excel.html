@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>神の頭を切り落とす | 記者のためのR講座</title>
+<meta name="description" content="物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。">
+<meta name="author" content="小宮山亮磨">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ryomakom.github.io/r-course/20-kami-excel.html">
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="記者のためのR講座">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="神の頭を切り落とす | 記者のためのR講座">
+<meta property="og:description" content="物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。">
+<meta property="og:url" content="https://ryomakom.github.io/r-course/20-kami-excel.html">
+<meta property="article:author" content="https://x.com/ryomakom">
+<meta property="article:section" content="第3部　データを集める">
+<meta property="article:published_time" content="2026-11-21">
+<meta property="article:modified_time" content="2026-11-21">
+<meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/20-kami-excel.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="記者のためのR講座：神の頭を切り落とす">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ryomakom">
+<meta name="twitter:creator" content="@ryomakom">
+<meta name="twitter:title" content="神の頭を切り落とす | 記者のためのR講座">
+<meta name="twitter:description" content="物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。">
+<meta name="twitter:image" content="https://ryomakom.github.io/r-course/assets/og/20-kami-excel.png">
+<meta name="twitter:image:alt" content="記者のためのR講座：神の頭を切り落とす">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": [
+    "Article",
+    "LearningResource"
+   ],
+   "@id": "https://ryomakom.github.io/r-course/20-kami-excel.html#article",
+   "headline": "神の頭を切り落とす",
+   "name": "神の頭を切り落とす",
+   "description": "物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。",
+   "url": "https://ryomakom.github.io/r-course/20-kami-excel.html",
+   "mainEntityOfPage": "https://ryomakom.github.io/r-course/20-kami-excel.html",
+   "inLanguage": "ja",
+   "image": "https://ryomakom.github.io/r-course/assets/og/20-kami-excel.png",
+   "datePublished": "2026-11-21",
+   "dateModified": "2026-11-21",
+   "author": {
+    "@type": "Person",
+    "@id": "https://ryomakom.github.io/r-course/#author",
+    "name": "小宮山亮磨",
+    "url": "https://x.com/ryomakom",
+    "sameAs": [
+     "https://x.com/ryomakom"
+    ],
+    "affiliation": {
+     "@type": "Organization",
+     "name": "朝日新聞デジタル企画報道部"
+    }
+   },
+   "publisher": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "isPartOf": {
+    "@type": "Course",
+    "@id": "https://ryomakom.github.io/r-course/#course",
+    "name": "記者のためのR講座",
+    "url": "https://ryomakom.github.io/r-course/"
+   },
+   "learningResourceType": "講座の章",
+   "educationalLevel": "初心者",
+   "isAccessibleForFree": true
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "記者のためのR講座",
+     "item": "https://ryomakom.github.io/r-course/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "神の頭を切り落とす",
+     "item": "https://ryomakom.github.io/r-course/20-kami-excel.html"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="stylesheet" href="assets/style.css?v=6dd3d74d6f">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
+</head>
+<body class="">
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part" id="part-1">はじめに</p><ul>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part" id="part-2">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 列を選ぶ・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
+</ul>
+<p class="nav-part" id="part-3">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part" id="part-4">実践編</p><ul>
+<li><a href="16-gasoline.html">16 ガソリン価格を分析する</a></li>
+</ul>
+<p class="nav-part" id="part-5">第3部　データを集める</p><ul>
+<li><a href="17-scraping.html">17 ウェブから表を取る</a></li>
+<li><a href="18-loop.html">18 まとめて集める</a></li>
+<li><a href="19-download.html">19 一括ダウンロード</a></li>
+<li class="here"><a href="20-kami-excel.html">20 神の頭を切り落とす</a></li>
+</ul>
+<p class="nav-part" id="part-6">第4部　さらに先へ</p><ul>
+<li><a href="21-more.html">21 もっといろんなことを</a></li>
+<li><a href="22-ai.html">22 AIの時代に</a></li>
+</ul>
+<p class="nav-part" id="part-7">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">第3部　データを集める</p>
+      <h1>神の頭を切り落とす</h1>
+      <p class="lead">物騒なタイトルですいません、が、そんなに物騒な話ではありません。主に役所が出している、めんどくさいExcelを、分析しやすい形に組み替えるかんたんなやり方を説明します。</p>
+      
+      <h2 id="神エクセルとは">神エクセルとは</h2>
+<p>役所（だけではないですが）が公表するExcelファイルには、独特の様式があります。上のほうに表題やら注釈やらがあって、データのラベルに当たるものが2段や3段に分かれて書いてあって、おまけにセルが結合されている。Excelが表計算ソフトではなく「方眼紙」として使われた結果です。</p>
+<p>こうした資料は基本的に、紙に印刷して人が見るために作られています。<a href="09-pivot.html">9章</a>でも説明しましたが、人間にとってはこういうスタイルのほうが見やすいし分かりやすい。その意味では理にかなっているわけです。</p>
+<p>でも <code>read_excel()</code> で読むと悲惨なことになります。結合されたセルの二つめ以降はNAになり、ラベルの2段目はデータの1行目として読まれる。もうぐちゃぐちゃ。その筋では「紙＝神」をもじって「神エクセル」「ネ申エクセル」と呼ばれ、はっきり言って忌み嫌われます。</p>
+<p>こういうファイルを読み込んで、分析可能な形に力技で直そうとすると、<code>rename</code> と <code>mutate</code> と <code>filter</code> を延々と書くことになります。しかもシートが何十枚もあれば、それぞれ微妙に形が違ったりするわけで、一つひとつプログラムを書き換えなくてはいけない。つらい。</p>
+<p>でも、もっとマシなやり方があります。</p>
+<h2 id="二つの武器で戦う">二つの武器で戦う</h2>
+<p>使うのはtidyxlとunpivotrという二つのパッケージです。</p>
+<div class="code" data-lang="R"><pre><code>install.packages("tidyxl")
+install.packages("unpivotr")
+library(tidyxl)
+library(unpivotr)</code></pre></div>
+<aside class="box box-data"><p class="box-title">この章で使うデータ</p><p><a href="19-download.html">19章</a>の手順でダウンロードしたファイルを使いますが、うまく落ちてこなかった人は、東京都のぶんをここから取ってください。</p>
+<p><a class="dl" href="files/000979550.xlsx" download>000979550.xlsx<span class="dl-size">89 KB</span></a>　2024年にあった第50回衆院選の小選挙区の市区町村別得票（東京都）</p>
+<p><code>download</code> フォルダに入れると、この章のコードがそのまま動きます。総務省が公表しているファイルの写しです。</p></aside>
+<p>東京都の市区町村別得票データをExcelで開くと、「東京都第７区」のシートはこんな感じでした。</p>
+<figure class="fig"><img src="images/19-excel.png" alt="Excelで開いた「東京都第７区」のシート。上に日付と表題と選挙区名があり、その下に候補者名・政党名の2段のラベル、左に市区町村名が並び、いちばん下が合計の行、いちばん右が得票数計の列になっている" loading="lazy"><figcaption>000979550.xlsx の「東京都第７区」のシートを、Excelで開いたところ</figcaption></figure>
+<p>最初の2行（日付と表題）はデータではなく注釈。3行目の「東京都第７区」は選挙区の名前で、これはデータの一部です。数字のうち、たとえばいちばん左上にある「30,037」は、「自由民主党」所属の「丸川珠代氏」が、東京都第７区の「港区」で獲得した得票数を示しています。これは人間の目には一目瞭然なのですが、人間の常識を持ち合わせないコンピューターには読み取ることができません。</p>
+<p>そこで、以下のような形に加工していくことが必要なわけです。縦長の、いわゆる整然（tidy）データです。</p>
+<div class="table-wrap"><table><thead><tr><th>選挙区</th><th>市区町村</th><th>候補者</th><th>政党</th><th>得票</th></tr></thead><tbody><tr><td>東京都第７区</td><td>港区</td><td>丸川　珠代</td><td>自由民主党</td><td>30037</td></tr><tr><td>東京都第７区</td><td>港区</td><td>石川　ゆりか</td><td>参政党</td><td>8066</td></tr><tr><td>東京都第７区</td><td>港区</td><td>松尾　あきひろ</td><td>立憲民主党</td><td>40022</td></tr></tbody></table></div>
+<p>tidyxlパッケージの<code>xlsx_cells()</code>という関数で表をセルごとにバラしたうえで、unpivotrパッケージの<code>behead()</code>関数でうまいことラベルを取り出してやると、この加工が簡単にできます。こんなイメージです。</p>
+<figure class="fig fig-switch">
+<svg class="svg-wide" viewBox="0 0 746 248" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="シートのどのセルが、整然データのどの列になるかを色で示した図">
+<defs><marker id="ar19" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
+<text class="f-label" x="10" y="18">Excelのシート（東京都第７区）</text>
+<rect class="f-head" x="32" y="28" width="104" height="26"/>
+<text class="f-note" x="84" y="46.2" text-anchor="middle">A</text>
+<rect class="f-head" x="136" y="28" width="72" height="26"/>
+<text class="f-note" x="172" y="46.2" text-anchor="middle">B</text>
+<rect class="f-head" x="208" y="28" width="72" height="26"/>
+<text class="f-note" x="244" y="46.2" text-anchor="middle">C</text>
+<rect class="f-head" x="280" y="28" width="12" height="26"/>
+<text class="f-note" x="286" y="46.2" text-anchor="middle">…</text>
+<rect class="f-head" x="292" y="28" width="54" height="26"/>
+<text class="f-note" x="319" y="46.2" text-anchor="middle">F</text>
+<rect class="f-head" x="10" y="54" width="22" height="26"/>
+<text class="f-note" x="21" y="72.2" text-anchor="middle">3</text>
+<rect class="f-mark4" x="32" y="54" width="104" height="26"/>
+<text x="36" y="72.2" style="font-size:11px">東京都第７区</text>
+<rect class="f-cell" x="136" y="54" width="72" height="26"/>
+<rect class="f-cell" x="208" y="54" width="72" height="26"/>
+<rect class="f-off" x="292" y="54" width="54" height="26"/>
+<text x="295" y="72.2" style="font-size:10px">[単位：票]</text>
+<rect class="f-head" x="10" y="80" width="22" height="26"/>
+<text class="f-note" x="21" y="98.2" text-anchor="middle">4</text>
+<rect class="f-off" x="32" y="80" width="104" height="26"/>
+<text x="36" y="98.2" style="font-size:11px">候補者名</text>
+<rect class="f-mark" x="136" y="80" width="72" height="26"/>
+<text x="140" y="98.2" style="font-size:11px">丸川　珠代</text>
+<rect class="f-mark" x="208" y="80" width="72" height="26"/>
+<text x="212" y="98.2" style="font-size:11px">石川　ゆりか</text>
+<rect class="f-mark" x="292" y="80" width="54" height="26"/>
+<text x="296" y="98.2" style="font-size:11px">得票数計</text>
+<text class="f-note" x="286" y="98.2" text-anchor="middle">…</text>
+<rect class="f-head" x="10" y="106" width="22" height="26"/>
+<text class="f-note" x="21" y="124.2" text-anchor="middle">5</text>
+<rect class="f-off" x="32" y="106" width="104" height="26"/>
+<text x="36" y="124.2" style="font-size:10px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="136" y="106" width="72" height="26"/>
+<text x="140" y="124.2" style="font-size:11px">自由民主党</text>
+<rect class="f-mark2" x="208" y="106" width="72" height="26"/>
+<text x="212" y="124.2" style="font-size:11px">参政党</text>
+<rect class="f-off" x="292" y="106" width="54" height="26"/>
+<text class="f-note" x="286" y="124.2" text-anchor="middle">…</text>
+<rect class="f-head" x="10" y="132" width="22" height="26"/>
+<text class="f-note" x="21" y="150.2" text-anchor="middle">6</text>
+<rect class="f-mark3" x="32" y="132" width="104" height="26"/>
+<text x="36" y="150.2" style="font-size:11px">港区</text>
+<rect class="f-cell" x="136" y="132" width="72" height="26"/>
+<text x="140" y="150.2" style="font-size:11px">30037</text>
+<rect class="f-cell" x="208" y="132" width="72" height="26"/>
+<text x="212" y="150.2" style="font-size:11px">8066</text>
+<rect class="f-cell" x="292" y="132" width="54" height="26"/>
+<text x="296" y="150.2" style="font-size:11px">104297</text>
+<text class="f-note" x="286" y="150.2" text-anchor="middle">…</text>
+<rect class="f-head" x="10" y="158" width="22" height="26"/>
+<text class="f-note" x="21" y="176.2" text-anchor="middle">7</text>
+<rect class="f-mark3" x="32" y="158" width="104" height="26"/>
+<text x="36" y="176.2" style="font-size:11px">渋谷区</text>
+<rect class="f-cell" x="136" y="158" width="72" height="26"/>
+<text x="140" y="176.2" style="font-size:11px">25811</text>
+<rect class="f-cell" x="208" y="158" width="72" height="26"/>
+<text x="212" y="176.2" style="font-size:11px">8522</text>
+<rect class="f-cell" x="292" y="158" width="54" height="26"/>
+<text x="296" y="176.2" style="font-size:11px">101587</text>
+<text class="f-note" x="286" y="176.2" text-anchor="middle">…</text>
+<rect class="f-head" x="10" y="184" width="22" height="26"/>
+<text class="f-note" x="21" y="202.2" text-anchor="middle">8</text>
+<rect class="f-mark3" x="32" y="184" width="104" height="26"/>
+<text x="36" y="202.2" style="font-size:11px">東京都第７区 合計</text>
+<rect class="f-cell" x="136" y="184" width="72" height="26"/>
+<text x="140" y="202.2" style="font-size:11px">55848</text>
+<rect class="f-cell" x="208" y="184" width="72" height="26"/>
+<text x="212" y="202.2" style="font-size:11px">16588</text>
+<rect class="f-cell" x="292" y="184" width="54" height="26"/>
+<text x="296" y="202.2" style="font-size:11px">205884</text>
+<text class="f-note" x="286" y="202.2" text-anchor="middle">…</text>
+<path class="f-arrow" d="M352 206 H378" marker-end="url(#ar19)"/>
+<text class="f-code" x="350" y="196">behead()</text>
+<text class="f-label" x="384" y="18">整然データ</text>
+<rect class="f-mark4" x="384" y="28" width="74" height="24"/>
+<text class="f-th" x="388" y="44" style="font-size:11px">district</text>
+<rect class="f-cell" x="384" y="52" width="74" height="24"/>
+<text x="388" y="68" style="font-size:11px">東京都第７区</text>
+<rect class="f-cell" x="384" y="76" width="74" height="24"/>
+<text x="388" y="92" style="font-size:11px">東京都第７区</text>
+<rect class="f-cell" x="384" y="100" width="74" height="24"/>
+<text x="388" y="116" style="font-size:11px">東京都第７区</text>
+<rect class="f-cell" x="384" y="124" width="74" height="24"/>
+<text x="388" y="140" style="font-size:11px">東京都第７区</text>
+<rect class="f-mark3" x="458" y="28" width="96" height="24"/>
+<text class="f-th" x="462" y="44" style="font-size:11px">municipality</text>
+<rect class="f-cell" x="458" y="52" width="96" height="24"/>
+<text x="462" y="68" style="font-size:11px">港区</text>
+<rect class="f-cell" x="458" y="76" width="96" height="24"/>
+<text x="462" y="92" style="font-size:11px">港区</text>
+<rect class="f-cell" x="458" y="100" width="96" height="24"/>
+<text x="462" y="116" style="font-size:11px">渋谷区</text>
+<rect class="f-cell" x="458" y="124" width="96" height="24"/>
+<text x="462" y="140" style="font-size:11px">渋谷区</text>
+<rect class="f-mark" x="554" y="28" width="72" height="24"/>
+<text class="f-th" x="558" y="44" style="font-size:11px">name</text>
+<rect class="f-cell" x="554" y="52" width="72" height="24"/>
+<text x="558" y="68" style="font-size:11px">丸川　珠代</text>
+<rect class="f-cell" x="554" y="76" width="72" height="24"/>
+<text x="558" y="92" style="font-size:11px">石川　ゆりか</text>
+<rect class="f-cell" x="554" y="100" width="72" height="24"/>
+<text x="558" y="116" style="font-size:11px">丸川　珠代</text>
+<rect class="f-cell" x="554" y="124" width="72" height="24"/>
+<text x="558" y="140" style="font-size:11px">石川　ゆりか</text>
+<rect class="f-mark2" x="626" y="28" width="74" height="24"/>
+<text class="f-th" x="630" y="44" style="font-size:11px">party</text>
+<rect class="f-cell" x="626" y="52" width="74" height="24"/>
+<text x="630" y="68" style="font-size:11px">自由民主党</text>
+<rect class="f-cell" x="626" y="76" width="74" height="24"/>
+<text x="630" y="92" style="font-size:11px">参政党</text>
+<rect class="f-cell" x="626" y="100" width="74" height="24"/>
+<text x="630" y="116" style="font-size:11px">自由民主党</text>
+<rect class="f-cell" x="626" y="124" width="74" height="24"/>
+<text x="630" y="140" style="font-size:11px">参政党</text>
+<rect class="f-head" x="700" y="28" width="44" height="24"/>
+<text class="f-th" x="704" y="44" style="font-size:9px">numeric</text>
+<rect class="f-cell" x="700" y="52" width="44" height="24"/>
+<text x="704" y="68" style="font-size:11px">30037</text>
+<rect class="f-cell" x="700" y="76" width="44" height="24"/>
+<text x="704" y="92" style="font-size:11px">8066</text>
+<rect class="f-cell" x="700" y="100" width="44" height="24"/>
+<text x="704" y="116" style="font-size:11px">25811</text>
+<rect class="f-cell" x="700" y="124" width="44" height="24"/>
+<text x="704" y="140" style="font-size:11px">8522</text>
+<text class="f-note" x="384" y="172">……</text>
+<text class="f-note" x="10" y="238">緑（選挙区名）→ district、赤（候補者名）→ name、青（政党名）→ party、黄（A列）→ municipality、白い数字 → numeric</text>
+</svg>
+<svg class="svg-narrow" viewBox="0 0 370 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="シートのどのセルが、整然データのどの列になるかを色で示した図">
+<defs><marker id="ar19n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--ink-2)"/></marker></defs>
+<text class="f-label" x="4" y="18">Excelのシート（東京都第７区）</text>
+<rect class="f-head" x="26" y="28" width="104" height="26"/>
+<text class="f-note" x="78" y="46.2" text-anchor="middle">A</text>
+<rect class="f-head" x="130" y="28" width="72" height="26"/>
+<text class="f-note" x="166" y="46.2" text-anchor="middle">B</text>
+<rect class="f-head" x="202" y="28" width="72" height="26"/>
+<text class="f-note" x="238" y="46.2" text-anchor="middle">C</text>
+<rect class="f-head" x="274" y="28" width="12" height="26"/>
+<text class="f-note" x="280" y="46.2" text-anchor="middle">…</text>
+<rect class="f-head" x="286" y="28" width="54" height="26"/>
+<text class="f-note" x="313" y="46.2" text-anchor="middle">F</text>
+<rect class="f-head" x="4" y="54" width="22" height="26"/>
+<text class="f-note" x="15" y="72.2" text-anchor="middle">3</text>
+<rect class="f-mark4" x="26" y="54" width="104" height="26"/>
+<text x="30" y="72.2" style="font-size:11px">東京都第７区</text>
+<rect class="f-cell" x="130" y="54" width="72" height="26"/>
+<rect class="f-cell" x="202" y="54" width="72" height="26"/>
+<rect class="f-off" x="286" y="54" width="54" height="26"/>
+<text x="289" y="72.2" style="font-size:10px">[単位：票]</text>
+<rect class="f-head" x="4" y="80" width="22" height="26"/>
+<text class="f-note" x="15" y="98.2" text-anchor="middle">4</text>
+<rect class="f-off" x="26" y="80" width="104" height="26"/>
+<text x="30" y="98.2" style="font-size:11px">候補者名</text>
+<rect class="f-mark" x="130" y="80" width="72" height="26"/>
+<text x="134" y="98.2" style="font-size:11px">丸川　珠代</text>
+<rect class="f-mark" x="202" y="80" width="72" height="26"/>
+<text x="206" y="98.2" style="font-size:11px">石川　ゆりか</text>
+<rect class="f-mark" x="286" y="80" width="54" height="26"/>
+<text x="290" y="98.2" style="font-size:11px">得票数計</text>
+<text class="f-note" x="280" y="98.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="106" width="22" height="26"/>
+<text class="f-note" x="15" y="124.2" text-anchor="middle">5</text>
+<rect class="f-off" x="26" y="106" width="104" height="26"/>
+<text x="30" y="124.2" style="font-size:10px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="130" y="106" width="72" height="26"/>
+<text x="134" y="124.2" style="font-size:11px">自由民主党</text>
+<rect class="f-mark2" x="202" y="106" width="72" height="26"/>
+<text x="206" y="124.2" style="font-size:11px">参政党</text>
+<rect class="f-off" x="286" y="106" width="54" height="26"/>
+<text class="f-note" x="280" y="124.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="132" width="22" height="26"/>
+<text class="f-note" x="15" y="150.2" text-anchor="middle">6</text>
+<rect class="f-mark3" x="26" y="132" width="104" height="26"/>
+<text x="30" y="150.2" style="font-size:11px">港区</text>
+<rect class="f-cell" x="130" y="132" width="72" height="26"/>
+<text x="134" y="150.2" style="font-size:11px">30037</text>
+<rect class="f-cell" x="202" y="132" width="72" height="26"/>
+<text x="206" y="150.2" style="font-size:11px">8066</text>
+<rect class="f-cell" x="286" y="132" width="54" height="26"/>
+<text x="290" y="150.2" style="font-size:11px">104297</text>
+<text class="f-note" x="280" y="150.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="158" width="22" height="26"/>
+<text class="f-note" x="15" y="176.2" text-anchor="middle">7</text>
+<rect class="f-mark3" x="26" y="158" width="104" height="26"/>
+<text x="30" y="176.2" style="font-size:11px">渋谷区</text>
+<rect class="f-cell" x="130" y="158" width="72" height="26"/>
+<text x="134" y="176.2" style="font-size:11px">25811</text>
+<rect class="f-cell" x="202" y="158" width="72" height="26"/>
+<text x="206" y="176.2" style="font-size:11px">8522</text>
+<rect class="f-cell" x="286" y="158" width="54" height="26"/>
+<text x="290" y="176.2" style="font-size:11px">101587</text>
+<text class="f-note" x="280" y="176.2" text-anchor="middle">…</text>
+<rect class="f-head" x="4" y="184" width="22" height="26"/>
+<text class="f-note" x="15" y="202.2" text-anchor="middle">8</text>
+<rect class="f-mark3" x="26" y="184" width="104" height="26"/>
+<text x="30" y="202.2" style="font-size:11px">東京都第７区 合計</text>
+<rect class="f-cell" x="130" y="184" width="72" height="26"/>
+<text x="134" y="202.2" style="font-size:11px">55848</text>
+<rect class="f-cell" x="202" y="184" width="72" height="26"/>
+<text x="206" y="202.2" style="font-size:11px">16588</text>
+<rect class="f-cell" x="286" y="184" width="54" height="26"/>
+<text x="290" y="202.2" style="font-size:11px">205884</text>
+<text class="f-note" x="280" y="202.2" text-anchor="middle">…</text>
+<path class="f-arrow" d="M150 218 V256" marker-end="url(#ar19n)"/>
+<text class="f-code" x="160" y="242">behead()</text>
+<text class="f-label" x="4" y="278">整然データ</text>
+<rect class="f-mark4" x="4" y="288" width="74" height="24"/>
+<text class="f-th" x="8" y="304" style="font-size:11px">district</text>
+<rect class="f-cell" x="4" y="312" width="74" height="24"/>
+<text x="8" y="328" style="font-size:11px">東京都第７区</text>
+<rect class="f-cell" x="4" y="336" width="74" height="24"/>
+<text x="8" y="352" style="font-size:11px">東京都第７区</text>
+<rect class="f-cell" x="4" y="360" width="74" height="24"/>
+<text x="8" y="376" style="font-size:11px">東京都第７区</text>
+<rect class="f-cell" x="4" y="384" width="74" height="24"/>
+<text x="8" y="400" style="font-size:11px">東京都第７区</text>
+<rect class="f-mark3" x="78" y="288" width="96" height="24"/>
+<text class="f-th" x="82" y="304" style="font-size:11px">municipality</text>
+<rect class="f-cell" x="78" y="312" width="96" height="24"/>
+<text x="82" y="328" style="font-size:11px">港区</text>
+<rect class="f-cell" x="78" y="336" width="96" height="24"/>
+<text x="82" y="352" style="font-size:11px">港区</text>
+<rect class="f-cell" x="78" y="360" width="96" height="24"/>
+<text x="82" y="376" style="font-size:11px">渋谷区</text>
+<rect class="f-cell" x="78" y="384" width="96" height="24"/>
+<text x="82" y="400" style="font-size:11px">渋谷区</text>
+<rect class="f-mark" x="174" y="288" width="72" height="24"/>
+<text class="f-th" x="178" y="304" style="font-size:11px">name</text>
+<rect class="f-cell" x="174" y="312" width="72" height="24"/>
+<text x="178" y="328" style="font-size:11px">丸川　珠代</text>
+<rect class="f-cell" x="174" y="336" width="72" height="24"/>
+<text x="178" y="352" style="font-size:11px">石川　ゆりか</text>
+<rect class="f-cell" x="174" y="360" width="72" height="24"/>
+<text x="178" y="376" style="font-size:11px">丸川　珠代</text>
+<rect class="f-cell" x="174" y="384" width="72" height="24"/>
+<text x="178" y="400" style="font-size:11px">石川　ゆりか</text>
+<rect class="f-mark2" x="246" y="288" width="74" height="24"/>
+<text class="f-th" x="250" y="304" style="font-size:11px">party</text>
+<rect class="f-cell" x="246" y="312" width="74" height="24"/>
+<text x="250" y="328" style="font-size:11px">自由民主党</text>
+<rect class="f-cell" x="246" y="336" width="74" height="24"/>
+<text x="250" y="352" style="font-size:11px">参政党</text>
+<rect class="f-cell" x="246" y="360" width="74" height="24"/>
+<text x="250" y="376" style="font-size:11px">自由民主党</text>
+<rect class="f-cell" x="246" y="384" width="74" height="24"/>
+<text x="250" y="400" style="font-size:11px">参政党</text>
+<rect class="f-head" x="320" y="288" width="44" height="24"/>
+<text class="f-th" x="324" y="304" style="font-size:9px">numeric</text>
+<rect class="f-cell" x="320" y="312" width="44" height="24"/>
+<text x="324" y="328" style="font-size:11px">30037</text>
+<rect class="f-cell" x="320" y="336" width="44" height="24"/>
+<text x="324" y="352" style="font-size:11px">8066</text>
+<rect class="f-cell" x="320" y="360" width="44" height="24"/>
+<text x="324" y="376" style="font-size:11px">25811</text>
+<rect class="f-cell" x="320" y="384" width="44" height="24"/>
+<text x="324" y="400" style="font-size:11px">8522</text>
+<text class="f-note" x="4" y="432">……</text>
+<text class="f-note" x="4" y="454">緑（選挙区名）→ district、赤（候補者名）→ name、</text>
+<text class="f-note" x="4" y="472">青（政党名）→ party、黄（A列）→ municipality、</text>
+<text class="f-note" x="4" y="490">白い数字 → numeric</text>
+</svg>
+</figure>
+<p>コードはこんな感じ。<code>behead()</code>が最重要なわけですが、これは市区町村名や候補者名など、データのラベルに当たるものを切り離して、しかるべきところへ格納するための関数です。「首をはねる」という意味の英語から来ています（たぶん）。</p>
+<div class="code" data-lang="R"><pre><code>"download/000979550.xlsx" %&gt;%
+  xlsx_cells() %&gt;%
+  filter(sheet == "東京都第７区", row &gt;= 4 | address == "A3", !is_blank) %&gt;%
+  behead("up-left", "district") %&gt;%
+  behead("up", "name") %&gt;%
+  behead("up", "party") %&gt;%
+  behead("left", "municipality") %&gt;%
+  select(district, municipality, name, party, numeric)</code></pre></div>
+<p>それぞれのコードが何をしているのか、順番に見ていきましょう。</p>
+<p><code>xlsx_cells()</code> はExcelの各セルを行にばらす関数です。たとえば3行×4列の表なら、12行のtibbleに変換します。それぞれの行には、もとのExcelでのセルの位置（行番号・列番号）や、セルに入力されている値、データの種類などが記録されます。</p>
+<p>次に<code>filter()</code> で「東京都第７区」のシートだけに絞っています。そのうえで、上の2行（日付と表題）を捨てています。</p>
+<p><code>row &gt;= 4 | address == "A3"</code> は、「4行目から下か、またはA3のセル」という意味です。<code>|</code> は<a href="06-strings-filter.html">6章</a>で出てきた「または」。<code>address</code> は <code>xlsx_cells()</code> が作る列で、A3やB6といったセルの番地が入っています。本当は3行目を丸ごと残す <code>row &gt;= 3</code> にしたいところですが、3行目の右端には「[単位：票]」という注釈もある。なので3行目からは、選挙区名の入ったA3だけを残しているわけです。</p>
+<p><code>is_blank</code> は<code>xlsx_cells()</code>関数で生成され、セルが空っぽのときに <code>TRUE</code> になる列です。頭に <code>!</code> をつけると「〜でない」という意味になる（<a href="06-strings-filter.html">6章</a>）ので、ここでは空っぽでないセルだけを抽出しています。見た目は空白でも罫線などの書式がついていれば、<code>xlsx_cells()</code> はそれを一つのセルとして読み込みます。このファイルでは表のすぐ下に、そういう空っぽのセルが何行ぶんも並んでいるので、先に落としておかないと、中身のない行がまじってしまいます。</p>
+<p>そのあとに <code>behead()</code> が4回出てきます。丸括弧の中には二つの要素が記述されています。データのラベルに当たるセルが、そのデータの入ったセルから見てどこにあるかを<code>up</code>とか<code>left</code>とかで示すのが、一つめの要素。そのラベルを何という名前の列に入れるかを決めるのが、二つめです。</p>
+<p>一つめの要素では以下のような指定ができます。</p>
+<div class="table-wrap"><table><thead><tr><th>指定</th><th>各セルから見た探し方</th></tr></thead><tbody><tr><td><code>"up"</code></td><td>上に進み、表の上端にあるセルを探す</td></tr><tr><td><code>"left"</code></td><td>左に進み、表の左端にあるセルを探す</td></tr><tr><td><code>"up-left"</code></td><td>上端まで進み、そこが空白なら左に進んで値のあるセルを探す</td></tr><tr><td><code>"left-up"</code></td><td>左端まで進み、そこが空白なら上に進んで値のあるセルを探す</td></tr></tbody></table></div>
+<p>上のコードでは、まず <code>"up-left"</code> で選挙区名を切り離しています。数字のセルから上に進むと、いちばん上の3行目に着きます。でも <code>filter()</code> で残した3行目にあるのはA3だけで、数字のセルの真上は空白。そこで左に進んで、A3の「東京都第７区」にたどり着きます。こうして、どの数字のセルにも同じ選挙区名が配られるわけです。</p>
+<p>次に <code>"up"</code> で候補者名と政党名を上から一つずつ切り離し、最後に <code>"left"</code> で左の市区町村名を切り離しています。1枚ずつ皮をむくように、外側から順番にはがしていくイメージです。<strong>はがす順番が大事です。</strong></p>
+<p>1枚ずつはがされていく様子を、動きで見てみましょう。</p>
+<div class="behead-anim anim-host"></div>
+<script src="assets/scrolly.js?v=71da5e13ef"></script>
+<script src="assets/behead-anim.js?v=7dd6bc2e8f"></script>
+<figure class="fig fig-behead-static fig-anim-static">
+<svg viewBox="0 0 720 896" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="港区の8066というセル一つに、beheadのたびにラベルがついていく様子を示した図">
+<text class="f-label" x="10" y="18">港区・石川さんの「8066」のセルを追いかける</text>
+<rect class="f-head" x="32" y="36" width="108" height="18"/>
+<text class="f-note" x="86" y="48.6" text-anchor="middle">A</text>
+<rect class="f-head" x="140" y="36" width="76" height="18"/>
+<text class="f-note" x="178" y="48.6" text-anchor="middle">B</text>
+<rect class="f-head" x="216" y="36" width="76" height="18"/>
+<text class="f-note" x="254" y="48.6" text-anchor="middle">C</text>
+<rect class="f-head" x="10" y="54" width="22" height="18"/>
+<text class="f-note" x="21" y="66.6" text-anchor="middle">3</text>
+<rect class="f-mark4" x="32" y="54" width="108" height="18"/>
+<text x="36" y="66.6" style="font-size:11px">東京都第７区</text>
+<rect class="f-gone" x="140" y="54" width="76" height="18"/>
+<rect class="f-gone" x="216" y="54" width="76" height="18"/>
+<rect class="f-head" x="10" y="72" width="22" height="18"/>
+<text class="f-note" x="21" y="84.6" text-anchor="middle">4</text>
+<rect class="f-off" x="32" y="72" width="108" height="18"/>
+<text x="36" y="84.6" style="font-size:11px">候補者名</text>
+<rect class="f-mark" x="140" y="72" width="76" height="18"/>
+<text x="144" y="84.6" style="font-size:11px">丸川　珠代</text>
+<rect class="f-mark" x="216" y="72" width="76" height="18"/>
+<text x="220" y="84.6" style="font-size:11px">石川　ゆりか</text>
+<rect class="f-head" x="10" y="90" width="22" height="18"/>
+<text class="f-note" x="21" y="102.6" text-anchor="middle">5</text>
+<rect class="f-off" x="32" y="90" width="108" height="18"/>
+<text x="36" y="102.6" style="font-size:11px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="140" y="90" width="76" height="18"/>
+<text x="144" y="102.6" style="font-size:11px">自由民主党</text>
+<rect class="f-mark2" x="216" y="90" width="76" height="18"/>
+<text x="220" y="102.6" style="font-size:11px">参政党</text>
+<rect class="f-head" x="10" y="108" width="22" height="18"/>
+<text class="f-note" x="21" y="120.6" text-anchor="middle">6</text>
+<rect class="f-mark3" x="32" y="108" width="108" height="18"/>
+<text x="36" y="120.6" style="font-size:11px">港区</text>
+<rect class="f-cell" x="140" y="108" width="76" height="18"/>
+<text x="144" y="120.6" style="font-size:11px">30037</text>
+<rect class="f-cell" x="216" y="108" width="76" height="18"/>
+<text x="220" y="120.6" style="font-size:11px">8066</text>
+<rect class="f-head" x="10" y="126" width="22" height="18"/>
+<text class="f-note" x="21" y="138.6" text-anchor="middle">7</text>
+<rect class="f-mark3" x="32" y="126" width="108" height="18"/>
+<text x="36" y="138.6" style="font-size:11px">渋谷区</text>
+<rect class="f-cell" x="140" y="126" width="76" height="18"/>
+<text x="144" y="138.6" style="font-size:11px">25811</text>
+<rect class="f-cell" x="216" y="126" width="76" height="18"/>
+<text x="220" y="138.6" style="font-size:11px">8522</text>
+<rect class="f-head" x="10" y="144" width="22" height="18"/>
+<text class="f-note" x="21" y="156.6" text-anchor="middle">8</text>
+<rect class="f-mark3" x="32" y="144" width="108" height="18"/>
+<text x="36" y="156.6" style="font-size:11px">東京都第７区 合計</text>
+<rect class="f-cell" x="140" y="144" width="76" height="18"/>
+<text x="144" y="156.6" style="font-size:11px">55848</text>
+<rect class="f-cell" x="216" y="144" width="76" height="18"/>
+<text x="220" y="156.6" style="font-size:11px">16588</text>
+<rect class="f-hl" x="216" y="108" width="76" height="18"/>
+<text class="f-label" x="330" y="50">① 最初</text>
+<text class="f-code" x="330" y="70">filter(row &gt;= 4 | address == "A3", !is_blank)</text>
+<text class="f-note" x="330" y="90">セルがバラバラのまま。ラベルはまだない。</text>
+<rect class="f-cell" x="330" y="102" width="370" height="44"/>
+<text class="f-note" x="338" y="118">「8066」についているラベル</text>
+<text class="f-note" x="338" y="136">（なし）</text>
+<line class="f-sep" x1="10" y1="188" x2="710" y2="188"/>
+<rect class="f-head" x="32" y="202" width="108" height="18"/>
+<text class="f-note" x="86" y="214.6" text-anchor="middle">A</text>
+<rect class="f-head" x="140" y="202" width="76" height="18"/>
+<text class="f-note" x="178" y="214.6" text-anchor="middle">B</text>
+<rect class="f-head" x="216" y="202" width="76" height="18"/>
+<text class="f-note" x="254" y="214.6" text-anchor="middle">C</text>
+<rect class="f-head" x="10" y="220" width="22" height="18"/>
+<text class="f-note" x="21" y="232.6" text-anchor="middle">3</text>
+<rect class="f-gone" x="32" y="220" width="108" height="18"/>
+<rect class="f-gone" x="140" y="220" width="76" height="18"/>
+<rect class="f-gone" x="216" y="220" width="76" height="18"/>
+<rect class="f-head" x="10" y="238" width="22" height="18"/>
+<text class="f-note" x="21" y="250.6" text-anchor="middle">4</text>
+<rect class="f-off" x="32" y="238" width="108" height="18"/>
+<text x="36" y="250.6" style="font-size:11px">候補者名</text>
+<rect class="f-mark" x="140" y="238" width="76" height="18"/>
+<text x="144" y="250.6" style="font-size:11px">丸川　珠代</text>
+<rect class="f-mark" x="216" y="238" width="76" height="18"/>
+<text x="220" y="250.6" style="font-size:11px">石川　ゆりか</text>
+<rect class="f-head" x="10" y="256" width="22" height="18"/>
+<text class="f-note" x="21" y="268.6" text-anchor="middle">5</text>
+<rect class="f-off" x="32" y="256" width="108" height="18"/>
+<text x="36" y="268.6" style="font-size:11px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="140" y="256" width="76" height="18"/>
+<text x="144" y="268.6" style="font-size:11px">自由民主党</text>
+<rect class="f-mark2" x="216" y="256" width="76" height="18"/>
+<text x="220" y="268.6" style="font-size:11px">参政党</text>
+<rect class="f-head" x="10" y="274" width="22" height="18"/>
+<text class="f-note" x="21" y="286.6" text-anchor="middle">6</text>
+<rect class="f-mark3" x="32" y="274" width="108" height="18"/>
+<text x="36" y="286.6" style="font-size:11px">港区</text>
+<rect class="f-cell" x="140" y="274" width="76" height="18"/>
+<text x="144" y="286.6" style="font-size:11px">30037</text>
+<rect class="f-cell" x="216" y="274" width="76" height="18"/>
+<text x="220" y="286.6" style="font-size:11px">8066</text>
+<rect class="f-head" x="10" y="292" width="22" height="18"/>
+<text class="f-note" x="21" y="304.6" text-anchor="middle">7</text>
+<rect class="f-mark3" x="32" y="292" width="108" height="18"/>
+<text x="36" y="304.6" style="font-size:11px">渋谷区</text>
+<rect class="f-cell" x="140" y="292" width="76" height="18"/>
+<text x="144" y="304.6" style="font-size:11px">25811</text>
+<rect class="f-cell" x="216" y="292" width="76" height="18"/>
+<text x="220" y="304.6" style="font-size:11px">8522</text>
+<rect class="f-head" x="10" y="310" width="22" height="18"/>
+<text class="f-note" x="21" y="322.6" text-anchor="middle">8</text>
+<rect class="f-mark3" x="32" y="310" width="108" height="18"/>
+<text x="36" y="322.6" style="font-size:11px">東京都第７区 合計</text>
+<rect class="f-cell" x="140" y="310" width="76" height="18"/>
+<text x="144" y="322.6" style="font-size:11px">55848</text>
+<rect class="f-cell" x="216" y="310" width="76" height="18"/>
+<text x="220" y="322.6" style="font-size:11px">16588</text>
+<rect class="f-hl" x="216" y="274" width="76" height="18"/>
+<text class="f-label" x="330" y="216">② 選挙区名をはがす</text>
+<text class="f-code" x="330" y="236">behead("up-left", "district")</text>
+<text class="f-note" x="330" y="256">3行目まで上がり、空白なら左へ。A3の選挙区名を配る。</text>
+<rect class="f-cell" x="330" y="268" width="370" height="44"/>
+<text class="f-note" x="338" y="284">「8066」についているラベル</text>
+<text class="f-code" x="338" y="302">district = 東京都第７区</text>
+<line class="f-sep" x1="10" y1="354" x2="710" y2="354"/>
+<rect class="f-head" x="32" y="368" width="108" height="18"/>
+<text class="f-note" x="86" y="380.6" text-anchor="middle">A</text>
+<rect class="f-head" x="140" y="368" width="76" height="18"/>
+<text class="f-note" x="178" y="380.6" text-anchor="middle">B</text>
+<rect class="f-head" x="216" y="368" width="76" height="18"/>
+<text class="f-note" x="254" y="380.6" text-anchor="middle">C</text>
+<rect class="f-head" x="10" y="386" width="22" height="18"/>
+<text class="f-note" x="21" y="398.6" text-anchor="middle">3</text>
+<rect class="f-gone" x="32" y="386" width="108" height="18"/>
+<rect class="f-gone" x="140" y="386" width="76" height="18"/>
+<rect class="f-gone" x="216" y="386" width="76" height="18"/>
+<rect class="f-head" x="10" y="404" width="22" height="18"/>
+<text class="f-note" x="21" y="416.6" text-anchor="middle">4</text>
+<rect class="f-gone" x="32" y="404" width="108" height="18"/>
+<rect class="f-gone" x="140" y="404" width="76" height="18"/>
+<rect class="f-gone" x="216" y="404" width="76" height="18"/>
+<rect class="f-head" x="10" y="422" width="22" height="18"/>
+<text class="f-note" x="21" y="434.6" text-anchor="middle">5</text>
+<rect class="f-off" x="32" y="422" width="108" height="18"/>
+<text x="36" y="434.6" style="font-size:11px">市区町村名＼政党名</text>
+<rect class="f-mark2" x="140" y="422" width="76" height="18"/>
+<text x="144" y="434.6" style="font-size:11px">自由民主党</text>
+<rect class="f-mark2" x="216" y="422" width="76" height="18"/>
+<text x="220" y="434.6" style="font-size:11px">参政党</text>
+<rect class="f-head" x="10" y="440" width="22" height="18"/>
+<text class="f-note" x="21" y="452.6" text-anchor="middle">6</text>
+<rect class="f-mark3" x="32" y="440" width="108" height="18"/>
+<text x="36" y="452.6" style="font-size:11px">港区</text>
+<rect class="f-cell" x="140" y="440" width="76" height="18"/>
+<text x="144" y="452.6" style="font-size:11px">30037</text>
+<rect class="f-cell" x="216" y="440" width="76" height="18"/>
+<text x="220" y="452.6" style="font-size:11px">8066</text>
+<rect class="f-head" x="10" y="458" width="22" height="18"/>
+<text class="f-note" x="21" y="470.6" text-anchor="middle">7</text>
+<rect class="f-mark3" x="32" y="458" width="108" height="18"/>
+<text x="36" y="470.6" style="font-size:11px">渋谷区</text>
+<rect class="f-cell" x="140" y="458" width="76" height="18"/>
+<text x="144" y="470.6" style="font-size:11px">25811</text>
+<rect class="f-cell" x="216" y="458" width="76" height="18"/>
+<text x="220" y="470.6" style="font-size:11px">8522</text>
+<rect class="f-head" x="10" y="476" width="22" height="18"/>
+<text class="f-note" x="21" y="488.6" text-anchor="middle">8</text>
+<rect class="f-mark3" x="32" y="476" width="108" height="18"/>
+<text x="36" y="488.6" style="font-size:11px">東京都第７区 合計</text>
+<rect class="f-cell" x="140" y="476" width="76" height="18"/>
+<text x="144" y="488.6" style="font-size:11px">55848</text>
+<rect class="f-cell" x="216" y="476" width="76" height="18"/>
+<text x="220" y="488.6" style="font-size:11px">16588</text>
+<rect class="f-hl" x="216" y="440" width="76" height="18"/>
+<text class="f-label" x="330" y="382">③ 候補者名をはがす</text>
+<text class="f-code" x="330" y="402">behead("up", "name")</text>
+<text class="f-note" x="330" y="422">いちばん上になった4行目をはがして、真上のラベルを配る。</text>
+<rect class="f-cell" x="330" y="434" width="370" height="62"/>
+<text class="f-note" x="338" y="450">「8066」についているラベル</text>
+<text x="338" y="468">district = 東京都第７区</text>
+<text class="f-code" x="338" y="486">name = 石川　ゆりか</text>
+<line class="f-sep" x1="10" y1="522" x2="710" y2="522"/>
+<rect class="f-head" x="32" y="536" width="108" height="18"/>
+<text class="f-note" x="86" y="548.6" text-anchor="middle">A</text>
+<rect class="f-head" x="140" y="536" width="76" height="18"/>
+<text class="f-note" x="178" y="548.6" text-anchor="middle">B</text>
+<rect class="f-head" x="216" y="536" width="76" height="18"/>
+<text class="f-note" x="254" y="548.6" text-anchor="middle">C</text>
+<rect class="f-head" x="10" y="554" width="22" height="18"/>
+<text class="f-note" x="21" y="566.6" text-anchor="middle">3</text>
+<rect class="f-gone" x="32" y="554" width="108" height="18"/>
+<rect class="f-gone" x="140" y="554" width="76" height="18"/>
+<rect class="f-gone" x="216" y="554" width="76" height="18"/>
+<rect class="f-head" x="10" y="572" width="22" height="18"/>
+<text class="f-note" x="21" y="584.6" text-anchor="middle">4</text>
+<rect class="f-gone" x="32" y="572" width="108" height="18"/>
+<rect class="f-gone" x="140" y="572" width="76" height="18"/>
+<rect class="f-gone" x="216" y="572" width="76" height="18"/>
+<rect class="f-head" x="10" y="590" width="22" height="18"/>
+<text class="f-note" x="21" y="602.6" text-anchor="middle">5</text>
+<rect class="f-gone" x="32" y="590" width="108" height="18"/>
+<rect class="f-gone" x="140" y="590" width="76" height="18"/>
+<rect class="f-gone" x="216" y="590" width="76" height="18"/>
+<rect class="f-head" x="10" y="608" width="22" height="18"/>
+<text class="f-note" x="21" y="620.6" text-anchor="middle">6</text>
+<rect class="f-mark3" x="32" y="608" width="108" height="18"/>
+<text x="36" y="620.6" style="font-size:11px">港区</text>
+<rect class="f-cell" x="140" y="608" width="76" height="18"/>
+<text x="144" y="620.6" style="font-size:11px">30037</text>
+<rect class="f-cell" x="216" y="608" width="76" height="18"/>
+<text x="220" y="620.6" style="font-size:11px">8066</text>
+<rect class="f-head" x="10" y="626" width="22" height="18"/>
+<text class="f-note" x="21" y="638.6" text-anchor="middle">7</text>
+<rect class="f-mark3" x="32" y="626" width="108" height="18"/>
+<text x="36" y="638.6" style="font-size:11px">渋谷区</text>
+<rect class="f-cell" x="140" y="626" width="76" height="18"/>
+<text x="144" y="638.6" style="font-size:11px">25811</text>
+<rect class="f-cell" x="216" y="626" width="76" height="18"/>
+<text x="220" y="638.6" style="font-size:11px">8522</text>
+<rect class="f-head" x="10" y="644" width="22" height="18"/>
+<text class="f-note" x="21" y="656.6" text-anchor="middle">8</text>
+<rect class="f-mark3" x="32" y="644" width="108" height="18"/>
+<text x="36" y="656.6" style="font-size:11px">東京都第７区 合計</text>
+<rect class="f-cell" x="140" y="644" width="76" height="18"/>
+<text x="144" y="656.6" style="font-size:11px">55848</text>
+<rect class="f-cell" x="216" y="644" width="76" height="18"/>
+<text x="220" y="656.6" style="font-size:11px">16588</text>
+<rect class="f-hl" x="216" y="608" width="76" height="18"/>
+<text class="f-label" x="330" y="550">④ 政党名をはがす</text>
+<text class="f-code" x="330" y="570">behead("up", "party")</text>
+<text class="f-note" x="330" y="590">次にいちばん上になった5行目をはがして、真上のラベルを配る。</text>
+<rect class="f-cell" x="330" y="602" width="370" height="80"/>
+<text class="f-note" x="338" y="618">「8066」についているラベル</text>
+<text x="338" y="636">district = 東京都第７区</text>
+<text x="338" y="654">name = 石川　ゆりか</text>
+<text class="f-code" x="338" y="672">party = 参政党</text>
+<line class="f-sep" x1="10" y1="708" x2="710" y2="708"/>
+<rect class="f-head" x="32" y="722" width="108" height="18"/>
+<text class="f-note" x="86" y="734.6" text-anchor="middle">A</text>
+<rect class="f-head" x="140" y="722" width="76" height="18"/>
+<text class="f-note" x="178" y="734.6" text-anchor="middle">B</text>
+<rect class="f-head" x="216" y="722" width="76" height="18"/>
+<text class="f-note" x="254" y="734.6" text-anchor="middle">C</text>
+<rect class="f-head" x="10" y="740" width="22" height="18"/>
+<text class="f-note" x="21" y="752.6" text-anchor="middle">3</text>
+<rect class="f-gone" x="32" y="740" width="108" height="18"/>
+<rect class="f-gone" x="140" y="740" width="76" height="18"/>
+<rect class="f-gone" x="216" y="740" width="76" height="18"/>
+<rect class="f-head" x="10" y="758" width="22" height="18"/>
+<text class="f-note" x="21" y="770.6" text-anchor="middle">4</text>
+<rect class="f-gone" x="32" y="758" width="108" height="18"/>
+<rect class="f-gone" x="140" y="758" width="76" height="18"/>
+<rect class="f-gone" x="216" y="758" width="76" height="18"/>
+<rect class="f-head" x="10" y="776" width="22" height="18"/>
+<text class="f-note" x="21" y="788.6" text-anchor="middle">5</text>
+<rect class="f-gone" x="32" y="776" width="108" height="18"/>
+<rect class="f-gone" x="140" y="776" width="76" height="18"/>
+<rect class="f-gone" x="216" y="776" width="76" height="18"/>
+<rect class="f-head" x="10" y="794" width="22" height="18"/>
+<text class="f-note" x="21" y="806.6" text-anchor="middle">6</text>
+<rect class="f-gone" x="32" y="794" width="108" height="18"/>
+<rect class="f-cell" x="140" y="794" width="76" height="18"/>
+<text x="144" y="806.6" style="font-size:11px">30037</text>
+<rect class="f-cell" x="216" y="794" width="76" height="18"/>
+<text x="220" y="806.6" style="font-size:11px">8066</text>
+<rect class="f-head" x="10" y="812" width="22" height="18"/>
+<text class="f-note" x="21" y="824.6" text-anchor="middle">7</text>
+<rect class="f-gone" x="32" y="812" width="108" height="18"/>
+<rect class="f-cell" x="140" y="812" width="76" height="18"/>
+<text x="144" y="824.6" style="font-size:11px">25811</text>
+<rect class="f-cell" x="216" y="812" width="76" height="18"/>
+<text x="220" y="824.6" style="font-size:11px">8522</text>
+<rect class="f-head" x="10" y="830" width="22" height="18"/>
+<text class="f-note" x="21" y="842.6" text-anchor="middle">8</text>
+<rect class="f-gone" x="32" y="830" width="108" height="18"/>
+<rect class="f-cell" x="140" y="830" width="76" height="18"/>
+<text x="144" y="842.6" style="font-size:11px">55848</text>
+<rect class="f-cell" x="216" y="830" width="76" height="18"/>
+<text x="220" y="842.6" style="font-size:11px">16588</text>
+<rect class="f-hl" x="216" y="794" width="76" height="18"/>
+<text class="f-label" x="330" y="736">⑤ 市区町村名をはがす</text>
+<text class="f-code" x="330" y="756">behead("left", "municipality")</text>
+<text class="f-note" x="330" y="776">いちばん左のA列をはがして、真横（左）のラベルを配る。</text>
+<rect class="f-cell" x="330" y="788" width="370" height="98"/>
+<text class="f-note" x="338" y="804">「8066」についているラベル</text>
+<text x="338" y="822">district = 東京都第７区</text>
+<text x="338" y="840">name = 石川　ゆりか</text>
+<text x="338" y="858">party = 参政党</text>
+<text class="f-code" x="338" y="876">municipality = 港区</text>
+</svg>
+<figcaption>上や左のラベルを1段はがすたびに、数字のセルにラベルが一つずつつく。最後には、どのセルも「どの選挙区の、どこの、誰の、何党の票か」が分かる1行になる。</figcaption>
+</figure>
+<p>このコードを1行ずつ、順番に実行してみてください。どんなふうにデータが加工されていくか確かめると、腑に落ちるようになると思います。</p>
+<p>最後の <code>select()</code> では、ほしい列だけを残しています。得票数は数値なので、<code>numeric</code> の列に入っています。</p>
+<aside class="box box-warn"><p class="box-title">tidyxlは.xlsを読めません</p><p><code>xlsx_cells()</code> が読めるのは、拡張子が <code>.xlsx</code> と <code>.xlsm</code> のファイルだけです。古い <code>.xls</code> は読めません。</p>
+<p>古い形式のファイルにぶつかったら、Excelで開いて <code>.xlsx</code> として保存し直すのが手っ取り早いです。「元データは手で触らない」原則と矛盾しますが、元ファイルは残したまま別名で保存すればいいので、実務上は問題になりません。</p></aside>
+<h2 id="シートを全部処理する">シートを全部処理する</h2>
+<p>さて、このファイルには東京都の小選挙区の数だけシートがあります。全部に同じ処理をしたい。<a href="18-loop.html">18章</a>で覚えたfor文の出番です。今回は「ページの一覧」ではなく「シートの一覧」に対してループを回します。</p>
+<p>まずシート名の一覧を取ります。</p>
+<div class="code" data-lang="R"><pre><code>sheet_names &lt;- "download/000979550.xlsx" %&gt;%
+  excel_sheets() # シート名をとる関数
+
+sheet_names</code></pre></div>
+<div class="code" data-lang="画面に出るもの"><pre><code> [1] "東京都第１区"   "東京都第２区"   "東京都第３区"   "東京都第４区"  
+ [5] "東京都第５区"   "東京都第６区"   "東京都第７区"   "東京都第８区"  
+ [9] "東京都第９区"   "東京都第１０区" "東京都第１１区" "東京都第１２区"
+[13] "東京都第１３区" "東京都第１４区" "東京都第１５区" "東京都第１６区"
+[17] "東京都第１７区" "東京都第１８区" "東京都第１９区" "東京都第２０区"
+[21] "東京都第２１区" "東京都第２２区" "東京都第２３区" "東京都第２４区"
+[25] "東京都第２５区" "東京都第２６区" "東京都第２７区" "東京都第２８区"
+[29] "東京都第２９区" "東京都第３０区"</code></pre></div>
+<p><code>excel_sheets()</code> はreadxlの関数です（<code>library(readxl)</code> を忘れずに）。</p>
+<p>そして回します。</p>
+<div class="code" data-lang="R"><pre><code>vote_data &lt;- tibble() # まずは空っぽのtibbleを作る
+
+for (i in sheet_names) {
+  vote_data_temporaly &lt;- "download/000979550.xlsx" %&gt;%
+    xlsx_cells() %&gt;%
+    filter(sheet == i, row &gt;= 4 | address == "A3", !is_blank) %&gt;%
+    behead("up-left", "district") %&gt;%
+    behead("up", "name") %&gt;%
+    behead("up", "party") %&gt;%
+    behead("left", "municipality") %&gt;%
+    select(district, municipality, name, party, vote = numeric)
+
+  vote_data &lt;- bind_rows(vote_data, vote_data_temporaly)
+}</code></pre></div>
+<p>さっきとの違いは、<code>filter(sheet == i)</code> のところです。「東京都第７区」と決め打ちしていたところを、ループの変数 <code>i</code> にしました。ループの1周目では「東京都第１区」、2周目では「東京都第２区」のシートが処理されます。ついでに、最後の <code>select()</code> では <code>vote = numeric</code> として、得票数の列の名前を <code>vote</code> に変えています。</p>
+<p>選挙区名は、どのシートでもA3に入っています。なので、さっきと同じ <code>behead("up-left", "district")</code> で、それぞれのシートの選挙区名が取れます。</p>
+<aside class="box box-note"><p class="box-title">シート名が情報になっていることも</p><p>選挙区名は、シート名にも入っています。今回はシートの中のA3から取りましたが、役所のExcelでは、「シート名」や「ファイル名」にしか重要な情報がないこともよくあります。</p>
+<p><code>read_excel()</code> で1枚ずつ読んでいると、シート名はどこにも残りません。そういうときは、<code>mutate(district = i)</code> のようにして、ループの変数を<strong>明示的にデータの中へ入れてやる必要があります。</strong></p>
+<p>ちなみに、A3の選挙区名には都道府県名まで入っています。なので、全国のファイルをまとめても、北海道の第1区と東京都の第1区を取り違えることはありません。「第1区」としか書いていなかったら、表題などから都道府県名を取り出して、一緒に持ち込む必要がありました。ファイル名は <code>000979550.xlsx</code> のような番号なので、そこからは分かりません。</p></aside>
+<h2 id="ファイルもシートも全部処理する">ファイルもシートも全部処理する</h2>
+<p>47都道府県分のファイルがあり、それぞれにシートが複数ある。というわけで、for文を二重にします。</p>
+<div class="code" data-lang="R"><pre><code>excel_files &lt;- list.files("download/") %&gt;%
+  str_c("download/", .)
+
+# 空のtibbleを初期化
+vote_data &lt;- tibble()
+
+# 各ファイルをループ
+for (i in excel_files) {
+  cells &lt;- xlsx_cells(i)           # ファイルを1回だけ読み込む
+  sheet_names &lt;- excel_sheets(i)
+
+  # 各シートをループ
+  for (j in sheet_names) {
+    vote_data_temp &lt;- cells %&gt;%
+      filter(sheet == j, row &gt;= 4 | address == "A3", !is_blank) %&gt;%
+      behead("up-left", "district") %&gt;%
+      behead("up", "name") %&gt;%
+      behead("up", "party") %&gt;%
+      behead("left", "municipality") %&gt;%
+      mutate(file = basename(i)) %&gt;%
+      select(district, municipality, name, party, vote = numeric, file)
+
+    vote_data &lt;- bind_rows(vote_data, vote_data_temp)
+  }
+}</code></pre></div>
+<p>外側のループがファイルを一つずつ、内側のループがそのファイルのシートを一つずつ処理します。シートは全部で289枚あるので、内側の処理は289回まわることになります。</p>
+<p>外側のループの最初で、<code>xlsx_cells(i)</code> の結果を <code>cells</code> に入れています。ファイルを読み込むのは時間がかかるので、シートごとに読み直すのではなく、1回だけ読んでおいて、それを使い回しているわけです。</p>
+<p><code>file = basename(i)</code> で、どのファイルから来たデータなのかを記録しています。これがないと、あとで「この行はどこから来たんだ」が追えなくなります。</p>
+<aside class="box box-warn"><p class="box-title">全部同じ形だとは限らない</p><p>これだけ大量に処理すると、たいてい例外が出てきます。今回のファイルは、289枚のシートがどれも同じ形をしていました。3行目のA列が選挙区名で、右端に「[単位：票]」。4行目が候補者名、5行目が政党名、6行目から市区町村が並び、いちばん下が合計の行、いちばん右が得票数計の列。全部のシートで確かめてあります。</p>
+<p>でも、これはたまたまです。同じ総務省の同じ種類のファイルでも、第51回（2026年）のものは形が違います。市区町村をA列とB列の2段に分けて書いたシートと、A列だけのシートがまじっていて、途中に小計の行も挟まっています。得票数も、カンマのついた文字として入っています。この章のコードは、そのままでは使えません。ちなみに、比例代表のファイルは形がまったく違います。19章で小選挙区のぶんだけを落としてきたのは、そのためでもあります。</p>
+<p>一つのシートでうまくいったコードでも、全部に回したあとで、もう一度確かめる必要があるわけです。</p>
+<p>例外にぶつかったときの対処のしかたはいくつかあります。<a href="18-loop.html">18章</a>でやったように <code>tryCatch()</code> で囲んで、失敗したものを後から個別に処理する。あるいは形が同じファイルだけを先に処理して、残りは別のコードを書く。数が少なければ、例外のほうは手で入力してしまうのがいちばん早いこともあります。</p>
+<p>どれを選んでもいいのですが、<strong>どのファイルを処理して、どのファイルを除いたのかは記録しておいてください。</strong>黙って除くと、あとで「全国のデータ」と言えなくなります。なぜ除いたのかも、メモに残しておきましょう。</p></aside>
+<h2 id="数え上げて確かめる">数え上げて確かめる</h2>
+<p>集まったら、必ず確かめます。ここで、とっておいた合計の行の出番です。</p>
+<p>市区町村ごとの全候補者の票を足し上げたものと、各シートの合計の行にある「得票数計」（その選挙区の票の総数）を足したものが、一致するかを見てみます。</p>
+<div class="code" data-lang="R"><pre><code># 市区町村ごとの、全候補者の票を足す
+vote_data %&gt;%
+  filter(name != "得票数計", !str_detect(municipality, "合計")) %&gt;%
+  summarize(gokei = sum(vote))
+
+# 合計の行にある「得票数計」を足す
+vote_data %&gt;%
+  filter(name == "得票数計", str_detect(municipality, "合計")) %&gt;%
+  summarize(gokei = sum(vote))</code></pre></div>
+<div class="code" data-lang="画面に出るもの"><pre><code># A tibble: 1 × 1
+      gokei
+      &lt;dbl&gt;
+1 54261878.
+# A tibble: 1 × 1
+      gokei
+      &lt;dbl&gt;
+1 54261878.</code></pre></div>
+<p>一つめの <code>filter()</code> では、得票数計の列から来た行と、合計の行から来た行を除いて、市区町村ごとの票だけを残しています。二つめは逆に、合計の行の得票数計だけを残しています。<code>str_detect()</code> は<a href="06-strings-filter.html">6章</a>で出てきた、ある文字を含むかどうかを調べる関数でした。</p>
+<p>どちらも5426万1878票で、一致しました。</p>
+<p>さらに、総務省が別に公表している、都道府県ごとの有効投票数をまとめた<a href="https://www.soumu.go.jp/main_content/000979129.xls">表</a>を開いてみると、小選挙区の有効投票数の合計は5426万1878票。こちらで足し上げた数字と一致していました。</p>
+<p>ちなみに、「54261878.」というふうに、数字のおしりに「.」がついているのは、得票数のなかに小数がまじっていて、足し合わせた数字が整数にはなっていないからです。なんで小数が混じった数字があるのかといえば、按分票があるから。按分票とは……説明不要ですよね。</p>
+<aside class="box box-homework"><p class="box-title">宿題</p><p>一つのファイルにある複数のシートに同じ処理を連続的にほどこすコードを、for文を使ってつくりましょう。</p>
+<p>作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
+<hr>
+<p>これで第3部は終わりです。ウェブのページから表を取り、たくさんのページやファイルをfor文でまとめて集め、扱いにくいExcelを分析しやすい形に組み替えるところまでできるようになりました。</p>
+<p>次の第4部では、この講座の先に広がっているものを紹介します。APIや地図、統計学といった、Rでできるもっといろんなこと。そして、AIの時代にそれでも自分でコードを書くことの意味です。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="19-download.html"><span>前へ</span>19 一括ダウンロード</a><a class="next" href="21-more.html"><span>次へ</span>21 もっといろんなことを</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">©小宮山亮磨 朝日新聞デジタル企画報道部　<a href="https://x.com/ryomakom">@ryomakom</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js?v=d9de072757"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+Can't combine `..3$A1101_総人口【人】` <double> and `..4$A1101_総人口【人】` <character>.

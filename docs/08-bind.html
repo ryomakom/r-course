@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>データを縦にくっつける | 記者のためのR講座</title>
+<meta name="description" content="bind_rowsで複数年のデータを合体させます。ここで役所のcsvの「クセ」に初めて正面からぶつかります。">
+<meta name="author" content="小宮山亮磨">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ryomakom.github.io/r-course/08-bind.html">
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="記者のためのR講座">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="データを縦にくっつける | 記者のためのR講座">
+<meta property="og:description" content="bind_rowsで複数年のデータを合体させます。ここで役所のcsvの「クセ」に初めて正面からぶつかります。">
+<meta property="og:url" content="https://ryomakom.github.io/r-course/08-bind.html">
+<meta property="article:author" content="https://x.com/ryomakom">
+<meta property="article:section" content="第1部　データを読む・加工する">
+<meta property="article:published_time" content="2026-11-21">
+<meta property="article:modified_time" content="2026-11-21">
+<meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/08-bind.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="記者のためのR講座：データを縦にくっつける">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ryomakom">
+<meta name="twitter:creator" content="@ryomakom">
+<meta name="twitter:title" content="データを縦にくっつける | 記者のためのR講座">
+<meta name="twitter:description" content="bind_rowsで複数年のデータを合体させます。ここで役所のcsvの「クセ」に初めて正面からぶつかります。">
+<meta name="twitter:image" content="https://ryomakom.github.io/r-course/assets/og/08-bind.png">
+<meta name="twitter:image:alt" content="記者のためのR講座：データを縦にくっつける">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": [
+    "Article",
+    "LearningResource"
+   ],
+   "@id": "https://ryomakom.github.io/r-course/08-bind.html#article",
+   "headline": "データを縦にくっつける",
+   "name": "データを縦にくっつける",
+   "description": "bind_rowsで複数年のデータを合体させます。ここで役所のcsvの「クセ」に初めて正面からぶつかります。",
+   "url": "https://ryomakom.github.io/r-course/08-bind.html",
+   "mainEntityOfPage": "https://ryomakom.github.io/r-course/08-bind.html",
+   "inLanguage": "ja",
+   "image": "https://ryomakom.github.io/r-course/assets/og/08-bind.png",
+   "datePublished": "2026-11-21",
+   "dateModified": "2026-11-21",
+   "author": {
+    "@type": "Person",
+    "@id": "https://ryomakom.github.io/r-course/#author",
+    "name": "小宮山亮磨",
+    "url": "https://x.com/ryomakom",
+    "sameAs": [
+     "https://x.com/ryomakom"
+    ],
+    "affiliation": {
+     "@type": "Organization",
+     "name": "朝日新聞デジタル企画報道部"
+    }
+   },
+   "publisher": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "isPartOf": {
+    "@type": "Course",
+    "@id": "https://ryomakom.github.io/r-course/#course",
+    "name": "記者のためのR講座",
+    "url": "https://ryomakom.github.io/r-course/"
+   },
+   "learningResourceType": "講座の章",
+   "educationalLevel": "初心者",
+   "isAccessibleForFree": true
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "記者のためのR講座",
+     "item": "https://ryomakom.github.io/r-course/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "データを縦にくっつける",
+     "item": "https://ryomakom.github.io/r-course/08-bind.html"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="stylesheet" href="assets/style.css?v=6dd3d74d6f">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
+</head>
+<body class="">
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part" id="part-1">はじめに</p><ul>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part" id="part-2">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 列を選ぶ・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li class="here"><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
+</ul>
+<p class="nav-part" id="part-3">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part" id="part-4">実践編</p><ul>
+<li><a href="16-gasoline.html">16 ガソリン価格を分析する</a></li>
+</ul>
+<p class="nav-part" id="part-5">第3部　データを集める</p><ul>
+<li><a href="17-scraping.html">17 ウェブから表を取る</a></li>
+<li><a href="18-loop.html">18 まとめて集める</a></li>
+<li><a href="19-download.html">19 一括ダウンロード</a></li>
+<li><a href="20-kami-excel.html">20 神の頭を切り落とす</a></li>
+</ul>
+<p class="nav-part" id="part-6">第4部　さらに先へ</p><ul>
+<li><a href="21-more.html">21 もっといろんなことを</a></li>
+<li><a href="22-ai.html">22 AIの時代に</a></li>
+</ul>
+<p class="nav-part" id="part-7">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">第1部　データを読む・加工する</p>
+      <h1>データを縦にくっつける</h1>
+      <p class="lead">bind_rowsで複数年のデータを合体させます。ここで役所のcsvの「クセ」に初めて正面からぶつかります。</p>
+      
+      <p>つぎに、複数のデータを合体させるための関数を学んでいきましょう。まずはいちばんシンプルな、<code>bind_rows()</code> という関数から。</p>
+<p>これまでは2020年の国勢調査データを使っていましたが、ここからはさらに2000年、2005年、2010年、2015年のデータも使っていきます。それぞれのデータを読み込んでいきましょう。</p>
+<aside class="box box-data"><p class="box-title">この章で使うデータ</p><p><a class="dl" href="files/人口データ2015.csv" download>人口データ2015.csv<span class="dl-size">288 KB</span></a></p>
+<p><a class="dl" href="files/人口データ2010.csv" download>人口データ2010.csv<span class="dl-size">273 KB</span></a></p>
+<p><code>data</code> フォルダに入れてください。2000年と2005年のぶんは<a href="10-datatype.html">10章</a>で使います。</p></aside>
+<h2 id="同じ統計でもデータの形式がいろいろ違う">同じ統計でもデータの形式がいろいろ違う</h2>
+<p>では、まずは2015年から。2020年のときと同じように、<code>read_csv()</code> 関数を使って読んでみます。</p>
+<div class="code" data-lang="R"><pre><code>read_csv("data/人口データ2015.csv", skip = 8)</code></pre></div>
+<div class="code" data-lang="実行結果"><pre><code># A tibble: 1,910 × 37
+  `2015100000` `2015年度` `01105` `北海道 札幌市 豊平区` ...5  `218652`
+         &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;                  &lt;lgl&gt;    &lt;dbl&gt;
+1   2015100000 2015年度   01106   北海道 札幌市 南区     NA      141190
+2   2015100000 2015年度   01107   北海道 札幌市 西区     NA      213578
+3   2015100000 2015年度   01108   北海道 札幌市 厚別区   NA      127767
+4   2015100000 2015年度   01109   北海道 札幌市 手稲区   NA      140999
+# ℹ 1,906 more rows
+# ℹ 31 more variables: ...7 &lt;lgl&gt;, `101482` &lt;dbl&gt;, ...9 &lt;lgl&gt;,
+#   `117170` &lt;dbl&gt;, ...11 &lt;lgl&gt;, `217089` &lt;dbl&gt;, ...13 &lt;lgl&gt;,
+#   `100717` &lt;dbl&gt;, ...15 &lt;lgl&gt;, `116372` &lt;dbl&gt;, ...17 &lt;lgl&gt;, `44.9` &lt;chr&gt;,
+#   ...19 &lt;lgl&gt;, `23865` &lt;dbl&gt;, ...21 &lt;lgl&gt;, `12214` &lt;dbl&gt;, ...23 &lt;lgl&gt;,
+#   `11651` &lt;dbl&gt;, ...25 &lt;lgl&gt;, `142751` &lt;dbl&gt;, ...27 &lt;lgl&gt;, `67849` &lt;dbl&gt;,
+#   ...29 &lt;lgl&gt;, `74902` &lt;dbl&gt;, ...31 &lt;lgl&gt;, `51458` &lt;dbl&gt;, ...33 &lt;lgl&gt;, …</code></pre></div>
+<p>あれ? 何かおかしいですね。たとえば4列目の名前が「北海道 札幌市 豊平区」となってしまっています。データの「中身」になるべきものが、ラベルになってしまっているようです。なぜでしょうか。ファイルをExcelなどで開いて、確認してみましょう。</p>
+<figure class="fig"><img src="images/08-csv2015.png" alt="人口データ2015.csvをExcelで開いたところ。1行目に表題、2行目に公開日があり、3行目が「調査年 コード」「調査年」「地域 コード」「地域」などの列名、4行目からが北海道札幌市などのデータになっている" loading="lazy"><figcaption>人口データ2015.csv をExcelで開いたところ</figcaption></figure>
+<p>こうなっています。2020年の人口データのファイルでは、1〜8行目にはあまり意味のない情報が入っていたので、<code>skip=8</code> と指定することで、8行分を飛ばして読み込みました。でもこのファイルでは、意味のない情報は1〜2行目にしか入っていません。つまり3行目以降を読み込むのが正解だったのです。</p>
+<div class="code" data-lang="R"><pre><code>read_csv("data/人口データ2015.csv", skip = 2)</code></pre></div>
+<h2 id="文字コードでつまずく">文字コードでつまずく</h2>
+<p>次に2010年のデータも読み込んでみます。Excelで確認すると、5行目まで飛ばして読めばよさそうです。やってみましょう。</p>
+<div class="code" data-lang="R"><pre><code>read_csv("data/人口データ2010.csv", skip = 5)</code></pre></div>
+<p>あれ?　やっぱりうまく行きませんね。</p>
+<div class="code" data-lang="実行結果"><pre><code>unable to translate '&lt;92&gt;&lt;8d&gt;&lt;8e&gt;&lt;df&gt;' to a wide string</code></pre></div>
+<p>こんなふうに叱られました。読めない文字があると言っています（文言はRやパッケージのバージョンによって変わりますが、言っていることは同じです）。文字コードがUTF-8じゃないから読み込めないようです。日本語だと、可能性が高い文字コードはShift-JISです。そこで、<strong>文字コードを指定して読み込みましょう</strong>。</p>
+<div class="code" data-lang="R"><pre><code>read_csv("data/人口データ2010.csv", skip = 5, locale = locale(encoding = "CP932"))</code></pre></div>
+<p>これでうまく行きました。<code>parsing issues</code> という警告も出ますが、これは熊本市の区の行で、数字の代わりにハイフンが入っているせいです。<a href="10-datatype.html">10章</a>で扱うので、いまは気にしなくて大丈夫です。</p>
+<aside class="box box-warn"><p class="box-title">文字コードの話</p><p>文字コードとは、文字をコンピューターの中で数字として表すときの取り決めのことです。同じ文字でも取り決めが違えば違う数字になります。だから、書いたときの取り決めと読むときの取り決めが食い違うと、文字化けしたりエラーになったりします。</p>
+<p>役所が出すcsvでよく出会うのは次の二つです。</p>
+<ul>
+<li>UTF-8……いまの世界標準。<code>read_csv()</code> はこれを前提にしています。</li>
+<li>Shift-JIS（Windows拡張版の名前がCP932）……日本のWindowsで長く使われてきたもの。役所のcsvにはまだ多い。</li>
+</ul>
+<p>読めない文字があると叱られたら、<code>locale = locale(encoding = "CP932")</code> を付けてみる。逆にShift-JISだと思って指定したのに化けるなら、外してみる。この2択でほぼ解決します。</p></aside>
+<h2 id="bind_rows縦に積み上げる">bind_rows——縦に積み上げる</h2>
+<p>ではいよいよ、<code>bind_rows()</code> 関数を使って、読み込んだデータを合体させていきます。</p>
+<div class="code" data-lang="R"><pre><code>df &lt;- bind_rows(df2020,
+                read_csv("data/人口データ2015.csv", skip = 2),
+                read_csv("data/人口データ2010.csv", skip = 5,
+                         locale = locale(encoding = "CP932")))</code></pre></div>
+<p><code>bind_rows()</code> 関数の括弧のなかでは、すでに読み込み済みの <code>df2020</code> と、2015年と2010年のデータをそれぞれ <code>read_csv()</code> 関数で読み込んだものの三つがコンマでつながっています。これで合体させたものを、<code>df</code> というオブジェクトに代入しているわけです。</p>
+<p><code>bind_rows()</code> がやっているのは、<strong>列の名前を見比べて、同じ名前の列を同じ列に積み上げる</strong>という作業です。だから列の並び順が違っていても平気ですし、片方にしかない列があっても、足りないほうはNAで埋めて合体してくれます。</p>
+<aside class="box box-tips"><p class="box-title">何行になったか、必ず確かめる</p><div class="code" data-lang="R"><pre><code>df %&gt;% nrow()</code></pre></div>
+<p>合体前の三つを足した行数と合っていますか。また、年ごとの行数も見ておきましょう。</p>
+<div class="code" data-lang="R"><pre><code>df %&gt;% count(調査年)</code></pre></div>
+<div class="code" data-lang="実行結果"><pre><code># A tibble: 3 × 2
+  調査年       n
+  &lt;chr&gt;    &lt;int&gt;
+1 2010年度  1916
+2 2015年度  1916
+3 2020年度  1916</code></pre></div>
+<p>三つの年が、それぞれ1916行。市区町村と政令市の区を合わせた数なので、これで正しそうです。</p>
+<p><code>count()</code> は「その列の値ごとに何行あるか」を数えてくれる関数で、<code>group_by</code> ＋ <code>summarize(n())</code> の省略版です。</p></aside>
+<h2 id="列の名前をそろえる">列の名前をそろえる</h2>
+<p>さて、この <code>df</code> というtibbleには余計な列がたくさんあったり、列の名前が長ったらしいうえに日本語なので扱いにくかったりします。シンプルなものに変えてみましょう。<code>df2020</code> のときにやったのと基本は同じですが、今回は複数の年のものが混じっているのが大きな違いです。調査年と地域名、それぞれの総人口という三つの列に絞りましょう。</p>
+<div class="code" data-lang="R"><pre><code>df_simple &lt;- df %&gt;%
+  select(調査年,
+         地域,
+         `A1101_総人口【人】`) %&gt;%
+  rename(year = 調査年,
+         region = 地域,
+         population = `A1101_総人口【人】`)</code></pre></div>
+<p>これで、「年」「自治体名」「人口」の3列だけのすっきりしたデータになりました。</p>
+<aside class="box box-warn"><p class="box-title">bind_rowsがうまくいかないとき</p><p><code>bind_rows()</code> は便利ですが、つまずきやすいのは次の二つです。</p>
+<ol>
+<li>列名が微妙に違う。「地域 コード」と「地域コード」のように空白の有無が違うだけでも、別の列として扱われます。結果として、片方がNAで埋まった不気味なtibbleができあがります。合体したら <code>colnames()</code> で列名を眺め、<strong>似た名前の列が二つできていないか確かめてください</strong>。</li>
+<li>データ型が違う。同じ名前の列なのに、片方は数値、片方は文字列だと、そもそもエラーで止まります。これは<a href="10-datatype.html">10章</a>で正面から扱います。</li>
+</ol>
+<p>1番のほうはエラーは出ませんが、中身を見るとぜんぜんうまくいっていない。こちらのほうが厄介です。</p></aside>
+<p>次の章では、くっつけたデータを、年を列の名前にした横長の形に組み替えたり、縦長に戻したりします。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="07-group.html"><span>前へ</span>07 集計する</a><a class="next" href="09-pivot.html"><span>次へ</span>09 縦長と横長</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">©小宮山亮磨 朝日新聞デジタル企画報道部　<a href="https://x.com/ryomakom">@ryomakom</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js?v=d9de072757"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RとRStudioを入れる | 記者のためのR講座</title>
+<meta name="description" content="どちらも無料です。入れたら、四つに区切られた画面の見方をおさえましょう。">
+<meta name="author" content="小宮山亮磨">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ryomakom.github.io/r-course/02-install.html">
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="記者のためのR講座">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="RとRStudioを入れる | 記者のためのR講座">
+<meta property="og:description" content="どちらも無料です。入れたら、四つに区切られた画面の見方をおさえましょう。">
+<meta property="og:url" content="https://ryomakom.github.io/r-course/02-install.html">
+<meta property="article:author" content="https://x.com/ryomakom">
+<meta property="article:section" content="はじめに">
+<meta property="article:published_time" content="2026-11-21">
+<meta property="article:modified_time" content="2026-11-21">
+<meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/02-install.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="記者のためのR講座：RとRStudioを入れる">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ryomakom">
+<meta name="twitter:creator" content="@ryomakom">
+<meta name="twitter:title" content="RとRStudioを入れる | 記者のためのR講座">
+<meta name="twitter:description" content="どちらも無料です。入れたら、四つに区切られた画面の見方をおさえましょう。">
+<meta name="twitter:image" content="https://ryomakom.github.io/r-course/assets/og/02-install.png">
+<meta name="twitter:image:alt" content="記者のためのR講座：RとRStudioを入れる">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": [
+    "Article",
+    "LearningResource"
+   ],
+   "@id": "https://ryomakom.github.io/r-course/02-install.html#article",
+   "headline": "RとRStudioを入れる",
+   "name": "RとRStudioを入れる",
+   "description": "どちらも無料です。入れたら、四つに区切られた画面の見方をおさえましょう。",
+   "url": "https://ryomakom.github.io/r-course/02-install.html",
+   "mainEntityOfPage": "https://ryomakom.github.io/r-course/02-install.html",
+   "inLanguage": "ja",
+   "image": "https://ryomakom.github.io/r-course/assets/og/02-install.png",
+   "datePublished": "2026-11-21",
+   "dateModified": "2026-11-21",
+   "author": {
+    "@type": "Person",
+    "@id": "https://ryomakom.github.io/r-course/#author",
+    "name": "小宮山亮磨",
+    "url": "https://x.com/ryomakom",
+    "sameAs": [
+     "https://x.com/ryomakom"
+    ],
+    "affiliation": {
+     "@type": "Organization",
+     "name": "朝日新聞デジタル企画報道部"
+    }
+   },
+   "publisher": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "isPartOf": {
+    "@type": "Course",
+    "@id": "https://ryomakom.github.io/r-course/#course",
+    "name": "記者のためのR講座",
+    "url": "https://ryomakom.github.io/r-course/"
+   },
+   "learningResourceType": "講座の章",
+   "educationalLevel": "初心者",
+   "isAccessibleForFree": true
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "記者のためのR講座",
+     "item": "https://ryomakom.github.io/r-course/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "RとRStudioを入れる",
+     "item": "https://ryomakom.github.io/r-course/02-install.html"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="stylesheet" href="assets/style.css?v=6dd3d74d6f">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
+</head>
+<body class="">
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part" id="part-1">はじめに</p><ul>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li class="here"><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part" id="part-2">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 列を選ぶ・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
+</ul>
+<p class="nav-part" id="part-3">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part" id="part-4">実践編</p><ul>
+<li><a href="16-gasoline.html">16 ガソリン価格を分析する</a></li>
+</ul>
+<p class="nav-part" id="part-5">第3部　データを集める</p><ul>
+<li><a href="17-scraping.html">17 ウェブから表を取る</a></li>
+<li><a href="18-loop.html">18 まとめて集める</a></li>
+<li><a href="19-download.html">19 一括ダウンロード</a></li>
+<li><a href="20-kami-excel.html">20 神の頭を切り落とす</a></li>
+</ul>
+<p class="nav-part" id="part-6">第4部　さらに先へ</p><ul>
+<li><a href="21-more.html">21 もっといろんなことを</a></li>
+<li><a href="22-ai.html">22 AIの時代に</a></li>
+</ul>
+<p class="nav-part" id="part-7">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">はじめに</p>
+      <h1>RとRStudioを入れる</h1>
+      <p class="lead">どちらも無料です。入れたら、四つに区切られた画面の見方をおさえましょう。</p>
+      
+      <p>ではさっそく、必要な二つの道具をゲットしていきましょう。いずれも無料、オンラインでとれます。</p>
+<p>Rは、計算をする本体。RStudioは、そのRを使いやすくするための作業台です。車にたとえるなら、Rがエンジン、RStudioが運転席といえばいいでしょうか。</p>
+<p>入れる順番は「R → RStudio」です。RStudioだけ入れても、エンジンがないので動きません。そして実際に使うときに開くのは、RStudioのほうだけ。RStudioを開けば、裏でRが自動的に呼び出されます。</p>
+<h2 id="Rを入れる">Rを入れる</h2>
+<ol>
+<li>まず、Rの公式サイト（<a href="https://cran.r-project.org/">CRAN</a>＝シーラン）にアクセスします。</li>
+<li>自分のコンピューターのOS（WindowsやMacなど）に合ったインストーラーをダウンロードします。</li>
+<li>ダウンロードしたファイルをダブルクリックして、画面の指示に従ってインストールを進めます（ほとんどの場合、特別な設定は必要ありません）。</li>
+</ol>
+<h2 id="RStudioを入れる">RStudioを入れる</h2>
+<ol>
+<li><a href="https://posit.co/download/rstudio-desktop/">RStudioのダウンロードページ</a>にアクセスし、無料の「RStudio Desktop」版をダウンロードします。</li>
+<li>ダウンロードしたファイルをダブルクリックして、画面の指示に従ってインストールを進めます。</li>
+<li>インストールが完了すると、RStudioが起動します。すでにインストールされているRを自動的に認識してくれます。</li>
+</ol>
+<p>これで準備は完了です。</p>
+<aside class="box box-warn"><p class="box-title">会社のパソコンで入れられないとき</p><p>社内のパソコンだと、勝手にソフトを入れられない設定になっていることがあります。その場合はシステム担当に相談してください。R本体とRStudioの2本立てだという点、どちらも無料で商用利用も可能だという点を伝えると話が早いと思います。</p></aside>
+<h2 id="RStudioの画面">RStudioの画面</h2>
+<figure class="fig"><img src="images/02-rstudio.png" alt="RStudioの画面。左にコンソール、右上にEnvironment、右下にFilesの区画がある" loading="lazy"><figcaption>RStudioの画面。区画の役割を覚えてしまえば、あとは慣れです。この例のプロジェクトでは以前に作業しているので右上にデータが並んでいますが、本当に最初に開いたときは何もありません</figcaption></figure>
+<p>インストールできたRStudioを開いてみましょう。最初の画面は3区画に分かれています。</p>
+<h3 id="左側Consoleコンソール">左側——Console（コンソール）</h3>
+<p>コンピューターに実行させたい命令を「コード」と呼ばれる文章にして、ここに打ち込みます。画面に <code>&gt;</code> という記号が出ているときは、命令を聞く準備がととのっていますよ、さあどうぞ命令してください、という合図です。</p>
+<p>一方で <code>+</code> の記号が出ているときは、前に入力した命令が最後まで終わっていませんよ、という意味。コンピューターが「からの～～～？」と聞いてきている状態で、かっこを閉じるのを忘れるとこうなります。Escキーを押せば <code>&gt;</code> の状態に戻すことができます。</p>
+<h3 id="右上EnvironmentとHistory">右上——EnvironmentとHistory</h3>
+<p>「Environment（環境）」タブでは、いまRStudioで扱っているデータなどにどんなものがあるのかを確認できます。最初はまだ何のデータも読み込んでいないので、空っぽになっています。</p>
+<p>「History（履歴）」タブには、コンソールですでに実行された命令が記録されています。</p>
+<h3 id="右下FilesPlotsPackages">右下——Files、Plots、Packages</h3>
+<p>「Files」では、作業中のフォルダの構造やファイルが確認できます。「Plots」ではデータから作成したグラフや表などが、「Packages」では、インストール済みで利用可能なパッケージの一覧が見られます（パッケージとは何かというのは<a href="03-project.html">次の章</a>で説明しますので、ひとまず忘れてください）。</p>
+<h3 id="もう一つ必要な区画コードを書き残す場所">もう一つ必要な区画——コードを書き残す場所</h3>
+<p>作業にはもう一つの区画が必要になります。データ処理や分析の手順を一連のコードとして書き残し、保存するための場所です。R MarkdownやR Scriptなどのファイル形式で保存できますが、ここではR Markdownでのやり方を書いていきます。</p>
+<figure class="fig"><img src="images/02-new-rmd.png" alt="New File→R MarkdownでR Markdownの新しいファイルを開いたあとのRStudio。左上にコードを書き残す区画が増え、4区画になっている" loading="lazy"><figcaption>File → New File → R Markdown で新しいファイルを開いたところ。左上に区画が一つ増えます</figcaption></figure>
+<p>左上にある「File」をクリックし、さらに「New File」→「R Markdown」と進んでいくと、ファイル名の最後の部分（拡張子）が <code>.Rmd</code> となっているR Markdownの新しいファイルを開くことができます。</p>
+<p>データ分析の過程は試行錯誤の連続。コンソールの区画を使っていろいろなコードを実行して、結果がどうなるかをみていきます。試したらうまくいって、<strong>後に残しておきたくなったコードをR Markdownのほうに書いておく</strong>わけです。</p>
+<p>また、R Markdownはコンピューターに実行させる命令を書いておくコードの部分と、人間のための（コンピューターには読ませない）メモを書いておくMarkdown部分に分かれています。保存したうえで、HTMLやPDFなどの形式で出力することもできます。</p>
+<aside class="box box-note"><p class="box-title">コードの部分の作り方</p><p>R Markdownのなかで、コードを書く場所（チャンクと呼びます）はこんな形をしています。</p>
+<div class="code" data-lang="画面に出るもの"><pre><code>```{r}
+library(tidyverse)
+```</code></pre></div>
+<p>この三つのバッククオートで挟まれた中に書いたものだけが、Rの命令として実行されます。外側に書いた文字は、ぜんぶ人間向けのメモとして扱われます。チャンクを作るのは Ctrl＋Alt＋I（MacはCmd＋Option＋I）が早いです。</p></aside>
+<h2 id="その他覚えておくと楽になるキー操作">その他、覚えておくと楽になるキー操作</h2>
+<p>最初のうちはマウスでちまちま実行してもいいのですが、この三つだけは早めに覚えると作業がラクになります。</p>
+<div class="table-wrap"><table><thead><tr><th>キー</th><th>何が起きるか</th></tr></thead><tbody><tr><td>Ctrl＋Enter</td><td>カーソルがある行（または選択した範囲）のコードを実行する</td></tr><tr><td>Ctrl＋Shift＋M</td><td>パイプ演算子 <code>%&gt;%</code> が出てくる（これが何をするものかはまた後ほど）</td></tr><tr><td>Ctrl＋Shift＋Enter</td><td>いま書いているチャンクを丸ごと実行する</td></tr></tbody></table></div>
+<p>MacではCtrlをCmdに読み替えてください。</p>
+<p>それからもう一つ。この講座では、コードを書いている部分はコピペができないようにしています。コードをよく見て、自分で手を動かして同じものを書くという訓練が、Rの各種コマンドや文法を覚えるうえでとても役に立つと思うからです。</p>
+<p>Rに限らずプログラミング言語は、ちょっとした文法ミスでエラーが頻発します。それはたとえば変な場所に意図しない記号が紛れ込んでいたりとか、半角にすべきところを全角にしてたりとか、非常にささいなものです。何でエラーが出るんじゃぁといらいらすることは多々ありますが、そういうのを繰り返すうちにはまりやすいパターンもわかり、また文法やコマンドがだんだんと身についてくるわけです。</p>
+<p>寺子屋みたいな古い学習法のようにも思えますが、<strong>とにかくまずは手を動かす</strong>。我慢しておつきあいください。</p>
+<p>次の章では、作業場所をひとまとめにする「プロジェクト」をつくり、道具箱にあたる「パッケージ」を入れます。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="01-hajimeni.html"><span>前へ</span>01 Rとは何か</a><a class="next" href="03-project.html"><span>次へ</span>03 プロジェクトとパッケージ</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">©小宮山亮磨 朝日新聞デジタル企画報道部　<a href="https://x.com/ryomakom">@ryomakom</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js?v=d9de072757"></script>
+</body>
+</html>

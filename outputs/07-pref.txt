@@ -1,0 +1,10 @@
+# A tibble: 47 × 3
+  prefecture pref_population pref_population_over65
+  <chr>                <dbl>                  <dbl>
+1 三重県             1770254                 522073
+2 京都府             2578087                 734493
+3 佐賀県              811442                 246061
+4 兵庫県             5465002                1546543
+5 北海道             5224614                1664023
+6 千葉県             6284480                1699991
+# ℹ 41 more rows

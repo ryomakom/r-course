@@ -1,0 +1,9 @@
+# A tibble: 47 × 2
+  prefecture population
+  <chr>           <dbl>
+1 神奈川県     15278583
+2 東京都       14047594
+3 大阪府       12416258
+4 愛知県        9874591
+5 埼玉県        8668790
+# ℹ 42 more rows

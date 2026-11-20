@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ファイルをまとめてダウンロードする | 記者のためのR講座</title>
+<meta name="description" content="衆院選の市区町村別得票データを総務省が出しています。ただしファイルは都道府県ごとに分かれている。これをまとめていっぺんにダウンロードします。">
+<meta name="author" content="小宮山亮磨">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ryomakom.github.io/r-course/19-download.html">
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="記者のためのR講座">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="ファイルをまとめてダウンロードする | 記者のためのR講座">
+<meta property="og:description" content="衆院選の市区町村別得票データを総務省が出しています。ただしファイルは都道府県ごとに分かれている。これをまとめていっぺんにダウンロードします。">
+<meta property="og:url" content="https://ryomakom.github.io/r-course/19-download.html">
+<meta property="article:author" content="https://x.com/ryomakom">
+<meta property="article:section" content="第3部　データを集める">
+<meta property="article:published_time" content="2026-11-21">
+<meta property="article:modified_time" content="2026-11-21">
+<meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/19-download.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="記者のためのR講座：ファイルをまとめてダウンロードする">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ryomakom">
+<meta name="twitter:creator" content="@ryomakom">
+<meta name="twitter:title" content="ファイルをまとめてダウンロードする | 記者のためのR講座">
+<meta name="twitter:description" content="衆院選の市区町村別得票データを総務省が出しています。ただしファイルは都道府県ごとに分かれている。これをまとめていっぺんにダウンロードします。">
+<meta name="twitter:image" content="https://ryomakom.github.io/r-course/assets/og/19-download.png">
+<meta name="twitter:image:alt" content="記者のためのR講座：ファイルをまとめてダウンロードする">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": [
+    "Article",
+    "LearningResource"
+   ],
+   "@id": "https://ryomakom.github.io/r-course/19-download.html#article",
+   "headline": "ファイルをまとめてダウンロードする",
+   "name": "ファイルをまとめてダウンロードする",
+   "description": "衆院選の市区町村別得票データを総務省が出しています。ただしファイルは都道府県ごとに分かれている。これをまとめていっぺんにダウンロードします。",
+   "url": "https://ryomakom.github.io/r-course/19-download.html",
+   "mainEntityOfPage": "https://ryomakom.github.io/r-course/19-download.html",
+   "inLanguage": "ja",
+   "image": "https://ryomakom.github.io/r-course/assets/og/19-download.png",
+   "datePublished": "2026-11-21",
+   "dateModified": "2026-11-21",
+   "author": {
+    "@type": "Person",
+    "@id": "https://ryomakom.github.io/r-course/#author",
+    "name": "小宮山亮磨",
+    "url": "https://x.com/ryomakom",
+    "sameAs": [
+     "https://x.com/ryomakom"
+    ],
+    "affiliation": {
+     "@type": "Organization",
+     "name": "朝日新聞デジタル企画報道部"
+    }
+   },
+   "publisher": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "isPartOf": {
+    "@type": "Course",
+    "@id": "https://ryomakom.github.io/r-course/#course",
+    "name": "記者のためのR講座",
+    "url": "https://ryomakom.github.io/r-course/"
+   },
+   "learningResourceType": "講座の章",
+   "educationalLevel": "初心者",
+   "isAccessibleForFree": true
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "記者のためのR講座",
+     "item": "https://ryomakom.github.io/r-course/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "ファイルをまとめてダウンロードする",
+     "item": "https://ryomakom.github.io/r-course/19-download.html"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="stylesheet" href="assets/style.css?v=6dd3d74d6f">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
+</head>
+<body class="">
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part" id="part-1">はじめに</p><ul>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part" id="part-2">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 列を選ぶ・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
+</ul>
+<p class="nav-part" id="part-3">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part" id="part-4">実践編</p><ul>
+<li><a href="16-gasoline.html">16 ガソリン価格を分析する</a></li>
+</ul>
+<p class="nav-part" id="part-5">第3部　データを集める</p><ul>
+<li><a href="17-scraping.html">17 ウェブから表を取る</a></li>
+<li><a href="18-loop.html">18 まとめて集める</a></li>
+<li class="here"><a href="19-download.html">19 一括ダウンロード</a></li>
+<li><a href="20-kami-excel.html">20 神の頭を切り落とす</a></li>
+</ul>
+<p class="nav-part" id="part-6">第4部　さらに先へ</p><ul>
+<li><a href="21-more.html">21 もっといろんなことを</a></li>
+<li><a href="22-ai.html">22 AIの時代に</a></li>
+</ul>
+<p class="nav-part" id="part-7">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">第3部　データを集める</p>
+      <h1>ファイルをまとめてダウンロードする</h1>
+      <p class="lead">衆院選の市区町村別得票データを総務省が出しています。ただしファイルは都道府県ごとに分かれている。これをまとめていっぺんにダウンロードします。</p>
+      
+      <p>ネット上にあるデータは、ウェブサイトに直接表示されているときもありますが、Excelやcsvなどのファイルとして置かれている場合もあります。たとえば衆院選の市区町村別得票データは、47都道府県ごとに分かれたExcelファイルが総務省の<a href="https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html">サイト</a>に置かれています。</p>
+<p>リンクを一つ一つクリックしてダウンロードすることも、もちろんできます。でもやりたくないですよね。こういう単純作業はコンピューターにやってもらいましょう。ここでもfor文が使えます。</p>
+<p>が、その前に、まずは一つのファイルをRのコードでダウンロードするのをやってみましょう。httrというパッケージを使います。</p>
+<div class="code" data-lang="R"><pre><code># install.packages("httr")
+library(httr)</code></pre></div>
+<p>たとえば東京都の小選挙区のデータが入ったExcelファイルなら、こうやってダウンロードします。</p>
+<div class="code" data-lang="R"><pre><code>GET("https://www.soumu.go.jp/main_content/000979550.xlsx",
+    write_disk("download/000979550.xlsx",
+               overwrite = TRUE))</code></pre></div>
+<p><code>GET()</code> は、そのURLに「このファイルをください」とお願いしなさい、という関数。<code>write_disk()</code> が、返ってきたものをファイルとして保存する場所の指定。<code>overwrite = TRUE</code> は、同じ名前のファイルがすでにあったら上書きしていいですよ、という意味です。なお、置き場所にしている「download」というフォルダをあらかじめ作っておかないとエラーが出るのでご注意。</p>
+<p>保存するファイルの名前は、URLの最後の部分（<code>000979550.xlsx</code>）と同じにしておきました。</p>
+<h2 id="リンクの一覧をつくる">リンクの一覧をつくる</h2>
+<p>さて、ここからが本番。Excelファイルへのリンクをまとめて取ってきます。前章と同じで、rvestを使います。</p>
+<p>このページの表は2列に分かれていますね。今回は比例代表ではなく小選挙区のデータだけを取りたい。なので、左の列のリンクだけを集めて、excel_urlsというオブジェクトに格納します。</p>
+<div class="code" data-lang="R"><pre><code>excel_urls &lt;- "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html" %&gt;%
+  read_html() %&gt;%                         # HTMLのコードを読み込む
+  html_element("table.tableList") %&gt;%     # 最初にある &lt;table class="tableList"&gt; 要素を取得
+  html_elements("tr") %&gt;%                 # 表の行を全部取得
+  html_element("a") %&gt;%                   # それぞれの行から、最初の &lt;a&gt; 要素を一つだけ取得（＝小選挙区のほう）
+  html_attr("href") %&gt;%                   # 各リンクの href 属性（URL部分）を抽出
+  url_absolute("https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html") %&gt;%
+  str_subset("xlsx")                      # ラベルの行（リンクがない）を除く
+
+length(excel_urls)</code></pre></div>
+<p>ポイントは4行目と5行目です。<code>html_elements("tr")</code> で表の行を全部取り、<code>html_element("a")</code> でそれぞれの行から最初のリンクを一つだけ取っています。<a href="17-scraping.html">17章</a>と<a href="18-loop.html">18章</a>で見たとおり、複数形の <code>html_elements()</code> は当てはまるものを全部、単数形の <code>html_element()</code> は最初の一つを取ってきます。表のどの行も左に小選挙区のリンクがあるので、最初のリンクを取れば小選挙区のほうになるわけです。</p>
+<p>いちばん上のラベルの行にはリンクがないので、そこだけ空っぽ（NA）が入ります。これを <code>url_absolute()</code> に通すと、末尾が「NA」の、どのファイルも指さないURLになってしまいます。最後の <code>str_subset("xlsx")</code> では、このURLを消すために、xlsxファイルを指すURLだけを残しなさいと命令しています。</p>
+<p><code>length(excel_urls)</code> が47になっていれば、47都道府県のぶんがそろっています。</p>
+<h2 id="全部まとめて取ってくる">全部まとめて取ってくる</h2>
+<p>あとはfor文に入れるだけです。今回はtibbleにためるのではなく、ファイルを一つ一つ保存します。</p>
+<div class="code" data-lang="R"><pre><code>for (i in seq_along(excel_urls)) {
+  # リンクの末尾に書かれているファイル名を取得
+  filename &lt;- excel_urls[i] %&gt;%
+    basename() %&gt;%
+    str_c("download/", .)
+
+  # ローカルに保存
+  excel_urls[i] %&gt;%
+    GET(write_disk(filename,
+                   overwrite = TRUE))
+
+  Sys.sleep(2)   # アクセス先に過剰な負荷をかけないため、次の動作までちょっとだけ待つ
+}</code></pre></div>
+<p><code>basename()</code> は、URLやファイルパスから最後の部分（＝ファイル名）だけを取り出す関数です。<code>https://www.soumu.go.jp/main_content/000979550.xlsx</code> なら <code>000979550.xlsx</code> が返ってきます。その前に<code>str_c()</code>関数で <code>download/</code> という文字列をくっつけて、保存先のパスにしています。<code>str_c("download/", .)</code> の最後にあるピリオドは、パイプで渡ってきたもの（ここではファイル名）を指しています。</p>
+<h2 id="途中で止まらないようにする">途中で止まらないようにする</h2>
+<p>47回のうち1回でも、相手のサーバーにつながらないとか、返事が来なくて時間切れになるとかいったエラーが起きると、for文はそこで止まります。1回の失敗で最後まで走らないのは困るので、前章と同じように <code>tryCatch()</code> で囲みましょう。</p>
+<p>ただ、ややこしいことに、リンク切れのほうは <code>GET()</code> にとってはエラーになりません。ファイルがなくても、相手のサーバーは「ページが見つかりません」という案内のページを返してきます。<code>GET()</code> はそれを受け取って、<code>.xlsx</code> という名前のままきちんと保存し、<strong>何事もなかったかのように次へ進んでしまう</strong>のです。</p>
+<p>なので、返事の中身を確かめて、「見つかりません」のような返事だったらエラーとして扱うようにします。</p>
+<div class="code" data-lang="R"><pre><code>for (i in seq_along(excel_urls)) {
+
+  # ファイル名をリンクの末尾から取得
+  filename &lt;- excel_urls[i] %&gt;%
+    basename() %&gt;%
+    str_c("download/", .)
+
+  tryCatch({
+
+    # ローカルに保存
+    res &lt;- GET(excel_urls[i], write_disk(filename, overwrite = TRUE))
+
+    # 「見つかりません」などの返事だったら、エラーにする
+    stop_for_status(res)
+
+    message(
+      str_c("✅ ", filename, " をダウンロードしました。")
+    )
+
+  }, error = function(e) {
+
+    # 失敗したときに残った、中身の正しくないファイルを消す
+    unlink(filename)
+
+    message(
+      str_c(
+        "⚠️ ", excel_urls[i],
+        " のダウンロード中にエラーが発生しました: ",
+        e$message
+      )
+    )
+
+  })
+
+  Sys.sleep(2)  # サーバーへの負荷軽減のため待機
+}</code></pre></div>
+<p>前のコードとの違いは、全体を <code>tryCatch()</code> で囲んで、前章と同じように成功・失敗のメッセージを出すようにした（ここでは ✅ と ⚠️ を付けた）ことに加えて、二つです。</p>
+<p>一つめは、<code>GET()</code> の結果を <code>res</code> に入れて、<code>stop_for_status(res)</code> にかけていること。<code>stop_for_status()</code> は、サーバーからの返事が「見つかりません」や「サーバーの調子が悪いです」といった失敗の知らせだったときに、エラーを起こしてくれる関数です。これで、リンク切れも <code>error = function(e)</code> のほうに回るようになります。</p>
+<p>二つめは、<code>error = function(e)</code> のなかの <code>unlink(filename)</code>。<code>unlink()</code> はファイルを削除する関数です。失敗したときには、「見つかりません」のページや、途中で切れた空っぽのファイルが <code>download</code> フォルダに残ってしまうので、それを消しています。こうしておけば、<code>download</code> フォルダに残っているのは、ちゃんと落ちてきたファイルだけになります。</p>
+<p>全部終わったら、<strong>落ちてきたファイルを数えて確かめましょう</strong>。</p>
+<div class="code" data-lang="R"><pre><code>list.files("download")
+length(list.files("download"))</code></pre></div>
+<p><code>list.files()</code> は、フォルダのなかにあるファイルの名前を一覧にする関数です。47になっていますか。足りなければ、⚠️ が出たものを探して、そのファイルだけもう一度落とします。</p>
+<p>これですべてのファイルがdownloadフォルダに保存されたはずです。手作業よりずっと楽、ですよね？</p>
+<p>ただ、落としてきたExcelファイルを開いてみると、上に表題があって、ラベルが2段になっていて、シートが何枚もある、という形をしています。次の章では、これを分析しやすい形に組み替えます。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="18-loop.html"><span>前へ</span>18 まとめて集める</a><a class="next" href="20-kami-excel.html"><span>次へ</span>20 神の頭を切り落とす</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">©小宮山亮磨 朝日新聞デジタル企画報道部　<a href="https://x.com/ryomakom">@ryomakom</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js?v=d9de072757"></script>
+</body>
+</html>

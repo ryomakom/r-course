@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>折れ線グラフ | 記者のためのR講座</title>
+<meta name="description" content="グラフを描く関数、ggplotの基本から。キャンバスを用意して、どのデータをどう描くかを指示する。それだけです。">
+<meta name="author" content="小宮山亮磨">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ryomakom.github.io/r-course/12-line.html">
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="記者のためのR講座">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="折れ線グラフ | 記者のためのR講座">
+<meta property="og:description" content="グラフを描く関数、ggplotの基本から。キャンバスを用意して、どのデータをどう描くかを指示する。それだけです。">
+<meta property="og:url" content="https://ryomakom.github.io/r-course/12-line.html">
+<meta property="article:author" content="https://x.com/ryomakom">
+<meta property="article:section" content="第2部　データを見る">
+<meta property="article:published_time" content="2026-11-21">
+<meta property="article:modified_time" content="2026-11-21">
+<meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/12-line.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="記者のためのR講座：折れ線グラフ">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ryomakom">
+<meta name="twitter:creator" content="@ryomakom">
+<meta name="twitter:title" content="折れ線グラフ | 記者のためのR講座">
+<meta name="twitter:description" content="グラフを描く関数、ggplotの基本から。キャンバスを用意して、どのデータをどう描くかを指示する。それだけです。">
+<meta name="twitter:image" content="https://ryomakom.github.io/r-course/assets/og/12-line.png">
+<meta name="twitter:image:alt" content="記者のためのR講座：折れ線グラフ">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": [
+    "Article",
+    "LearningResource"
+   ],
+   "@id": "https://ryomakom.github.io/r-course/12-line.html#article",
+   "headline": "折れ線グラフ",
+   "name": "折れ線グラフ",
+   "description": "グラフを描く関数、ggplotの基本から。キャンバスを用意して、どのデータをどう描くかを指示する。それだけです。",
+   "url": "https://ryomakom.github.io/r-course/12-line.html",
+   "mainEntityOfPage": "https://ryomakom.github.io/r-course/12-line.html",
+   "inLanguage": "ja",
+   "image": "https://ryomakom.github.io/r-course/assets/og/12-line.png",
+   "datePublished": "2026-11-21",
+   "dateModified": "2026-11-21",
+   "author": {
+    "@type": "Person",
+    "@id": "https://ryomakom.github.io/r-course/#author",
+    "name": "小宮山亮磨",
+    "url": "https://x.com/ryomakom",
+    "sameAs": [
+     "https://x.com/ryomakom"
+    ],
+    "affiliation": {
+     "@type": "Organization",
+     "name": "朝日新聞デジタル企画報道部"
+    }
+   },
+   "publisher": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "isPartOf": {
+    "@type": "Course",
+    "@id": "https://ryomakom.github.io/r-course/#course",
+    "name": "記者のためのR講座",
+    "url": "https://ryomakom.github.io/r-course/"
+   },
+   "learningResourceType": "講座の章",
+   "educationalLevel": "初心者",
+   "isAccessibleForFree": true
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "記者のためのR講座",
+     "item": "https://ryomakom.github.io/r-course/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "折れ線グラフ",
+     "item": "https://ryomakom.github.io/r-course/12-line.html"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="stylesheet" href="assets/style.css?v=6dd3d74d6f">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
+</head>
+<body class="">
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part" id="part-1">はじめに</p><ul>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part" id="part-2">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 列を選ぶ・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
+</ul>
+<p class="nav-part" id="part-3">第2部　データを見る</p><ul>
+<li class="here"><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part" id="part-4">実践編</p><ul>
+<li><a href="16-gasoline.html">16 ガソリン価格を分析する</a></li>
+</ul>
+<p class="nav-part" id="part-5">第3部　データを集める</p><ul>
+<li><a href="17-scraping.html">17 ウェブから表を取る</a></li>
+<li><a href="18-loop.html">18 まとめて集める</a></li>
+<li><a href="19-download.html">19 一括ダウンロード</a></li>
+<li><a href="20-kami-excel.html">20 神の頭を切り落とす</a></li>
+</ul>
+<p class="nav-part" id="part-6">第4部　さらに先へ</p><ul>
+<li><a href="21-more.html">21 もっといろんなことを</a></li>
+<li><a href="22-ai.html">22 AIの時代に</a></li>
+</ul>
+<p class="nav-part" id="part-7">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">第2部　データを見る</p>
+      <h1>折れ線グラフ</h1>
+      <p class="lead">グラフを描く関数、ggplotの基本から。キャンバスを用意して、どのデータをどう描くかを指示する。それだけです。</p>
+      
+      <p>さていよいよ、グラフをつくってデータを可視化していきましょう。データに何が隠されていたのか、そこからどんなメッセージを引き出せるのか。それを知るための道具がグラフです。分析や集計の結果を同僚に伝える媒体でもあります。</p>
+<p>グラフには円グラフやヒートマップなどさまざまなものがありますが、ここでは基本となる折れ線グラフと棒グラフ、散布図についてやっていきます。たった3種類？　と思うかもしれませんが、この三つさえあればほとんどの用途には十分ですし、その他のグラフをつくるときにも応用が利きます。</p>
+<aside class="box box-data"><p class="box-title">使うデータ</p><p>ここからは、第1部で加工した人口データを整えたものを使います。自分で作ってみたい人は<a href="a4-data.html">付録D</a>にコードがありますが、先に進みたい人はここから落としてください。</p>
+<p><a class="dl" href="files/東京都の人口.csv" download>東京都の人口.csv<span class="dl-size">347 バイト</span></a>　東京都の年齢層別人口の推移</p>
+<p><a class="dl" href="files/主な都道府県の人口.csv" download>主な都道府県の人口.csv<span class="dl-size">1 KB</span></a>　宮城・東京・愛知・大阪・福岡の5都府県分</p>
+<p><a class="dl" href="files/都道府県別人口.csv" download>都道府県別人口.csv<span class="dl-size">11 KB</span></a>　47都道府県分</p>
+<p><a class="dl" href="files/市町村別人口.csv" download>市町村別人口.csv<span class="dl-size">509 KB</span></a>　全市町村分</p>
+<p>四つとも <code>data</code> フォルダへ。年が数値になっていて、余計な列もないので、そのまま <code>read_csv()</code> で読めます。</p></aside>
+<h2 id="まずはキャンバスを用意する">まずはキャンバスを用意する</h2>
+<p>ではまずデータの読み込みから。東京都の人口データを <code>tokyo</code> というtibbleに格納しましょう。</p>
+<div class="code" data-lang="R"><pre><code>tokyo &lt;- read_csv("data/東京都の人口.csv")</code></pre></div>
+<p>ではこれを、グラフを描くための <code>ggplot</code> という関数にかけていきます。こんなふうにやります。</p>
+<div class="code" data-lang="R"><pre><code>tokyo %&gt;%
+  ggplot()</code></pre></div>
+<figure class="fig"><img src="images/12-canvas.png" alt="何も指定していない空のggplotの出力。灰色の四角が表示されているだけ" loading="lazy"><figcaption>ggplot()だけを実行すると、灰色のキャンバスが出てくる</figcaption></figure>
+<p>おっ、右下のPlotsというタブに、何か出てきましたね。でも灰色に塗りつぶされただけで、グラフは描かれていません。というのも、<code>tokyo</code> というtibbleをもとにグラフを描く準備はできたのですが、どのデータをどんなふうに可視化しなさいという具体的な指示がないからです。今のところはグラフを描くためのキャンバスができただけ、と考えてください。</p>
+<h2 id="何をどう描くかを指示する">何をどう描くかを指示する</h2>
+<p>では、具体的な指示とはどんなものか。こんなのです。</p>
+<div class="code" data-lang="R"><pre><code>tokyo %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = population))</code></pre></div>
+<figure class="fig"><img src="images/12-line-tokyo.png" alt="東京都の人口が2000年から2020年まで右肩上がりに増えていることを示す折れ線グラフ" loading="lazy"><figcaption>東京都の人口の推移</figcaption></figure>
+<p>はい、これでグラフが描けました。横軸に年、縦軸に人口をとった折れ線グラフです。なぜこういうグラフになるのでしょうか。</p>
+<p><code>ggplot</code> という関数のあとに、<code>geom_line</code> というのが来ていますね。これはline、つまり折れ線グラフを描きなさいという指示で、丸括弧のなかにはさらに <code>aes()</code> というのがあって、その丸括弧のなかでxとyがそれぞれ指定されています。xが <code>year</code> なのでx軸つまり横軸に年がとられ、yが <code>population</code> なのでy軸つまり縦軸に人口がとられている、というわけです。</p>
+<p>geomとかaesとか、いろいろややこしいと思われるかもしれませんが、これは我慢して覚えてください。でもggplotではいつもこれを使うので、慣れれば手が覚えてしまいます。</p>
+<aside class="box box-tips"><p class="box-title">「x =」「y =」は書かなくても通る</p><p>じつは <code>aes()</code> の丸括弧のなかの最初の二つは、何も書かなければ、順番にxとyのことだと受け取ってもらえます。なので、</p>
+<div class="code" data-lang="R"><pre><code>geom_line(aes(year, population))</code></pre></div>
+<p>と書いても、同じグラフが描けます。ネットで見かけるコードでは、こちらの書き方もよく出てきます。ただ、どちらが横軸でどちらが縦軸かを読み間違えないように、この講座では <code>x =</code> と <code>y =</code> を省かずに書くことにします。</p></aside>
+<p>ちなみにgeomはgeometry、つまり「幾何的な」の略で、aesはaesthetic、つまり「美的な」とか「視覚的な」とかを意味することばの略、らしいです。でもまあ、繰り返しになりますが、これは難しく考えずに覚えてしまってください。</p>
+<aside class="box box-warn"><p class="box-title">ggplotだけは「+」でつなぐ</p><p>ここまでずっとパイプ演算子 <code>%&gt;%</code> でつないできましたが、<strong>ggplotの中身はプラス記号 <code>+</code> でつなぎます</strong>。<code>ggplot()</code>という関数で「グラフを描きますよ」と宣言したあとで、描きたい要素をプラス記号で「乗っけていく」ようなイメージです。</p>
+<ul>
+<li>データを加工するところまで → <code>%&gt;%</code></li>
+<li><code>ggplot()</code> から先のグラフの指示 → <code>+</code></li>
+</ul>
+<p>ここを間違えるとエラーが出て、「パイプ演算子使ってない？　<code>+</code> を使いなさいよ」みたいに教えてくれたりします。</p></aside>
+<h2 id="線を増やす">線を増やす</h2>
+<p>ところで、折れ線グラフが描けたのはいいんですが、線が1本だとなんだか寂しいですね。せっかくなので、もうちょっと増やしてみましょう。というわけで、主な5都府県のデータを読み込んで、<code>five_pref</code> というオブジェクトに保存します。</p>
+<div class="code" data-lang="R"><pre><code>five_pref &lt;- read_csv("data/主な都道府県の人口.csv")</code></pre></div>
+<p>これをさっきと同じコードにかけてみると、どうなるでしょうか。</p>
+<div class="code" data-lang="R"><pre><code>five_pref %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = population))</code></pre></div>
+<figure class="fig"><img src="images/12-line-ng.png" alt="5都府県のデータが1本の線でジグザグにつながってしまったグラフ" loading="lazy"><figcaption>全部のデータが1本の線でつながってしまった</figcaption></figure>
+<p>5都府県あるので、線が5本の折れ線グラフにしたかったのですが、そうはなってくれませんでした。すべてのデータが1本の線でつなげられてしまったからです。ジグザグの、意味のよくわからない図になったはずです。</p>
+<p>それぞれのデータを都府県ごとにグループ化したうえで折れ線として表示してもらうためには、こんなコードを書きます。</p>
+<div class="code" data-lang="R"><pre><code>five_pref %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = population, group = prefecture))</code></pre></div>
+<figure class="fig"><img src="images/12-line-group.png" alt="5本の線に分かれたが、すべて同じ色の折れ線グラフ" loading="lazy"><figcaption>group=prefectureで5本に分かれた。でも色が同じ</figcaption></figure>
+<p>うまく行きました。<code>group = prefecture</code> という部分で、都府県ごとにグループ化してくださいね、と指示しているわけです。</p>
+<aside class="box box-note"><p class="box-title">ggplotは「1本の線」しか知らない</p><p>なぜ最初のコードでジグザグになったのか。ggplotから見ると、渡されたのは「年と人口の組み合わせが並んだ表」でしかありません。そのなかで、<strong>どこからどこまでが1本の線なのかは、こちらが教えないと分からない</strong>のです。</p>
+<p>だから <code>group=</code> で「この列の値が同じものどうしをつなげてね」と指示する必要があります。</p></aside>
+<h2 id="色分けする">色分けする</h2>
+<p>5本の線は描けました、が、全部同じ色なので、どの線がどの都府県に対応しているのか、分かりません。色分けしてみましょう。こんなコードです。</p>
+<div class="code" data-lang="R"><pre><code>five_pref %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = population, color = prefecture))</code></pre></div>
+<figure class="fig"><img src="images/12-line-color.png" alt="5都府県が色分けされ、右側に凡例が表示された折れ線グラフ" loading="lazy"><figcaption>color=prefectureにすると、色分けと凡例が同時にできる</figcaption></figure>
+<p>うまく色分けできました。右側に凡例も表示されていますね。このコードでは <code>color = prefecture</code> という部分で、都府県ごとに色分けしてくださいね、という指示を出しています。こうすれば、グループの分け方を別途指示する必要はなくなります。</p>
+<h2 id="比率にして眺めてみる">比率にして眺めてみる</h2>
+<p>で、色分けできたのはいいですが、それぞれの人口を表示しているだけで、あまりおもしろくありません。少しだけ「分析」っぽいことがしたい。たとえば各都府県の子どもの割合を出してから、これを折れ線グラフにしてみましょう。こんなコードです。</p>
+<div class="code" data-lang="R"><pre><code>five_pref %&gt;%
+  mutate(rate_under15 = population_under15 * 100 / population) %&gt;%
+  ggplot() +
+  geom_line(aes(x = year, y = rate_under15, color = prefecture))</code></pre></div>
+<figure class="fig"><img src="images/12-line-rate.png" alt="5都府県の15歳未満人口の割合の推移を示す折れ線グラフ。4本は右肩下がりで、東京都は割合がもともと低く、2005年以降はほぼ横ばい" loading="lazy"><figcaption>子どもの割合にすると、規模の違う5都府県を並べて比べられる</figcaption></figure>
+<p><code>mutate</code> 関数を使って子どもの割合を示す列を作ってから、そのままパイプ演算子でつないで <code>ggplot</code> になだれ込んでいます。これまでは縦軸に人口をとっていましたが、今回は <code>y = rate_under15</code> というところで子どもの割合を縦軸にとるように指示しています。こういうやり方なら、もととなるtibbleを変えないままでいろいろなグラフを作ることができます。</p>
+<p>次は棒グラフです。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="11-join.html"><span>前へ</span>11 横にくっつける</a><a class="next" href="13-col.html"><span>次へ</span>13 棒グラフ</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">©小宮山亮磨 朝日新聞デジタル企画報道部　<a href="https://x.com/ryomakom">@ryomakom</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js?v=d9de072757"></script>
+</body>
+</html>

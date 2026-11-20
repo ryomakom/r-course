@@ -1,0 +1,1542 @@
+@charset "utf-8";
+
+:root {
+  /* 明るい画面と暗い画面の両方を、このサイト自身が用意していると、ブラウザに伝える。
+     これがないと、端末の「強制ダークモード」（Android の Chrome や Samsung Internet など）が、
+     サイトの色を勝手に塗り替え、色をつけた表の列などが読めなくなることがある */
+  color-scheme: light dark;
+  --paper: #fbf9f5;
+  --paper-2: #ffffff;
+  --ink: #1d1c1a;
+  --ink-2: #5b5852;
+  --line: #ddd8cf;
+  --accent: #9c2b26;
+  --accent-2: #1f4e79;
+  --code-bg: #f3f0ea;
+  --code-ink: #24221f;
+  --mark: #fdf3c9;
+  --gothic: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "YuGothic", "Meiryo", sans-serif;
+  --mincho: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "MS PMincho", serif;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "Courier New", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #16171a;
+    --paper-2: #1d1f23;
+    --ink: #e9e6e1;
+    --ink-2: #a8a49d;
+    --line: #33363c;
+    --accent: #e0736c;
+    --accent-2: #7fb0e0;
+    --code-bg: #22252a;
+    --code-ink: #e4e1db;
+    --mark: #4a4526;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--gothic);
+  font-size: 17px;
+  line-height: 1.9;
+  -webkit-text-size-adjust: 100%;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+.skip:focus { left: 1rem; top: .5rem; background: var(--paper-2); padding: .4rem .8rem; z-index: 100; }
+
+/* ---------------------------------------------------------- ヘッダー */
+.site-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .7rem 1.4rem;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { text-decoration: none; color: inherit; display: flex; align-items: baseline; gap: .8rem; flex-wrap: wrap; }
+.brand-main {
+  font-family: var(--mincho);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+.brand-main::before {
+  content: "";
+  display: inline-block;
+  width: .32rem; height: 1rem;
+  margin-right: .5rem;
+  background: var(--accent);
+  vertical-align: -.05rem;
+}
+.brand-sub { font-size: .78rem; color: var(--ink-2); letter-spacing: .04em; }
+
+.menu-btn {
+  display: none;
+  font: inherit;
+  font-size: .85rem;
+  padding: .3rem .9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------ 骨組み */
+.layout {
+  display: grid;
+  grid-template-columns: 17.5rem minmax(0, 1fr);
+  gap: 0;
+  max-width: 78rem;
+  margin: 0 auto;
+}
+
+.toc {
+  border-right: 1px solid var(--line);
+  padding: 1.6rem 1.1rem 4rem;
+  font-size: .87rem;
+  line-height: 1.6;
+  position: sticky;
+  top: 3.6rem;
+  align-self: start;
+  max-height: calc(100vh - 3.6rem);
+  overflow-y: auto;
+}
+.toc ul { list-style: none; margin: 0 0 1.1rem; padding: 0; }
+.toc li { margin: 0; }
+.toc a {
+  display: block;
+  padding: .32rem .6rem;
+  color: var(--ink-2);
+  text-decoration: none;
+  border-radius: .3rem;
+}
+.toc a:hover { background: var(--code-bg); color: var(--ink); }
+.toc li.here > a {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--ink);
+  font-weight: 700;
+  box-shadow: inset .18rem 0 0 var(--accent);
+}
+.toc li.wip > a { color: color-mix(in srgb, var(--ink-2) 70%, transparent); }
+.wip-tag {
+  display: inline-block;
+  margin-left: .4em;
+  padding: 0 .35em;
+  font-size: .64rem;
+  letter-spacing: .04em;
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: .2rem;
+  vertical-align: .1em;
+}
+.wip-notice {
+  margin: 1.5rem 0 2rem;
+  padding: 1.4rem 1.5rem .6rem;
+  border: 2px dashed var(--line);
+  border-radius: .5rem;
+  background: var(--paper-2);
+}
+.wip-notice-title {
+  margin: 0 0 .5rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--ink-2);
+}
+.nav-part {
+  margin: 1.3rem 0 .4rem;
+  padding: 0 .6rem;
+  font-family: var(--mincho);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: .3rem;
+}
+
+.page { padding: 2.4rem 3rem 5rem; min-width: 0; }
+article { max-width: 44rem; }
+
+/* -------------------------------------------------------------- 文字 */
+.kicker {
+  margin: 0 0 .3rem;
+  font-size: .78rem;
+  letter-spacing: .14em;
+  color: var(--accent);
+  font-weight: 700;
+}
+h1 {
+  font-family: var(--mincho);
+  font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.4rem);
+  line-height: 1.4;
+  margin: 0 0 1rem;
+  letter-spacing: .02em;
+}
+h2 {
+  font-family: var(--mincho);
+  font-size: 1.42rem;
+  margin: 3.2rem 0 1rem;
+  padding-bottom: .4rem;
+  border-bottom: 2px solid var(--line);
+  letter-spacing: .02em;
+}
+h3 { font-size: 1.1rem; margin: 2.2rem 0 .6rem; }
+h3::before { content: "◆ "; color: var(--accent); font-size: .8em; }
+h4 { font-size: 1rem; margin: 1.6rem 0 .4rem; color: var(--ink-2); }
+p { margin: 0 0 1.15rem; }
+.lead {
+  font-size: 1.05rem;
+  color: var(--ink-2);
+  border-left: 3px solid var(--accent);
+  padding-left: .9rem;
+  margin-bottom: 2rem;
+}
+a { color: var(--accent-2); text-underline-offset: .2em; }
+strong { background: linear-gradient(transparent 62%, var(--mark) 62%); font-weight: 700; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2.6rem 0; }
+blockquote {
+  margin: 1.4rem 0;
+  padding: .1rem 0 .1rem 1rem;
+  border-left: 3px solid var(--line);
+  color: var(--ink-2);
+}
+ul, ol { margin: 0 0 1.2rem; padding-left: 1.6rem; }
+li { margin: .25rem 0; }
+li > ul, li > ol { margin: .25rem 0; }
+
+code {
+  font-family: var(--mono);
+  font-size: .88em;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  padding: .1em .35em;
+  border-radius: .25rem;
+  word-break: break-all;
+}
+
+/* ------------------------------------------------------- このページの中身 */
+.inpage {
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: .5rem;
+  padding: .9rem 1.2rem;
+  margin: 0 0 2.4rem;
+  font-size: .88rem;
+}
+.inpage p { margin: 0 0 .4rem; font-weight: 700; font-size: .8rem; letter-spacing: .06em; color: var(--ink-2); }
+.inpage ul { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 1.6rem; }
+.inpage li { margin: .1rem 0; break-inside: avoid; }
+.inpage a { text-decoration: none; }
+.inpage a:hover { text-decoration: underline; }
+
+/* -------------------------------------------------------------- コード */
+.code {
+  position: relative;
+  margin: 1.3rem 0 1.6rem;
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: .5rem;
+}
+.code::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 0; left: 0;
+  font-size: .68rem;
+  letter-spacing: .1em;
+  color: var(--ink-2);
+  background: color-mix(in srgb, var(--line) 40%, transparent);
+  padding: .1rem .6rem;
+  border-radius: .5rem 0 .35rem 0;
+}
+.code pre {
+  margin: 0;
+  padding: 1.7rem 1rem 1rem;
+  overflow-x: auto;
+}
+.code code {
+  background: none;
+  padding: 0;
+  font-size: .85rem;
+  line-height: 1.75;
+  white-space: pre;
+  word-break: normal;
+  display: block;
+}
+/* コードは選べない・コピーできない（site.js でもコピーを止めている） */
+.code, .code * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.nocopy-hint {
+  position: fixed;
+  left: 50%; bottom: 1.4rem;
+  transform: translate(-50%, .6rem);
+  max-width: calc(100vw - 2rem);
+  padding: .55rem 1rem;
+  font-size: .85rem;
+  color: var(--paper-2);
+  background: var(--ink);
+  border-radius: .4rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,.18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+  z-index: 50;
+}
+.nocopy-hint.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* -------------------------------------------------------------- 囲み */
+.box {
+  margin: 1.8rem 0;
+  padding: 1.1rem 1.3rem .3rem;
+  border-radius: .5rem;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  font-size: .95rem;
+}
+.box-title {
+  margin: 0 0 .6rem;
+  font-weight: 700;
+  font-size: .9rem;
+  letter-spacing: .04em;
+}
+.box .code { margin: 1rem 0; }
+.box-note { border-left: 4px solid var(--accent-2); }
+.box-note .box-title { color: var(--accent-2); }
+.box-tips { border-left: 4px solid #2f7d4f; }
+.box-tips .box-title { color: #2f7d4f; }
+.box-warn { border-left: 4px solid var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--paper-2)); }
+.box-warn .box-title { color: var(--accent); }
+.box-homework {
+  border: 1px dashed var(--ink-2);
+  border-left: 4px solid var(--ink-2);
+  background: color-mix(in srgb, var(--mark) 35%, var(--paper-2));
+}
+.box-column { background: var(--code-bg); border-left: 4px solid var(--line); }
+.box-data { border-left: 4px solid #7a5cb0; }
+.box-data .box-title { color: #7a5cb0; }
+@media (prefers-color-scheme: dark) {
+  .box-tips { border-left-color: #6bbd8b; }
+  .box-tips .box-title { color: #6bbd8b; }
+  .box-data { border-left-color: #b39ae0; }
+  .box-data .box-title { color: #b39ae0; }
+}
+
+/* 本文中の数式（\(f(x)\) と書いたもの）。教科書ふうに、文字だけ斜体のセリフ体にする */
+.math {
+  font-family: "Cambria Math", "STIX Two Math", "Times New Roman", Times, serif;
+  font-size: 1.08em;
+  white-space: nowrap;
+}
+.math var { font-style: italic; padding: 0 .04em; }
+
+/* --------------------------------------------------------- 要検討の印 */
+html.local .review {
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  border-bottom: 2px dotted var(--accent);
+  padding: 0 .1em;
+}
+.review-tag {
+  display: inline-block;
+  margin-left: .35em;
+  padding: 0 .35em;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  vertical-align: .25em;
+  color: var(--paper-2);
+  background: var(--accent);
+  border-radius: .2rem;
+  white-space: nowrap;
+}
+html.local .box-review {
+  border: 1px solid var(--accent);
+  border-left: 4px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 4%, var(--paper-2));
+}
+.page-review {
+  margin: 0 0 1.6rem;
+  padding: .9rem 1.2rem .3rem;
+  border: 2px dashed var(--accent);
+  border-radius: .5rem;
+  background: color-mix(in srgb, var(--accent) 5%, var(--paper-2));
+  font-size: .92rem;
+}
+.page-review-title {
+  margin: 0 0 .4rem;
+  font-weight: 700;
+  font-size: .84rem;
+  letter-spacing: .06em;
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------- ダウンロード */
+.dl {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem .8rem .35rem .7rem;
+  margin: .15rem 0;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  background: var(--paper-2);
+  color: var(--accent-2);
+  text-decoration: none;
+  font-size: .92rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.dl::before {
+  content: "↓";
+  font-weight: 700;
+  color: var(--accent);
+}
+.dl:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--paper-2)); }
+.dl-size {
+  font-size: .76rem;
+  font-weight: 400;
+  color: var(--ink-2);
+  font-family: var(--mono);
+}
+.dl-missing { color: var(--ink-2); border-style: dashed; }
+.dl-missing::before { content: "×"; }
+.dl-all {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .6rem;
+}
+li > .dl { margin: .1rem 0; }
+
+/* 表のなかでは枠なしのすっきりした形にする */
+td .dl {
+  border: 0;
+  background: none;
+  padding: .1rem 0;
+  gap: .35rem;
+}
+td .dl:hover { background: none; text-decoration: underline; }
+td .dl-size { white-space: nowrap; }
+
+/* --------------------------------------------------------------- 図 */
+.fig { margin: 1.8rem 0; }
+.fig svg { width: 100%; height: auto; display: block; }
+/* 21章のAPIの概念図：自分とウェブサイトのやりとりを、ファイルのダウンロードとAPIで比べる。
+   HTMLで組むので、文字はどの画面でも同じ大きさ */
+.xc-fig { margin: 1.8rem 0; padding: 1rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--paper-2); }
+.xc-fig .xc-panel + .xc-panel { margin-top: 1.1rem; padding-top: 1.1rem; border-top: 1px dashed var(--line); }
+.xc-fig .xc-title { margin: 0 0 .7rem; font-weight: 700; font-size: .92rem; }
+.xc-fig .xc-row { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) 7.5rem; gap: .6rem; align-items: center; }
+.xc-fig .xc-actor { display: flex; flex-direction: column; align-items: center; text-align: center; gap: .25rem; }
+.xc-fig .xc-icon { width: 2.6rem; height: 2.6rem; fill: var(--ink-2); }
+.xc-fig .xc-icon .xc-win { fill: var(--paper); stroke: var(--ink-2); stroke-width: 2.5; }
+.xc-fig .xc-icon .xc-dot { fill: var(--paper-2); }
+.xc-fig .xc-name { font-size: .78rem; font-weight: 700; line-height: 1.4; }
+.xc-fig .xc-note { font-size: .7rem; color: var(--ink-2); line-height: 1.45; }
+.xc-fig .xc-talk { display: flex; flex-direction: column; gap: .7rem; }
+/* 吹き出しそのものを矢印の形にする。お願い（右向き）は自分の側から、返事（左向き）はウェブサイトの側から出る */
+.xc-fig .xc-msg { max-width: 100%; font-size: .8rem; line-height: 1.5; }
+.xc-fig .xc-req { align-self: flex-start; padding: .45rem 1.5rem .45rem .75rem;
+  background: color-mix(in srgb, var(--accent-2) 14%, var(--paper-2));
+  clip-path: polygon(0 0, calc(100% - .9rem) 0, 100% 50%, calc(100% - .9rem) 100%, 0 100%); }
+.xc-fig .xc-res { align-self: flex-end; display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .6rem; padding: .45rem .75rem .45rem 1.5rem;
+  background: var(--code-bg); clip-path: polygon(.9rem 0, 100% 0, 100% 100%, .9rem 100%, 0 50%); }
+.xc-fig .xc-res .xc-say { color: var(--ink-2); font-size: .74rem; }
+.xc-fig .xc-item { display: inline-flex; flex-direction: column; padding: .35rem .6rem; border-radius: .35rem; font-size: .8rem; font-weight: 700; line-height: 1.4; }
+.xc-fig .xc-item small { font-weight: 400; font-size: .68rem; color: var(--ink-2); }
+.xc-fig .xc-file { background: var(--code-bg); border: 1px solid var(--line); }
+.xc-fig .xc-data { background: color-mix(in srgb, var(--accent) 10%, var(--paper-2)); border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--paper-2)); font-family: var(--mono); font-size: .74rem; }
+.xc-fig .xc-after { margin: .7rem 0 0; padding-left: 6.1rem; font-size: .8rem; line-height: 1.6; }
+.xc-fig .xc-after::before { content: "→ "; color: var(--ink-2); }
+@media (max-width: 560px) {
+  .xc-fig .xc-row { grid-template-columns: 4rem minmax(0, 1fr) 4.6rem; gap: .45rem; }
+  .xc-fig .xc-note { display: none; }
+  .xc-fig .xc-after { padding-left: 0; }
+}
+/* 21章の熱中症のグラフ（assets/heat-chart.js）。文字は画面の幅によらず同じ大きさ */
+.heat-fig { margin: 1.8rem 0; padding: 1rem 1rem .6rem; border: 1px solid var(--line); border-radius: .5rem; background: var(--paper-2); }
+.heat-fig .hc-title { margin: 0; font-weight: 700; font-size: 1.02rem; line-height: 1.5; }
+.heat-fig .hc-sub { margin: .2rem 0 0; font-size: .82rem; color: var(--ink-2); line-height: 1.6; }
+.heat-fig .hc-legend { display: flex; flex-wrap: wrap; gap: .3rem .9rem; align-items: center; margin: .7rem 0 .2rem; font-size: .82rem; }
+.heat-fig .hc-legend-title { color: var(--ink-2); }
+.heat-fig .hc-chip { display: inline-flex; align-items: center; gap: .35rem; white-space: nowrap; }
+.heat-fig .hc-dot { display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; flex: none; }
+.heat-fig .hc-ylab { margin: .6rem 0 0; font-size: .78rem; color: var(--ink-2); }
+.heat-fig .hc-plot { position: relative; width: 100%; touch-action: pan-y; cursor: crosshair; }
+.heat-fig .hc-plot canvas, .heat-fig .hc-plot svg { position: absolute; left: 0; top: 0; }
+.heat-fig .hc-grid { stroke: var(--line); stroke-width: 1; }
+.heat-fig .hc-axis { stroke: var(--ink-2); stroke-width: 1; }
+.heat-fig .hc-tick { fill: var(--ink-2); font-size: 12px; font-family: var(--gothic); }
+.heat-fig .hc-xlab { fill: var(--ink-2); font-size: 12.5px; font-family: var(--gothic); }
+.heat-fig .hc-halo { fill: none; stroke: var(--paper-2); stroke-width: 6.5; stroke-linejoin: round; stroke-linecap: round; opacity: .9; }
+.heat-fig .hc-curve { fill: none; stroke-width: 3.2; stroke-linejoin: round; stroke-linecap: round; }
+.heat-fig .hc-guide { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 3 3; }
+.heat-fig .hc-mark { stroke: var(--paper-2); stroke-width: 2; }
+.heat-fig .hc-tip { display: none; position: absolute; pointer-events: none; padding: .45rem .65rem; font-size: .8rem; line-height: 1.7; background: var(--paper-2); border: 1px solid var(--line); border-radius: .4rem; box-shadow: 0 4px 14px rgba(0,0,0,.12); white-space: nowrap; }
+.heat-fig .hc-tip-head { font-weight: 700; margin-bottom: .1rem; }
+.heat-fig .hc-tip-row { display: flex; align-items: center; gap: .35rem; }
+.heat-fig .hc-source { margin: .3rem 0 0; font-size: .74rem; color: var(--ink-2); text-align: right; }
+.heat-fig figcaption { margin-top: .6rem; }
+/* 21章のコロナの地図（assets/exdeaths-map.js）。見出し・凡例・吹き出しは上の .heat-fig と共通 */
+.ex-fig .ex-legend { margin: .8rem 0 .4rem; max-width: 22rem; }
+.ex-fig .ex-legend-title { font-size: .78rem; color: var(--ink-2); margin-bottom: .3rem; }
+.ex-fig .ex-bar { height: .7rem; border-radius: .2rem; }
+.ex-fig .ex-ticks { position: relative; height: 1.2rem; font-size: .72rem; color: var(--ink-2); }
+.ex-fig .ex-ticks span { position: absolute; top: .15rem; transform: translateX(-50%); white-space: nowrap; }
+.ex-fig .ex-maps { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: .4rem; touch-action: pan-y; }
+.ex-fig .ex-cell { min-width: 0; }
+.ex-fig .ex-year { font-weight: 700; font-size: .9rem; margin-bottom: .1rem; }
+.ex-fig .ex-cell svg { display: block; width: 100%; height: auto; }
+.ex-fig .ex-pref { stroke: var(--paper-2); stroke-width: .6px; vector-effect: non-scaling-stroke; cursor: pointer; }
+.ex-fig .ex-pref.is-on { stroke: var(--ink); stroke-width: 1.8px; }
+.ex-fig .ex-inset { fill: none; stroke: var(--line); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.fig-portrait img { max-width: 220px; margin: 0 auto; }   /* 22章の人物写真。小さめに */
+
+/* --------------------------------------------- チャットの画面（:::chat）
+   22章のChatGPTとのやりとり。チャットのサービスの画面に似せて、自分の発言は右の吹き出し、
+   相手の発言は吹き出しなしで左に流す。下の入力欄と、発言の下のボタンは飾り（押せない） */
+.chat {
+  --chat-bg: #ffffff;
+  --chat-ink: #0d0d0d;
+  --chat-sub: #5d5d5d;
+  --chat-faint: #8f8f8f;
+  --chat-bubble: #f2f2f2;
+  --chat-line: #e3e3e3;
+  --chat-code: #ececec;
+  --chat-composer: #ffffff;
+  --chat-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 12px 32px -14px rgba(0, 0, 0, .18);
+  margin: 1.8rem 0 2.2rem;
+  border: 1px solid var(--chat-line);
+  border-radius: 16px;
+  background: var(--chat-bg);
+  color: var(--chat-ink);
+  box-shadow: var(--chat-shadow);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", var(--gothic);
+  font-size: 15.5px;
+  line-height: 1.75;
+  overflow: hidden;
+}
+@media (prefers-color-scheme: dark) {
+  .chat {
+    --chat-bg: #212121;
+    --chat-ink: #ececec;
+    --chat-sub: #b4b4b4;
+    --chat-faint: #8e8e8e;
+    --chat-bubble: #323232;
+    --chat-line: #3a3a3a;
+    --chat-code: #424242;
+    --chat-composer: #303030;
+    --chat-shadow: 0 12px 32px -14px rgba(0, 0, 0, .7);
+  }
+}
+.chat-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 52px;
+  padding: 0 18px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1;
+}
+.chat-chev {
+  width: 18px; height: 18px;
+  fill: none; stroke: var(--chat-faint); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.chat-log { padding: 6px 24px 2px; }
+.chat-turn { margin: 0 0 22px; }
+/* 「私：」「ChatGPT：」は画面には出さず、読み上げのときだけ読む */
+.chat-who {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.chat-me { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.chat-bubble {
+  max-width: 78%;
+  padding: 9px 18px;
+  border-radius: 22px;
+  background: var(--chat-bubble);
+}
+.chat p { margin: 0 0 .9em; }
+.chat-bubble > :last-child, .chat-text > :last-child { margin-bottom: 0; }
+.chat ol, .chat ul { margin: 0 0 .9em; padding-left: 1.6em; }
+.chat li { margin: .45em 0; padding-left: .15em; }
+.chat strong { background: none; font-weight: 600; }
+.chat-bubble, .chat-text { overflow-wrap: anywhere; }   /* 長いURLやコードも、せまい画面で切れずに折り返す */
+.chat :not(pre) > code {
+  font-size: .86em;
+  font-weight: 500;
+  color: inherit;
+  background: var(--chat-code);
+  padding: .12em .4em;
+  border-radius: .375rem;
+  word-break: normal;
+}
+/* 貼りつけたファイルの札 */
+.chat-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 78%;
+  padding: 8px 16px 8px 8px;
+  border: 1px solid var(--chat-line);
+  border-radius: 16px;
+  background: var(--chat-bg);
+}
+.chat-file .chat-ico {
+  flex: none;
+  width: 40px; height: 40px;
+  padding: 9px;
+  border-radius: 10px;
+  background: #2f7cf6;
+  stroke: #fff;
+}
+.chat-file-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.4; }
+.chat-file-name { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.chat-file-kind { font-size: 13px; color: var(--chat-faint); }
+.chat-tools { display: flex; gap: 2px; margin: 6px 0 0 -7px; }
+.chat-ico {
+  display: block;
+  width: 32px; height: 32px;
+  padding: 7px;
+  fill: none; stroke: var(--chat-sub); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.chat-flip { transform: scaleY(-1); }
+/* 入力欄（飾り） */
+.chat-input {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 2px 16px 16px;
+  padding: 6px 6px 6px 8px;
+  border: 1px solid var(--chat-line);
+  border-radius: 28px;
+  background: var(--chat-composer);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+}
+.chat-ph { flex: 1; min-width: 0; padding-left: 4px; color: var(--chat-faint); font-size: 15px; white-space: nowrap; overflow: hidden; }
+.chat-send { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--chat-ink); }
+.chat-send .chat-ico { width: 36px; height: 36px; padding: 8px; stroke: var(--chat-bg); stroke-width: 2.2; }
+@media (max-width: 560px) {
+  .chat { font-size: 15px; border-radius: 14px; }
+  .chat-bar { height: 46px; padding: 0 14px; font-size: 16px; }
+  .chat-log { padding: 4px 14px 0; }
+  .chat-bubble, .chat-file { max-width: 88%; }
+  .chat-bubble { padding: 8px 15px; }
+  .chat-input { margin: 0 10px 12px; }
+}
+/* 印刷では背景色が落ちるので、吹き出しは枠線で囲み、だれの発言かを文字でも出す */
+@media print {
+  .chat { box-shadow: none; }
+  .chat-input, .chat-tools { display: none; }
+  .chat-bubble { border: 1px solid #c8c8c8; }
+  .chat-file .chat-ico { stroke: #2f7cf6; }
+  .chat-who {
+    position: static;
+    width: auto; height: auto;
+    margin: 0 0 .2em;
+    overflow: visible;
+    clip: auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5d5d5d;
+  }
+}
+.fig iframe {   /* 15章の ggplotly() のグラフ（マウスで触れる） */
+  width: 100%;
+  height: 460px;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  background: #fff;
+}
+.fig video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  background: #000;
+}
+.fig img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  background: #fff;
+}
+.fig-todo {
+  border: 2px dashed var(--accent);
+  border-radius: .5rem;
+  padding: 1.6rem 1.2rem;
+  text-align: center;
+  background: color-mix(in srgb, var(--accent) 6%, var(--paper-2));
+}
+.fig-todo p { margin: 0 0 .3rem; }
+.fig-todo p:first-child { font-weight: 700; color: var(--accent); font-size: .9rem; }
+.fig-todo-alt { font-size: .88rem; color: var(--ink-2); }
+.fig-todo-path { font-family: var(--mono); font-size: .78rem; color: var(--ink-2); margin: 0; }
+
+/* コードや実行結果のなかで注目してほしいところ */
+.code mark {
+  background: color-mix(in srgb, var(--mark) 80%, transparent);
+  color: var(--code-ink);
+  border-radius: .15rem;
+  padding: 0 .1em;
+  font-weight: 700;
+}
+.fig figcaption {
+  margin-top: .5rem;
+  font-size: .82rem;
+  color: var(--ink-2);
+  text-align: center;
+}
+/* 図のセルの4色（赤・青・黄・緑）。塗りは --cell-*、濃い色（セルの左の帯や、コードの語の札の線）は --bar-*。
+   ダークモードでは、薄い塗りが灰色に沈まないよう濃いめにする。緑は赤と見分けにくい人がいるので、青緑に寄せてある */
+:root {
+  --cell-red: color-mix(in srgb, var(--accent) 14%, var(--paper-2));
+  --cell-blue: color-mix(in srgb, var(--accent-2) 14%, var(--paper-2));
+  --cell-yellow: color-mix(in srgb, var(--mark) 85%, var(--paper-2));
+  --cell-green: color-mix(in srgb, #1f8f7a 16%, var(--paper-2));
+  --bar-red: var(--accent);
+  --bar-blue: var(--accent-2);
+  --bar-yellow: #b8962e;
+  --bar-green: #1f8f7a;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cell-red: color-mix(in srgb, #e0736c 34%, var(--paper-2));
+    --cell-blue: color-mix(in srgb, #7fb0e0 30%, var(--paper-2));
+    --cell-yellow: color-mix(in srgb, #d9b93a 30%, var(--paper-2));
+    --cell-green: color-mix(in srgb, #5cc8bf 26%, var(--paper-2));
+    --bar-yellow: #d9b93a;
+    --bar-green: #5cc8bf;
+  }
+}
+/* セルの左端につける濃い色の帯（アニメーションで、色つきのセルに重ねる細い四角） */
+.fig .f-bar-red { fill: var(--bar-red); }
+.fig .f-bar-blue { fill: var(--bar-blue); }
+.fig .f-bar-yellow { fill: var(--bar-yellow); }
+.fig .f-bar-green { fill: var(--bar-green); }
+/* コードや説明文のなかの語につける色札。図のセルと同じ塗りと帯で、「この語がこのセル」と結ぶ */
+.k-red, .k-blue, .k-yellow, .k-green {
+  padding: .05em .3em .05em .35em;
+  border-left: 3px solid;
+  border-radius: .15rem;
+  color: var(--ink);
+  font-weight: inherit;
+}
+.k-red { background: var(--cell-red); border-left-color: var(--bar-red); }
+.k-blue { background: var(--cell-blue); border-left-color: var(--bar-blue); }
+.k-yellow { background: var(--cell-yellow); border-left-color: var(--bar-yellow); }
+.k-green { background: var(--cell-green); border-left-color: var(--bar-green); }
+.fig .f-cell { fill: var(--paper-2); stroke: var(--line); }
+.fig .f-head { fill: var(--code-bg); stroke: var(--line); }
+.fig .f-mark { fill: var(--cell-red); stroke: var(--line); }
+.fig .f-mark2 { fill: var(--cell-blue); stroke: var(--line); }
+/* 9章：年（赤）と人口（青）を、年ごとに3段の濃さに分ける（2010年＝薄い、2015年＝中、2020年＝濃い）。
+   同じ年の「年のセル」と「人口のセル」が同じ濃さになるので、横長にしたとき、どの人口がどの年の列へ行ったかを目で追える */
+.fig .f-mark.f-y1 { fill: color-mix(in srgb, var(--accent) 7%, var(--paper-2)); }
+.fig .f-mark.f-y2 { fill: color-mix(in srgb, var(--accent) 17%, var(--paper-2)); }
+.fig .f-mark.f-y3 { fill: color-mix(in srgb, var(--accent) 30%, var(--paper-2)); }
+.fig .f-mark2.f-y1 { fill: color-mix(in srgb, var(--accent-2) 7%, var(--paper-2)); }
+.fig .f-mark2.f-y2 { fill: color-mix(in srgb, var(--accent-2) 17%, var(--paper-2)); }
+.fig .f-mark2.f-y3 { fill: color-mix(in srgb, var(--accent-2) 30%, var(--paper-2)); }
+@media (prefers-color-scheme: dark) {
+  .fig .f-mark.f-y1 { fill: color-mix(in srgb, #e0736c 18%, var(--paper-2)); }
+  .fig .f-mark.f-y2 { fill: color-mix(in srgb, #e0736c 34%, var(--paper-2)); }
+  .fig .f-mark.f-y3 { fill: color-mix(in srgb, #e0736c 52%, var(--paper-2)); }
+  .fig .f-mark2.f-y1 { fill: color-mix(in srgb, #7fb0e0 16%, var(--paper-2)); }
+  .fig .f-mark2.f-y2 { fill: color-mix(in srgb, #7fb0e0 30%, var(--paper-2)); }
+  .fig .f-mark2.f-y3 { fill: color-mix(in srgb, #7fb0e0 48%, var(--paper-2)); }
+}
+.fig .f-off { fill: var(--code-bg); stroke: var(--line); opacity: .55; }
+.fig text { fill: var(--ink); font-family: var(--gothic); font-size: 13px; }
+.fig .f-th { font-weight: 700; }
+.fig .f-note { fill: var(--ink-2); font-size: 12px; }
+.fig .f-code { font-family: var(--mono); font-size: 12px; fill: var(--accent); }
+.fig .f-code2 { font-family: var(--mono); font-size: 12px; fill: var(--accent-2); }
+.fig .f-arrow { fill: none; stroke: var(--ink-2); stroke-width: 1.6; }
+.fig .f-label { fill: var(--ink); font-size: 13px; font-weight: 700; }
+.fig .f-mark3 { fill: var(--cell-yellow); stroke: var(--line); }
+.fig .f-mark4 { fill: var(--cell-green); stroke: var(--line); }
+.fig .f-aside { fill: color-mix(in srgb, #2e8b57 8%, var(--paper-2)); stroke: #2e8b57; stroke-dasharray: 3 3; }
+.fig .f-gone { fill: none; stroke: var(--line); stroke-dasharray: 3 3; }
+.fig .f-hl { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+.fig .f-dash { stroke-dasharray: 4 3; }
+.fig .f-sep { stroke: var(--line); }
+/* 17章の模式図（ページの模型と、開発者ツールのまね） */
+.fig .f-pg { fill: var(--paper-2); stroke: var(--line); }
+.fig .f-pgline { stroke: var(--line); }
+.fig .f-pgtext { fill: var(--ink-2); font-size: 9.5px; }
+.fig .f-blue { fill: color-mix(in srgb, #4a90d9 38%, transparent); stroke: #4a90d9; stroke-width: 1.5; }
+.fig .f-tip { fill: var(--paper-2); stroke: var(--ink-2); stroke-width: .8; }
+.fig .f-tiptext { font-family: var(--mono); font-size: 11px; font-weight: 700; fill: var(--accent-2); }
+.fig .f-mono { font-family: var(--mono); font-size: 12px; }
+.fig .f-tri { fill: var(--ink-2); font-size: 10px; }
+.fig .f-ring { fill: none; stroke: var(--accent); stroke-width: 2; }
+.fig .f-target { fill: color-mix(in srgb, #e8628a 22%, var(--paper-2)); stroke: var(--accent); stroke-width: 2.2; }
+.fig .f-targethead { fill: color-mix(in srgb, #e8628a 40%, var(--paper-2)); }
+.fig .f-targetline { stroke: color-mix(in srgb, #e8628a 60%, var(--paper-2)); }
+.fig .f-targettext { fill: var(--accent); font-size: 10px; font-weight: 700; }
+.fig .f-targetedge { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+/* 09章・20章のアニメーション（assets/pivot-anim.js、behead-anim.js）。動くときは静的な図を隠す */
+.fig-anim-static.is-replaced { display: none; }
+.anim-fig .pv-cell { transform-box: view-box; }
+.anim-fig .pv-small { font-size: 11px; }
+.fig .f-na { fill: var(--paper-2); stroke: var(--line); }
+.fig .pv-arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.fig .pv-arrow-label { fill: var(--accent); font-size: 12px; font-weight: 700; }
+/* 20章：数字のセル一つひとつから矢印を出すので、線は細めにし、始点に点を打つ */
+.behead-fig .pv-arrow { stroke-width: 1.5; }
+.behead-fig .pv-dot { fill: var(--accent); }
+/* 横並びの図と、せまい画面用の縦並びの図を両方置いて、画面の幅で切り替える（20章の対応図）。
+   横並びのまま縮めると、スマホでは文字が5px ほどになって読めないため。印刷は横並び */
+.fig-switch .svg-narrow { display: none; }
+@media (max-width: 600px) {
+  .fig-switch .svg-wide { display: none; }
+  /* 本文（16px）との釣り合いをとるため、図ごとに --narrow-max で最大幅を決められる（決めなければ幅いっぱい） */
+  .fig-switch .svg-narrow { display: block; max-width: var(--narrow-max, none); margin: 0 auto; }
+}
+@media print {
+  .fig-switch .svg-wide { display: block; }
+  .fig-switch .svg-narrow { display: none; }
+}
+/* その段で剥がすラベル（矢印の行き先）を赤い枠で目立たせる */
+.behead-fig .pv-hl { fill: color-mix(in srgb, var(--accent) 7%, transparent); stroke: var(--accent); stroke-width: 2; }
+/* ===== スクロールで進む実演の共通の部品（.scly-*。assets/scrolly.js）ここから =====
+   留まる枠（.scly-stage）の上を、段ごとの札（.scly-card）が下から上へ流れ、上に帯（.scly-bar）が留まる。
+   トップの実演（.top-scly）、9章（.pivot-scly）、16章（.gas-scly）、20章（.behead-scly）が使う。中身（絵やコード）に関わる指定はここに入れない。
+   三つ（帯・枠・札の列）を同じマス目に重ねる。マス目の高さは札の列で決まり、帯と枠はその中で留まる */
+.scly {
+  --scly-top: 4rem;                  /* 留まる位置（上の帯の下）。実際の帯の高さを scrolly.js が測って入れ直す */
+  --scly-bar: 2.5rem;                /* 上の帯の高さ（札は、この帯の下にもぐって消える） */
+  /* 留まる枠の中身に使える高さ（帯の下から画面の下まで。少しゆとりを残す）。中身はこれに収まるように縮める */
+  --scly-fit: calc(100svh - var(--scly-top) - var(--scly-bar) - 1rem);
+  /* 枠を留める位置：画面の下寄り（いちばん下で、下端から 1rem あける。枠の高さ --scly-h は scrolly.js が測る）。
+     札は下から来て枠の上を通り、枠の上端を抜けるところで段が替わる。枠が下にあれば、そのとき札は画面の中ほどにあり、
+     見出しも読めるうちに出来事が始まる。出来事のあいだ、読み終えた札は枠の上に見えていて、枠には重ならない。
+     （枠を真ん中に置くと、長い札では見出しが画面の上へ出てから出来事が始まり、遅く感じた）
+     枠が画面の高さぎりぎりのとき（スマホ、低い画面）は、帯のすぐ下に寄せる（max）。
+     100svh（アドレスバーが出ているときの高さ）にするのは、アドレスバーの伸び縮みで枠が上下に動かないようにするため */
+  --scly-stick: max(calc(var(--scly-top) + var(--scly-bar)),
+                    min(calc(var(--scly-top) + var(--scly-bar)
+                             + (100svh - var(--scly-top) - var(--scly-bar) - 1rem - var(--scly-h, 0px)) * var(--scly-pos, 1)),
+                        max(calc(var(--scly-top) + var(--scly-bar)
+                                 + (100svh - var(--scly-top) - var(--scly-bar) - 1rem - var(--scly-h, 0px)) * .5),
+                            var(--scly-min, 100svh))));
+  /* --scly-pos：いちばん下に置くときの位置。帯の下から画面の下までの空きのうち、枠の上にどれだけ置くか（1＝画面の下に張りつける、0.5＝真ん中）。
+     枠が画面の大半を占めるとき（トップのグラフ）は下に張りつけないと札が抜けるのが遅くなるが、枠が小さいとき（20章のパソコン）は
+     下に張りつけると上ががらんと空くので、使う側が少し上げる。
+     ただし、そこまで下げるのは必要なときだけにする。いつも下に寄せると、背の高い画面では枠の上ががらんと空いてしまう。
+     --scly-min：いちばん長い札でも、見出しが帯の下に見えているうちに札の下端が枠の上端を抜ける（段が替わる）、いちばん高い位置。scrolly.js が札の高さを測って入れる。
+     枠は、この位置まで上げる（ただし真ん中より上には上げず、--scly-pos の位置より下には下げない）。
+     背の高い画面では真ん中近くに、背の低い画面では下寄りになる */
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  margin: 1.8rem 0 2.4rem;
+}
+.scly-bar, .scly-stage, .scly-steps { grid-area: 1 / 1; min-width: 0; }
+/* 帯：札より手前。地を塗って、札は帯の下にもぐって消える。
+   本文の途中にあるので、実演の領域に入って帯が上に留まり始めるまで（.is-live）は見せない。
+   場所は取ったままなので、出し入れで枠や札の位置は動かない。キーボードでボタンに来たとき（:focus-within）は見せる */
+.scly-bar {
+  position: sticky; top: var(--scly-top); z-index: 3; align-self: start;
+  display: flex; align-items: center; gap: .8rem;
+  height: var(--scly-bar);
+  background: var(--paper);
+  font-family: var(--gothic); font-size: .8rem; line-height: 1.4; color: var(--ink-2);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.scly.is-live .scly-bar, .scly-bar:focus-within { opacity: 1; pointer-events: auto; }
+.scly-hint { transition: opacity .3s; white-space: nowrap; }
+.scly-hint::after { content: " ↓"; }
+.scly-hint.is-off { opacity: 0; }
+/* 枠：帯の下の、画面の中ほどから下寄りに留まる（--scly-stick）。札より奥。
+   札がかかっているあいだ（.is-covered。scrolly.js がつける）は少し薄くして、札が抜けたら何か起きる、と示す */
+.scly-stage {
+  position: sticky; top: var(--scly-stick); z-index: 1; align-self: start;
+  margin-top: var(--scly-bar);
+  transition: opacity .25s ease;
+}
+.scly.is-covered .scly-stage { opacity: .6; }
+/* 札の列：枠より手前を流れる。列そのものはクリックを受けず、札だけが受ける。
+   1枚目は、枠のすぐ下から始める（枠が留まったとき、1枚目の札はまだ枠の下にあり、そこから枠の上を通っていく）。
+   札と札の間（各段の margin-top）と、最後の札が上へ抜けたあとも枠が留まるための末尾の余白（padding-bottom）は、
+   scrolly.js が決める（札が枠の上端を抜けてから、次の札が枠にかかるまでに、出来事を見る間ができる長さ） */
+.scly-steps {
+  position: relative; z-index: 2; pointer-events: none;
+  padding-top: calc(var(--scly-bar) + var(--scly-h, 50svh) + 1.5rem);
+}
+/* 札：広い画面では右に寄せ、枠のじゃまをしすぎない幅にする（幅は使う側が --scly-card-w で決める）。
+   札は、コードの字の大きさを決める物差し（cqw）の入れ物にもする */
+.scly-card {
+  pointer-events: auto;
+  width: min(100%, var(--scly-card-w, 30rem)); margin-left: auto; box-sizing: border-box;
+  container-type: inline-size;
+  padding: .9rem 1rem 1rem;
+  border: 1px solid var(--line); border-radius: .6rem;
+  background: var(--paper-2);
+  box-shadow: 0 .5rem 1.6rem rgba(0, 0, 0, .16), 0 .1rem .3rem rgba(0, 0, 0, .08);
+}
+.scly-card.is-on { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+/* 見出し：札の中で、いちばん先に目に入るように大きく強くする（大きさは使う側が --scly-title で変えられる） */
+.scly-title {
+  margin: 0;
+  font-family: var(--mincho); font-size: var(--scly-title, 1.75rem); font-weight: 700; line-height: 1.35; letter-spacing: .03em; color: var(--ink);
+}
+/* 見出しに添える小さい説明。見出しより格を下げてゴシックにする */
+.scly-sub {
+  margin: .5rem 0 0;
+  font-family: var(--gothic); font-size: .88rem; line-height: 1.6; color: var(--ink-2);
+}
+/* 札の中のコード。字の大きさは、いちばん長い行（半角 --scly-code-ch 字。使う側が決める）が札の幅に収まる大きさまで
+   （字幅 0.62em の書体でも収まるように。1.6rem は左右の余白）。cqw を知らないブラウザ用に、1行目に控えの大きさと折り返しを置く */
+.scly pre.scly-code {
+  margin: .7rem 0 0; padding: .6rem .75rem; border: 0; border-radius: .35rem;
+  background: var(--code-bg); color: var(--code-ink);
+  font-family: var(--mono); line-height: 1.75;
+  font-size: 11px;
+  font-size: min(.8rem, calc((100cqw - 1.6rem) / (var(--scly-code-ch, 40) * .62)));
+  white-space: pre-wrap; overflow-wrap: anywhere; overflow: hidden;
+  -webkit-user-select: none; user-select: none;   /* サイトのほかのコードと同じく、コピーさせない */
+}
+.scly-new { color: var(--accent); font-weight: 700; }
+@media (max-width: 900px) {
+  /* サイトの帯は出ない。右上に浮く「目次」ボタンと同じ高さに実演の帯を留め、ボタンのぶん右を空ける */
+  .scly { --scly-top: 0px; --scly-bar: 3.3rem; }
+  .scly-bar { padding-right: 4.2rem; }
+}
+@media (max-width: 600px) {
+  .scly-bar { gap: .6rem; font-size: .74rem; }
+  .scly-hint { display: none; }        /* 帯に入りきらないので出さない */
+  .scly-card { padding: .75rem .75rem .8rem; }
+  .scly-title { font-size: calc(var(--scly-title, 1.75rem) * .85); }
+  .scly-sub { font-size: .82rem; }
+  .scly pre.scly-code { padding: .5rem .6rem; line-height: 1.7; }
+}
+/* 動きを減らす設定では、帯の出し入れと、枠を薄くするのを一瞬にする（薄くすることはする） */
+@media (prefers-reduced-motion: reduce) {
+  .scly-bar, .scly-hint, .scly-stage { transition: none; }
+}
+/* 印刷では実演を出さない（同じ位置に静的な図が出る） */
+@media print {
+  .scly { display: none !important; }
+}
+/* ===== スクロールで進む実演の共通の部品 ここまで ===== */
+/* 20章の behead() の実演（.behead-scly）。留まる絵（シートと整然データ）は、帯の下から画面の下までに収まる幅まで縮める。
+   ただし字が小さくなりすぎないよう、17rem（スマホの幅いっぱいとほぼ同じ）より狭くはしない */
+.behead-scly { --scly-title: 1.45rem; --scly-card-w: 25rem; --scly-code-ch: 36; --scly-pos: .6; }   /* 絵が小さいので、下に張りつけず、いちばん下でも空きの6割の位置に置く */
+.behead-scly .behead-fig { margin: 0; }
+.behead-scly .behead-fig svg { max-width: max(17rem, calc((var(--scly-fit) - 1.8rem) * var(--bh-ar))); margin: 0 auto; }   /* 1.8rem は下の注記（figcaption）のぶん */
+.behead-scly .behead-fig figcaption { margin-top: .3rem; }
+/* 札のコードの列名に、その列のセルと同じ色の札（.k-*）をつける。コードの字の並びを崩さないよう、左右の余白は詰める */
+.behead-scly .scly-code .k-red, .behead-scly .scly-code .k-blue,
+.behead-scly .scly-code .k-yellow, .behead-scly .scly-code .k-green { padding: 0 .1em 0 .2em; }
+/* 17章の、開発者ツールで表を囲む容器を探す実演（.sel-scly。assets/sel-anim.js）。留まる絵は、帯の下から画面の下までに収まる幅まで縮める */
+.sel-scly { --scly-title: 1.45rem; --scly-card-w: 25rem; --scly-code-ch: 42; --scly-pos: .6; }
+.sel-scly .sel-fig { margin: 0; }
+.sel-scly .sel-fig svg { max-width: max(17rem, calc(var(--scly-fit) * var(--sel-ar))); margin: 0 auto; }
+.sel-fig .sel-hit { fill: var(--accent-2); font-weight: 700; }
+/* 09章の pivot_wider() / pivot_longer() の実演（.pivot-scly）。留まる絵は表だけ（viewBox を表のところだけに切り出してある）。
+   大きさは、図の字（13px）が本文と釣り合うところに決める（パソコンでは13px のまま、せまい画面では約11.5px）。
+   絵が小さいので下に張りつけず、空きの8割の位置に置く（6割では、段が替わるとき札の見出しが上の帯のすぐ下まで上がってしまった） */
+.pivot-scly { --scly-title: 1.45rem; --scly-card-w: 25rem; --scly-code-ch: 40; --scly-pos: .8; }
+.pivot-scly .pivot-fig { margin: 0; }
+.pivot-scly .pivot-fig svg { max-width: 346px; margin: 0 auto; }
+@media (max-width: 600px) {
+  .pivot-scly .pivot-fig svg { max-width: 306px; }
+}
+/* 札のコードの列名に、その列のセルと同じ色の札（.k-*）をつける。コードの字の並びを崩さないよう、左右の余白は詰める */
+.pivot-scly .scly-code .k-red, .pivot-scly .scly-code .k-blue { padding: 0 .1em 0 .2em; }
+/* 前の段と同じコードの続き：新しく書くコードではないので薄く出す */
+.pivot-scly .scly-code.pv-again { opacity: .5; margin-top: .2rem; }
+/* 16章の冒頭の、高知のガソリン価格のグラフ（.gas-scly。assets/gas-anim.js）。
+   グラフは画面の大半を占めるので、パソコンでは枠を本文の幅の3分の2にして左に寄せ（トップの実演と同じ）、右の空いたところを札が通る。
+   線の色：高知はピンクがかった赤（太）、全国平均は字の色（太）、ほかの46都道府県は薄い灰色（細） */
+.gas-scly {
+  --scly-title: 1.45rem; --scly-card-w: 23rem; --scly-pos: .8;
+  --gas-kochi: #d23a6e;
+  --gas-other: color-mix(in srgb, var(--ink) 18%, var(--paper-2));
+  --gas-band: color-mix(in srgb, #d23a6e 13%, transparent);
+  --gas-band-n: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  .gas-scly {
+    --gas-kochi: #f27ba6;
+    --gas-other: color-mix(in srgb, var(--ink) 24%, var(--paper-2));
+    --gas-band: color-mix(in srgb, #f27ba6 16%, transparent);
+    --gas-band-n: color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+}
+.gas-frame {
+  padding: .7rem .7rem .5rem;
+  border: 1px solid var(--line); border-radius: .5rem;
+  background: var(--paper-2);
+}
+@media (min-width: 601px) {
+  .gas-scly .gas-frame { width: 66%; }
+}
+.gas-legend {
+  display: flex; flex-wrap: wrap; gap: .1rem 1rem; margin: 0 0 .3rem;
+  font-family: var(--gothic); font-size: .8rem; line-height: 1.5; color: var(--ink-2);
+}
+.gas-legend span { display: inline-flex; align-items: center; gap: .35rem; white-space: nowrap; }
+.gas-legend i { display: inline-block; width: 1.4rem; height: 0; border-top: 3px solid; }
+.gas-legend .gas-key-k { border-top-color: var(--gas-kochi); border-top-width: 3.5px; }
+.gas-legend .gas-key-n { border-top-color: var(--ink); border-top-width: 2.5px; }
+.gas-legend .gas-key-o { border-top-color: var(--gas-other); border-top-width: 1.5px; }
+.gas-chart { display: block; overflow: visible; }
+.gas-chart text { font-family: var(--gothic); font-size: 11px; fill: var(--ink-2); }
+.gas-chart .gas-grid line { stroke: var(--line); stroke-width: 1; }
+.gas-chart .gas-base { stroke: var(--ink-2); stroke-width: 1; }
+.gas-chart .gas-tick-m { font-size: 10px; }
+.gas-chart path { fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.gas-chart .gas-other { stroke: var(--gas-other); stroke-width: .8; }
+.gas-chart .gas-nation { stroke: var(--ink); stroke-width: 2; }
+/* 折れ線は日数・円の座標で描いて、入れ物ごと拡大する（gas-anim.js）。線の太さは拡大に合わせて変えない */
+.gas-chart .gas-data path { vector-effect: non-scaling-stroke; }
+/* 線を引いて見せる動きは、gas-anim.js が引いた先までの線をコマごとに描き直して行う（線の先を進む点と、同じ時計で動かすため） */
+.gas-chart .gas-kochi { stroke: var(--gas-kochi); stroke-width: 3; }
+/* 印（平らな期間の帯と囲み、報道の線、全国平均より安かった期間）。
+   段に入ると、寄ったり引いたりがほぼ終わるころ（0.4秒後）に浮かび上がる。薄く残すもの（.is-dim）もある */
+.gas-chart .gas-ann { opacity: 0; transition: opacity .3s ease; }
+.gas-chart .gas-ann.is-on { opacity: 1; transition: opacity .4s ease .4s; }
+.gas-chart .gas-ann.is-dim { opacity: .35; transition: opacity .5s ease; }
+.gas-chart .gas-ann.is-instant { transition: none; }
+.gas-chart .gas-band { fill: var(--gas-band); }
+.gas-chart .gas-band-n { fill: var(--gas-band-n); }
+.gas-chart .gas-pill { fill: none; stroke: var(--gas-kochi); stroke-width: 2; }
+/* 平らな期間の囲みと文字は、高知の点が期間を渡りきってから出す（.is-wait のあいだは隠す。点の札と重ならないように） */
+.gas-chart .gas-pill, .gas-chart .gas-ann text.gas-lbl { transition: opacity .4s ease; }
+.gas-chart .gas-ann.is-wait .gas-pill, .gas-chart .gas-ann.is-wait text.gas-lbl { opacity: 0; transition: none; }
+.gas-chart .gas-vline { stroke: var(--ink); stroke-width: 1.3; stroke-dasharray: 4 3; }
+.gas-chart .gas-dot { fill: var(--gas-kochi); stroke: var(--paper-2); stroke-width: 1.5; }
+/* 高知の線の上を進む点と、その日付・価格（.gas-rider。どの線よりも手前に描く）。
+   .is-off：出さない、.is-out：見る範囲の外（寄ったり引いたりの途中）、.is-jump：離れた位置へ移るときに、いったん消す */
+.gas-chart .gas-rider { transition: opacity .25s ease; }
+.gas-chart .gas-rider.is-off { opacity: 0; }
+.gas-chart .gas-rider.is-out { visibility: hidden; }
+.gas-chart .gas-rider.is-jump { opacity: 0; transition: none; }
+.gas-chart .gas-rider .gas-dot { stroke-width: 2; }
+.gas-chart .gas-lbl {
+  font-size: 12px; fill: var(--ink);
+  paint-order: stroke; stroke: var(--paper-2); stroke-width: 3.5px; stroke-linejoin: round;
+}
+.gas-chart .gas-lbl-strong { font-weight: 700; }
+.gas-chart .gas-lbl-k { font-weight: 700; fill: var(--gas-kochi); }
+.gas-src { margin: .2rem 0 0; font-family: var(--gothic); font-size: .72rem; line-height: 1.5; color: var(--ink-2); }
+@media (prefers-reduced-motion: reduce) {
+  .gas-chart .gas-ann, .gas-chart .gas-ann.is-on, .gas-chart .gas-ann.is-dim,
+  .gas-chart .gas-pill, .gas-chart .gas-ann text.gas-lbl, .gas-chart .gas-rider { transition: none; }
+}
+@media print {
+  .anim-host { display: none; }
+  .fig-anim-static.is-replaced { display: block; }
+}
+.fig-details { margin: 1.2rem 0 1.8rem; }
+.fig-details summary { cursor: pointer; color: var(--accent-2); font-size: .92rem; }
+.fig-details[open] summary { margin-bottom: .6rem; }
+
+/* --------------------------------------------------------------- 表 */
+.table-wrap { overflow-x: auto; margin: 1.4rem 0 1.8rem; }
+table { border-collapse: collapse; font-size: .9rem; min-width: 100%; }
+th, td { border: 1px solid var(--line); padding: .45rem .7rem; text-align: left; vertical-align: top; }
+th { background: var(--code-bg); font-weight: 700; white-space: nowrap; }
+
+/* ------------------------------------------------------------ 前後移動 */
+.pager {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin: 4rem 0 0;
+  max-width: 44rem;
+}
+.pager a {
+  flex: 1 1 0;
+  padding: .8rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: .5rem;
+  background: var(--paper-2);
+  text-decoration: none;
+  color: var(--ink);
+  font-size: .92rem;
+  font-weight: 700;
+}
+.pager a:hover { border-color: var(--accent); }
+.pager .next { text-align: right; }
+.pager a span { display: block; font-size: .7rem; color: var(--ink-2); font-weight: 400; letter-spacing: .1em; }
+
+.site-foot {
+  margin-top: 4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+  font-size: .85rem;
+  color: var(--ink-2);
+  max-width: 44rem;
+}
+.site-foot p { margin: 0 0 .3rem; }
+.small { font-size: .78rem; }
+
+/* ------------------------------------------------------------- トップ */
+.home article { max-width: 46rem; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .9rem; margin: 1.6rem 0 2.4rem; list-style: none; padding: 0; }
+.cards li { margin: 0; }
+.cards a {
+  display: block; height: 100%;
+  padding: .9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: .5rem;
+  background: var(--paper-2);
+  text-decoration: none; color: var(--ink);
+  font-size: .92rem;
+}
+.cards a:hover { border-color: var(--accent); }
+
+/* ===== トップの実演（.top-demo）・カードの並び・ダークモードの画像 ここから =====
+   実演：本文の3段落目（「R（アール）」…しかも無料で使えます。）のすぐあとに置く、スクロールで進む見せ場（assets/top-demo.js）。
+   実行結果の枠（.sc-frame）が画面の真ん中に留まり、その上を、見出しとコードを書いた札（.scly-card）が下から上へ流れていく。
+   スクリプトが動かないときと印刷では、同じ位置に静的な図が出る */
+.home.page { padding-top: 1.1rem; }
+/* トップの題名：ページの頭に置いたまま、ほかの章の h1 より一回り大きい明朝の太字にする（大きめの文字で、という指示）。
+   すぐ下から本文が始まり、最初の画面で題名と本文の頭がいっしょに見えるよう、余白は詰めておく。
+   せまい画面（320px）でも1行に収まる大きさを下限にする（途中で切れて1字だけ次の行に落ちると読みにくい）。
+   印刷では、ほかの章と同じふつうの h1 でよいので、画面のときだけ */
+@media screen {
+  .home h1 {
+    font-weight: 700;
+    font-size: clamp(1.85rem, .9rem + 4.6vw, 4rem); line-height: 1.25; letter-spacing: .04em;
+    margin: 0 0 1.1rem;
+  }
+}
+/* トップの副題：題名のすぐ下に、細い赤の線を引いてから、ゴシックで字間を広くとって添える。
+   題名（明朝の太字）と書体・大きさ・色を変えて、主と従がひと目で分かるようにする */
+.home h1 .h1-sub {
+  display: flex; align-items: center; gap: .8em;
+  margin-top: .7em;
+  font-family: var(--gothic); font-weight: 500;
+  font-size: clamp(.82rem, .6rem + .9vw, 1.4rem);
+  letter-spacing: .24em; line-height: 1.5;
+  color: var(--ink-2);
+}
+.home h1 .h1-sub::before {
+  content: ""; flex: none;
+  width: 2.4em; height: 2px;
+  background: var(--accent);
+}
+/* トップの公開日：副題の下に小さく。本文とのあいだは広めにとって、題名・副題・公開日をひとかたまりに見せる */
+.home .pub-date {
+  margin: 0 0 clamp(2rem, 1rem + 3vw, 3.6rem);
+  font-size: .8rem; letter-spacing: .08em;
+  color: var(--ink-2);
+}
+/* せまい画面では字間と線を詰めて、副題が1行に収まるようにする（最後の字だけ次の行に落ちると締まらない） */
+@media (max-width: 480px) {
+  .home h1 .h1-sub { letter-spacing: .1em; gap: .6em; }
+  .home h1 .h1-sub::before { width: 1.6em; }
+}
+/* 帯・札の列・留まる枠は、共通の部品（.scly-*。assets/scrolly.js）が組み立てる。ここは、トップの実演に固有の指定（.top-scly）。
+   本文の段落のすぐあとに続けて置くので、上の余白はとらない */
+.top-scly {
+  --sc-lead: 3.2rem;                 /* グラフの高さを決めるときに、画面の高さから余分に引くぶん（グラフの下に少しゆとりを残す） */
+  /* 札の幅は、コードの行が1行で収まる幅。「1行のコードで」と言っているので、広い画面では mutate の行を折り返さない。
+     列名を pop・pop_over65 に短くしたので、いまいちばん長い行は scale_x_log10(…) の半角47字だが、札の幅は以前（半角64字ぶん）のままにして、
+     パソコンでの札の見た目を変えない。
+     幅を ch（その書体の数字1字の幅）で言えるよう、札そのものの書体をコードと同じ等幅・同じ大きさにしてある（見出しは別に指定）。
+     3.5rem は札とコードの左右の余白 */
+  --scly-card-w: calc(65ch + 3.5rem + 2px);
+  margin-top: 0;
+}
+.top-scly .scly-card { font-family: var(--mono); font-size: .8rem; }
+.sc-frame {
+  padding: .8rem .8rem .6rem;
+  border: 1px solid var(--line); border-radius: .5rem;
+  background: var(--paper-2);
+}
+/* パソコンでは、結果の枠を本文の幅の3分の2にして左に寄せる（グラフの幅が、これまでの7割ほどになる）。枠いっぱいだと表もグラフも大きすぎて、画面の大半を占め、
+   札が枠を抜けるまでに見出しが画面の上へ出てしまうため。
+   右に空いたところを札が通るので、札が結果に重なる部分も減る */
+@media (min-width: 601px) {
+  .top-scly .sc-frame { width: 66%; box-sizing: border-box; }
+  .top-demo .top-scly pre.sc-out { --sc-out-max: 11.5px; }   /* 表の字の上限も（あとに書いた 16px の指定に負けないよう、一段強く指定する）、これまで（16px）の7割ほどに */
+}
+.sc-view { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.sc-layer { grid-area: 1 / 1; min-width: 0; opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s; }
+.sc-layer.is-on { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+/* 札の中で、コードのあとに置く説明文。見出し（明朝）より格を下げてゴシックにするが、
+   小さすぎると読み飛ばされるので、本文に近い大きさと濃さにする */
+.top-scly .sc-note {
+  margin: .65rem 0 0;
+  font-family: var(--gothic); font-size: .98rem; font-weight: 600; line-height: 1.5; color: var(--ink);
+  white-space: normal;
+}
+/* 重ねた結果は、それぞれ自分の高さのまま上にそろえる。入れ物の高さは、top-demo.js（fitStage）が、いまの段の結果の高さにする
+   （表の段で、グラフに合わせた高さのまま表の上下に空白ができないように）。高さが変わるときはなめらかに。
+   はみ出たぶん（隠れている、背の高いグラフ）は見せない。
+   表の字の大きさを枠の幅から決めるので、幅の物差し（cqw）の入れ物にする */
+.sc-view {
+  align-items: start; container-type: inline-size;
+  overflow: hidden;
+  transition: height .35s ease;
+}
+/* グラフ：本体と補助線を、縦横比 3:2 の同じ入れ物いっぱいに重ねる（同じ大きさ・同じ位置なので、どの幅でもずれない）。
+   入れ物は枠の幅いっぱい。背の低い画面では、最初の画面に収まる高さから逆算した幅まで縮める */
+.sc-plot {
+  --sc-plot-h: max(9rem, calc(100svh - var(--scly-top) - var(--scly-bar) - var(--sc-lead) - 5.4rem));
+  position: relative; justify-self: center;
+  width: min(100%, calc(var(--sc-plot-h) * 1.5)); aspect-ratio: 3 / 2;
+  overflow: hidden; border-radius: .2rem;
+}
+.sc-plot img {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+  margin: 0; border: 0; border-radius: 0;
+}
+/* 補助線の現れ方。段に入って少ししてから、見える範囲（clip-path）を広げて、線が引かれていくように見せる。
+   範囲の始まりと終わりは、絵の中で線や矢印がある所に合わせてある（何もない所を広げている時間を作らないため）。
+   段を離れたら、結果が消えるのを待って（.35秒）元に戻すので、入り直すともう一度動く */
+.sc-over { transition: clip-path 0s .35s; }
+.sc-wipe-x { clip-path: inset(0 88% 0 0); }          /* 4段目の線：左から右へ */
+.sc-wipe-x2 { clip-path: inset(0 88% 0 0); }         /* 5段目の2本の線：左から右へ（線は絵の7割のところで終わる） */
+.sc-wipe-up { clip-path: inset(69% 0 0 0); }         /* 5段目の矢印：下から上へ。線が引き終わってから */
+.sc-plot.is-on .sc-wipe-x { clip-path: inset(0 3% 0 0); transition: clip-path .7s ease-in-out .3s; }
+.sc-plot.is-on .sc-wipe-x2 { clip-path: inset(0 27% 0 0); transition: clip-path .65s ease-in-out .3s; }
+.sc-plot.is-on .sc-wipe-up { clip-path: inset(41% 0 0 0); transition: clip-path .45s ease-out 1s; }
+.top-scly pre {
+  margin: 0; border: 0; background: none; overflow: hidden;
+  font-family: var(--mono); color: var(--code-ink);
+  white-space: pre;
+}
+/* 表（tibble）の文字。表は、列ごとのセルに分けて、どの行も同じ列幅の grid に乗せて描く（列幅は top-demo.js の fitTables が測って --sc-cols に入れる）。
+   だから、日本語1字が英数字2字ぶんの幅にならない書体（スマホ）でも列はそろう。書体は、tibble の表示らしく見えるよう、
+   日本語1字が英数字2字ぶんの幅になる等幅の書体を先に指定しておく。
+   字の大きさは、fitTables が、描いた表全体の幅を測って、枠に収まる大きさに決める（上限は --sc-out-max）。
+   ここに書いた大きさは、それまでの（またはスクリプトが測れないときの）控え。表は半角52字ぶんあり、
+   「半角1字＝0.5em」の書体なら26字ぶんの幅なので、枠の幅の27分の1にする。その書体がない端末では字幅が広く、これでははみ出すことがあるので、
+   測って決める（以前はこの控えの計算だけで決めていて、スマホで右端の列が切れていた）。
+   1行目は cqw を知らないブラウザ用の控えで、画面の幅から見積もる */
+.top-scly pre.sc-out {
+  --sc-lh: 1.7;
+  /* 上限。以前は 16px だったが、枠の幅の33分の1のほうが必ず小さく、スマホでは10px前後になっていた。
+     列名を短くして、測って決めるようにしたら、スマホでもこの上限まで大きくなりうるので、パソコンと同じ 11.5px にそろえる
+     （大きくしすぎると、表の段の枠がグラフの段より背が高くなり、札の流れが長くなるため） */
+  --sc-out-max: 11.5px;
+  padding: 0;
+  font-family: "BIZ UDGothic", "MS Gothic", "Osaka-Mono", "Noto Sans Mono CJK JP", var(--mono);
+  font-size: clamp(7px, calc((100vw - 4rem) / 27), 12px);
+  font-size: min(var(--sc-out-max), calc(100cqw / 27));
+  line-height: var(--sc-lh);
+  -webkit-user-select: none; user-select: none;
+}
+.sc-row, .sc-reel { display: block; }
+/* 表の1行。列幅の並び（--sc-cols）は表（pre.sc-out）ごとに top-demo.js が入れ、行も、流れる帯の行も、並べ替えで流す行も、同じ並びを使う
+   （行を別の入れ物に包んでも、列がそろう）。列の間は、R の表示と同じく英数字1字ぶん。
+   数字の列と行番号は右寄せ（.sc-r）、文字の列は左寄せ。1行目と最後の行（# …）は、表の幅いっぱいの1つのセル（.sc-span）にする */
+.sc-line { display: grid; grid-template-columns: var(--sc-cols); column-gap: 1ch; }
+.sc-c { min-width: 0; }
+.sc-r { text-align: right; }
+.sc-span { grid-column: 1 / -1; }
+/* rate_over65 の列の色。字の色は表のほかの字と同じもの（受け継ぐ）にし、地には「半透明の黄色」を敷くだけにする。
+   ダークモードのスマホで、この列の数字が読めないという指摘が続いた。以前は、地も字もじかに色を決めていた（明：淡い黄の地に黒い字）。
+   ところが、端末の「強制ダークモード」（Android の Chrome の自動ダーク、Samsung Internet、アプリの中のブラウザなど）は、
+   サイトの明るい画面を自分で暗く塗り替える。そのとき地は暗くなるのに、じかに決めた黒い字（-webkit-text-fill-color）は黒いまま残り、
+   暗い地に黒い字で読めなくなっていた。字を受け継ぎにして、地を半透明にしておけば、明・暗・強制ダークのどれでも、
+   表のほかの字と同じ濃さの字が、黄色みを帯びた地の上に乗るだけなので、読めなくなることがない。
+   光らせる動き（sc-flash）も、地の黄色を一瞬濃くするだけで、字の色は変えない */
+.top-scly { --sc-hl-bg: rgba(242, 193, 78, .30); --sc-hl-flash: rgba(242, 193, 78, .75); }
+@media (prefers-color-scheme: dark) {
+  .top-scly { --sc-hl-bg: rgba(242, 193, 78, .22); --sc-hl-flash: rgba(242, 193, 78, .50); }
+}
+.sc-hl { background: var(--sc-hl-bg); font-weight: 700; }
+/* 並べ替えの動き（top-demo.js の startSort が、流れ去る行を各行の上に足して .is-sorting をつける）。
+   各行を1行ぶんの高さの窓にして、その中で行の列を上へ送り、並べ替えたあとの行で止める。
+   送っているあいだは、ぼかして薄くする（速く流れて読めない感じを出しつつ、ちらつきを抑える）。
+   止まったら、rate_over65 のところを一瞬だけ強い色にして、何の順に並んだのかに目を向けてもらう */
+.sc-out.is-sorting .sc-row { height: calc(var(--sc-lh) * 1em); overflow: hidden; }
+.sc-out.is-sorting .sc-reel { animation: sc-reel var(--dur, .8s) cubic-bezier(.45, .05, .2, 1) both; will-change: transform; }
+.sc-out.is-sorting .sc-reel > .sc-line:last-child .sc-hl { animation: sc-flash .55s ease-out var(--dur, .8s) backwards; }
+@keyframes sc-reel {
+  from { transform: translateY(0); filter: blur(0); opacity: 1; }
+  15% { filter: blur(1.5px); opacity: .55; }
+  75% { filter: blur(1.2px); opacity: .6; }
+  to { transform: translateY(calc(var(--n, 10) * var(--sc-lh) * -1em)); filter: blur(0); opacity: 1; }
+}
+@keyframes sc-flash {
+  from { background: var(--sc-hl-flash); }
+  to { background: var(--sc-hl-bg); }
+}
+/* 表の中を行が流れる動き（top-demo.js の startFlow が、帯 .sc-strip を足して .is-flow をつける。1段目の読み込みは .is-load、2段目の計算は .is-calc も）。
+   データの8行（.sc-body）を窓にして、その中で本物の行の帯を上へ流す。窓の高さは元の8行のままなので、枠の高さは変わらない。
+   流しているあいだ、元の行は場所だけ取って隠す。帯の上下は、速さに合わせて JS が --m を変え、かすれさせる（止まると 0）。
+   計算の段では、rate_over65 の列が右から入ってくる（いま計算してできた列だと分かるように） */
+.sc-body { display: block; position: relative; }
+.sc-out.is-flow { position: relative; }
+.sc-out.is-flow .sc-body {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 var(--m, 0%), #000 calc(100% - var(--m, 0%)), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 var(--m, 0%), #000 calc(100% - var(--m, 0%)), transparent);
+}
+.sc-out.is-flow .sc-body > .sc-row { opacity: 0; }
+.sc-strip { position: absolute; left: 0; right: 0; top: 0; display: block; will-change: transform; }
+.sc-strip .sc-line { position: relative; }
+/* 帯の行番号：行番号の列（空のセル）の左端から、列の間と year の列の頭の空きまでの3字ぶんに重ねる。4桁の番号は、横だけ縮めて収める（--k） */
+.sc-rn { position: absolute; left: 0; top: 0; transform: scaleX(var(--k, 1)); transform-origin: 0 50%; }
+.sc-out.is-calc .sc-hl { animation: sc-col-in .45s cubic-bezier(.2, .7, .3, 1) .05s backwards; }
+@keyframes sc-col-in {
+  from { transform: translateX(4em); opacity: 0; }
+}
+/* 止まったら、帯から元の行へ短いクロスフェードで戻す（帯は最後の本物の行で止めてあり、元の表は最初の8行なので、ふっと替わるように）。
+   計算の段では、rate_over65 の列を一瞬光らせる（並べ替えのときと同じ光） */
+.sc-out.is-landed .sc-strip { opacity: 0; transition: opacity .3s ease; }
+.sc-out.is-landed .sc-body > .sc-row { opacity: 1; transition: opacity .3s ease; }
+.sc-out.is-calc.is-landed .sc-body .sc-hl { animation: sc-flash .55s ease-out .15s backwards; }
+/* 読み込みの段：読み終わるまで、表の1行目（# A tibble …）と最後の行（# ℹ 8,697 more rows）を隠し（R も読み終えてから表を出すので）、
+   1行目の左に進み具合の棒（.sc-meter）を出す。右には数え札があり、棒はその左に収まる長さにしてある（top-demo.js の meterText）。
+   以前は最後の行に棒を出していたが、広い画面では、開いた直後に1枚目の札が表の下のほうにかかり、棒の右半分（%）が隠れた。1行目には札がかからない。
+   止まったら、100% を少し見せてから棒を消し、元の2行を出す（同じ場所で字が重なって見えないよう、消えてから出す）。
+   どちらも片づけ（.8秒）より前に終わる長さにする */
+.sc-out.is-load .sc-cap > .sc-line, .sc-out.is-load .sc-foot > .sc-line { opacity: 0; }
+.sc-out.is-load.is-landed .sc-cap > .sc-line,
+.sc-out.is-load.is-landed .sc-foot > .sc-line { opacity: 1; transition: opacity .3s ease .4s; }
+.sc-meter { position: absolute; left: 0; top: 0; white-space: pre; color: var(--ink-2); }
+/* 計算の段も、計算しているあいだは表の1行目（# A tibble …）を隠す。スマホでは1行目の右端と数え札（rate_over65 を計算 … 行）が
+   重なって字がかぶるため。止まって数え札が消えてから（.35秒）出す */
+.sc-out.is-calc .sc-cap > .sc-line { opacity: 0; }
+.sc-out.is-calc.is-landed .sc-cap > .sc-line { opacity: 1; transition: opacity .3s ease .5s; }
+/* 1段目が読み込みを待っているあいだ（top-demo.js の is-hold）は、数え札と棒を出さない。流れ出すときに現れる */
+.sc-out.is-hold .sc-meter, .sc-out.is-hold .sc-tally { visibility: hidden; animation: none; }
+.sc-out.is-landed .sc-meter { opacity: 0; transition: opacity .2s ease .2s; }
+/* 数え札：表の1行目（# A tibble …）の右、表の右端にそろえて置く（1行目の右は空いているので、表とも説明文ともぶつからない）。
+   幅は表の行と同じ字数（ch。JS が入れる）にして右寄せ */
+.sc-tally {
+  position: absolute; left: 0; top: 0; width: 62ch;
+  text-align: right; white-space: pre;
+  color: var(--accent); font-weight: 700;
+  animation: sc-tally-in .2s ease-out;
+  transition: opacity .3s ease;
+}
+.sc-tally.is-done { color: var(--ink); }
+.sc-tally.is-out { opacity: 0; }
+@keyframes sc-tally-in { from { opacity: 0; } }
+/* 点が打たれていく動き（4段目と5段目。top-demo.js の startDots が .is-dotting をつける）。
+   本体の絵を隠して、点のない「軸と目盛り（5段目は凡例も）だけ」の絵（.sc-axes）と、点を打つ canvas（.sc-dotcv）を見せる。
+   補助線は、点を打っているあいだは引き始めの位置で止めておき、打ち終わって（.is-dotted）から数えて引く。
+   遅れは、ふだん（.is-on）の .3秒・1秒ではなく、打ち終わりから .1秒。5段目の矢印は、2本の線（.65秒）を引き終えてから */
+.sc-plot .sc-axes, .sc-plot .sc-dotcv { display: none; }
+.sc-plot.is-dotting .sc-axes { display: block; }
+.sc-plot.is-dotting .sc-dotcv { display: block; position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.sc-plot.is-dotting > img:first-child { opacity: 0; }
+.sc-plot.is-on.is-dotting .sc-wipe-x,
+.sc-plot.is-on.is-dotting .sc-wipe-x2 { clip-path: inset(0 88% 0 0); transition: none; }
+.sc-plot.is-on.is-dotting .sc-wipe-up { clip-path: inset(69% 0 0 0); transition: none; }
+.sc-plot.is-on.is-dotted .sc-wipe-x,
+.sc-plot.is-on.is-dotted .sc-wipe-x2 { transition-delay: .1s; }
+.sc-plot.is-on.is-dotted .sc-wipe-up { transition-delay: .8s; }
+.top-scly pre.sc-code {
+  -webkit-user-select: none; user-select: none;   /* サイトのほかのコードと同じく、コピーさせない */
+  margin-top: .7rem;                              /* 見出しとの間 */
+  padding: .6rem .75rem; border-radius: .35rem;
+  background: var(--code-bg);
+  font-size: .8rem; line-height: 1.75;
+}
+.sc-new { color: var(--accent); font-weight: 700; }
+.sc-old { color: var(--ink-2); }   /* 前の段までのコードを1行に略したところ。読めるが目立たない濃さ */
+/* コードは、広い画面用（長い行を1行で）と、せまい画面用（半角42字以内に折り返して字下げ）の二つを札に入れてあり、片方だけ出す。
+   広い画面用が札に収まらないとき、top-demo.js が実演の入れ物（.top-demo）に .is-narrow をつける。
+   せまい画面用は、札の幅から字の大きさを決める（半角42字が、字幅 0.6em の書体でも収まる大きさ。2.9rem は左右の余白）。
+   cqw を知らないブラウザでは決まった大きさになるので、それでもはみ出さないよう、折り返しを許しておく */
+.sc-code-narrow { display: none; }
+.top-demo.is-narrow .sc-code-wide { display: none; }
+.top-demo.is-narrow .sc-code-narrow { display: block; }
+.top-demo.is-narrow .top-scly { --scly-card-w: 26rem; }
+.top-demo.is-narrow pre.sc-code {
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  font-size: 11px;
+  font-size: min(.8rem, calc((100cqw - 2.9rem) / 25.5));
+}
+@media (max-width: 900px) {
+  /* 題名は大きく1行で置くので、右上に浮く「目次」ボタンと重ならないよう、ボタンの下から始める */
+  .home.page { padding-top: 3.3rem; }
+  @media print { .home.page { padding-top: 0; } }   /* 印刷では「目次」ボタンがないので、上を空けない */
+  .top-scly { --sc-lead: 2.7rem; }
+}
+@media (max-width: 600px) {
+  .sc-frame { padding: .6rem .6rem .5rem; }
+  .top-scly .sc-note { margin-top: .5rem; font-size: .9rem; }
+  .top-scly pre.sc-out { --sc-lh: 1.6; }
+  .top-scly .scly-title { font-size: 1.45rem; }
+  .top-scly pre.sc-code { margin-top: .55rem; padding: .5rem .6rem; line-height: 1.7; }
+  .top-demo.is-narrow pre.sc-code { font-size: 10px; font-size: min(.8rem, calc((100cqw - 2.7rem) / 25.5)); }
+}
+/* 横向きのスマホなど背の低い画面では、表の全部の行が画面に収まるように、字と行送りを詰める */
+@media (max-height: 480px) {
+  .top-scly pre.sc-out { --sc-lh: 1.5; --sc-out-max: 11.5px; }
+}
+@media (max-width: 359px) {
+  .top-scly .scly-title { font-size: 1.22rem; }
+}
+/* 動きを減らす設定では、切り替えを一瞬にし、補助線は最初から出しておく（読み込み・計算・並べ替え・点を打つ動きは、top-demo.js が始めない） */
+@media (prefers-reduced-motion: reduce) {
+  .sc-view { transition: none; }
+  .sc-layer, .sc-layer.is-on { transition: none; }
+  .sc-over, .sc-plot.is-on .sc-over { transition: none; clip-path: none; }
+  .sc-out.is-sorting .sc-reel, .sc-out.is-sorting .sc-hl { animation: none; }
+}
+/* 「どこから読むか」のカード：2列×2段（同じ段は同じ高さ）、せまい画面は1列 */
+.cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 600px) {
+  .cards { grid-template-columns: 1fr; }
+}
+/* ダークモードでは、白地のグラフや画面写真がまぶしいので少し暗くする（SVGの図や動くグラフはそのまま。印刷には効かせない） */
+@media screen and (prefers-color-scheme: dark) {
+  /* 実演のグラフは、補助線を重ねた入れ物（.sc-plot）ごと暗くする（本体だけ暗くすると、線だけが明るく浮く） */
+  .fig img, .sc-plot { filter: brightness(.85) contrast(1.05); }
+  .fig img { border-color: color-mix(in srgb, var(--line) 70%, var(--ink-2)); }
+  .fig img[src$=".jpg"] { filter: brightness(.93); }   /* 写真は控えめに */
+}
+/* ===== トップの実演・カードの並び・ダークモードの画像 ここまで ===== */
+
+/* トップだけ、広い画面の上の帯（サイト名と副題）を出さない。本文の頭に題名と副題を大きく出しているので、同じものが二度並ばないように。
+   帯がないぶん、左の目次は画面のいちばん上から始める。せまい画面では帯はもともと出さず、「目次」ボタンだけなので、そちらはそのまま */
+@media screen and (min-width: 901px) {
+  .is-home .site-head { display: none; }
+  .is-home .toc { top: 0; max-height: 100vh; }
+  .is-home .home.page { padding-top: 3rem; }   /* 帯がないぶん、題名の上に少しゆとりを */
+}
+
+/* ------------------------------------------------------------ せまい画面 */
+@media (max-width: 900px) {
+  body { font-size: 16px; }
+  .layout { grid-template-columns: 1fr; }
+  /* せまい画面では、サイトの名前の帯を出さず、「目次」ボタンだけを右上に浮かせる（画面の上を占領しないように） */
+  html { scroll-padding-top: 1rem; }
+  .site-head {
+    position: fixed;
+    top: .6rem;
+    right: .6rem;
+    z-index: 50;
+    padding: 0;
+    background: none;
+    backdrop-filter: none;
+    border: 0;
+  }
+  .brand { display: none; }
+  .menu-btn {
+    display: block;
+    padding: .4rem 1rem;
+    box-shadow: 0 .15rem .6rem rgba(0, 0, 0, .14);
+  }
+  /* 目次は、押したその場の画面に、右から出る板として重ねる（上までスクロールしなくていいように）。
+     後ろは暗くし、板の外を押すか、もう一度ボタンを押すと閉じる（site.js） */
+  .toc {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    width: min(88vw, 22rem);
+    align-self: stretch;   /* 広い画面用の align-self: start が残ると、上下いっぱいに伸びず、中身の高さになってしまう */
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 3.6rem 1.1rem 2rem;
+    background: var(--paper);
+    border-right: 0;
+    border-left: 1px solid var(--line);
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .35);
+  }
+  .toc.open { display: block; }
+  /* 目次を開いているあいだ、後ろの本文は動かさない。body は clip にする（hidden だと body がスクロールの入れ物になり、
+     トップの実演の留まる枠が、目次を開いたとたんに消えてしまう） */
+  html.toc-open { overflow: hidden; }
+  html.toc-open body { overflow: clip; }
+  .page { padding: 1.6rem 1.2rem 3rem; }
+  .inpage ul { columns: 1; }
+  .pager { flex-direction: column; }
+  h2 { margin-top: 2.4rem; }
+}
+
+/* 原稿に直接書き込まれたメモ（{{! }} と @メモ：） */
+.memo-mark {
+  margin: .4rem 0 .2rem;
+  padding: .35rem .6rem;
+  border-left: 3px solid #d99000;
+  background: color-mix(in srgb, #d99000 12%, var(--paper-2));
+  font-size: .84rem;
+  line-height: 1.7;
+  color: var(--ink);
+  white-space: pre-wrap;
+}
+.memo-mark::before {
+  content: "メモ";
+  display: inline-block;
+  margin-right: .5em;
+  padding: 0 .35em;
+  font-size: .68rem;
+  font-weight: 700;
+  color: #fff;
+  background: #d99000;
+  border-radius: .2rem;
+  vertical-align: .1em;
+}
+.memo-inline {
+  background: color-mix(in srgb, #d99000 14%, transparent);
+  border-bottom: 2px solid #d99000;
+  padding: 0 .15em;
+}
+.memo-inline-tag {
+  display: inline-block;
+  margin-right: .4em;
+  padding: 0 .35em;
+  font-size: .68rem;
+  font-weight: 700;
+  color: #fff;
+  background: #d99000;
+  border-radius: .2rem;
+  vertical-align: .1em;
+}
+.memo-static { margin: .6rem 0 1rem; }
+.page-memo {
+  margin: 0 0 1rem;
+  padding: .9rem 1.2rem .3rem;
+  border: 2px solid #d99000;
+  border-radius: .5rem;
+  background: color-mix(in srgb, #d99000 8%, var(--paper-2));
+  font-size: .92rem;
+}
+.page-memo-title {
+  margin: 0 0 .4rem;
+  font-weight: 700; font-size: .84rem; letter-spacing: .06em; color: #a06a00;
+}
+
+/* ------------------------------------------- 公開サイトで隠すもの
+   「要検討」の印と原稿に直接書いたメモは、手元で開いたとき（html.local）だけ出す。
+   公開サイトでは、印のついた文はふつうの文として読める。 */
+html:not(.local) .review-tag,
+html:not(.local) .page-review,
+html:not(.local) .memo-inline,
+html:not(.local) .memo-static,
+html:not(.local) .page-memo { display: none; }

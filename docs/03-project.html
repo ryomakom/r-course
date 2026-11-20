@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プロジェクトとパッケージ | 記者のためのR講座</title>
+<meta name="description" content="作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この二つを用意すれば準備は終わりです。">
+<meta name="author" content="小宮山亮磨">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ryomakom.github.io/r-course/03-project.html">
+<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#fbf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16171a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="記者のためのR講座">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="プロジェクトとパッケージ | 記者のためのR講座">
+<meta property="og:description" content="作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この二つを用意すれば準備は終わりです。">
+<meta property="og:url" content="https://ryomakom.github.io/r-course/03-project.html">
+<meta property="article:author" content="https://x.com/ryomakom">
+<meta property="article:section" content="はじめに">
+<meta property="article:published_time" content="2026-11-21">
+<meta property="article:modified_time" content="2026-11-21">
+<meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/03-project.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="記者のためのR講座：プロジェクトとパッケージ">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ryomakom">
+<meta name="twitter:creator" content="@ryomakom">
+<meta name="twitter:title" content="プロジェクトとパッケージ | 記者のためのR講座">
+<meta name="twitter:description" content="作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この二つを用意すれば準備は終わりです。">
+<meta name="twitter:image" content="https://ryomakom.github.io/r-course/assets/og/03-project.png">
+<meta name="twitter:image:alt" content="記者のためのR講座：プロジェクトとパッケージ">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": [
+    "Article",
+    "LearningResource"
+   ],
+   "@id": "https://ryomakom.github.io/r-course/03-project.html#article",
+   "headline": "プロジェクトとパッケージ",
+   "name": "プロジェクトとパッケージ",
+   "description": "作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この二つを用意すれば準備は終わりです。",
+   "url": "https://ryomakom.github.io/r-course/03-project.html",
+   "mainEntityOfPage": "https://ryomakom.github.io/r-course/03-project.html",
+   "inLanguage": "ja",
+   "image": "https://ryomakom.github.io/r-course/assets/og/03-project.png",
+   "datePublished": "2026-11-21",
+   "dateModified": "2026-11-21",
+   "author": {
+    "@type": "Person",
+    "@id": "https://ryomakom.github.io/r-course/#author",
+    "name": "小宮山亮磨",
+    "url": "https://x.com/ryomakom",
+    "sameAs": [
+     "https://x.com/ryomakom"
+    ],
+    "affiliation": {
+     "@type": "Organization",
+     "name": "朝日新聞デジタル企画報道部"
+    }
+   },
+   "publisher": {
+    "@id": "https://ryomakom.github.io/r-course/#author"
+   },
+   "isPartOf": {
+    "@type": "Course",
+    "@id": "https://ryomakom.github.io/r-course/#course",
+    "name": "記者のためのR講座",
+    "url": "https://ryomakom.github.io/r-course/"
+   },
+   "learningResourceType": "講座の章",
+   "educationalLevel": "初心者",
+   "isAccessibleForFree": true
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "記者のためのR講座",
+     "item": "https://ryomakom.github.io/r-course/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "プロジェクトとパッケージ",
+     "item": "https://ryomakom.github.io/r-course/03-project.html"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="stylesheet" href="assets/style.css?v=6dd3d74d6f">
+<script>
+// 手元（ファイルを直接開いたとき・localhost）でだけ、「要検討」の印と原稿に書いたメモを出す
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "file:" || h === "localhost" || h === "127.0.0.1") {
+    document.documentElement.classList.add("local");
+  }
+})();
+</script>
+</head>
+<body class="">
+<a class="skip" href="#main">本文へ</a>
+<header class="site-head">
+  <a class="brand" href="index.html"><span class="brand-main">記者のためのR講座</span><span class="brand-sub">データを自分の手で確かめるために</span></a>
+  <button class="menu-btn" type="button" aria-expanded="false">目次</button>
+</header>
+<div class="layout">
+  <nav class="toc" aria-label="目次">
+<ul>
+<li><a href="index.html">トップ</a></li>
+</ul>
+<p class="nav-part" id="part-1">はじめに</p><ul>
+<li><a href="01-hajimeni.html">01 Rとは何か</a></li>
+<li><a href="02-install.html">02 RとRStudioを入れる</a></li>
+<li class="here"><a href="03-project.html">03 プロジェクトとパッケージ</a></li>
+</ul>
+<p class="nav-part" id="part-2">第1部　データを読む・加工する</p><ul>
+<li><a href="04-import.html">04 データを読み込む</a></li>
+<li><a href="05-select-mutate.html">05 列を選ぶ・計算する</a></li>
+<li><a href="06-strings-filter.html">06 文字を切る・行を絞る</a></li>
+<li><a href="07-group.html">07 集計する</a></li>
+<li><a href="08-bind.html">08 縦にくっつける</a></li>
+<li><a href="09-pivot.html">09 縦長と横長</a></li>
+<li><a href="10-datatype.html">10 データ型でつまずく</a></li>
+<li><a href="11-join.html">11 横にくっつける</a></li>
+</ul>
+<p class="nav-part" id="part-3">第2部　データを見る</p><ul>
+<li><a href="12-line.html">12 折れ線グラフ</a></li>
+<li><a href="13-col.html">13 棒グラフ</a></li>
+<li><a href="14-point.html">14 散布図</a></li>
+<li><a href="15-finish.html">15 仕上げて外に出す</a></li>
+</ul>
+<p class="nav-part" id="part-4">実践編</p><ul>
+<li><a href="16-gasoline.html">16 ガソリン価格を分析する</a></li>
+</ul>
+<p class="nav-part" id="part-5">第3部　データを集める</p><ul>
+<li><a href="17-scraping.html">17 ウェブから表を取る</a></li>
+<li><a href="18-loop.html">18 まとめて集める</a></li>
+<li><a href="19-download.html">19 一括ダウンロード</a></li>
+<li><a href="20-kami-excel.html">20 神の頭を切り落とす</a></li>
+</ul>
+<p class="nav-part" id="part-6">第4部　さらに先へ</p><ul>
+<li><a href="21-more.html">21 もっといろんなことを</a></li>
+<li><a href="22-ai.html">22 AIの時代に</a></li>
+</ul>
+<p class="nav-part" id="part-7">付録</p><ul>
+<li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
+<li><a href="a2-functions.html">B 関数早見表</a></li>
+<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
+<li><a href="a4-data.html">D データの準備</a></li>
+</ul>
+  </nav>
+  <main id="main" class="page chapter">
+    <article>
+      <p class="kicker">はじめに</p>
+      <h1>プロジェクトとパッケージ</h1>
+      <p class="lead">作業場所をひとまとめにする「プロジェクト」と、道具箱にあたる「パッケージ」。この二つを用意すれば準備は終わりです。</p>
+      
+      <p>次に「プロジェクト」を立ち上げましょう。</p>
+<p>RStudioの「プロジェクト」は、ファイルやフォルダを整理し、作業環境を管理しやすくするための機能です。データ分析や可視化を進めるとき、分析のためのコードや文書があちこちに散らばってしまうと、どこで何を編集すればいいか分からなくなりがちです。そこで役立つのが「プロジェクト」で、関連するファイルや設定をひとまとめにして管理できます。</p>
+<h2 id="テーマごとにプロジェクトを分ける">テーマごとにプロジェクトを分ける</h2>
+<p>分析テーマごとにプロジェクトを切り分ければ、それぞれのフォルダ内だけでコードやデータをやり取りすることになるため、混乱を防げます。さらに、プロジェクトごとに作業スペースが独立しているので、一つのプロジェクトを閉じて別のプロジェクトを開けば、作業環境がきれいに切り替わるのも便利です。</p>
+<figure class="fig"><img src="images/03-new-project.png" alt="RStudioのNew Projectダイアログ。New Directory、Existing Directory、Version Controlの三つが並んでいる" loading="lazy"><figcaption>New Project の選択画面。ふだんはNew DirectoryかExisting Directory</figcaption></figure>
+<p>新しくプロジェクトをつくるときには、RStudioの画面左上にある「File」から「New Project」→「New Directory」と進み、また「New Project」を選べば、新しいフォルダでそのプロジェクトを始めることができます。既存のフォルダでプロジェクトを始めたい場合には、「New Directory」ではなく「Existing Directory」を選びましょう。「Version Control」はGitHubと連携するためのものらしいのですが、ここではひとまず忘れてください（実は私自身が使いこなせていません……）。</p>
+<p>また、すでに作ったプロジェクトは、当該フォルダの中にある <code>.Rproj</code> という拡張子のファイルをダブルクリックすれば開くことができます。</p>
+<h2 id="フォルダの分け方">フォルダの分け方</h2>
+<p>プロジェクトのフォルダの中にも子フォルダをつくって、いろんなファイルを整理しておきます。たとえばこんな感じ。</p>
+<div class="code" data-lang="フォルダの中身"><pre><code>人口分析/                     ← プロジェクトのフォルダ
+├── 人口分析.Rproj            ← これをダブルクリックするとプロジェクトが開く
+├── 分析.Rmd                  ← 書いたコード
+├── data/                     ← もとのデータ
+│   ├── 人口データ2020.csv
+│   └── 人口データ2015.csv
+├── download/                 ← ウェブから落としてきたファイル
+└── output/                   ← 出力したcsvやグラフ</code></pre></div>
+<p>だいじなのは、<strong>出発点になるデータ（上記の構成では<code>data</code> と <code>download</code> のなかに入っています）は手で触らない</strong>ということです。加工はすべてコードのなかでやる。こうしておけば、あとで「この数字、もとデータではどうなってたっけ」と確かめたいときに、いつでも出発点に戻れます。</p>
+<h2 id="tidyverseを入れる">tidyverseを入れる</h2>
+<p>では、いよいよ作業に入りましょう……と言いたいところなのですが、その前にもう一つだけ。データの基本的な処理に使われるtidyverse（タイディバース）と呼ばれるパッケージをインストールします。</p>
+<div class="code" data-lang="R"><pre><code>install.packages("tidyverse")</code></pre></div>
+<p>いちどインストールすると、次にRStudioを開いたときからはやらなくて済むようになります。また、実際に使うときには、そのパッケージを呼び出してやる必要があります。</p>
+<div class="code" data-lang="R"><pre><code>library(tidyverse)</code></pre></div>
+<p>こちらの命令は、次にRStudioを開いたときにも、改めてやり直さなくてはいけません。</p>
+<aside class="box box-note"><p class="box-title">install.packages と library の違い</p><ul>
+<li><code>install.packages("tidyverse")</code> は「道具を買ってきて棚に置く」。一度やれば二度目はいりません。</li>
+<li><code>library(tidyverse)</code> は「棚から道具を取り出して机に置く」。<strong>RStudioを開くたびに毎回必要</strong>。</li>
+</ul>
+<p>「昨日は動いたコードが今日はエラーになる」というときの原因は、たいていこれです。<code>Error in read_csv(...) : could not find function "read_csv"</code> とか <code>関数 "%&gt;%" を見つけることができませんでした</code> みたいなエラーが出たら、まず <code>library(tidyverse)</code> を実行し忘れていないか確かめてください。</p></aside>
+<h2 id="そもそもパッケージとは何か">そもそもパッケージとは何か</h2>
+<p>Rには基本機能のほかに、有志たちが開発したさまざまな道具があります。その道具を束ねたものがパッケージと呼ばれるもので、きれいな表を出力したり、行政機関が持っているデータを呼び出したり、地図データを読み込んで加工したりといった、多種多様な専門的用途に合わせて開発されています。「こんなことがやりたいな」と思ってググってみたら、そのためのパッケージが見つかった、なんてことがよくあります。</p>
+<p>tidyverseはあまたあるパッケージの中でも、データ分析をする人たちの間でとくによく使われているものです。これさえあれば、データを読み込んで、分析して、グラフを描いて……といった作業のほとんどができてしまいます。dplyrやggplot2など、分析によく使われるパッケージを集めた「パッケージの詰め合わせ」のようなパッケージで、たとえるなら十徳ナイフみたいな感じ、でしょうか。開発者のハドリー・ウィッカムさんはその界隈で神とあがめられています。</p>
+<p>RStudioでデータ分析をするときは、まずはじめに <code>library(tidyverse)</code> を実行する、と覚えておいてください。</p>
+<p>この講座ではほかに、Excelを読む readxl、ウェブを読む rvest、ファイルを落とす httr、いわゆる神エクセルを解体する tidyxl と unpivotr を使います。必要になったところでその都度インストールしていきます。</p>
+<p>準備は以上です。次からはいよいよデータを触ります。</p>
+    </article>
+    <nav class="pager"><a class="prev" href="02-install.html"><span>前へ</span>02 RとRStudioを入れる</a><a class="next" href="04-import.html"><span>次へ</span>04 データを読み込む</a></nav>
+    <footer class="site-foot">
+      <p>記者のためのR講座</p>
+      <p class="small">©小宮山亮磨 朝日新聞デジタル企画報道部　<a href="https://x.com/ryomakom">@ryomakom</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/site.js?v=d9de072757"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# A tibble: 1 × 5
+  date       pref  price kerosene_price  diff
+  <date>     <chr> <dbl>          <dbl> <dbl>
+1 2025-02-03 全国   185.           127.  57.8

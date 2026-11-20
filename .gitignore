@@ -1,0 +1,22 @@
+# docs/ も履歴に入れています。GitHub Pages が docs/ をそのまま公開するためです。
+# （build.py を実行すれば、いつでも作り直せます）
+
+# Rの作業ファイル
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# OSが作るゴミ
+Thumbs.db
+.DS_Store
+
+# 一時ファイル
+*.tmp
+~$*
+
+# 手元だけの作業メモ・設定（公開しない）
+_私の追記一覧.txt
+メモ.md
+点検結果.md
+.claude/
