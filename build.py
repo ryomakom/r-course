@@ -598,6 +598,8 @@ PAGE = """<!DOCTYPE html>
   }}
 }})();
 </script>
+<!-- アクセス解析（GoatCounter。クッキーを使わない。localhost で開いたときは数えない） -->
+<script data-goatcounter="https://r-course.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body class="{bodycls}">
 <a class="skip" href="#main">本文へ</a>
