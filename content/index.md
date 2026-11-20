@@ -1,7 +1,7 @@
 ---
 title: 記者のためのR講座
 nav: トップ
-published: 2026-11-21
+published: 2026-11-20
 kicker: 
 ---
 
