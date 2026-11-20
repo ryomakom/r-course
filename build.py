@@ -822,6 +822,8 @@ def head_html(slug, title, desc, dates):
         '<meta name="description" content="%s">' % attr(desc),
         '<meta name="author" content="%s">' % attr(AUTHOR),
         '<meta name="robots" content="index, follow, max-image-preview:large">',
+        # Google Search Console の所有権の確認用（消すと確認が外れる）
+        '<meta name="google-site-verification" content="AjDPTl1NZj9dTbVpgsWfELuYcOZbsDiTIZR1UVCiakA">',
         '<link rel="canonical" href="%s">' % url,
         '<link rel="icon" href="assets/favicon.png" type="image/png" sizes="64x64">',
         '<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">',
