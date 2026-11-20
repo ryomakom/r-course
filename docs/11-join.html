@@ -160,8 +160,7 @@
 <p class="nav-part" id="part-7">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
 <li><a href="a2-functions.html">B 関数早見表</a></li>
-<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
-<li><a href="a4-data.html">D データの準備</a></li>
+<li><a href="a4-data.html">C データの準備</a></li>
 </ul>
   </nav>
   <main id="main" class="page chapter">
@@ -351,8 +350,6 @@
 <div class="code" data-lang="R"><pre><code>df_simple %&gt;% nrow()                                  # 突合前
 df_simple %&gt;% left_join(working_population2020) %&gt;% nrow()   # 突合後</code></pre></div>
 <p>この二つが一致していなければ、とっかかりとなる列の指定を間違えています。<strong>joinの前後で行数を見る。</strong> これをやることも失敗防止に役立ちます。</p></aside>
-<aside class="box box-homework"><p class="box-title">宿題</p><p>複数の年のデータを含んだ労働人口データ（労働人口データ.csv）を読み込んで、<code>df_simple</code> と「年度」「自治体」に基づいて突合してください。</p>
-<p>ヒント：とっかかりにする列が二つあります。<code>by = join_by(year, code)</code> のように書きます。作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
 <hr>
 <p>これで第1部は終わりです。読み込む、選ぶ、名前を変える、計算する、絞る、並べる、集計する、縦横を入れ替える、くっつける。ここまでで、記者の仕事で出てくるデータ加工のかなりの部分はこなせるようになりました。</p>
 <p>次の第2部では、加工したデータを目で見えるようにしていきます。</p>

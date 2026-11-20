@@ -368,11 +368,13 @@ df_simple_wide %>%
 `_to` はこれから作る列（だから引用符でくくる。まだ存在しないので）、`_from` はいまある列（だから引用符はいらない）。ここが混乱の元です。
 :::
 
+<!-- 宿題（サイトには出さない。また使うときは、この行と最後の行を消す）
 :::homework 宿題
 `df_simple` というtibbleについて、`region` の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず `pivot_wider` をかけ、それをまた `pivot_longer` で元に戻してください。`df_simple` はyear、region、populationの三つの列だけで構成されたtibbleです。
 
 作例は[付録C](a3-shukudai.html)にあります。
 :::
+-->
 
 ## 整然データ、という考え方
 

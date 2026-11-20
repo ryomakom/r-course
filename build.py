@@ -81,7 +81,7 @@ PARTS = [
     ("付録", [
         "a1-kigou",
         "a2-functions",
-        "a3-shukudai",
+        # "a3-shukudai",   # 宿題と作例。いまはサイトに出さない（content/a3-shukudai.md は残してある。戻すときはこの行の # を消す）
         "a4-data",
     ]),
 ]
@@ -541,6 +541,8 @@ def read_page(slug):
     path = os.path.join(CONTENT, slug + ".md")
     with open(path, encoding="utf-8") as f:
         raw = f.read().replace("\r\n", "\n")
+    # <!-- … --> で囲んだところはサイトに出さない（いまは宿題をこれでしまってある）。行番号がずれないよう、改行だけ残す
+    raw = re.sub(r"(?s)<!--.*?-->", lambda m: "\n" * m.group(0).count("\n"), raw)
     meta = {}
     if raw.startswith("---\n"):
         end = raw.index("\n---\n", 3)

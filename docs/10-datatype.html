@@ -160,8 +160,7 @@
 <p class="nav-part" id="part-7">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
 <li><a href="a2-functions.html">B 関数早見表</a></li>
-<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
-<li><a href="a4-data.html">D データの準備</a></li>
+<li><a href="a4-data.html">C データの準備</a></li>
 </ul>
   </nav>
   <main id="main" class="page chapter">
@@ -325,7 +324,7 @@ read_excel("data/シートが何枚もあるファイル.xlsx", sheet = "北海�
 <p><code>parse_number()</code> は、カンマや単位のような余計な文字を捨てて数字だけを取り出してくれる関数です。<code>as.double("1,234")</code> はNAになりますが、<code>parse_number("1,234")</code> は1234になります。</p>
 <p>自分で取り除くこともできます。</p>
 <div class="code" data-lang="R"><pre><code>mutate(population = as.double(str_remove_all(population, "[,人 ]")))</code></pre></div>
-<p><code>str_remove_all()</code> は、指定した文字を全部取り除く関数です。角括弧のなかに並べた文字（ここではカンマ、「人」、半角スペース）のどれかに当てはまるものが、すべて消えます。ただし、ふだんは <code>parse_number()</code> のほうが早くて安全です。カンマの入った数字に <code>as.double()</code> をそのまま使うとどうなるか、実際に4072件を溶かしかけた例が<a href="a3-shukudai.html">付録C</a>にあります。</p>
+<p><code>str_remove_all()</code> は、指定した文字を全部取り除く関数です。角括弧のなかに並べた文字（ここではカンマ、「人」、半角スペース）のどれかに当てはまるものが、すべて消えます。ただし、ふだんは <code>parse_number()</code> のほうが早くて安全です。</p>
 <p>△や※を「ゼロ扱い」にするか「NA扱い」にするかは、注記を読んで判断してください。ここは技術の問題ではありません。</p></aside>
 <h2 id="年も数値にしておく">年も数値にしておく</h2>
 <p><code>year</code> の列には「2020年度」のような文字が入っています。たとえばグラフの横軸に「年度」を使いたいときに、数字として認識されていないとうまく並んでくれなかったりして使いにくいので、直しておきましょう。</p>

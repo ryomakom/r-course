@@ -160,8 +160,7 @@
 <p class="nav-part" id="part-7">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
 <li><a href="a2-functions.html">B 関数早見表</a></li>
-<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
-<li><a href="a4-data.html">D データの準備</a></li>
+<li><a href="a4-data.html">C データの準備</a></li>
 </ul>
   </nav>
   <main id="main" class="page chapter">
@@ -197,7 +196,7 @@
 <p>2020年時点での全国の各自治体における人口のデータ（国勢調査）を使います。</p>
 <p><a class="dl" href="files/人口データ2020.csv" download>人口データ2020.csv<span class="dl-size">288 KB</span></a></p>
 <p>プロジェクトのフォルダ内に <code>data</code> というフォルダを新しくつくって、その中にファイルを移しましょう。つまりファイルは <code>data/人口データ2020.csv</code> というフォルダに引っ越したことになります。この住所を指定して、読み込んでやるわけです。</p>
-<p>（この先の章で使うファイルも<a href="a4-data.html">付録D</a>にまとめて置いてあります。先に全部落としておきたい人はそちらから。もとの入手先はe-Statで、その手順も付録Dに書きました）</p>
+<p>（この先の章で使うファイルも<a href="a4-data.html">付録C</a>にまとめて置いてあります。先に全部落としておきたい人はそちらから。もとの入手先はe-Statで、その手順も付録Cに書きました）</p>
 <p>ただまぁ、RStudioで読み込む前に、中身がどんななのかExcelを使ってチェックしてみましょうか。</p>
 <figure class="fig"><img src="images/04-population-csv.png" alt="Excelでファイルを開いてみると、こんな中身だった" loading="lazy"><figcaption>Excelでファイルを開いてみると、こんな中身だった</figcaption></figure>
 <p>どうも、8行目まではいろんな説明文とか能書きとかが書かれていて、必要なデータ（と、そのラベル）は9行目からのようです。つまり、8行目までは飛ばしてしまったほうがよさそうです。なので、読み込むコードはこんな感じになります。</p>

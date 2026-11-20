@@ -52,8 +52,7 @@
 
 - [付録A　記号と用語のミニ辞典](https://ryomakom.github.io/r-course/a1-kigou.html): 「この記号、なんだっけ」を引くためのページ。読み物ではないので、必要なときに戻ってきてください。
 - [付録B　関数早見表](https://ryomakom.github.io/r-course/a2-functions.html): 「あれ、何だっけ」の8割はここで済むように並べました。tidyverseを呼び出せば、大半はそのまま使えます。ほかのパッケージが要るものには、表の中で library() を書き添えました。
-- [付録C　宿題と作例](https://ryomakom.github.io/r-course/a3-shukudai.html): 各章の宿題と、その作例です（4と7は、章の中で宿題としては出していない発展の課題です）。答えは一つではないので、自分のコードが違っていても、同じ結果が出ていれば正解です。
-- [付録D　データの準備](https://ryomakom.github.io/r-course/a4-data.html): この講座で使うファイルは、16章の販売量のファイルを除いて、ここからダウンロードできます。もとの入手先と、加工済みファイルの作り方も書いておきます。
+- [付録C　データの準備](https://ryomakom.github.io/r-course/a4-data.html): この講座で使うファイルは、16章の販売量のファイルを除いて、ここからダウンロードできます。もとの入手先と、加工済みファイルの作り方も書いておきます。
 
 ## Optional
 

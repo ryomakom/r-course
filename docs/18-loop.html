@@ -160,8 +160,7 @@
 <p class="nav-part" id="part-7">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
 <li><a href="a2-functions.html">B 関数早見表</a></li>
-<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
-<li><a href="a4-data.html">D データの準備</a></li>
+<li><a href="a4-data.html">C データの準備</a></li>
 </ul>
   </nav>
   <main id="main" class="page chapter">
@@ -365,7 +364,6 @@ court_contacts_clean</code></pre></div>
 <p>最後に書き出して、おしまいです。</p>
 <div class="code" data-lang="R"><pre><code>court_contacts_clean %&gt;%
   write_excel_csv("output/裁判所連絡先.csv")</code></pre></div>
-<aside class="box box-homework"><p class="box-title">宿題</p><p>前の章の宿題で見つけたページが、都道府県別や年度別に分かれていたら、リンクのリストを作ってfor文で全部集めてみてください。<code>Sys.sleep()</code> と <code>tryCatch()</code> を入れること。集めたら行数を数えて、想定と合っているかどうかも確かめてください。</p></aside>
 <p>ところで、役所が数字を出すときには、ページに表を貼るのではなく、Excelファイルへのリンクをずらりと並べていることもあります。次の章では、そうしたファイルをまとめてダウンロードします。</p>
     </article>
     <nav class="pager"><a class="prev" href="17-scraping.html"><span>前へ</span>17 ウェブから表を取る</a><a class="next" href="19-download.html"><span>次へ</span>19 一括ダウンロード</a></nav>

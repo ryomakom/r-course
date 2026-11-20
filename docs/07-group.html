@@ -160,8 +160,7 @@
 <p class="nav-part" id="part-7">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
 <li><a href="a2-functions.html">B 関数早見表</a></li>
-<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
-<li><a href="a4-data.html">D データの準備</a></li>
+<li><a href="a4-data.html">C データの準備</a></li>
 </ul>
   </nav>
   <main id="main" class="page chapter">
@@ -231,8 +230,6 @@
   ungroup()            # グループ化を解除する</code></pre></div>
 <p>上のコードは、都道府県ごとの自治体数を、行を減らさずに新しい列として足すというものです（<code>summarize</code> は行をまとめてしまいますが、<code>mutate</code> なら元の行がそのまま残ります）。この使い方は「全体に対する比率」を出すときに便利です。</p>
 <p>最後に <code>ungroup()</code> を付ける癖をつけておくと、後々の事故が減ります。</p>
-<aside class="box box-homework"><p class="box-title">宿題</p><p>都道府県別に高齢化率を計算し、ランキングを作りなさい（ヒント：前回使った関数を活用）。</p>
-<p>作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
 <p>次の章では、2010年と2015年の国勢調査のデータも読み込んで、2020年のデータと縦にくっつけます。同じ統計なのに年によって形式が違うという、役所のcsvの「クセ」にも初めてぶつかります。</p>
     </article>
     <nav class="pager"><a class="prev" href="06-strings-filter.html"><span>前へ</span>06 文字を切る・行を絞る</a><a class="next" href="08-bind.html"><span>次へ</span>08 縦にくっつける</a></nav>

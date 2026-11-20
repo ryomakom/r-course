@@ -160,8 +160,7 @@
 <p class="nav-part" id="part-7">付録</p><ul>
 <li><a href="a1-kigou.html">A 記号と用語の辞典</a></li>
 <li><a href="a2-functions.html">B 関数早見表</a></li>
-<li><a href="a3-shukudai.html">C 宿題と作例</a></li>
-<li><a href="a4-data.html">D データの準備</a></li>
+<li><a href="a4-data.html">C データの準備</a></li>
 </ul>
   </nav>
   <main id="main" class="page chapter">
@@ -499,8 +498,6 @@
 <p>そして引数の指定は、この対応で覚えます。</p>
 <div class="table-wrap"><table><thead><tr><th></th><th>列の名前</th><th>中身の数字</th></tr></thead><tbody><tr><td>longer（降ろす）</td><td><code>names_to = "year"</code></td><td><code>values_to = "population"</code></td></tr><tr><td>wider（持ち上げる）</td><td><code>names_from = year</code></td><td><code>values_from = population</code></td></tr></tbody></table></div>
 <p><code>_to</code> はこれから作る列（だから引用符でくくる。まだ存在しないので）、<code>_from</code> はいまある列（だから引用符はいらない）。ここが混乱の元です。</p></aside>
-<aside class="box box-homework"><p class="box-title">宿題</p><p><code>df_simple</code> というtibbleについて、<code>region</code> の列を「都道府県名」「市町村名」「区名」に分けたうえで、まず <code>pivot_wider</code> をかけ、それをまた <code>pivot_longer</code> で元に戻してください。<code>df_simple</code> はyear、region、populationの三つの列だけで構成されたtibbleです。</p>
-<p>作例は<a href="a3-shukudai.html">付録C</a>にあります。</p></aside>
 <h2 id="整然データという考え方">整然データ、という考え方</h2>
 <p>いま説明した「縦長」の形には、tidy data（整然データ）という名前がついています。tidyverseというパッケージ名の「tidy」はここから来ています。決まりごとは三つあります。</p>
 <ol>
