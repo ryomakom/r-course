@@ -24,7 +24,7 @@
 <meta property="article:author" content="https://x.com/ryomakom">
 <meta property="article:section" content="第3部　データを集める">
 <meta property="article:published_time" content="2026-11-20">
-<meta property="article:modified_time" content="2026-11-20">
+<meta property="article:modified_time" content="2026-11-21">
 <meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/18-loop.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
@@ -55,7 +55,7 @@
    "inLanguage": "ja",
    "image": "https://ryomakom.github.io/r-course/assets/og/18-loop.png",
    "datePublished": "2026-11-20",
-   "dateModified": "2026-11-20",
+   "dateModified": "2026-11-21",
    "author": {
     "@type": "Person",
     "@id": "https://ryomakom.github.io/r-course/#author",
@@ -204,8 +204,8 @@
   str_subset("syozai") %&gt;%    # 所在地ページのURLだけを抽出
   url_absolute("https://www.courts.go.jp/courthouse/map_tel/index.html") %&gt;%   # 絶対URLに変換
   unique()                    # 重複するURLを削除</code></pre></div>
-<p>このページには「窓口案内」のページなど、関係ないリンクも含まれています。狙っているリンクをいくつか開いて確認すると、URLに「syozai」という文字が含まれていることが分かります。なので、<code>str_subset("syozai")</code> という命令で、こういうURLだけにしぼります（知的財産高等裁判所のページだけはURLに「syozai」が入っていないので、このやり方では拾えません。ただ、知財高裁は東京高裁のページの表にも載っているので、結果にはちゃんと入ってきます）。</p>
-<p>つぎに、取れてきたURLっぽい文字の並びを、完全なURLに変換します。元のURLを基準にした「相対URL」を、<code>url_absolute()</code> という関数を使って、そのまま使える「絶対URL」に変換するわけです。括弧内には、リンク元のページのURLを書いておけばOKです。</p>
+<p>このページには「窓口案内」のページなど、関係ないリンクも含まれています。狙っているリンクをいくつか開いて確認すると、URLに「syozai」という文字が含まれていることが分かります。なので、<code>str_subset("syozai")</code> という命令で、こういうURLだけにしぼります。</p>
+<p>次にURLの修正です。取れてきたURLっぽい文字の並びは、元のURLを基準にした「相対URL」という不完全なものなわけですが、これを <code>url_absolute()</code> という関数で「絶対URL」に変換するわけです。括弧内には、リンク元のページのURLを書いておけばOKです。</p>
 <p>さらにURLが重複しているケースがあるので、余計なものを削るのが <code>unique()</code> という関数です。</p>
 <p>オブジェクトの中身を見てみましょう。</p>
 <div class="code" data-lang="実行結果"><pre><code> [1] "https://www.courts.go.jp/sapporo-h/about/syozai/index.html"
@@ -218,7 +218,7 @@
  [8] "https://www.courts.go.jp/sendai/about/syozai/index.html"   
  [9] "https://www.courts.go.jp/fukushima/about/syozai/index.html"
 [10] "https://www.courts.go.jp/yamagata/about/syozai/index.html" </code></pre></div>
-<p>全部で69個のURLが入っています（ここでは最初の10個だけ載せています）。</p>
+<p>全部で69個のURLが入っています。</p>
 <h2 id="for文の仕組み">for文の仕組み</h2>
 <p>URLのリストができました。一つひとつにアクセスして、前回やったように、表を抜き出してtibbleに変えていくわけです。こういう反復作業をまとめていっぺんにやるのが「for文」です。</p>
 <p>ただし、for文というのはちょっと複雑です。スクレイピングのことはいったん忘れて、どういう仕組みで動くのか、その基本を少しだけ見てみましょう。</p>
