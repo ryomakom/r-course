@@ -24,7 +24,7 @@
 <meta property="article:author" content="https://x.com/ryomakom">
 <meta property="article:section" content="第3部　データを集める">
 <meta property="article:published_time" content="2026-11-20">
-<meta property="article:modified_time" content="2026-11-20">
+<meta property="article:modified_time" content="2026-11-21">
 <meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/19-download.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
@@ -55,7 +55,7 @@
    "inLanguage": "ja",
    "image": "https://ryomakom.github.io/r-course/assets/og/19-download.png",
    "datePublished": "2026-11-20",
-   "dateModified": "2026-11-20",
+   "dateModified": "2026-11-21",
    "author": {
     "@type": "Person",
     "@id": "https://ryomakom.github.io/r-course/#author",
@@ -177,7 +177,9 @@
 <p>が、その前に、まずは一つのファイルをRのコードでダウンロードするのをやってみましょう。httrというパッケージを使います。</p>
 <div class="code" data-lang="R"><pre><code># install.packages("httr")
 library(httr)</code></pre></div>
-<p>たとえば東京都の小選挙区のデータが入ったExcelファイルなら、こうやってダウンロードします。</p>
+<p>たとえば東京都の小選挙区のデータが入ったExcelファイルは、以下のアドレスに置いてあります。</p>
+<p>https://www.soumu.go.jp/main_content/000979550.xlsx</p>
+<p>なので、このURLを使ってダウンロードします。</p>
 <div class="code" data-lang="R"><pre><code>GET("https://www.soumu.go.jp/main_content/000979550.xlsx",
     write_disk("download/000979550.xlsx",
                overwrite = TRUE))</code></pre></div>
@@ -185,6 +187,7 @@ library(httr)</code></pre></div>
 <p>保存するファイルの名前は、URLの最後の部分（<code>000979550.xlsx</code>）と同じにしておきました。</p>
 <h2 id="リンクの一覧をつくる">リンクの一覧をつくる</h2>
 <p>さて、ここからが本番。Excelファイルへのリンクをまとめて取ってきます。前章と同じで、rvestを使います。</p>
+<figure class="fig"><img src="images/19-soumu-list.png" alt="総務省のページにある「市区町村別得票数」の表。左の列が小選挙区で、北海道、青森県、岩手県……と都道府県ごとにExcelファイルへのリンクが並ぶ。右の列が比例代表で、北海道選挙区、東北選挙区、北関東選挙区……とブロックごとのリンクが、いくつかの行をまたいで置かれている" loading="lazy"><figcaption>総務省のページにある表。左の列が小選挙区（都道府県ごと）、右の列が比例代表（ブロックごと）</figcaption></figure>
 <p>このページの表は2列に分かれていますね。今回は比例代表ではなく小選挙区のデータだけを取りたい。なので、左の列のリンクだけを集めて、excel_urlsというオブジェクトに格納します。</p>
 <div class="code" data-lang="R"><pre><code>excel_urls &lt;- "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html" %&gt;%
   read_html() %&gt;%                         # HTMLのコードを読み込む
@@ -214,7 +217,12 @@ length(excel_urls)</code></pre></div>
 
   Sys.sleep(2)   # アクセス先に過剰な負荷をかけないため、次の動作までちょっとだけ待つ
 }</code></pre></div>
-<p><code>basename()</code> は、URLやファイルパスから最後の部分（＝ファイル名）だけを取り出す関数です。<code>https://www.soumu.go.jp/main_content/000979550.xlsx</code> なら <code>000979550.xlsx</code> が返ってきます。その前に<code>str_c()</code>関数で <code>download/</code> という文字列をくっつけて、保存先のパスにしています。<code>str_c("download/", .)</code> の最後にあるピリオドは、パイプで渡ってきたもの（ここではファイル名）を指しています。</p>
+<p><code>basename()</code> は、URLやファイルパスから最後の部分（この場合ならExcelファイルの名前）だけを取り出す関数です。<code>https://www.soumu.go.jp/main_content/000979550.xlsx</code> なら <code>000979550.xlsx</code> となります。</p>
+<p><code>str_c()</code> は文字列をくっつける関数。<code>str_c("download/", .)</code> というのは <code>download/</code> という文字列に、このExcelファイル名をくっつけなさいという意味です。Excelファイル名がどこから来たかというと、<code>("download/", .)</code> の丸括弧の終わりに、地味に「ピリオド」がありますよね。このピリオドが、「パイプ演算子で渡されてきたもの」という意味なのです。目につきにくいけど重要なヤツです。</p>
+<p>たとえば、こんな具合です。</p>
+<div class="code" data-lang="R"><pre><code>"ぱみゅぱみゅ" %&gt;% str_c("きゃりー", .)</code></pre></div>
+<div class="code" data-lang="実行結果"><pre><code>[1] "きゃりーぱみゅぱみゅ"</code></pre></div>
+<p>パイプで渡された「ぱみゅぱみゅ」が、ピリオドのところに入りました。ピリオドを置かなければ、渡されたものは丸括弧のいちばん前に入るので、「ぱみゅぱみゅきゃりー」になってしまいます。</p>
 <h2 id="途中で止まらないようにする">途中で止まらないようにする</h2>
 <p>47回のうち1回でも、相手のサーバーにつながらないとか、返事が来なくて時間切れになるとかいったエラーが起きると、for文はそこで止まります。1回の失敗で最後まで走らないのは困るので、前章と同じように <code>tryCatch()</code> で囲みましょう。</p>
 <p>ただ、ややこしいことに、リンク切れのほうは <code>GET()</code> にとってはエラーになりません。ファイルがなくても、相手のサーバーは「ページが見つかりません」という案内のページを返してきます。<code>GET()</code> はそれを受け取って、<code>.xlsx</code> という名前のままきちんと保存し、<strong>何事もなかったかのように次へ進んでしまう</strong>のです。</p>
@@ -263,7 +271,8 @@ length(excel_urls)</code></pre></div>
 length(list.files("download"))</code></pre></div>
 <p><code>list.files()</code> は、フォルダのなかにあるファイルの名前を一覧にする関数です。47になっていますか。足りなければ、⚠️ が出たものを探して、そのファイルだけもう一度落とします。</p>
 <p>これですべてのファイルがdownloadフォルダに保存されたはずです。手作業よりずっと楽、ですよね？</p>
-<p>ただ、落としてきたExcelファイルを開いてみると、上に表題があって、ラベルが2段になっていて、シートが何枚もある、という形をしています。次の章では、これを分析しやすい形に組み替えます。</p>
+<p>ただ、落としてきたExcelファイルを開いてみると、なかなかしんどい。上に表題があって、ラベルが2段になっていて、シートが何枚もある。tidyな形に加工するのは楽ではなさそうです。</p>
+<p>こういうファイル、よくありますよね。みんな苦しんでます。次の章ではこの難題に取り組みます。</p>
     </article>
     <nav class="pager"><a class="prev" href="18-loop.html"><span>前へ</span>18 まとめて集める</a><a class="next" href="20-kami-excel.html"><span>次へ</span>20 神の頭を切り落とす</a></nav>
     <footer class="site-foot">
