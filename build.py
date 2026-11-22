@@ -22,6 +22,7 @@ CONTENT = os.path.join(BASE, "content")
 ASSETS = os.path.join(BASE, "assets")
 IMAGES = os.path.join(BASE, "images")
 FILES = os.path.join(BASE, "files")   # 読者にダウンロードしてもらうデータ
+MIRROR = os.path.join(BASE, "mirror")   # 第3部で取りにいくページの保存版（元のサイトが変わったとき用。中身は手を入れない）
 OUT = os.path.join(BASE, "docs")   # GitHub Pages が配信できる名前にしている
 
 SITE_TITLE = "記者のためのR講座"
@@ -1075,9 +1076,9 @@ def build():
     for name in os.listdir(OUT):
         if name.endswith(".html"):
             os.remove(os.path.join(OUT, name))
-    # assets・images・files は上書きでコピーしたうえで、元のフォルダから消したファイルの写しを docs/ からも消す
+    # assets・images・files・mirror は上書きでコピーしたうえで、元のフォルダから消したファイルの写しを docs/ からも消す
     # （消し忘れた古いファイルが公開されたままにならないように）
-    for src, name in ((ASSETS, "assets"), (IMAGES, "images"), (FILES, "files")):
+    for src, name in ((ASSETS, "assets"), (IMAGES, "images"), (FILES, "files"), (MIRROR, "mirror")):
         if not os.path.isdir(src):
             continue
         dst = os.path.join(OUT, name)

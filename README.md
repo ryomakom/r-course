@@ -16,7 +16,7 @@ python build.py
 
 3. `docs/index.html` をブラウザで開いて確認する
 
-書き出し先の `docs/` は毎回作り直されます（GitHub Pages がこのフォルダを配信します）。HTMLは書き直し、`assets/`・`images/`・`files/` は元のフォルダから写し直します。元のフォルダから消したファイルは、`docs/` の写しも消えます。**`docs/` の中を直接編集しても次のビルドで消えます。** 直すのは必ず `content/` のほうを。
+書き出し先の `docs/` は毎回作り直されます（GitHub Pages がこのフォルダを配信します）。HTMLは書き直し、`assets/`・`images/`・`files/`・`mirror/` は元のフォルダから写し直します。元のフォルダから消したファイルは、`docs/` の写しも消えます。**`docs/` の中を直接編集しても次のビルドで消えます。** 直すのは必ず `content/` のほうを。
 
 GitHub Pages で公開しています。`git push` すれば数十秒で反映されます。
 
@@ -28,14 +28,18 @@ r-course/
 ├── make-figures.R    実行結果とグラフを作り直すRスクリプト
 ├── heat-prep.R / make-heat20.R / make-exdeaths20.R  21章の熱中症のグラフと超過死亡の地図のデータを作る
 ├── make-stills16.py / make-video16.py  17章の「CSSセレクタ」の操作動画と静止画を作る
-├── sample/           17・18章の実行結果を作るために保存したページ（make-figures.R が読む）
+├── sample/           17・18章の実行結果を作るために保存したページ（make-figures.R が読む。裁判所の規約で再配布できないので、リポジトリには入れていない）
 ├── content/          本文（Markdown）
 ├── outputs/          Rの実行結果（テキスト。make-figures.Rが作る）
 ├── images/           グラフと画面写真
 ├── files/            読者にダウンロードしてもらうデータ
+├── mirror/           19章の総務省のページとExcelの保存版（元のページが変わったとき用。公共データ利用規約に沿って出典と加工を明記。検索には出さない）
 ├── tools/
 │   ├── make_og.py    SNS用の画像（OGP画像）を作るスクリプト。build.py が毎回呼ぶ
-│   └── fill_top_demo.py  トップの実演（assets/top-demo.js）の表と点の位置を、make-figures.R の書き出しから写し直す
+│   ├── fill_top_demo.py  トップの実演（assets/top-demo.js）の表と点の位置を、make-figures.R の書き出しから写し直す
+│   ├── make_soumu_mirror.py  mirror/ の総務省の保存版を作る（取ってきたページとExcelのフォルダを渡す）
+│   └── check_sources.py  17〜19章が取りにいく裁判所・総務省のページが、本文のとおりの形かを確かめる
+├── .github/workflows/check-sources.yml  check_sources.py を毎月1日に動かす（食い違えば GitHub からメール）
 ├── assets/
 │   ├── style.css     見た目。明るい画面と暗い画面の両方に対応
 │   ├── site.js       目次の開閉と、コードのコピー止め

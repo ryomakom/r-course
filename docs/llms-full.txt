@@ -3429,6 +3429,15 @@ URL: https://ryomakom.github.io/r-course/19-download.html
 
 ネット上にあるデータは、ウェブサイトに直接表示されているときもありますが、Excelやcsvなどのファイルとして置かれている場合もあります。たとえば衆院選の市区町村別得票データは、47都道府県ごとに分かれたExcelファイルが総務省の[サイト](https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html)に置かれています。
 
+【総務省のページが変わっていたら】
+官公庁のページは、作り直されてURLや形が変わることがあります。この章のコードが動かなくなっていたら、この講座に置いた保存版（2026年11月22日に取得）を使ってください。コードの中にある総務省のURL（3か所）を、次のように差し替えれば同じコードが動きます。
+
+- 一覧ページ：`https://ryomakom.github.io/r-course/mirror/soumu.go.jp/senkyo/senkyo_s/data/shugiin50/shikuchouson.html`
+
+- 東京都のExcel：`https://ryomakom.github.io/r-course/mirror/soumu.go.jp/main_content/000979550.xlsx`
+
+出典：総務省「第50回衆議院議員総選挙・最高裁判所裁判官国民審査 市区町村別得票数」（[公共データ利用規約（第1.0版）](https://www.digital.go.jp/resources/open_data/public_data_license_v1.0)）。保存版は、Excelファイルへのリンクを保存版の中で開けるように書き換え、画像などを外したものです。Excelファイルは元のままです。
+
 リンクを一つ一つクリックしてダウンロードすることも、もちろんできます。でもやりたくないですよね。こういう単純作業はコンピューターにやってもらいましょう。ここでもfor文が使えます。
 
 が、その前に、まずは一つのファイルをRのコードでダウンロードするのをやってみましょう。httrというパッケージを使います。

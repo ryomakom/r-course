@@ -1,0 +1,20 @@
+# 第3部の章が取りにいく外部のページ（裁判所・総務省）が、本文のとおりの形をしているかを月に1回確かめる。
+# 食い違っていたら、このワークフローが失敗して、GitHub からメールが届く。
+# 手で動かすときは、GitHub の Actions タブで「Run workflow」を押す。
+name: 外部ページの点検
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"   # 毎月1日の朝9時（日本時間）
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4
+      - run: python tools/check_sources.py
