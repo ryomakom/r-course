@@ -24,7 +24,7 @@
 <meta property="article:author" content="https://x.com/ryomakom">
 <meta property="article:section" content="付録">
 <meta property="article:published_time" content="2026-11-20">
-<meta property="article:modified_time" content="2026-11-20">
+<meta property="article:modified_time" content="2026-11-22">
 <meta property="og:image" content="https://ryomakom.github.io/r-course/assets/og/a1-kigou.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
@@ -55,7 +55,7 @@
    "inLanguage": "ja",
    "image": "https://ryomakom.github.io/r-course/assets/og/a1-kigou.png",
    "datePublished": "2026-11-20",
-   "dateModified": "2026-11-20",
+   "dateModified": "2026-11-22",
    "author": {
     "@type": "Person",
     "@id": "https://ryomakom.github.io/r-course/#author",
@@ -173,27 +173,32 @@
       <p class="lead">「この記号、なんだっけ」を引くためのページ。読み物ではないので、必要なときに戻ってきてください。</p>
       
       <h2 id="行と列">行と列</h2>
-<p>横に並ぶのが「行」、縦に並ぶのが「列」です。「3行目の4列目」なら、上から三つめ、左から四つめのマス目。覚え方は<a href="04-import.html#パイプ演算子">4章</a>の終わりで紹介しています。</p>
+<p>横に長いのが「行」、縦に長いのが「列」。「3行目の4列目」なら、上から三つめ、左から四つめのマス目。覚え方は<a href="04-import.html#パイプ演算子">4章</a>の終わりで紹介しています。</p>
 <div class="table-wrap"><table><thead><tr><th>関数</th><th>すること</th></tr></thead><tbody><tr><td><code>filter()</code></td><td>行を絞る</td></tr><tr><td><code>select()</code></td><td>列を選ぶ</td></tr></tbody></table></div>
-<h2 id="代入と名前">代入と、名前</h2>
-<div class="table-wrap"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>&lt;-</code></td><td>代入。<code>A &lt;- 3</code> は「3という数字をAという変数に入力しなさい」</td></tr><tr><td><code>=</code></td><td>記号の左右にある値を等しくする。代入を意味する <code>&lt;-</code> と似ているが、関数の中で使われることが多いという違いがある</td></tr><tr><td><code>==</code></td><td>記号の左右にある値が等しいかどうかをチェックする。<code>A == 3</code> は、Aが3と等しければTRUE、等しくなければFALSE</td></tr></tbody></table></div>
+<h2 id="矢印とイコール">矢印とイコール</h2>
+<div class="table-wrap"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>&lt;-</code></td><td>代入。<code>A &lt;- 3</code> は「3という数字をAというオブジェクトに入力しなさい」</td></tr><tr><td><code>=</code></td><td>記号の左右にある値を等しくする。代入を意味する <code>&lt;-</code> と似ているが、こちらは関数の中で使われることが多い</td></tr><tr><td><code>==</code></td><td>記号の左右にある値が等しいかどうかをチェックする。<code>A == 3</code> は、Aが3と等しければTRUE、等しくなければFALSE</td></tr></tbody></table></div>
 <p><code>&lt;-</code> は Alt＋マイナス（MacはOption＋マイナス）で入力できます。</p>
-<p>イコール記号は混乱を招く可能性があります。代入は <code>&lt;-</code>、比較は <code>==</code>、関数の中で引数を指定するときは <code>=</code>。この三つを使い分けます。</p>
-<h2 id="演算子">演算子</h2>
-<div class="table-wrap"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>+</code> <code>-</code></td><td>足す、引く</td></tr><tr><td><code>*</code> <code>/</code></td><td>かける、割る</td></tr><tr><td><code>&gt;</code> <code>&lt;</code></td><td>より大きい、より小さい</td></tr><tr><td><code>&gt;=</code> <code>&lt;=</code></td><td>以上、以下</td></tr><tr><td><code>==</code></td><td>等しい</td></tr><tr><td><code>!=</code></td><td>等しくない</td></tr><tr><td><code>%in%</code></td><td>並んだもののどれかに当てはまる</td></tr><tr><td><code>%&gt;%</code></td><td>パイプ演算子。左のものを右の関数に渡す</td></tr></tbody></table></div>
-<h2 id="ブール論理">ブール論理</h2>
-<p>TRUEかFALSEかで考える論理のことです。<code>filter()</code> の条件を組み合わせるときに出てきます。</p>
+<h2 id="計算と比べるための記号">計算と比べるための記号</h2>
+<div class="table-wrap"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>+</code> <code>-</code></td><td>足す、引く</td></tr><tr><td><code>*</code> <code>/</code></td><td>かける、割る</td></tr><tr><td><code>&gt;</code> <code>&lt;</code></td><td>より大きい、より小さい</td></tr><tr><td><code>&gt;=</code> <code>&lt;=</code></td><td>以上、以下</td></tr><tr><td><code>==</code></td><td>等しい</td></tr><tr><td><code>!=</code></td><td>等しくない</td></tr><tr><td><code>%in%</code></td><td>並んだもののどれかに当てはまる</td></tr></tbody></table></div>
+<h2 id="かつまたはでない">「かつ」「または」「でない」</h2>
+<p>条件を組み合わせるための記号です。<code>filter()</code> で条件を二つ以上使うときに出てきます。TRUEかFALSEかで考えるこうした論理を「ブール論理」と呼びます。</p>
 <div class="table-wrap"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>&amp;</code></td><td>AND（かつ）。両方の条件を満たすもの</td></tr><tr><td><code>|</code></td><td>OR（または）。どちらかの条件を満たすもの</td></tr><tr><td><code>!</code></td><td>NOT（〜でない）。条件をひっくり返す</td></tr></tbody></table></div>
 <p>ベン図で言えば、<code>A &amp; B</code> は二つの円が重なったところ、<code>A | B</code> は二つの円のどちらかに入っているところ全体、<code>!A</code> はAの円の外側です。</p>
 <p><code>filter()</code> のなかでコンマで条件を区切ると、<code>&amp;</code> と同じ意味になります。</p>
 <div class="code" data-lang="R"><pre><code>filter(population &gt;= 100000, prefecture == "東京都")   # コンマ
 filter(population &gt;= 100000 &amp; prefecture == "東京都")  # 上と同じ意味</code></pre></div>
-<h2 id="引用符とかたまり">引用符と、かたまり</h2>
+<h2 id="パイプ">パイプ</h2>
+<p><a href="04-import.html#パイプ演算子">4章</a>で出てきた「パイプ演算子」です。</p>
+<div class="table-wrap"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>%&gt;%</code></td><td>左のものを右の関数に渡す</td></tr><tr><td><code>.</code></td><td>パイプで渡ってきたものを指す。渡す位置を明示したいときに使う</td></tr></tbody></table></div>
+<p>パイプ演算子でわたされてきたものは、何も指定しないと、次の関数では「かっこの中で一番最初」に置かれます。<code>df2020 %&gt;% select(population)</code> は、<code>select(df2020, population)</code> というのと同じなわけです。</p>
+<p>文字列をつなげる関数 <code>str_c()</code> を例にすると、<code>"ミルク" %&gt;% str_c("コーヒー")</code> と書けば出力は <code>"ミルクコーヒー"</code> になります。<code>str_c("ミルク", "コーヒー")</code> というのと同じです。</p>
+<p>別の場所に置きたいと思ったら、その位置にピリオドを書きます。<code>"ミルク" %&gt;% str_c("コーヒー", .)</code> とやると、<code>"コーヒーミルク"</code> となるわけです。</p>
+<h2 id="引用符などなど">引用符などなど</h2>
 <p>数字ではない「テキスト」や「日付」は、引用符で囲んで入力します（たとえば <code>"Japan"</code> や <code>"2025-02-10"</code> のように）。</p>
 <p>二つ以上の値をリストとして入力する場合は、コンマで区切って <code>c()</code> で結合します。</p>
 <div class="code" data-lang="R"><pre><code>c("Japan", "2025-02-10")</code></pre></div>
 <p>コロンを使うと値の範囲を指定できます。<code>1:10</code> は1から10までの整数を示します。</p>
-<div class="table-wrap"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>"..."</code></td><td>文字列。ダブルクオーテーション。シングル（<code>'...'</code>）でも動くが、ダブルが慣習</td></tr><tr><td><code>`...`</code></td><td>バッククオート。列名が日本語だったり空白を含んだり数字で始まるときに囲む</td></tr><tr><td><code>c(...)</code></td><td>値を並べたかたまりを作る</td></tr><tr><td><code>1:10</code></td><td>1から10までの連続した整数</td></tr><tr><td><code>#</code></td><td>これより右はコメント。人間のためのメモで、実行されない</td></tr><tr><td><code>.</code></td><td>パイプで渡ってきたものを指す。渡す位置を明示したいときに使う</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>記号</th><th>意味</th></tr></thead><tbody><tr><td><code>"..."</code></td><td>文字列。ダブルクオーテーション。シングル（<code>'...'</code>）でも動くが、ダブルが慣習</td></tr><tr><td><code>`...`</code></td><td>バッククオート。列名が日本語だったり空白を含んだり数字で始まるときに囲む</td></tr><tr><td><code>c(...)</code></td><td>値を並べたかたまりを作る</td></tr><tr><td><code>1:10</code></td><td>1から10までの連続した整数</td></tr><tr><td><code>#</code></td><td>これより右はコメント。人間のためのメモで、実行されない</td></tr></tbody></table></div>
 <p><strong>引用符とバッククオートを混同しないこと。</strong> <code>"population"</code> は「populationという文字そのもの」ですが、<code>`population`</code> は「populationという名前の列」です。意味が違います。</p>
 <h2 id="データ型">データ型</h2>
 <p>tibbleを表示したときに、列名の下に出てくる記号です。</p>
